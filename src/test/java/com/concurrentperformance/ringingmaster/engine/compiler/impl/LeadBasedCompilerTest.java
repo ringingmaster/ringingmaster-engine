@@ -159,7 +159,7 @@ public class LeadBasedCompilerTest {
 	public void compilePlainCourseOfPlainBobMinor() throws IOException {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(buildPlainBobMinor());
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		assertEquals("Plain Course of Plain Bob Minor", result.getTouch().getName());
+		assertEquals("Plain Course of Plain Bob Minor", result.getTouch().getTitle());
 		assertEquals(60, result.getMethod().getRowCount());
 		assertEquals(5, result.getMethod().getLeadCount());
 		checkAgainstFile(result.getMethod(), "PlainBobMinor.txt");
@@ -289,7 +289,15 @@ public class LeadBasedCompilerTest {
 		try (InputStream stream = getClass().getResourceAsStream(fileName)) {
 			fileContent = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
 		}
-		Assert.assertEquals(fileContent, allChangesAsText);
+
+		Assert.assertEquals(convertToOsLineSeparators(fileContent), convertToOsLineSeparators(allChangesAsText));
+	}
+
+	private String convertToOsLineSeparators(String text) {
+		text = text.replace("\r\n", System.lineSeparator());
+		text = text.replace("\r", System.lineSeparator());
+		text = text.replace("\n", System.lineSeparator());
+		return text;
 	}
 
 	private NotationBody buildPlainBobMinor() {

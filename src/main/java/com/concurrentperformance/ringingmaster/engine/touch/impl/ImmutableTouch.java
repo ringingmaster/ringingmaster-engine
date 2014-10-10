@@ -40,18 +40,23 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public String setNumberOfBells(NumberOfBells numberOfBells) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
 	public NumberOfBells getNumberOfBells() {
 		return touch.getNumberOfBells();
 	}
 
 	@Override
-	public Bell getCallingBell() {
-		return touch.getCallingBell();
+	public Bell getCallFromBell() {
+		return touch.getCallFromBell();
 	}
 
 	@Override
-	public void setCallingBell(Bell callingBell) {
-		touch.setCallingBell(callingBell);
+	public void setCallFromBell(Bell callFromBell) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
@@ -250,12 +255,22 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public String getName() {
-		return touch.getName();
+	public String getTitle() {
+		return touch.getTitle();
 	}
 
 	@Override
-	public void setName(String name) {
+	public void setTitle(String name) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
+	public String getAuthor() {
+		return touch.getAuthor();
+	}
+
+	@Override
+	public void setAuthor(String author) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 }

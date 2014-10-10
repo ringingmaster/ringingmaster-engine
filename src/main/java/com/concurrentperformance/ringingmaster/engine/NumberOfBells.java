@@ -1,10 +1,10 @@
 package com.concurrentperformance.ringingmaster.engine; //TODO where should this live?
 
+import com.concurrentperformance.ringingmaster.engine.method.Bell;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import com.concurrentperformance.ringingmaster.engine.method.Bell;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -43,6 +43,7 @@ public enum NumberOfBells implements Iterable<Bell> {
 	}
 
 	private final String name;
+	private final String displayString;
 	private final int bellCount;
 	private final Bell tenor;
 
@@ -52,6 +53,7 @@ public enum NumberOfBells implements Iterable<Bell> {
 		checkArgument(name.length() > 0);
 		this.bellCount = bellCount;
 		this.tenor = Bell.valueOf(bellCount-1);
+		this.displayString = name + " (" + bellCount + ")";
 	}
 
 	/**
@@ -68,6 +70,10 @@ public enum NumberOfBells implements Iterable<Bell> {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getDisplayString() {
+		return displayString;
 	}
 
 	public boolean isEven() {

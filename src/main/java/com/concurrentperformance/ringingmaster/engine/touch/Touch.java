@@ -19,16 +19,20 @@ public interface Touch extends Cloneable {
 
 	Touch clone() throws CloneNotSupportedException;
 
-	String getName();
-	void setName(String name);
+	String getTitle();
+	void setTitle(String title);
+
+	String getAuthor();
+	void setAuthor(String author);
 
 	TouchType getTouchType();
 	void setTouchType(TouchType touchType);
 
+	String setNumberOfBells(NumberOfBells numberOfBells);
 	NumberOfBells getNumberOfBells();
 
-	Bell getCallingBell();
-	void setCallingBell(Bell callingBell);
+	Bell getCallFromBell();
+	void setCallFromBell(Bell callFromBell);
 
 	void addNotation(NotationBody notationToAdd);
 	void removeNotation(NotationBody notationForRemoval);

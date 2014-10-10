@@ -73,7 +73,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	}
 
 	public Proof compile(boolean withAnalysis) {
-		log.info("{}> Start compiling [{}]", logPreamble, touch.getName());
+		log.info("{}> Start compiling [{}]", logPreamble, touch.getTitle());
 		long start = System.currentTimeMillis();
 		preCompile(touch);
 		buildCallLookupByName();
@@ -83,7 +83,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		}
 		proof = new DefaultProof(touch, method, terminationReason, analysis);
 		long duration = System.currentTimeMillis() - start;
-		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getName(), duration);
+		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), duration);
 		return proof;
 	}
 

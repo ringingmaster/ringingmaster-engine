@@ -1,27 +1,26 @@
 	package com.concurrentperformance.ringingmaster.engine.compiler.impl;
 
-	import com.google.common.collect.ImmutableList;
-	import net.jcip.annotations.ThreadSafe;
-
-	import java.util.HashMap;
-	import java.util.List;
-	import java.util.Map;
-
 	import com.concurrentperformance.ringingmaster.engine.compiler.Compiler;
-	import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
-	import com.concurrentperformance.ringingmaster.engine.method.Bell;
-	import com.concurrentperformance.ringingmaster.engine.method.Method;
-	import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
-	import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-	import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
-	import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
-	import com.concurrentperformance.ringingmaster.engine.touch.Touch;
-	import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
-	import org.slf4j.Logger;
-	import org.slf4j.LoggerFactory;
+import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
+import com.concurrentperformance.ringingmaster.engine.method.Bell;
+import com.concurrentperformance.ringingmaster.engine.method.Method;
+import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
+import com.concurrentperformance.ringingmaster.engine.touch.Touch;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
+import com.google.common.collect.ImmutableList;
+import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	import static com.google.common.base.Preconditions.checkArgument;
-	import static com.google.common.base.Preconditions.checkState;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Takes a parsed touch, and converts it into a compiled proof. A proof consists of an expanded Method and
@@ -35,14 +34,14 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private final Bell callingBell;
+	private final Bell callFromBell;
 	private volatile List<CourseBasedDecomposedCall> immutableCallSequence;
 	private volatile Map<NotationMethodCallingPosition, Integer> callingPositionToCallBellPlace;
 
 	public CourseBasedCompiler(Touch touch, String logPreamble) {
 		super(touch, logPreamble);
 		checkArgument(touch.getTouchType() == TouchType.COURSE_BASED, "Course based compiler must use a COURSE_BASED touch. Is actually [" + touch.getTouchType() + "]");
-		callingBell = touch.getCallingBell();
+		callFromBell = touch.getCallFromBell();
 	}
 
 	@Override
@@ -97,7 +96,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 		}
 
 		// Is our designated calling bell on the correct lead (of the tenor)
-		int positionOfCallingBell = currentMethodRow.getPlaceOfBell(callingBell);
+		int positionOfCallingBell = currentMethodRow.getPlaceOfBell(callFromBell);
 		Integer place = callingPositionToCallBellPlace.get(methodCallingPosition);
 		if (positionOfCallingBell != place) {
 			return false;

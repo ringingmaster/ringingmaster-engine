@@ -30,7 +30,7 @@ public class DefaultTouchTest {
 		NotationBody mockNotation1 = mock(NotationBody.class);
 		when(mockNotation1.getName()).thenReturn("Method 1");
 		when(mockNotation1.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		touch.addNotation(mockNotation1);
 
 		Set<NotationBody> retrievedNotations = touch.getAllNotations();
@@ -63,7 +63,7 @@ public class DefaultTouchTest {
 			when(mockNotation2.getName()).thenReturn("Duplicate Name");
 			when(mockNotation2.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
 
-			touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+			touch = new DefaultTouch();
 			touch.addNotation(mockNotation1);
 		}
 		catch (Exception e) {
@@ -74,7 +74,7 @@ public class DefaultTouchTest {
 
 	@Test
 	public void addingFirstNotationToNonSplicedSetsDefaultNotation() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		touch.setSpliced(false);
 
 		NotationBody mockNotation = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
@@ -87,7 +87,7 @@ public class DefaultTouchTest {
 
 	@Test
 	public void removingActiveNotationChoosesNextNotationAlphabetically() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		touch.setSpliced(false);
 
 		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
@@ -119,7 +119,7 @@ public class DefaultTouchTest {
 
 	@Test
 	public void settingSplicedClearsActiveNotation() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		touch.setSpliced(false);
 
 		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
@@ -137,7 +137,7 @@ public class DefaultTouchTest {
 
 	@Test
 	public void unsettingSplicedSetsFirstActiveNotation() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 
 		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
 		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
@@ -154,7 +154,7 @@ public class DefaultTouchTest {
 
 	@Test
 	public void widthAndHeightModified() {
-		Touch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		Touch touch = new DefaultTouch();
 		assertEquals(1, touch.getColumnCount());
 		assertEquals(1, touch.getRowCount());
 
@@ -169,7 +169,7 @@ public class DefaultTouchTest {
 	public void cantInsertColumnOutsideExistingSize() {
 		DefaultTouch touch = null;
 		try {
-			touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+			touch = new DefaultTouch();
 		}
 		catch(Exception e) {
 			fail();
@@ -181,7 +181,7 @@ public class DefaultTouchTest {
 	public void cantInsertRowOutsideExistingSize() {
 		DefaultTouch touch = null;
 		try {
-			touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+			touch = new DefaultTouch();
 		}
 		catch(Exception e) {
 			fail();
@@ -193,7 +193,7 @@ public class DefaultTouchTest {
 	public void cantInsertCharacterOutsideExistingSize() {
 		DefaultTouch touch = null;
 		try {
-			touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+			touch = new DefaultTouch();
 		}
 		catch(Exception e) {
 			fail();
@@ -206,7 +206,7 @@ public class DefaultTouchTest {
 
 		DefaultTouch touch = null;
 		try {
-			touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+			touch = new DefaultTouch();
 
 		}
 		catch(Exception e) {
@@ -221,7 +221,7 @@ public class DefaultTouchTest {
 
 		DefaultTouch touch = null;
 		try {
-			touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+			touch = new DefaultTouch();
 			touch.insertCharacter(0, 0, 0, 'F');
 		}
 		catch(Exception e) {
@@ -235,14 +235,14 @@ public class DefaultTouchTest {
 
 	@Test
 	public void canCorrectlyRetrieveCharacters() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		touch.insertCharacter(0, 0, 0, 'F');
 		assertEquals('F', touch.getElement(0, 0, 0).getCharacter());
 	}
 
 	@Test
 	public void canCorrectlyRetrieveMoreCharacters() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		touch.insertCharacter(0, 0, 0, 'F');
 		touch.insertCharacter(0, 0, 1, 'G');
 		touch.insertCharacter(0, 0, 1, 'H');
@@ -253,7 +253,7 @@ public class DefaultTouchTest {
 	
 	@Test
 	public void canSetCallingStyle() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		assertEquals(TouchType.COURSE_BASED, touch.getTouchType());
 		touch.setTouchType(TouchType.LEAD_BASED);
 		assertEquals(TouchType.LEAD_BASED, touch.getTouchType());
@@ -261,7 +261,7 @@ public class DefaultTouchTest {
 
 	@Test
 	public void canAddAndRemoveDefinitions() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		TouchDefinition a = touch.addDefinition("a", "p-p");
 		assertEquals("a", Iterators.getOnlyElement(touch.getDefinitions().iterator()).getName());
 		touch.addDefinition("b", "-p-");
@@ -272,15 +272,18 @@ public class DefaultTouchTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addingDuplicateDefinitionThrows() {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 1,1);
+		DefaultTouch touch = new DefaultTouch();
 		touch.addDefinition("a", "p-p");
 		touch.addDefinition("a", "sp-");
 	}
 
 	@Test
 	public void cloneTest() throws CloneNotSupportedException {
-		DefaultTouch touch = new DefaultTouch(NumberOfBells.BELLS_6, 2,3);
-		touch.setName("name");
+		DefaultTouch touch = new DefaultTouch();
+		touch.setColumnCount(2);
+		touch.setRowCount(3);
+		touch.setTitle("title");
+		touch.setAuthor("author");
 		touch.addNotation(buildPlainBobMinor());
 		touch.addCharacters(0, 0, "-[s-");
 		touch.getCell_FOR_TEST_ONLY(0, 0).getElement(1).setVariance(new OddEvenVariance(VarianceLogicType.INCLUDE, OddEvenVariance.OddEvenVarianceType.ODD));

@@ -19,7 +19,11 @@ public class TouchBuilder {
 	 * Build a fully fledged touch
 	 */
 	public static Touch getInstance(NumberOfBells numberOfBells, int columnCount, int rowCount) {
-		return new DefaultTouch(numberOfBells, columnCount, rowCount);
+		final DefaultTouch defaultTouch = new DefaultTouch();
+		defaultTouch.setNumberOfBells(numberOfBells);
+		defaultTouch.setColumnCount(columnCount);
+		defaultTouch.setRowCount(rowCount);
+		return defaultTouch;
 	}
 
 	/**
@@ -34,7 +38,7 @@ public class TouchBuilder {
 		touch.setTouchType(TouchType.LEAD_BASED);
 		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
 		touch.setTerminationMaxRows(10000);// Just as a safety stop
-		touch.setName("Plain Course of " + notationBody.getNameIncludingNumberOfBells());
+		touch.setTitle("Plain Course of " + notationBody.getNameIncludingNumberOfBells());
 		return touch;
 	}
 }

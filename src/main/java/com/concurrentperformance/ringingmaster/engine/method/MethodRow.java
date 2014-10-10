@@ -53,6 +53,13 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 	public Stroke getStroke();
 
 	/**
+	 * Get the row course type.
+	 * @return RowCourseType row course type.
+	 */
+	public RowCourseType getRowCourseType();
+
+
+	/**
 	 * Get the row as a display string. i.e. rounds on 12 would return '1234567890ET'
 	 * 
 	 * @return String

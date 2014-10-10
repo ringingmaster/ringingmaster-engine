@@ -1,14 +1,5 @@
 package com.concurrentperformance.ringingmaster.engine.compiler.impl;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.Method;
@@ -22,6 +13,14 @@ import com.concurrentperformance.ringingmaster.engine.proof.ProofTerminationReas
 import com.concurrentperformance.ringingmaster.engine.touch.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
 import com.concurrentperformance.ringingmaster.engine.touch.impl.TouchBuilder;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -45,7 +44,7 @@ public class CourseBasedCompilerTest {
 	@Test
 	public void compileSingleCallCalledFrom5() throws IOException {
 		Touch touch = buildPlainBobMinorTouchShell(1, 2);
-		touch.setCallingBell(Bell.BELL_5);
+		touch.setCallFromBell(Bell.BELL_5);
 		touch.addCharacters(0, 0, "W");
 		touch.addCharacters(0, 1, "-");
 		Proof proof = parseProveAndCheckTouch(15
@@ -54,7 +53,7 @@ public class CourseBasedCompilerTest {
 
 	private Touch buildPlainBobMinorTouchShell(int width, int height) {
 		Touch touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, width, height);
-		touch.setName("Test Touch");
+		touch.setTitle("Test Touch");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setTouchType(TouchType.COURSE_BASED);
 		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
@@ -90,7 +89,15 @@ public class CourseBasedCompilerTest {
 		try (InputStream stream = getClass().getResourceAsStream(fileName)) {
 			fileContent = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
 		}
-		Assert.assertEquals(fileContent, allChangesAsText);
+
+		Assert.assertEquals(convertToOsLineSeparators(fileContent), convertToOsLineSeparators(allChangesAsText));
+	}
+
+	private String convertToOsLineSeparators(String text) {
+		text = text.replace("\r\n", System.lineSeparator());
+		text = text.replace("\r", System.lineSeparator());
+		text = text.replace("\n", System.lineSeparator());
+		return text;
 	}
 
 }
