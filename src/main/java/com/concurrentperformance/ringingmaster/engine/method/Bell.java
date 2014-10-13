@@ -37,6 +37,10 @@ public enum Bell {
 		return ordinal();
 	}
 
+	public String getDisplayString() {
+		return Integer.toString(ordinal()+1);
+	}
+
 	public static Bell valueOf(final int bellNumber) {
 		return values()[bellNumber];
 	}

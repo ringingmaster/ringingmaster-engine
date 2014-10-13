@@ -183,6 +183,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void setCallFromBell(Bell callFromBell) {
+		checkState(callFromBell.getZeroBasedBell() < numberOfBells.getBellCount());
 		this.callFromBell = callFromBell;
 	}
 
