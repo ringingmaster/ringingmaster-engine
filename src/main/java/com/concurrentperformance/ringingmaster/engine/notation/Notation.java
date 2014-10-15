@@ -1,6 +1,7 @@
 package com.concurrentperformance.ringingmaster.engine.notation;
 
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.google.common.collect.ComparisonChain;
 
 import java.util.Comparator;
 
@@ -16,7 +17,18 @@ public interface Notation extends Iterable<NotationRow> {
 	public static final Comparator<Notation> BY_NAME = new Comparator<Notation>() {
 		@Override
 		public int compare(Notation o1, Notation o2) {
-			return o1.getName().compareTo(o2.getName());
+			return ComparisonChain.start()
+					.compare(o1.getName(), o2.getName())
+					.result();
+		}
+	};
+	public static final Comparator<Notation> BY_NUMBER_THEN_NAME = new Comparator<Notation>() {
+		@Override
+		public int compare(Notation o1, Notation o2) {
+			return ComparisonChain.start()
+					.compare(o1.getNumberOfWorkingBells(),o2.getNumberOfWorkingBells())
+					.compare(o1.getName(), o2.getName())
+					.result();
 		}
 	};
 

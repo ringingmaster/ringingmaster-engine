@@ -47,8 +47,6 @@ public interface Touch extends Cloneable {
 	void removeDefinition(String name);
 	TouchDefinition findDefinitionByName(String name);
 
-
-
 	boolean isSpliced();
 	void setSpliced(boolean spliced);
 
