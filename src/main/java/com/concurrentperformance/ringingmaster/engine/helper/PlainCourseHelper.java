@@ -20,7 +20,7 @@ public class PlainCourseHelper {
 		Touch plainCourseTouch = TouchBuilder.buildPlainCourseInstance(notation);
 		Proof proof = CompilerFactory.getInstance(plainCourseTouch,  logPreamble).compile(false);
 		checkState(ProofTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(), "Plain course must terminate with [" + ProofTerminationReason.SPECIFIED_ROW + "] but actually terminated with [" + proof.getTerminationReason());
-		return proof.getMethod();
+		return proof.getCreatedMethod();
 	}
 
 }

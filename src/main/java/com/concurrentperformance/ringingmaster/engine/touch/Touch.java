@@ -7,6 +7,7 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.google.common.base.Optional;
 import net.jcip.annotations.NotThreadSafe;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,11 +37,11 @@ public interface Touch extends Cloneable {
 
 	void addNotation(NotationBody notationToAdd);
 	void removeNotation(NotationBody notationForRemoval);
-	Set<NotationBody> getAllNotations();
-	Set<NotationBody> getNotationsInUse();
+	List<NotationBody> getAllNotations();
+	List<NotationBody> getNotationsInUse();
 
 	void setActiveNotation(NotationBody activeNotation);
-	NotationBody getActiveNotation();
+	NotationBody getSingleMethodActiveNotation();
 
 	TouchDefinition addDefinition(String name, String characters);
 	Set<TouchDefinition> getDefinitions();

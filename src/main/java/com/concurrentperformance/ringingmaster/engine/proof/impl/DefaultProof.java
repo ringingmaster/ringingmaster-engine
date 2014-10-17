@@ -18,15 +18,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class DefaultProof implements Proof {
 
 	private final Touch touch;
-	private final Method method;
 	private final ProofTerminationReason terminationReason;
+	private final Method createdMethod;
 	private final Analysis analysis;
 
 
-	public DefaultProof(Touch touch, Method method, ProofTerminationReason terminationReason, Analysis analysis) {
+	public DefaultProof(Touch touch, ProofTerminationReason terminationReason, Method createdMethod, Analysis analysis) {
 		this.touch = checkNotNull(touch, "touch must not be null");
-		this.method = checkNotNull(method, "method must not be null");
 		this.terminationReason = checkNotNull(terminationReason, "terminationReason must not be null");
+		this.createdMethod = createdMethod; // createdMethod can be null when termination reason is INVALID_TOUCH
 		this.analysis = analysis; //analysis can be null when not requested
 	}
 
@@ -36,13 +36,13 @@ public class DefaultProof implements Proof {
 	}
 
 	@Override
-	public Method getMethod() {
-		return method;
+	public ProofTerminationReason getTerminationReason() {
+		return terminationReason;
 	}
 
 	@Override
-	public ProofTerminationReason getTerminationReason() {
-		return terminationReason;
+	public Method getCreatedMethod() {
+		return createdMethod;
 	}
 
 	@Override

@@ -279,4 +279,18 @@ public class NotationBuilderTest {
 		assertEquals("Bob", notation.getDefaultCall().getName());
 	}
 
+	@Test(expected = IllegalStateException.class)
+	public void addingNotationWithHigherPlacesThrows() {
+		fixture	.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setUnfoldedNotationShorthand("18")
+				.build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void addingNotationWithHigherLeadEndThrows() {
+		fixture	.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setUnfoldedNotationShorthand("16")
+				.setUnfoldedNotationShorthand("18")
+				.build();
+	}
 }

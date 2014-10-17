@@ -22,7 +22,7 @@ public interface Proof {
 	/**
 	 * Get the created method.
 	 */
-	Method getMethod();
+	Method getCreatedMethod();
 
 	/**
 	 * Get the reason for no more rows being created.

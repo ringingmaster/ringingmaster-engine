@@ -12,11 +12,13 @@ import com.google.common.collect.Iterators;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import java.util.Set;
+import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +35,7 @@ public class DefaultTouchTest {
 		DefaultTouch touch = new DefaultTouch();
 		touch.addNotation(mockNotation1);
 
-		Set<NotationBody> retrievedNotations = touch.getAllNotations();
+		List<NotationBody> retrievedNotations = touch.getAllNotations();
 		assertEquals(1, retrievedNotations.size());
 		assertEquals(mockNotation1, retrievedNotations.iterator().next());
 
@@ -81,7 +83,7 @@ public class DefaultTouchTest {
 		when(mockNotation.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
 		touch.addNotation(mockNotation);
 
-		assertEquals(mockNotation, touch.getActiveNotation());
+		assertEquals(mockNotation, touch.getSingleMethodActiveNotation());
 		assertFalse(touch.isSpliced());
 	}
 
@@ -105,16 +107,16 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationD);
 
 		touch.setActiveNotation(mockNotationC);
-		assertEquals(mockNotationC, touch.getActiveNotation());
+		assertEquals(mockNotationC, touch.getSingleMethodActiveNotation());
 
 		touch.removeNotation(mockNotationC);
-		assertEquals(mockNotationD, touch.getActiveNotation());
+		assertEquals(mockNotationD, touch.getSingleMethodActiveNotation());
 		touch.removeNotation(mockNotationD);
-		assertEquals(mockNotationA, touch.getActiveNotation());
+		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
 		touch.removeNotation(mockNotationB);
-		assertEquals(mockNotationA, touch.getActiveNotation());
+		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
 		touch.removeNotation(mockNotationA);
-		assertNull(touch.getActiveNotation());
+		assertNull(touch.getSingleMethodActiveNotation());
 	}
 
 	@Test
@@ -130,9 +132,9 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationA);
 		touch.addNotation(mockNotationB);
 
-		assertNotNull(touch.getActiveNotation());
+		assertNotNull(touch.getSingleMethodActiveNotation());
 		touch.setSpliced(true);
-		assertNull(touch.getActiveNotation());
+		assertNull(touch.getSingleMethodActiveNotation());
 	}
 
 	@Test
@@ -147,9 +149,9 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationB);
 
 		touch.setSpliced(true);
-		assertNull(touch.getActiveNotation());
+		assertNull(touch.getSingleMethodActiveNotation());
 		touch.setSpliced(false);
-		assertEquals(mockNotationA, touch.getActiveNotation());
+		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
 	}
 
 	@Test
@@ -278,6 +280,37 @@ public class DefaultTouchTest {
 	}
 
 	@Test
+	public void addingNotationsWithDifferentNumberOfBellsFiltersInappropriateNotations() {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setSpliced(false);
+		touch.addNotation(buildPlainBobMinor());
+		touch.addNotation(buildLittleBobMinor());
+		touch.addNotation(buildPlainBobMMajor());
+
+		assertEquals(3, touch.getAllNotations().size());
+		assertEquals(1, touch.getNotationsInUse().size());
+
+		touch.setSpliced(true);
+		assertEquals(3, touch.getAllNotations().size());
+		assertEquals(2, touch.getNotationsInUse().size());
+	}
+
+	@Test
+	public void settingNumberOfBellsResetsActiveNotation() {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setSpliced(false);
+		touch.setNumberOfBells(NumberOfBells.BELLS_8);
+		touch.addNotation(buildPlainBobMMajor());
+		touch.addNotation(buildPlainBobMinor());
+
+		assertEquals("Plain Bob Major", touch.getSingleMethodActiveNotation().getNameIncludingNumberOfBells());
+
+		touch.setNumberOfBells(NumberOfBells.BELLS_6);
+		assertEquals("Plain Bob Minor", touch.getSingleMethodActiveNotation().getNameIncludingNumberOfBells());
+	}
+
+
+	@Test
 	public void cloneTest() throws CloneNotSupportedException {
 		DefaultTouch touch = new DefaultTouch();
 		touch.setColumnCount(2);
@@ -311,10 +344,33 @@ public class DefaultTouchTest {
 		return NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
 				.setName("Plain Bob")
-				.setFoldedPalindromeNotationShorthand("x16x", "16")
+				.setFoldedPalindromeNotationShorthand("x16x16x", "16")
 				.addCall("Bob", "-", "14", true)
 				.addCall("Single", "s", "1234", false)
 				.setSpliceIdentifier("p")
+				.build();
+	}
+
+	private NotationBody buildLittleBobMinor() {
+
+		return NotationBuilder.getInstance()
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setName("Little Bob")
+				.setFoldedPalindromeNotationShorthand("x14", "12")
+				.addCall("Bob", "-", "14", true)
+				.addCall("Single", "s", "1234", false)
+				.setSpliceIdentifier("p")
+				.build();
+	}
+
+	private NotationBody buildPlainBobMMajor() {
+
+		return NotationBuilder.getInstance()
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+				.setName("Plain Bob")
+				.setFoldedPalindromeNotationShorthand("x18x18x18x", "18")
+				.addCall("Bob", "-", "14", true)
+				.setSpliceIdentifier("pbm")
 				.build();
 	}
 

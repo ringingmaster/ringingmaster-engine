@@ -4,10 +4,16 @@ import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.touch.*;
+import com.concurrentperformance.ringingmaster.engine.touch.Grid;
+import com.concurrentperformance.ringingmaster.engine.touch.Touch;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchCell;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchDefinition;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchElement;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
 import com.google.common.base.Optional;
 import net.jcip.annotations.Immutable;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -70,12 +76,12 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public Set<NotationBody> getAllNotations() {
+	public List<NotationBody> getAllNotations() {
 		return touch.getAllNotations();
 	}
 
 	@Override
-	public Set<NotationBody> getNotationsInUse() {
+	public List<NotationBody> getNotationsInUse() {
 		return touch.getNotationsInUse();
 	}
 
@@ -85,8 +91,8 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public NotationBody getActiveNotation() {
-		return touch.getActiveNotation();
+	public NotationBody getSingleMethodActiveNotation() {
+		return touch.getSingleMethodActiveNotation();
 	}
 
 	@Override

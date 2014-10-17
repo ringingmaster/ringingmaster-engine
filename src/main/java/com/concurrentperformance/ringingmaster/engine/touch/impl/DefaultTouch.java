@@ -5,6 +5,7 @@ import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import com.concurrentperformance.ringingmaster.engine.touch.Grid;
 import com.concurrentperformance.ringingmaster.engine.touch.GridCellFactory;
 import com.concurrentperformance.ringingmaster.engine.touch.Touch;
@@ -13,18 +14,18 @@ import com.concurrentperformance.ringingmaster.engine.touch.TouchDefinition;
 import com.concurrentperformance.ringingmaster.engine.touch.TouchElement;
 import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.jcip.annotations.NotThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -51,7 +52,7 @@ public class DefaultTouch implements Touch {
 	private final Grid<TouchCell> cells;
 
 	private Bell callFromBell = numberOfBells.getTenor();
-	private SortedSet<NotationBody> notations = new TreeSet<>(NotationBody.BY_NAME);
+	private List<NotationBody> notations = new ArrayList<>();
 	private NotationBody activeNotation;
 	private boolean spliced;
 	private String plainLeadToken = "p";
@@ -91,13 +92,11 @@ public class DefaultTouch implements Touch {
 
 		touchClone.title = this.title;
 		touchClone.author = this.author;
-		touchClone.notations = new TreeSet<>(NotationBody.BY_NAME);
 		touchClone.notations.addAll(this.notations);
 		touchClone.activeNotation = this.activeNotation;
 		touchClone.spliced = this.spliced;
 		touchClone.plainLeadToken = this.plainLeadToken;
 		touchClone.touchType = this.touchType;
-		touchClone.definitions = new TreeMap<>();
 		for (TouchDefinition definition : definitions.values()) {
 			touchClone.definitions.put(definition.getName(), definition.clone());
 		}
@@ -164,6 +163,18 @@ public class DefaultTouch implements Touch {
 				setTerminationSpecificRow(newTerminationRow);
 			}
 
+			if (!isSpliced() &&
+					activeNotation != null &&
+					activeNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
+				final List<NotationBody> filteredNotations = NotationBuilderHelper.filterNotations(notations, numberOfBells);
+				if (filteredNotations.size() > 0) {
+					activeNotation = filteredNotations.get(0);
+				}
+				else {
+					activeNotation = null;
+				}
+			}
+
 			// TODO validation of other items. e.g. methods Etc.
 			return builder.toString();
 		}
@@ -190,10 +201,10 @@ public class DefaultTouch implements Touch {
 	@Override
 	public void addNotation(NotationBody notationToAdd) {
 		checkNotNull(notationToAdd, "notation must not be null");
-		checkArgument(notationToAdd.getNumberOfWorkingBells().equals(numberOfBells), "notationToAdd [" + notationToAdd + "] must have the same number of bells as the touch [" +numberOfBells + "]");
+		//checkArgument(notationToAdd.getNumberOfWorkingBells().equals(numberOfBells), "notationToAdd [" + notationToAdd + "] must have the same number of bells as the touch [" +numberOfBells + "]");
 		// Check duplicate name
 		for (NotationBody existingNotation : notations) {
-			if (existingNotation.getName().equals(notationToAdd.getName())) {
+			if (existingNotation.getNameIncludingNumberOfBells().equals(notationToAdd.getNameIncludingNumberOfBells())) {
 				throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "] as it has a duplicate name to existing notation [" + existingNotation + "]");
 			}
 		}
@@ -226,25 +237,26 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public Set<NotationBody> getAllNotations() {
-		return Sets.<NotationBody>newHashSet(notations);
+	public List<NotationBody> getAllNotations() {
+		return Collections.unmodifiableList(notations);
 	}
 
 	@Override
-	public Set<NotationBody> getNotationsInUse() {
+	public List<NotationBody> getNotationsInUse() {
 		if (isSpliced()) {
-			return Sets.newHashSet(notations);
+			return Lists.newArrayList(NotationBuilderHelper.filterNotations(notations, numberOfBells));
 		}
 		else if (activeNotation != null) {
-			return Sets.<NotationBody>newHashSet(activeNotation);
+			return Lists.<NotationBody>newArrayList(activeNotation);
 		}
 		else {
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 	}
 
+
 	@Override
-	public NotationBody getActiveNotation() {
+	public NotationBody getSingleMethodActiveNotation() {
 		return activeNotation;
 	}
 

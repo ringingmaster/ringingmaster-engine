@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -75,17 +76,27 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	public Proof compile(boolean withAnalysis) {
 		log.info("{}> Start compiling [{}]", logPreamble, touch.getTitle());
 		long start = System.currentTimeMillis();
-		preCompile(touch);
-		buildCallLookupByName();
-		compileTouch();
-		if (withAnalysis) {
-			compileAnalysis();
+
+		final Optional<String> invalidTouch = checkInvalidTouch(touch);
+
+		if (invalidTouch.isPresent()) {
+			terminate(ProofTerminationReason.INVALID_TOUCH, invalidTouch.get());
 		}
-		proof = new DefaultProof(touch, method, terminationReason, analysis);
+		else {
+			preCompile(touch);
+			buildCallLookupByName();
+			compileTouch();
+			if (withAnalysis) {
+				compileAnalysis();
+			}
+		}
+		proof = new DefaultProof(touch, terminationReason, method, analysis);
 		long duration = System.currentTimeMillis() - start;
 		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), duration);
 		return proof;
 	}
+
+	protected abstract Optional<String> checkInvalidTouch(Touch touch);
 
 	protected abstract void preCompile(Touch touch);
 
@@ -105,7 +116,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 			advanceToNextCall();
 		}
 
-		MaskedNotation maskedNotation = new MaskedNotation(touch.getActiveNotation());
+		MaskedNotation maskedNotation = new MaskedNotation(touch.getSingleMethodActiveNotation());
 		MethodRow initialRow = MethodBuilder.buildRoundsRow(touch.getNumberOfBells());
 
 		final List<MethodLead> leads = new ArrayList<>();

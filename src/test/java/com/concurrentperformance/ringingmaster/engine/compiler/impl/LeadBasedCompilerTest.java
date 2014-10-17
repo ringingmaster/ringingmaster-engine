@@ -58,7 +58,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getMethod();
+		Method method = result.getCreatedMethod();
 
 		assertNotNull("Should return non null Method", method);
 		assertEquals("X should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
@@ -73,7 +73,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getMethod();
+		Method method = result.getCreatedMethod();
 
 		assertEquals("14 should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
 		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString());
@@ -90,7 +90,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getMethod();
+		Method method = result.getCreatedMethod();
 
 		assertArrayEquals(new int[]{1}, method.getLead(0).getLeadSeparatorPositions());
 	}
@@ -109,7 +109,7 @@ public class LeadBasedCompilerTest {
 
 			touch.setTerminationMaxLeads(i);
 			Proof result = new LeadBasedCompiler(touch).compile(false);
-			Method method = result.getMethod();
+			Method method = result.getCreatedMethod();
 
 			assertEquals(i, method.getLeadCount());
 			assertEquals(ProofTerminationReason.LEAD_COUNT, result.getTerminationReason());
@@ -130,7 +130,7 @@ public class LeadBasedCompilerTest {
 		for (int i=1; i< 200; i++) {
 			touch.setTerminationMaxRows(i);
 			Proof result = new LeadBasedCompiler(touch).compile(false);
-			Method method = result.getMethod();
+			Method method = result.getCreatedMethod();
 
 			assertEquals(i, method.getRowCount());
 			assertEquals(ProofTerminationReason.ROW_COUNT, result.getTerminationReason());
@@ -150,7 +150,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationSpecificRow(roundsRow);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getMethod();
+		Method method = result.getCreatedMethod();
 
 		assertEquals(roundsRow, method.getLastRow());
 	}
@@ -160,9 +160,9 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(buildPlainBobMinor());
 		Proof result = new LeadBasedCompiler(touch).compile(false);
 		assertEquals("Plain Course of Plain Bob Minor", result.getTouch().getTitle());
-		assertEquals(60, result.getMethod().getRowCount());
-		assertEquals(5, result.getMethod().getLeadCount());
-		checkAgainstFile(result.getMethod(), "PlainBobMinor.txt");
+		assertEquals(60, result.getCreatedMethod().getRowCount());
+		assertEquals(5, result.getCreatedMethod().getLeadCount());
+		checkAgainstFile(result.getCreatedMethod(), "PlainBobMinor.txt");
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -277,8 +277,8 @@ public class LeadBasedCompilerTest {
 	                                 ProofTerminationReason terminationReason, Touch touch) throws IOException {
 		Proof proof = new LeadBasedCompiler(touch).compile(true);
 		assertEquals(terminationReason, proof.getTerminationReason());
-		assertEquals(expectedLeadCount, proof.getMethod().getLeadCount());
-		checkAgainstFile(proof.getMethod(), fileName);
+		assertEquals(expectedLeadCount, proof.getCreatedMethod().getLeadCount());
+		checkAgainstFile(proof.getCreatedMethod(), fileName);
 		assertEquals(trueTouch, proof.getAnalysis().isTrueTouch());
 		return proof;
 	}
@@ -290,10 +290,10 @@ public class LeadBasedCompilerTest {
 			fileContent = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
 		}
 
-		Assert.assertEquals(convertToOsLineSeparators(fileContent), convertToOsLineSeparators(allChangesAsText));
+		Assert.assertEquals(convertToLineSeparators(fileContent), convertToLineSeparators(allChangesAsText));
 	}
 
-	private String convertToOsLineSeparators(String text) {
+	private String convertToLineSeparators(String text) {
 		text = text.replace("\r\n", System.lineSeparator());
 		text = text.replace("\r", System.lineSeparator());
 		text = text.replace("\n", System.lineSeparator());

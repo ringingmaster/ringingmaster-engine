@@ -1,14 +1,15 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 
 /**
  * TODO
@@ -32,7 +33,7 @@ public class NotationBuilderHelper {
 	                                                             final List<NotationRow> leadEndRows,
 	                                                             final boolean foldedPalindrome) {
 		// 1) Add the normal notation elements
-		final List<NotationRow> normalisedNotationRows = new ArrayList<NotationRow>(notationRows);
+		final List<NotationRow> normalisedNotationRows = new ArrayList(notationRows);
 
 		if (foldedPalindrome) {
 
@@ -115,6 +116,16 @@ public class NotationBuilderHelper {
 
 	private static boolean isEven(final int i) {
 		return (i % 2) == 0;
+	}
+
+	public static List<NotationBody> filterNotations(List<NotationBody> notations, NumberOfBells numberOfBells) {
+		List<NotationBody> filteredNotations = new ArrayList<>();
+		for (NotationBody notation : notations) {
+			if (notation.getNumberOfWorkingBells().getBellCount() <= numberOfBells.getBellCount()) {
+				filteredNotations.add(notation);
+			}
+		}
+		return filteredNotations;
 	}
 
 }

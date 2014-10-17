@@ -1,5 +1,12 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
+import com.concurrentperformance.ringingmaster.engine.method.Method;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 import net.jcip.annotations.NotThreadSafe;
 
 import java.util.ArrayList;
@@ -8,14 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
-import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
-import com.concurrentperformance.ringingmaster.engine.method.Method;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -66,6 +65,7 @@ public class NotationBuilder {
 		final List<NotationRow> notationElements = NotationBuilderHelper.getValidatedRowsFromShorthand(notationShorthand, numberOfWorkingBells);
 		final List<NotationRow> leadEndElements = NotationBuilderHelper.getValidatedRowsFromShorthand(leadEndShorthand, numberOfWorkingBells);
 		final List<NotationRow> normalisedNotationElements = NotationBuilderHelper.buildNormalisedNotationRows(notationElements, leadEndElements, foldedPalindrome);
+		checkState(normalisedNotationElements.size() > 0, "After validation, all [%s] notation elements were removed as invalid. [%s],[%s], [%s]", name, notationShorthand,leadEndShorthand, numberOfWorkingBells);
 		final Method plainCourse = buildPlainCourse(normalisedNotationElements);
 		final int changesCountInPlainLead = plainCourse.getLead(0).getRowCount() - 1; // minus 1 as first and last change are shared between leads.
 		final SortedSet<NotationCall> notationCalls = buildCalls(notationCallBuilders);

@@ -5,6 +5,7 @@ package com.concurrentperformance.ringingmaster.engine.proof;
  * User: Stephen
  */
 public enum ProofTerminationReason {
+	INVALID_TOUCH,
 	ROW_COUNT,
 	LEAD_COUNT,
 	SPECIFIED_ROW,
