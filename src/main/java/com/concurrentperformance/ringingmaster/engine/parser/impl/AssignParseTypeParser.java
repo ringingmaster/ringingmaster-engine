@@ -1,18 +1,21 @@
 package com.concurrentperformance.ringingmaster.engine.parser.impl;
 
+import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
+import com.concurrentperformance.ringingmaster.engine.parser.ParseType;
+import com.concurrentperformance.ringingmaster.engine.touch.Touch;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchCell;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchDefinition;
+import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
+import com.google.common.base.Strings;
+
 import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import com.concurrentperformance.ringingmaster.engine.touch.TouchCell;
-import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
-import com.concurrentperformance.ringingmaster.engine.touch.Touch;
-import com.concurrentperformance.ringingmaster.engine.touch.TouchDefinition;
-import com.concurrentperformance.ringingmaster.engine.parser.ParseType;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Parser to do the initial pass of identifying all the basic types.
@@ -44,12 +47,12 @@ public class AssignParseTypeParser {
 		if (touch.getTouchType() != TouchType.COURSE_BASED) {
 			return;
 		}
-		SortedMap<String, ParseType> parsings = new TreeMap<>(SORT_SIZE_THEN_NAME);
-		addCallingPositionTokens(touch, parsings);
-		addWhitespaceTokens(parsings);
+		SortedMap<String, ParseType> parseTokenMappings = new TreeMap<>(SORT_SIZE_THEN_NAME);
+		addCallingPositionTokens(touch, parseTokenMappings);
+		addWhitespaceTokens(parseTokenMappings);
 
 		for (TouchCell cell : touch.callPositionView()) {
-			parseCell(cell, parsings);
+			parseCell(cell, parseTokenMappings);
 		}
 	}
 
@@ -57,54 +60,56 @@ public class AssignParseTypeParser {
 		if (!touch.isSpliced()) {
 			return;
 		}
-		SortedMap<String, ParseType> parsings = new TreeMap<>(SORT_SIZE_THEN_NAME);
-		addSpliceTokens(touch, parsings);
-		addVarianceTokens(parsings);
-		addGroupTokens(parsings);
-		addDefinitionTokens(touch, parsings);
-		addWhitespaceTokens(parsings);
+		SortedMap<String, ParseType> parseTokenMappings = new TreeMap<>(SORT_SIZE_THEN_NAME);
+		addSpliceTokens(touch, parseTokenMappings);
+		addVarianceTokens(parseTokenMappings);
+		addGroupTokens(parseTokenMappings);
+		addDefinitionTokens(touch, parseTokenMappings);
+		addWhitespaceTokens(parseTokenMappings);
 
 		for (TouchCell cell : touch.spliceView()) {
-			parseCell(cell, parsings);
+			parseCell(cell, parseTokenMappings);
 		}
 	}
 
 	private void parseMainBodyArea(Touch touch) {
-		SortedMap<String, ParseType> parsings = new TreeMap<>(SORT_SIZE_THEN_NAME);
-		addCallTokens(touch, parsings);
-		addPlainLeadToken(touch, parsings);
-		addVarianceTokens(parsings);
-		addGroupTokens(parsings);
-		addDefinitionTokens(touch, parsings);
-		addWhitespaceTokens(parsings);
+		SortedMap<String, ParseType> parseTokenMappings = new TreeMap<>(SORT_SIZE_THEN_NAME);
+		addCallTokens(touch, parseTokenMappings);
+		addPlainLeadToken(touch, parseTokenMappings);
+		addVarianceTokens(parseTokenMappings);
+		addGroupTokens(parseTokenMappings);
+		addDefinitionTokens(touch, parseTokenMappings);
+		addWhitespaceTokens(parseTokenMappings);
 
 		for (TouchCell cell : touch.mainBodyView()) {
-			parseCell(cell, parsings);
+			parseCell(cell, parseTokenMappings);
 		}
 	}
 
 	private void parseDefinitions(Touch touch) {
-		SortedMap<String, ParseType> parsings = new TreeMap<>(SORT_SIZE_THEN_NAME);
-		addCallTokens(touch, parsings);
-		addPlainLeadToken(touch, parsings);
-//TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parsings);
-		addGroupTokens(parsings);
-//TODO should we allow embedded definitions in definitions?	probably, but will need some good tests. addDefinitionTokens(touch, parsings);
-		addWhitespaceTokens(parsings);
+		SortedMap<String, ParseType> parseTokenMappings = new TreeMap<>(SORT_SIZE_THEN_NAME);
+		addCallTokens(touch, parseTokenMappings);
+		addPlainLeadToken(touch, parseTokenMappings);
+//TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parseTokenMappings);
+		addGroupTokens(parseTokenMappings);
+//TODO should we allow embedded definitions in definitions?	probably, but will need some good tests. addDefinitionTokens(touch, parseTokenMappings);
+		addWhitespaceTokens(parseTokenMappings);
 		for (TouchDefinition definition : touch.getDefinitions()) {
-			parseCell(definition, parsings);
+			parseCell(definition, parseTokenMappings);
 		}
 
 	}
 
 
 
-	private void parseCell(TouchCell cell, SortedMap <String, ParseType> parsings) {
-		for (Map.Entry<String, ParseType> parseUnit : parsings.entrySet()) {
-			String cellAsString = cell.getAsStringWithParsedElementsAsWhitespace();
+	private void parseCell(TouchCell cell, SortedMap <String, ParseType> parseTokenMappings) {
+		for (Map.Entry<String, ParseType> parseToken : parseTokenMappings.entrySet()) {
+			String token = parseToken.getKey();
+			ParseType parseType = parseToken.getValue();
+			checkState(token.length() > 0, "Should never have an empty token. Mapped to [{}]", parseType);
+
 			int currentIndex = 0;
-			String token = parseUnit.getKey();
-			ParseType parseType = parseUnit.getValue();
+			String cellAsString = cell.getAsStringWithParsedElementsAsWhitespace();
 			while ((currentIndex = cellAsString.indexOf(token,currentIndex)) != -1) {
 				if (cell.isAllOfType(currentIndex, token.length(), ParseType.UNPARSED)) {
 					cell.createWord(currentIndex, token.length(), parseType);
@@ -142,7 +147,9 @@ public class AssignParseTypeParser {
 
 	private void addSpliceTokens(Touch touch, SortedMap<String, ParseType> parsings) {
 		for (NotationBody notation : touch.getNotationsInUse()) {
-			parsings.put(notation.getSpliceIdentifier(), ParseType.SPLICE);
+			if (!Strings.isNullOrEmpty(notation.getSpliceIdentifier())){
+				parsings.put(notation.getSpliceIdentifier(), ParseType.SPLICE);
+			}
 			parsings.put(notation.getName(), ParseType.SPLICE);
 			parsings.put(notation.getNameIncludingNumberOfBells(), ParseType.SPLICE);
 		}
