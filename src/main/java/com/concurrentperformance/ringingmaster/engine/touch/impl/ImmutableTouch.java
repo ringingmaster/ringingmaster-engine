@@ -81,6 +81,11 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public List<NotationBody> getValidNotations() {
+		return touch.getValidNotations();
+	}
+
+	@Override
 	public List<NotationBody> getNotationsInUse() {
 		return touch.getNotationsInUse();
 	}

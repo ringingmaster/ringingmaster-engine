@@ -242,16 +242,23 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
+	public List<NotationBody> getValidNotations() {
+		return NotationBuilderHelper.filterNotations(notations, numberOfBells);
+	}
+
+	@Override
 	public List<NotationBody> getNotationsInUse() {
 		if (isSpliced()) {
-			return Lists.newArrayList(NotationBuilderHelper.filterNotations(notations, numberOfBells));
-		}
-		else if (activeNotation != null) {
-			return Lists.<NotationBody>newArrayList(activeNotation);
+			return getValidNotations();
 		}
 		else {
-			return Collections.emptyList();
+			// Not Spliced
+			if (activeNotation != null) {
+				return Lists.<NotationBody>newArrayList(activeNotation);
+			}
 		}
+
+		return Collections.emptyList();
 	}
 
 

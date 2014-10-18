@@ -38,6 +38,7 @@ public interface Touch extends Cloneable {
 	void addNotation(NotationBody notationToAdd);
 	void removeNotation(NotationBody notationForRemoval);
 	List<NotationBody> getAllNotations();
+	List<NotationBody> getValidNotations();
 	List<NotationBody> getNotationsInUse();
 
 	void setActiveNotation(NotationBody activeNotation);
