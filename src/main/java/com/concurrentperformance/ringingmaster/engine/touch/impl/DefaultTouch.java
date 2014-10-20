@@ -136,6 +136,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void setTouchType(TouchType touchType) {
+		log.info("Set touch type [{}]", touchType.getName());
 		this.touchType = touchType;
 	}
 
