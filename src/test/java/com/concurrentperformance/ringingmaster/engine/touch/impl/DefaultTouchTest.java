@@ -120,6 +120,35 @@ public class DefaultTouchTest {
 	}
 
 	@Test
+	public void removingActiveNotationOnlyChoosesValidNotations() {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setNumberOfBells(NumberOfBells.BELLS_6);
+		touch.setSpliced(false);
+
+		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
+		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		NotationBody mockNotationBInvalid = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
+		when(mockNotationBInvalid.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_7);
+		NotationBody mockNotationC = when(mock(NotationBody.class).getName()).thenReturn("C").getMock();
+		when(mockNotationC.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		NotationBody mockNotationDInvalid = when(mock(NotationBody.class).getName()).thenReturn("D").getMock();
+		when(mockNotationDInvalid.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_7);
+
+		touch.addNotation(mockNotationA);
+		touch.addNotation(mockNotationBInvalid);
+		touch.addNotation(mockNotationC);
+		touch.addNotation(mockNotationDInvalid);
+
+		touch.setActiveNotation(mockNotationC);
+		assertEquals(mockNotationC, touch.getSingleMethodActiveNotation());
+
+		touch.removeNotation(mockNotationC);
+		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
+		touch.removeNotation(mockNotationA);
+		assertNull(touch.getSingleMethodActiveNotation());
+	}
+
+	@Test
 	public void settingSplicedClearsActiveNotation() {
 		DefaultTouch touch = new DefaultTouch();
 		touch.setSpliced(false);
@@ -152,6 +181,23 @@ public class DefaultTouchTest {
 		assertNull(touch.getSingleMethodActiveNotation());
 		touch.setSpliced(false);
 		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
+	}
+
+	@Test
+	public void settingActiveNotationUnsetsSpliced() {
+		DefaultTouch touch = new DefaultTouch();
+
+		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
+		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
+		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		touch.addNotation(mockNotationA);
+
+		touch.setSpliced(true);
+		assertEquals(true, touch.isSpliced());
+
+		touch.setActiveNotation(mockNotationA);
+		assertEquals(false, touch.isSpliced());
 	}
 
 	@Test

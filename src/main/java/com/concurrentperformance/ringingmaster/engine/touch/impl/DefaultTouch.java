@@ -54,7 +54,7 @@ public class DefaultTouch implements Touch {
 	private Bell callFromBell = numberOfBells.getTenor();
 	private List<NotationBody> notations = new ArrayList<>();
 	private NotationBody activeNotation;
-	private boolean spliced;
+	private boolean spliced; // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
 	private String plainLeadToken = "p";
 	private TouchType touchType = TouchType.COURSE_BASED;
 	private SortedMap<String, TouchDefinition> definitions = new TreeMap<>();
@@ -151,6 +151,8 @@ public class DefaultTouch implements Touch {
 		if (this.numberOfBells != numberOfBells) {
 			this.numberOfBells = numberOfBells;
 
+			log.info("Set number of bells [{}]", this.numberOfBells);
+
 			StringBuilder builder = new StringBuilder();
 			if (callFromBell.getZeroBasedBell() > numberOfBells.getTenor().getZeroBasedBell()) {
 				callFromBell = numberOfBells.getTenor();
@@ -169,9 +171,11 @@ public class DefaultTouch implements Touch {
 				final List<NotationBody> filteredNotations = NotationBuilderHelper.filterNotations(notations, numberOfBells);
 				if (filteredNotations.size() > 0) {
 					activeNotation = filteredNotations.get(0);
+					log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
 				}
 				else {
 					activeNotation = null;
+					log.info("Set active notation [null]");
 				}
 			}
 
@@ -204,15 +208,19 @@ public class DefaultTouch implements Touch {
 		//checkArgument(notationToAdd.getNumberOfWorkingBells().equals(numberOfBells), "notationToAdd [" + notationToAdd + "] must have the same number of bells as the touch [" +numberOfBells + "]");
 		// Check duplicate name
 		for (NotationBody existingNotation : notations) {
-			if (existingNotation.getNameIncludingNumberOfBells().equals(notationToAdd.getNameIncludingNumberOfBells())) {
+			if (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells() &&
+				existingNotation.getName().equals(notationToAdd.getName())) {
 				throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "] as it has a duplicate name to existing notation [" + existingNotation + "]");
 			}
 		}
 
+		log.info("Add notation [{}]", notationToAdd.getNameIncludingNumberOfBells());
 		notations.add(notationToAdd);
+		Collections.sort(notations, NotationBody.BY_NAME);
 
 		if (spliced == false && activeNotation == null) {
 			activeNotation = notationToAdd;
+			log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
 		}
 	}
 
@@ -220,18 +228,22 @@ public class DefaultTouch implements Touch {
 	public void removeNotation(NotationBody notationForRemoval) {
 		checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 		notations.remove(notationForRemoval);
+		log.info("Remove notation [{}]", notationForRemoval.getNameIncludingNumberOfBells());
 
 		// Sort out the next notation if it is the active notation
 		if (notationForRemoval.equals(activeNotation)) {
 			activeNotation = null;
-			for (NotationBody notation : notations) {
+			final List<NotationBody> validNotations = getValidNotations();
+			for (NotationBody notation : validNotations) {
 				if (notation.getName().compareTo(notationForRemoval.getName()) > 0) {
 					activeNotation = notation;
+					log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
 					break;
 				}
 			}
-			if (activeNotation == null && notations.size() > 0) {
-				activeNotation = notations.iterator().next();
+			if (activeNotation == null && validNotations.size() > 0) {
+				activeNotation = validNotations.iterator().next();
+				log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
 			}
 		}
 	}
@@ -299,7 +311,13 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void setActiveNotation(NotationBody activeNotation) {
-		this.activeNotation = activeNotation;
+		this.activeNotation = checkNotNull(activeNotation);
+		log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
+
+		if (spliced == true) {
+			spliced = false;
+			log.info("Set spliced [{}]", this.spliced);
+		}
 	}
 
 	@Override
@@ -313,11 +331,19 @@ public class DefaultTouch implements Touch {
 			return;
 		}
 		this.spliced = spliced;
+		log.info("Set spliced [{}]", this.spliced);
+
 		if (spliced) {
+			log.info("Set active notation [null]");
 			activeNotation = null;
 		}
-		else if (notations.size() > 0){
-			activeNotation = notations.iterator().next();
+		else {
+			final List<NotationBody> validNotations = getValidNotations();
+
+			if (validNotations.size() > 0){
+				activeNotation = validNotations.iterator().next();
+				log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
+			}
 		}
 	}
 
