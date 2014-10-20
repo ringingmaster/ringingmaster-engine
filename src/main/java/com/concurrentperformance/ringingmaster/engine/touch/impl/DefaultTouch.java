@@ -383,6 +383,7 @@ public class DefaultTouch implements Touch {
 	@Override
 	public void setPlainLeadToken(String plainLeadToken) {
 		this.plainLeadToken = plainLeadToken;
+		log.info("Set plain lead token [{}]", this.plainLeadToken);
 	}
 
 	@Override
