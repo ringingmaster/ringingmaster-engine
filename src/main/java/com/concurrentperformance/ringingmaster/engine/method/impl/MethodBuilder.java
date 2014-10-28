@@ -9,9 +9,12 @@ import com.concurrentperformance.ringingmaster.engine.method.RowCourseType;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 public class MethodBuilder {
 
@@ -29,7 +32,7 @@ public class MethodBuilder {
 	 * @return
 	 */
 	public static MethodRow buildRoundsRow(final NumberOfBells numberOfBells) {
-		checkNotNull(numberOfBells, "numberOfBells cant be null");
+		checkNotNull(numberOfBells, "numberOfBells can't be null");
 
 		final Bell[] bells = new Bell[numberOfBells.getBellCount()];
 		for (int i=0;i<numberOfBells.getBellCount();i++) {
@@ -41,6 +44,31 @@ public class MethodBuilder {
 		final MethodRow row = new DefaultMethodRow(numberOfBells, bells, 0, Stroke.HANDSTROKE, courseType);
 		return row;
 	}
+
+	public static MethodRow parse(final NumberOfBells numberOfBells, final String s) {
+		return  parse(numberOfBells, s, 0, Stroke.HANDSTROKE);
+	}
+
+	public static MethodRow parse(final NumberOfBells numberOfBells, final String s, int rowNumber, Stroke stroke) {
+		checkNotNull(numberOfBells, "numberOfBells can't be null");
+		checkNotNull(s, "parse string can't be null");
+		checkState(numberOfBells.getBellCount() == s.length(), "You must enter a [%s] character sequence", numberOfBells.getBellCount());
+
+		final Bell[] bells = new Bell[numberOfBells.getBellCount()];
+		final Set<Bell> duplicateCheck = new HashSet<>();
+
+		for (int i=0;i<numberOfBells.getBellCount();i++) {
+			final String character = String.valueOf(s.charAt(i));
+			Bell bell = Bell.valueOfMnemonic(character);
+			checkState(bell != null, "Character [%s] is invalid.", character);
+			checkState(bell.getZeroBasedBell() < numberOfBells.getBellCount(), "Character [%s] is invalid for [%s] bell row.", character, numberOfBells.getBellCount());
+			checkState(duplicateCheck.add(bell), "Character [%s] appears more than once.", character);
+			bells[i] = bell;
+		}
+
+		return new DefaultMethodRow(numberOfBells, bells, rowNumber, stroke, RowCourseType.calculateRowCourseType(bells));
+	}
+
 
 	public static MethodRow transformToNewNumberOfBells(MethodRow original, NumberOfBells newNumberOfBells) {
 		checkNotNull(original);

@@ -1,5 +1,10 @@
 package com.concurrentperformance.ringingmaster.engine.method.impl;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.method.Bell;
+import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
+import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.util.conversion.ConvertionUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.jcip.annotations.Immutable;
@@ -7,12 +12,6 @@ import net.jcip.annotations.Immutable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
-import com.concurrentperformance.ringingmaster.engine.method.Bell;
-import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
-import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
-import com.concurrentperformance.util.conversion.ConvertionUtil;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -153,7 +152,7 @@ public class DefaultMethodLead implements MethodLead {
 	public String getAllChangesAsText() {
 		StringBuilder buff = new StringBuilder();
 		for (MethodRow row : rows) {
-			buff.append(row.getDisplayString()).append(System.lineSeparator());
+			buff.append(row.getDisplayString(false)).append(System.lineSeparator());
 		}
 		return buff.toString();
 	}
@@ -165,7 +164,7 @@ public class DefaultMethodLead implements MethodLead {
 		buff.append("DefaultMethodLead [\r\n");
 
 		for (final MethodRow row : rows) {
-			buff.append(row.getDisplayString());
+			buff.append(row.getDisplayString(false));
 			buff.append("\r\n");
 		}
 		buff.append("]");

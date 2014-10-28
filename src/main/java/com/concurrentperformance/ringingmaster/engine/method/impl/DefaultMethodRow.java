@@ -1,15 +1,14 @@
 package com.concurrentperformance.ringingmaster.engine.method.impl;
 
-import net.jcip.annotations.Immutable;
-
-import java.util.Arrays;
-import java.util.Iterator;
-
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.RowCourseType;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
+import net.jcip.annotations.Immutable;
+
+import java.util.Arrays;
+import java.util.Iterator;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -23,6 +22,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 @Immutable
 public class DefaultMethodRow implements MethodRow {
 
+	
 	private final NumberOfBells numberOfBells;
 	private final Bell[] bells;
 	private final int rowNumber;
@@ -95,7 +95,13 @@ public class DefaultMethodRow implements MethodRow {
 	}
 
 	@Override
-	public String getDisplayString() {
+	public String getDisplayString(boolean useRoundsWord) {
+		if (useRoundsWord) {
+			if (isRounds()) {
+				return ROUNDS_TOKEN;
+			}
+		}
+
 		final StringBuilder buff = new StringBuilder(bells.length);
 		for (final Bell bell: bells) {
 			buff.append(bell.getMnemonic());
@@ -115,6 +121,16 @@ public class DefaultMethodRow implements MethodRow {
 
 	public RowCourseType getRowCourseType() {
 		return rowCourseType;
+	}
+
+	@Override
+	public boolean isRounds() {
+		for (int i=0;i<numberOfBells.getBellCount();i++) {
+			if (bells[i].getZeroBasedBell() != i) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -162,6 +178,6 @@ public class DefaultMethodRow implements MethodRow {
 
 	@Override
 	public String toString() {
-		return "[" + getDisplayString() + "(" + numberOfBells.getBellCount() + ")," + getRowNumber() + "]";
+		return "[" + getDisplayString(false) + "(" + numberOfBells.getBellCount() + ")," + getRowNumber() + "]";
 	}
 }

@@ -116,8 +116,10 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 			advanceToNextCall();
 		}
 
+		checkState(touch.getInitialRow().getNumberOfBells() == touch.getNumberOfBells());
+		MethodRow initialRow = touch.getInitialRow();
+
 		MaskedNotation maskedNotation = new MaskedNotation(touch.getSingleMethodActiveNotation());
-		MethodRow initialRow = MethodBuilder.buildRoundsRow(touch.getNumberOfBells());
 
 		final List<MethodLead> leads = new ArrayList<>();
 		while(!isTerminated()) {

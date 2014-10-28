@@ -1,18 +1,17 @@
 package com.concurrentperformance.ringingmaster.engine.method.impl;
 
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.RowCourseType;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -46,7 +45,7 @@ public class DefaultMethodLeadTest {
 
 		final MethodLead lead = new DefaultMethodLead(NumberOfBells.BELLS_4, rows, empty);
 
-		assertEquals("1234", lead.getLastRow().getDisplayString());
+		assertEquals("1234", lead.getLastRow().getDisplayString(false));
 
 	}
 
@@ -59,7 +58,7 @@ public class DefaultMethodLeadTest {
 	public void cantConstructLeadWithEmptyRows() {
 		final MethodLead lead = new DefaultMethodLead(NumberOfBells.BELLS_8, new ArrayList<MethodRow>(), empty);
 
-		assertNull(lead.getLastRow().getDisplayString());
+		assertNull(lead.getLastRow().getDisplayString(false));
 	}
 
 	private List<Integer> buildIntegerList(final Integer... integers) {

@@ -105,6 +105,9 @@ public interface Touch extends Cloneable {
 	void incrementColumnCount();
 	void incrementRowCount();
 
+	MethodRow getInitialRow();
+	void setInitialRow(MethodRow initialRow);
+
 	Optional<Integer> getTerminationMaxLeads();
 	void setTerminationMaxLeads(int terminationMaxLeads);
 	void removeTerminationMaxLeads();
@@ -121,4 +124,5 @@ public interface Touch extends Cloneable {
 	 * @return true if changes were made
 	 */
 	boolean collapseEmptyRowsAndColumns();
+
 }

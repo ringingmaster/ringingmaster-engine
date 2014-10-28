@@ -9,6 +9,7 @@ import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 
 import static com.concurrentperformance.ringingmaster.engine.NumberOfBells.BELLS_10;
+import static com.concurrentperformance.ringingmaster.engine.NumberOfBells.BELLS_12;
 import static com.concurrentperformance.ringingmaster.engine.NumberOfBells.BELLS_6;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,7 +24,7 @@ public class MethodBuilderTest {
 	}
 
 	private void checkRow(String sequence, MethodRow row) {
-		String rowAsString = row.getDisplayString();
+		String rowAsString = row.getDisplayString(false);
         assertEquals("row should equal sequence", sequence, rowAsString);
 	}
 
@@ -38,28 +39,60 @@ public class MethodBuilderTest {
 	public void transformingRoundsRowWithHigherNumberOfBellsExtendsOriginal() {
 		final MethodRow roundsOnSix = MethodBuilder.buildRoundsRow(BELLS_6);
 		final MethodRow transformedRow = MethodBuilder.transformToNewNumberOfBells(roundsOnSix, NumberOfBells.BELLS_8);
-		assertEquals("12345678", transformedRow.getDisplayString());
+		assertEquals("12345678", transformedRow.getDisplayString(false));
 	}
 
 	@Test
 	public void transformingNonRoundsRowWithHigherNumberOfBellsExtendsOriginal() {
 		final MethodRow changeOnSix = buildRow(BELLS_6, Bell.BELL_6, Bell.BELL_4, Bell.BELL_2, Bell.BELL_1, Bell.BELL_3, Bell.BELL_5);
 		final MethodRow transformedRow = MethodBuilder.transformToNewNumberOfBells(changeOnSix, NumberOfBells.BELLS_8);
-		assertEquals("64213578", transformedRow.getDisplayString());
+		assertEquals("64213578", transformedRow.getDisplayString(false));
 	}
 
 	@Test
 	public void transformingRoundsRowWithLowerNumberOfBellsReducesOriginal() {
 		final MethodRow roundsOnSix = MethodBuilder.buildRoundsRow(BELLS_10);
 		final MethodRow transformedRow = MethodBuilder.transformToNewNumberOfBells(roundsOnSix, NumberOfBells.BELLS_6);
-		assertEquals("123456", transformedRow.getDisplayString());
+		assertEquals("123456", transformedRow.getDisplayString(false));
 	}
 
 	@Test
 	public void transformingNonRoundsRowWithLowerNumberOfBellsExtendsOriginal() {
 		final MethodRow changeOnSix = buildRow(BELLS_6, Bell.BELL_6, Bell.BELL_4, Bell.BELL_2, Bell.BELL_1, Bell.BELL_3, Bell.BELL_5);
 		final MethodRow transformedRow = MethodBuilder.transformToNewNumberOfBells(changeOnSix, NumberOfBells.BELLS_4);
-		assertEquals("4213", transformedRow.getDisplayString());
+		assertEquals("4213", transformedRow.getDisplayString(false));
+	}
+
+	@Test
+	public void canParseRoundsRow() {
+		final String parseString = "1234567890ET";
+		final MethodRow parsedRow = MethodBuilder.parse(BELLS_12, parseString);
+		assertEquals(parseString, parsedRow.getDisplayString(false));
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void parsingRowWithBellMnemonicGreaterThanNumberOfBellsThrows() {
+		final String parseString = "123457";
+		MethodBuilder.parse(BELLS_6, parseString);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void parsingRowWithUnknownBellMnemonicThrows() {
+		final String parseString = "12345Z";
+		MethodBuilder.parse(BELLS_6, parseString);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void parsingRowWithDuplicateBellMnemonicThrows() {
+		final String parseString = "123451";
+		MethodBuilder.parse(BELLS_6, parseString);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void parsingWrongNumberOfBellsThrows() {
+		final String parseString = "123456";
+		final MethodRow parsedRow = MethodBuilder.parse(BELLS_12, parseString);
+		assertEquals(parseString, parsedRow.getDisplayString(false));
 	}
 
 	private MethodRow buildRow(final NumberOfBells numberOfBells, final Bell... bells) {

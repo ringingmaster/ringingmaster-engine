@@ -62,8 +62,8 @@ public class LeadBasedCompilerTest {
 
 		assertNotNull("Should return non null Method", method);
 		assertEquals("X should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
-		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString());
-		assertEquals("Row 1 should be all change", "21436587", method.getLead(0).getRow(1).getDisplayString());
+		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
+		assertEquals("Row 1 should be all change", "21436587", method.getLead(0).getRow(1).getDisplayString(false));
 	}
 
 	@Test
@@ -76,8 +76,8 @@ public class LeadBasedCompilerTest {
 		Method method = result.getCreatedMethod();
 
 		assertEquals("14 should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
-		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString());
-		assertEquals("Row 1 should have place 1 & 4 made", "13246587", method.getLead(0).getRow(1).getDisplayString());
+		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
+		assertEquals("Row 1 should have place 1 & 4 made", "13246587", method.getLead(0).getRow(1).getDisplayString(false));
 	}
 
 	@Ignore

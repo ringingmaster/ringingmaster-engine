@@ -15,6 +15,8 @@ import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 @Immutable
 public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 
+	public static final String ROUNDS_TOKEN = "Rounds";
+
 	/**
 	 * Get the number of bells in this row, including any covers.
 	 * 
@@ -60,10 +62,16 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 
 
 	/**
-	 * Get the row as a display string. i.e. rounds on 12 would return '1234567890ET'
+	 * @return Return true if this row represents rounds for the specified number.
+	 */
+	public boolean isRounds();
+
+	/**
+	 * Get the row as a display string. i.e. rounds on 12 would return '1234567890ET',
+	 * unless the param useRoundsWord is set to true, then the word 'Rounds' will be returned.
 	 * 
 	 * @return String
 	 */
-	public String getDisplayString();
+	public String getDisplayString(boolean useRoundsWord);
 
 }

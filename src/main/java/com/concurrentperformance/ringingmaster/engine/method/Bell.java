@@ -1,5 +1,8 @@
 package com.concurrentperformance.ringingmaster.engine.method; //TODO where should this live?
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -21,6 +24,14 @@ public enum Bell {
 	BELL_10("0"),
 	BELL_11("E"),
 	BELL_12("T");
+
+	private static final Map<String, Bell> mnemonicLookup = new ConcurrentHashMap<>();
+
+	static {
+		for (Bell bell : Bell.values()) {
+			mnemonicLookup.put(bell.getMnemonic(), bell);
+		}
+	}
 
 	private final String mnemonic;
 
@@ -44,4 +55,9 @@ public enum Bell {
 	public static Bell valueOf(final int bellNumber) {
 		return values()[bellNumber];
 	}
+
+	public static Bell valueOfMnemonic(final String mnemonic) {
+		return mnemonicLookup.get(mnemonic);
+	}
+
 }

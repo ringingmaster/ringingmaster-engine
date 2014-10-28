@@ -355,10 +355,23 @@ public class DefaultTouchTest {
 		assertEquals("Plain Bob Minor", touch.getSingleMethodActiveNotation().getNameIncludingNumberOfBells());
 	}
 
+	@Test(expected = IllegalStateException.class)
+	public void cantSetInitialRowOfWrongNumber() {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setNumberOfBells(NumberOfBells.BELLS_6);
+		touch.setInitialRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_7));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void cantSetNullInitialRow() {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setInitialRow(null);
+	}
 
 	@Test
 	public void cloneTest() throws CloneNotSupportedException {
 		DefaultTouch touch = new DefaultTouch();
+		touch.setNumberOfBells(NumberOfBells.BELLS_8);
 		touch.setColumnCount(2);
 		touch.setRowCount(3);
 		touch.setTitle("title");
@@ -373,7 +386,7 @@ public class DefaultTouchTest {
 		touch.setSpliced(true);
 		touch.setTerminationMaxLeads(10);
 		touch.setTerminationMaxRows(100);
-		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_8));
 		new DefaultParser().parseAndAnnotate(touch);
 
 		Touch clone = touch.clone();

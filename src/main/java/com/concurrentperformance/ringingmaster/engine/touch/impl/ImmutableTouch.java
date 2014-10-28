@@ -211,6 +211,16 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public MethodRow getInitialRow() {
+		return touch.getInitialRow();
+	}
+
+	@Override
+	public void setInitialRow(MethodRow initialRow) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
 	public void setRowCount(int rowCount) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}

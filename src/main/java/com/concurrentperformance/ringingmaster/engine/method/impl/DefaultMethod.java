@@ -1,15 +1,14 @@
 package com.concurrentperformance.ringingmaster.engine.method.impl;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.method.Method;
+import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
+import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.google.common.collect.Iterators;
 import net.jcip.annotations.Immutable;
 
 import java.util.Iterator;
 import java.util.List;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
-import com.concurrentperformance.ringingmaster.engine.method.Method;
-import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
-import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 
 import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -103,7 +102,7 @@ public class DefaultMethod implements Method {
 	public String getAllChangesAsText() {
 		StringBuilder buff = new StringBuilder();
 		for (int rowIndex = 0;rowIndex<rows.length;rowIndex++) {
-			buff.append(rows[rowIndex].getDisplayString());
+			buff.append(rows[rowIndex].getDisplayString(false));
 			if (rowIndex < rows.length-1) {
 				buff.append(System.lineSeparator());
 			}

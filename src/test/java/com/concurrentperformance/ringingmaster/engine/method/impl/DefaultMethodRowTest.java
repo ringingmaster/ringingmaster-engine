@@ -8,7 +8,11 @@ import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.RowCourseType;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 
+import static com.concurrentperformance.ringingmaster.engine.NumberOfBells.BELLS_10;
+import static com.concurrentperformance.ringingmaster.engine.NumberOfBells.BELLS_4;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultMethodRowTest {
 
@@ -47,6 +51,18 @@ public class DefaultMethodRowTest {
 		MethodRow row2= buildRow(NumberOfBells.BELLS_3, Bell.BELL_1, Bell.BELL_3, Bell.BELL_2);
 		int compare = row1.compareTo(row2);
 		assert(compare < 0);
+	}
+
+	@Test
+	public void isRoundsReturnsTrueWhenRounds() {
+		final MethodRow roundsOnSix = MethodBuilder.buildRoundsRow(BELLS_10);
+		assertTrue(roundsOnSix.isRounds());
+	}
+
+	@Test
+	public void isRoundsReturnsFalseForRoundsNearMiss() {
+		final MethodRow roundsOnSix = buildRow(BELLS_4, Bell.BELL_1, Bell.BELL_2, Bell.BELL_4, Bell.BELL_3);
+		assertFalse(roundsOnSix.isRounds());
 	}
 
 	private MethodRow buildRow(final NumberOfBells numberOfBells, final Bell... bells) {
