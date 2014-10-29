@@ -359,13 +359,13 @@ public class DefaultTouchTest {
 	public void cantSetInitialRowOfWrongNumber() {
 		DefaultTouch touch = new DefaultTouch();
 		touch.setNumberOfBells(NumberOfBells.BELLS_6);
-		touch.setInitialRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_7));
+		touch.setStartChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_7));
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void cantSetNullInitialRow() {
 		DefaultTouch touch = new DefaultTouch();
-		touch.setInitialRow(null);
+		touch.setStartChange(null);
 	}
 
 	@Test

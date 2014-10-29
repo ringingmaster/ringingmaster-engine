@@ -211,12 +211,22 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public MethodRow getInitialRow() {
-		return touch.getInitialRow();
+	public MethodRow getStartChange() {
+		return touch.getStartChange();
 	}
 
 	@Override
-	public void setInitialRow(MethodRow initialRow) {
+	public void setStartChange(MethodRow initialRow) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
+	public int getStartAtRow() {
+		return touch.getStartAtRow();
+	}
+
+	@Override
+	public void setStartAtRow(int startAtRow) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

@@ -59,7 +59,8 @@ public class DefaultTouch implements Touch {
 	private TouchType touchType = TouchType.COURSE_BASED;
 	private SortedMap<String, TouchDefinition> definitions = new TreeMap<>();
 
-	private MethodRow initialRow;
+	private MethodRow startChange;
+	private int startAtRow;
 
 	private Optional<Integer> terminationMaxLeads = Optional.absent();
 	private Optional<Integer> terminationMaxRows = Optional.absent();
@@ -75,7 +76,7 @@ public class DefaultTouch implements Touch {
 	DefaultTouch() {
 		this.cells = new DefaultGrid<>(FACTORY, 1, 1);
 		terminationMaxRows = Optional.of(SAFETY_VALVE_MAX_ROWS);
-		initialRow = MethodBuilder.buildRoundsRow(numberOfBells);
+		startChange = MethodBuilder.buildRoundsRow(numberOfBells);
 	}
 
 	@Override
@@ -104,7 +105,7 @@ public class DefaultTouch implements Touch {
 			touchClone.definitions.put(definition.getName(), definition.clone());
 		}
 
-		touchClone.initialRow = getInitialRow();
+		touchClone.startChange = this.startChange;
 
 		if(terminationMaxRows.isPresent()) {
 			touchClone.setTerminationMaxRows(terminationMaxRows.get());
@@ -164,9 +165,9 @@ public class DefaultTouch implements Touch {
 				callFromBell = numberOfBells.getTenor();
 			}
 
-			final MethodRow existingInitialRow = getInitialRow();
-			final MethodRow newInitialRow = MethodBuilder.transformToNewNumberOfBells(existingInitialRow, numberOfBells);
-			setInitialRow(newInitialRow);
+			final MethodRow existingStartChange = getStartChange();
+			final MethodRow newStartChange = MethodBuilder.transformToNewNumberOfBells(existingStartChange, numberOfBells);
+			setStartChange(newStartChange);
 
 			if (terminationSpecificRow.isPresent()) {
 
@@ -475,16 +476,27 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public MethodRow getInitialRow() {
-		return initialRow;
+	public MethodRow getStartChange() {
+		return startChange;
 	}
 
 	@Override
-	public void setInitialRow(MethodRow initialRow) {
-		checkNotNull(initialRow);
-		checkState(initialRow.getNumberOfBells() == numberOfBells);
-		this.initialRow = initialRow;
-		log.info("Set initial row to [{}]", initialRow);
+	public void setStartChange(MethodRow startChange) {
+		checkNotNull(startChange);
+		checkState(startChange.getNumberOfBells() == numberOfBells);
+		this.startChange = startChange;
+		log.info("Set initial row to [{}]", startChange);
+	}
+
+	@Override
+	public int getStartAtRow() {
+		return startAtRow;
+	}
+
+	@Override
+	public void setStartAtRow(int startAtRow) {
+		this.startAtRow = startAtRow;
+		log.info("Set start at row to [{}]", startAtRow);
 	}
 
 	@Override
@@ -585,7 +597,8 @@ public class DefaultTouch implements Touch {
 				", plainLeadToken='" + plainLeadToken + '\'' +
 				", touchType=" + touchType +
 				", definitions=" + definitions +
-				", initialRow=" + initialRow +
+				", startChange=" + startChange +
+				", startAtRow=" + startAtRow +
 				", terminationMaxLeads=" + terminationMaxLeads +
 				", terminationMaxRows=" + terminationMaxRows +
 				", terminationSpecificRow=" + terminationSpecificRow +
