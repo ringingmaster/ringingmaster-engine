@@ -55,6 +55,12 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 	public Stroke getStroke();
 
 	/**
+	 * Set the Stroke. As this class is immutable, it returns a new instance
+	 * @param stroke
+	 */
+	public MethodRow setStroke(Stroke stroke);
+
+	/**
 	 * Get the row course type.
 	 * @return RowCourseType row course type.
 	 */

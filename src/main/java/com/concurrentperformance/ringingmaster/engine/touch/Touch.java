@@ -3,6 +3,7 @@ package com.concurrentperformance.ringingmaster.engine.touch;
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.google.common.base.Optional;
 import net.jcip.annotations.NotThreadSafe;
@@ -110,6 +111,9 @@ public interface Touch extends Cloneable {
 
 	int getStartAtRow();
 	void setStartAtRow(int startAtRow);
+
+	void setStartStroke(Stroke startStroke);
+	Stroke getStartStroke();
 
 	Optional<Integer> getTerminationMaxLeads();
 	void setTerminationMaxLeads(int terminationMaxLeads);

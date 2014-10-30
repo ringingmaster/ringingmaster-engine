@@ -3,6 +3,7 @@ package com.concurrentperformance.ringingmaster.engine.touch.impl;
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.touch.Grid;
 import com.concurrentperformance.ringingmaster.engine.touch.Touch;
@@ -227,6 +228,16 @@ public class ImmutableTouch implements Touch {
 
 	@Override
 	public void setStartAtRow(int startAtRow) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
+	public Stroke getStartStroke() {
+		return touch.getStartStroke();
+	}
+
+	@Override
+	public void setStartStroke(Stroke startStroke) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

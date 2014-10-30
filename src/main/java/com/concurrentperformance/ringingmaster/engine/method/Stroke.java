@@ -5,11 +5,21 @@ package com.concurrentperformance.ringingmaster.engine.method;
  * User: Stephen
  */
 public enum Stroke {
-	HANDSTROKE,
-	BACKSTROKE,
+	HANDSTROKE("Handstroke"),
+	BACKSTROKE("Backstroke"),
 	;
 
 	public static Stroke flipStroke(Stroke stroke) {
 		return (stroke == HANDSTROKE)?BACKSTROKE:HANDSTROKE;
+	}
+
+	private String displayString;
+
+	Stroke(String displayString) {
+		this.displayString = displayString;
+	}
+
+	public String getDisplayString() {
+		return displayString;
 	}
 }

@@ -119,6 +119,12 @@ public class DefaultMethodRow implements MethodRow {
 		return stroke;
 	}
 
+	@Override
+	public MethodRow setStroke(Stroke stroke) {
+		return new DefaultMethodRow(numberOfBells, bells, rowNumber, stroke, rowCourseType);
+	}
+
+
 	public RowCourseType getRowCourseType() {
 		return rowCourseType;
 	}

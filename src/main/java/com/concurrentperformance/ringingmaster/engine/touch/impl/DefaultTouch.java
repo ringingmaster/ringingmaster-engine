@@ -3,6 +3,7 @@ package com.concurrentperformance.ringingmaster.engine.touch.impl;
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilderHelper;
@@ -55,12 +56,13 @@ public class DefaultTouch implements Touch {
 	private List<NotationBody> notations = new ArrayList<>();
 	private NotationBody activeNotation;
 	private boolean spliced; // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
-	private String plainLeadToken = "p";
+	private String plainLeadToken;
 	private TouchType touchType = TouchType.COURSE_BASED;
 	private SortedMap<String, TouchDefinition> definitions = new TreeMap<>();
 
 	private MethodRow startChange;
 	private int startAtRow;
+	private Stroke startStroke;
 
 	private Optional<Integer> terminationMaxLeads = Optional.absent();
 	private Optional<Integer> terminationMaxRows = Optional.absent();
@@ -75,8 +77,11 @@ public class DefaultTouch implements Touch {
 
 	DefaultTouch() {
 		this.cells = new DefaultGrid<>(FACTORY, 1, 1);
+		plainLeadToken = "p";
 		terminationMaxRows = Optional.of(SAFETY_VALVE_MAX_ROWS);
 		startChange = MethodBuilder.buildRoundsRow(numberOfBells);
+		startAtRow = 0;
+		startStroke = Stroke.BACKSTROKE;
 	}
 
 	@Override
@@ -106,6 +111,8 @@ public class DefaultTouch implements Touch {
 		}
 
 		touchClone.startChange = this.startChange;
+		touchClone.startAtRow = this.startAtRow;
+		touchClone.startStroke = this.startStroke;
 
 		if(terminationMaxRows.isPresent()) {
 			touchClone.setTerminationMaxRows(terminationMaxRows.get());
@@ -495,8 +502,20 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void setStartAtRow(int startAtRow) {
+		checkState(startAtRow >= 0);
 		this.startAtRow = startAtRow;
 		log.info("Set start at row to [{}]", startAtRow);
+	}
+
+	@Override
+	public void setStartStroke(Stroke startStroke) {
+		this.startStroke = startStroke;
+		log.info("Set start stroke to [{}]", startStroke);
+	}
+
+	@Override
+	public Stroke getStartStroke() {
+		return this.startStroke;
 	}
 
 	@Override
@@ -599,6 +618,7 @@ public class DefaultTouch implements Touch {
 				", definitions=" + definitions +
 				", startChange=" + startChange +
 				", startAtRow=" + startAtRow +
+				", startStroke=" + startStroke +
 				", terminationMaxLeads=" + terminationMaxLeads +
 				", terminationMaxRows=" + terminationMaxRows +
 				", terminationSpecificRow=" + terminationSpecificRow +

@@ -6,6 +6,7 @@ import com.concurrentperformance.ringingmaster.engine.compiler.Compiler;
 import com.concurrentperformance.ringingmaster.engine.method.Method;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
@@ -116,8 +117,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 			advanceToNextCall();
 		}
 
-		MethodRow startChange = touch.getStartChange();
-		checkState(startChange.getNumberOfBells() == touch.getNumberOfBells());
+		MethodRow startChange = createStartChange();
 
 		MaskedNotation maskedNotation = new MaskedNotation(touch.getSingleMethodActiveNotation());
 
@@ -131,6 +131,16 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		}
 		method = MethodBuilder.buildMethod(touch.getNumberOfBells(), leads);
 		log.info("{} < create touch", logPreamble);
+	}
+
+	private MethodRow createStartChange() {
+		MethodRow startChange = touch.getStartChange();
+		checkState(startChange.getNumberOfBells() == touch.getNumberOfBells());
+		Stroke startStroke = touch.getStartStroke();
+
+		startChange = startChange.setStroke(startStroke);
+
+		return startChange;
 	}
 
 	/**
