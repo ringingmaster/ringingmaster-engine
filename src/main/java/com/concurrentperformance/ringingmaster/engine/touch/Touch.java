@@ -115,6 +115,10 @@ public interface Touch extends Cloneable {
 	void setStartStroke(Stroke startStroke);
 	Stroke getStartStroke();
 
+	Optional<NotationBody> getStartNotation();
+	void setStartNotation(NotationBody startNotation);
+	void removeStartNotation();
+
 	Optional<Integer> getTerminationMaxLeads();
 	void setTerminationMaxLeads(int terminationMaxLeads);
 	void removeTerminationMaxLeads();

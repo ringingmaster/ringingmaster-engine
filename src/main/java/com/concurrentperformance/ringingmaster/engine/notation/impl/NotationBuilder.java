@@ -8,8 +8,11 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 import net.jcip.annotations.NotThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,8 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @NotThreadSafe
 public class NotationBuilder {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private String name = "Unknown";
 	private NumberOfBells numberOfWorkingBells = NumberOfBells.BELLS_8;
@@ -65,7 +70,20 @@ public class NotationBuilder {
 		final List<NotationRow> notationElements = NotationBuilderHelper.getValidatedRowsFromShorthand(notationShorthand, numberOfWorkingBells);
 		final List<NotationRow> leadEndElements = NotationBuilderHelper.getValidatedRowsFromShorthand(leadEndShorthand, numberOfWorkingBells);
 		final List<NotationRow> normalisedNotationElements = NotationBuilderHelper.buildNormalisedNotationRows(notationElements, leadEndElements, foldedPalindrome);
-		checkState(normalisedNotationElements.size() > 0, "After validation, all [%s] notation elements were removed as invalid. [%s],[%s], [%s]", name, notationShorthand,leadEndShorthand, numberOfWorkingBells);
+		if (normalisedNotationElements.size() == 0) {
+			log.info("After validation, all [{}] notation elements were removed as invalid. Returning empty NotationBody. [{}],[{}], [{}]", name, notationShorthand,leadEndShorthand, numberOfWorkingBells);
+			return new DefaultNotationBody(name,
+					numberOfWorkingBells,
+					normalisedNotationElements,
+					notationElements,
+					foldedPalindrome,
+					Collections.emptyList(),
+					Collections.emptySet(),
+					null,
+					Collections.emptySet(),
+					Collections.emptySet(),
+					spliceIdentifier);
+		}
 		final Method plainCourse = buildPlainCourse(normalisedNotationElements);
 		final int changesCountInPlainLead = plainCourse.getLead(0).getRowCount() - 1; // minus 1 as first and last change are shared between leads.
 		final SortedSet<NotationCall> notationCalls = buildCalls(notationCallBuilders);

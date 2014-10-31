@@ -237,6 +237,21 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public Optional<NotationBody> getStartNotation() {
+		return touch.getStartNotation();
+	}
+
+	@Override
+	public void setStartNotation(NotationBody startNotation) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
+	public void removeStartNotation() {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
 	public void setStartStroke(Stroke startStroke) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}

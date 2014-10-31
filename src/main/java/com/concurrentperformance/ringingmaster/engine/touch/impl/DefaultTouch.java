@@ -6,6 +6,7 @@ import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import com.concurrentperformance.ringingmaster.engine.touch.Grid;
 import com.concurrentperformance.ringingmaster.engine.touch.GridCellFactory;
@@ -63,10 +64,11 @@ public class DefaultTouch implements Touch {
 	private MethodRow startChange;
 	private int startAtRow;
 	private Stroke startStroke;
+	private Optional<NotationBody> startNotation;
 
-	private Optional<Integer> terminationMaxLeads = Optional.absent();
-	private Optional<Integer> terminationMaxRows = Optional.absent();
-	private Optional<MethodRow>  terminationSpecificRow = Optional.absent();
+	private Optional<Integer> terminationMaxLeads;
+	private Optional<Integer> terminationMaxRows;
+	private Optional<MethodRow> terminationSpecificRow;
 
 	private static GridCellFactory<TouchCell> FACTORY = new GridCellFactory<TouchCell>() {
 		@Override
@@ -77,11 +79,16 @@ public class DefaultTouch implements Touch {
 
 	DefaultTouch() {
 		this.cells = new DefaultGrid<>(FACTORY, 1, 1);
-		plainLeadToken = "p";
-		terminationMaxRows = Optional.of(SAFETY_VALVE_MAX_ROWS);
-		startChange = MethodBuilder.buildRoundsRow(numberOfBells);
-		startAtRow = 0;
-		startStroke = Stroke.BACKSTROKE;
+		this.plainLeadToken = "p";
+
+		this.startChange = MethodBuilder.buildRoundsRow(numberOfBells);
+		this.startAtRow = 0;
+		this.startStroke = Stroke.BACKSTROKE;
+		this.startNotation = Optional.absent();
+
+		this.terminationMaxLeads = Optional.absent();
+		this.terminationMaxRows = Optional.of(SAFETY_VALVE_MAX_ROWS);
+		this.terminationSpecificRow = Optional.absent();
 	}
 
 	@Override
@@ -177,7 +184,6 @@ public class DefaultTouch implements Touch {
 			setStartChange(newStartChange);
 
 			if (terminationSpecificRow.isPresent()) {
-
 				final MethodRow existingTerminationRow = getTerminationSpecificRow().get();
 				final MethodRow newTerminationRow = MethodBuilder.transformToNewNumberOfBells(existingTerminationRow, numberOfBells);
 				setTerminationSpecificRow(newTerminationRow);
@@ -194,6 +200,24 @@ public class DefaultTouch implements Touch {
 				else {
 					activeNotation = null;
 					log.info("Set active notation [null]");
+				}
+			}
+
+			if (startNotation.isPresent()) {
+				final String originalNotation = startNotation.get().getNotationDisplayString(false);
+				NotationBody builtNotation = NotationBuilder.getInstance()
+						.setNumberOfWorkingBells(numberOfBells)
+						.setUnfoldedNotationShorthand(originalNotation)
+						.build();
+				if (!originalNotation.equals(builtNotation.getNotationDisplayString(false))) {
+					if (builtNotation.getRowCount() == 0) {
+						startNotation = Optional.absent();
+						log.info("Set start notation to [{}]", this.startNotation);
+					}
+					else {
+						startNotation = Optional.of(builtNotation);
+						log.info("Set start notation to [{}]", this.startNotation.get().getNotationDisplayString(false));
+					}
 				}
 			}
 
@@ -516,6 +540,31 @@ public class DefaultTouch implements Touch {
 	@Override
 	public Stroke getStartStroke() {
 		return this.startStroke;
+	}
+
+	@Override
+	public Optional<NotationBody> getStartNotation() {
+		return startNotation;
+	}
+
+	@Override
+	public void setStartNotation(NotationBody startNotation) {
+		checkNotNull(startNotation);
+		checkState(startNotation.getNumberOfWorkingBells() == numberOfBells, "Start Notation number of bells must match touch number of bells");
+
+		if (!this.startNotation.isPresent() ||
+			!startNotation.getNotationDisplayString(false).equals(this.startNotation.get().getNotationDisplayString(false))) {
+			this.startNotation = Optional.of(startNotation);
+			log.info("Set start notation to [{}]", this.startNotation.get().getNotationDisplayString(false));
+		}
+	}
+
+	@Override
+	public void removeStartNotation() {
+		if (this.startNotation.isPresent()) {
+			this.startNotation = Optional.absent();
+			log.info("Set start notation to [{}]", startNotation);
+		}
 	}
 
 	@Override
