@@ -217,7 +217,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setStartChange(MethodRow initialRow) {
+	public void setStartChange(MethodRow startChange) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

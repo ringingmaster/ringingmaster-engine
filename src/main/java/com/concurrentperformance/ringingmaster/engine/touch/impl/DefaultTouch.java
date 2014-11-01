@@ -516,7 +516,7 @@ public class DefaultTouch implements Touch {
 		checkNotNull(startChange);
 		checkState(startChange.getNumberOfBells() == numberOfBells);
 		this.startChange = startChange;
-		log.info("Set initial row to [{}]", startChange);
+		log.info("Set start change to [{}]", startChange);
 	}
 
 	@Override
@@ -610,6 +610,7 @@ public class DefaultTouch implements Touch {
 		checkNotNull(terminationSpecificRow, "terminationSpecificRow cant be null");
 		checkArgument(terminationSpecificRow.getNumberOfBells().equals(numberOfBells));
 		this.terminationSpecificRow = Optional.of(terminationSpecificRow);
+		log.info("Set termination change to [{}]", this.terminationSpecificRow);
 	}
 
 	@Override

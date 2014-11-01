@@ -107,7 +107,7 @@ public interface Touch extends Cloneable {
 	void incrementRowCount();
 
 	MethodRow getStartChange();
-	void setStartChange(MethodRow initialRow);
+	void setStartChange(MethodRow startChange);
 
 	int getStartAtRow();
 	void setStartAtRow(int startAtRow);
