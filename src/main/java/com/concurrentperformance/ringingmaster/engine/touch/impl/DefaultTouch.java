@@ -47,19 +47,18 @@ public class DefaultTouch implements Touch {
 	private static final int SAFETY_VALVE_MAX_ROWS = 100000;
 
 	//IMPORTANT NOTE: When adding items here, think about the clone method and immutability, and toString. Also toString
-	private String title = "";
-	private String author = "";
+	private String title;
+	private String author;
 
-	private NumberOfBells numberOfBells = NumberOfBells.BELLS_6;
-	private final Grid<TouchCell> cells;
+	private NumberOfBells numberOfBells;
+	private TouchType touchType;
 
-	private Bell callFromBell = numberOfBells.getTenor();
-	private List<NotationBody> notations = new ArrayList<>();
-	private NotationBody activeNotation;
+	private Bell callFromBell;
+	private final List<NotationBody> notations;
+	private NotationBody singleMethodActiveNotation;
 	private boolean spliced; // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
 	private String plainLeadToken;
-	private TouchType touchType = TouchType.COURSE_BASED;
-	private SortedMap<String, TouchDefinition> definitions = new TreeMap<>();
+	private SortedMap<String, TouchDefinition> definitions;
 
 	private MethodRow startChange;
 	private int startAtRow;
@@ -70,6 +69,8 @@ public class DefaultTouch implements Touch {
 	private Optional<Integer> terminationMaxRows;
 	private Optional<MethodRow> terminationSpecificRow;
 
+	private final Grid<TouchCell> cells;
+
 	private static GridCellFactory<TouchCell> FACTORY = new GridCellFactory<TouchCell>() {
 		@Override
 		public TouchCell buildCell(int columnIndex, int rowIndex) {
@@ -78,24 +79,58 @@ public class DefaultTouch implements Touch {
 	};
 
 	DefaultTouch() {
-		this.cells = new DefaultGrid<>(FACTORY, 1, 1);
-		this.plainLeadToken = "p";
+		title = "";
+		author = "";
 
-		this.startChange = MethodBuilder.buildRoundsRow(numberOfBells);
-		this.startAtRow = 0;
-		this.startStroke = Stroke.BACKSTROKE;
-		this.startNotation = Optional.absent();
+		numberOfBells = NumberOfBells.BELLS_6;
+		touchType = TouchType.COURSE_BASED;
 
-		this.terminationMaxLeads = Optional.absent();
-		this.terminationMaxRows = Optional.of(SAFETY_VALVE_MAX_ROWS);
-		this.terminationSpecificRow = Optional.absent();
+		callFromBell = numberOfBells.getTenor();
+		notations = new ArrayList<>();
+		spliced = false;
+		plainLeadToken = "p";
+		definitions = new TreeMap<>();
+
+		startChange = MethodBuilder.buildRoundsRow(numberOfBells);
+		startAtRow = 0;
+		startStroke = Stroke.BACKSTROKE;
+		startNotation = Optional.absent();
+
+		terminationMaxRows = Optional.of(SAFETY_VALVE_MAX_ROWS);
+		terminationMaxLeads = Optional.absent();
+		terminationSpecificRow = Optional.absent();
+
+		cells = new DefaultGrid<>(FACTORY, 1, 1);
 	}
 
 	@Override
 	public Touch clone() throws CloneNotSupportedException {
 		DefaultTouch touchClone = new DefaultTouch();
 
+		touchClone.title = this.title;
+		touchClone.author = this.author;
+
 		touchClone.numberOfBells = numberOfBells;
+		touchClone.touchType = this.touchType;
+
+		touchClone.callFromBell = callFromBell;
+		touchClone.notations.addAll(this.notations);
+		touchClone.singleMethodActiveNotation = this.singleMethodActiveNotation;
+		touchClone.spliced = this.spliced;
+		touchClone.plainLeadToken = this.plainLeadToken;
+		for (TouchDefinition definition : definitions.values()) {
+			touchClone.definitions.put(definition.getName(), definition.clone());
+		}
+
+		touchClone.startChange = this.startChange;
+		touchClone.startAtRow = this.startAtRow;
+		touchClone.startStroke = this.startStroke;
+		touchClone.startNotation = this.startNotation;
+
+		touchClone.terminationMaxLeads = this.terminationMaxLeads;
+		touchClone.terminationMaxRows = this.terminationMaxRows;
+		touchClone.terminationSpecificRow = this.terminationSpecificRow;
+
 		touchClone.cells.setColumnCount(this.cells.getColumnCount());
 		touchClone.cells.setRowCount(this.cells.getRowCount());
 
@@ -104,31 +139,6 @@ public class DefaultTouch implements Touch {
 				TouchCell cellClone = this.cells.getCell(columnIndex, rowIndex).clone();
 				touchClone.cells.setCell(columnIndex, rowIndex, cellClone);
 			}
-		}
-
-		touchClone.title = this.title;
-		touchClone.author = this.author;
-		touchClone.notations.addAll(this.notations);
-		touchClone.activeNotation = this.activeNotation;
-		touchClone.spliced = this.spliced;
-		touchClone.plainLeadToken = this.plainLeadToken;
-		touchClone.touchType = this.touchType;
-		for (TouchDefinition definition : definitions.values()) {
-			touchClone.definitions.put(definition.getName(), definition.clone());
-		}
-
-		touchClone.startChange = this.startChange;
-		touchClone.startAtRow = this.startAtRow;
-		touchClone.startStroke = this.startStroke;
-
-		if(terminationMaxRows.isPresent()) {
-			touchClone.setTerminationMaxRows(terminationMaxRows.get());
-		}
-		if(terminationMaxLeads.isPresent()) {
-			touchClone.setTerminationMaxLeads(terminationMaxLeads.get());
-		}
-		if(terminationSpecificRow.isPresent()) {
-			touchClone.setTerminationSpecificRow(terminationSpecificRow.get());
 		}
 
 		return touchClone;
@@ -141,7 +151,10 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void setTitle(String title) {
-		this.title = title;
+		if (!this.title.equals(title)) {
+			log.info("[{}] Set title [{}]", this.title, title);
+			this.title = checkNotNull(title);
+		}
 	}
 
 	@Override
@@ -151,30 +164,25 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void setAuthor(String author) {
-		this.author = author;
+		if (!this.author.equals(author)) {
+			this.author = checkNotNull(author);
+			log.info("[{}] Set author [{}]", this.title, this.author);
+		}
 	}
 
 	@Override
-	public void setTouchType(TouchType touchType) {
-		log.info("Set touch type [{}]", touchType.getName());
-		this.touchType = touchType;
+	public NumberOfBells getNumberOfBells() {
+		return numberOfBells;
 	}
 
 	@Override
-	public TouchType getTouchType() {
-		return touchType;
-	}
-
-	@Override
-	public String setNumberOfBells(NumberOfBells numberOfBells) {
+	public void setNumberOfBells(NumberOfBells numberOfBells) {
 		// NOTE: When modifying this method, also modify the error string that
 		// is generated by the TouchDocument.setNumberOfBells()
 		if (this.numberOfBells != numberOfBells) {
-			this.numberOfBells = numberOfBells;
+			this.numberOfBells = checkNotNull(numberOfBells);
+			log.info("[{}] Set number of bells [{}]", this.title, this.numberOfBells);
 
-			log.info("Set number of bells [{}]", this.numberOfBells);
-
-			StringBuilder builder = new StringBuilder();
 			if (callFromBell.getZeroBasedBell() > numberOfBells.getTenor().getZeroBasedBell()) {
 				callFromBell = numberOfBells.getTenor();
 			}
@@ -190,16 +198,15 @@ public class DefaultTouch implements Touch {
 			}
 
 			if (!isSpliced() &&
-					activeNotation != null &&
-					activeNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
+					singleMethodActiveNotation != null &&
+					singleMethodActiveNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
 				final List<NotationBody> filteredNotations = NotationBuilderHelper.filterNotations(notations, numberOfBells);
 				if (filteredNotations.size() > 0) {
-					activeNotation = filteredNotations.get(0);
-					log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
-				}
-				else {
-					activeNotation = null;
-					log.info("Set active notation [null]");
+					singleMethodActiveNotation = filteredNotations.get(0);
+					log.info("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+				} else {
+					singleMethodActiveNotation = null;
+					log.info("[{}] Set active notation [null]", this.title);
 				}
 			}
 
@@ -212,25 +219,28 @@ public class DefaultTouch implements Touch {
 				if (!originalNotation.equals(builtNotation.getNotationDisplayString(false))) {
 					if (builtNotation.getRowCount() == 0) {
 						startNotation = Optional.absent();
-						log.info("Set start notation to [{}]", this.startNotation);
-					}
-					else {
+						log.info("[{}] Set start notation to [{}]", this.title, this.startNotation);
+					} else {
 						startNotation = Optional.of(builtNotation);
-						log.info("Set start notation to [{}]", this.startNotation.get().getNotationDisplayString(false));
+						log.info("[{}] Set start notation to [{}]", this.title, this.startNotation.get().getNotationDisplayString(false));
 					}
 				}
 			}
-
-			// TODO validation of other items. e.g. methods Etc.
-			return builder.toString();
 		}
-
-		return null;
+		// TODO validation of other items. e.g. methods Etc.
 	}
 
 	@Override
-	public NumberOfBells getNumberOfBells() {
-		return numberOfBells;
+	public TouchType getTouchType() {
+		return touchType;
+	}
+
+	@Override
+	public void setTouchType(TouchType touchType) {
+		if (this.touchType != touchType) {
+			this.touchType = checkNotNull(touchType);
+			log.info("[{}] Set touch type [{}]", this.title, this.touchType.getName());
+		}
 	}
 
 	@Override
@@ -240,8 +250,12 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void setCallFromBell(Bell callFromBell) {
-		checkState(callFromBell.getZeroBasedBell() < numberOfBells.getBellCount());
-		this.callFromBell = callFromBell;
+		if (this.callFromBell != callFromBell) {
+			checkNotNull(callFromBell);
+			checkState(callFromBell.getZeroBasedBell() < numberOfBells.getBellCount());
+			this.callFromBell = callFromBell;
+			log.info("[{}] Set call from bell to [{}]", this.title, this.callFromBell);
+		}
 	}
 
 	@Override
@@ -256,13 +270,13 @@ public class DefaultTouch implements Touch {
 			}
 		}
 
-		log.info("Add notation [{}]", notationToAdd.getNameIncludingNumberOfBells());
+		log.info("[{}] Add notation [{}]", this.title, notationToAdd.getNameIncludingNumberOfBells());
 		notations.add(notationToAdd);
 		Collections.sort(notations, NotationBody.BY_NAME);
 
-		if (spliced == false && activeNotation == null) {
-			activeNotation = notationToAdd;
-			log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
+		if (spliced == false && singleMethodActiveNotation == null) {
+			singleMethodActiveNotation = notationToAdd;
+			log.info("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
 		}
 	}
 
@@ -270,22 +284,22 @@ public class DefaultTouch implements Touch {
 	public void removeNotation(NotationBody notationForRemoval) {
 		checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 		notations.remove(notationForRemoval);
-		log.info("Remove notation [{}]", notationForRemoval.getNameIncludingNumberOfBells());
+		log.info("[{}] Remove notation [{}]", this.title, notationForRemoval.getNameIncludingNumberOfBells());
 
 		// Sort out the next notation if it is the active notation
-		if (notationForRemoval.equals(activeNotation)) {
-			activeNotation = null;
+		if (notationForRemoval.equals(singleMethodActiveNotation)) {
+			singleMethodActiveNotation = null;
 			final List<NotationBody> validNotations = getValidNotations();
 			for (NotationBody notation : validNotations) {
 				if (notation.getName().compareTo(notationForRemoval.getName()) > 0) {
-					activeNotation = notation;
-					log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
+					singleMethodActiveNotation = notation;
+					log.info("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
 					break;
 				}
 			}
-			if (activeNotation == null && validNotations.size() > 0) {
-				activeNotation = validNotations.iterator().next();
-				log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
+			if (singleMethodActiveNotation == null && validNotations.size() > 0) {
+				singleMethodActiveNotation = validNotations.iterator().next();
+				log.info("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
 			}
 		}
 	}
@@ -307,8 +321,8 @@ public class DefaultTouch implements Touch {
 		}
 		else {
 			// Not Spliced
-			if (activeNotation != null) {
-				return Lists.<NotationBody>newArrayList(activeNotation);
+			if (singleMethodActiveNotation != null) {
+				return Lists.<NotationBody>newArrayList(singleMethodActiveNotation);
 			}
 		}
 
@@ -318,7 +332,66 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public NotationBody getSingleMethodActiveNotation() {
-		return activeNotation;
+		return singleMethodActiveNotation;
+	}
+
+	@Override
+	public void setSingleMethodActiveNotation(NotationBody singleMethodActiveNotation) {
+		this.singleMethodActiveNotation = checkNotNull(singleMethodActiveNotation);
+		log.info("[{}] Set single method active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+
+		if (spliced == true) {
+			spliced = false;
+			log.info("[{}] Set spliced [{}]", this.title, this.spliced);
+		}
+	}
+
+	@Override
+	public boolean isSpliced() {
+		return spliced;
+	}
+
+	@Override
+	public void setSpliced(boolean spliced) {
+		if (this.spliced != spliced) {
+			this.spliced = spliced;
+			log.info("[{}] Set spliced [{}]", this.title, this.spliced);
+
+			if (spliced) {
+				log.info("[{}] Set active notation [null]", this.title);
+				singleMethodActiveNotation = null;
+			} else {
+				final List<NotationBody> validNotations = getValidNotations();
+
+				if (validNotations.size() > 0) {
+					singleMethodActiveNotation = validNotations.iterator().next();
+					log.info("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+				}
+			}
+		}
+	}
+
+	@Override
+	public String getPlainLeadToken() {
+		return plainLeadToken;
+	}
+
+	@Override
+	public void setPlainLeadToken(String plainLeadToken) {
+		if (this.plainLeadToken != plainLeadToken) {
+			this.plainLeadToken = checkNotNull(plainLeadToken);
+			log.info("[{}] Set plain lead token [{}]", this.title, this.plainLeadToken);
+		}
+	}
+
+	@Override
+	public Set<TouchDefinition> getDefinitions() {
+		return Sets.newHashSet(definitions.values());
+	}
+
+	@Override
+	public TouchDefinition findDefinitionByName(String name) {
+		return definitions.get(name);
 	}
 
 	@Override
@@ -333,12 +406,10 @@ public class DefaultTouch implements Touch {
 		TouchDefinition definition = new DefaultTouchDefinition(name);
 		definition.add(characters);
 		definitions.put(definition.getName(), definition);
-		return definition;
-	}
 
-	@Override
-	public Set<TouchDefinition> getDefinitions() {
-		return Sets.newHashSet(definitions.values());
+		log.info("[{}] Add definition [{}]", this.title, definition);
+
+		return definition;
 	}
 
 	@Override
@@ -347,47 +418,125 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public TouchDefinition findDefinitionByName(String name) {
-		return definitions.get(name);
+	public MethodRow getStartChange() {
+		return startChange;
 	}
 
 	@Override
-	public void setActiveNotation(NotationBody activeNotation) {
-		this.activeNotation = checkNotNull(activeNotation);
-		log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
+	public void setStartChange(MethodRow startChange) {
+		checkNotNull(startChange);
+		checkState(startChange.getNumberOfBells() == numberOfBells);
+		this.startChange = startChange;
+		log.info("[{}] Set start change to [{}]", this.title, startChange);
+	}
 
-		if (spliced == true) {
-			spliced = false;
-			log.info("Set spliced [{}]", this.spliced);
+	@Override
+	public int getStartAtRow() {
+		return startAtRow;
+	}
+
+	@Override
+	public void setStartAtRow(int startAtRow) {
+		if (this.startAtRow != startAtRow) {
+			checkState(startAtRow >= 0);
+			this.startAtRow = startAtRow;
+			log.info("[{}] Set start at row to [{}]", this.title, startAtRow);
 		}
 	}
 
 	@Override
-	public boolean isSpliced() {
-		return spliced;
+	public Stroke getStartStroke() {
+		return this.startStroke;
 	}
 
 	@Override
-	public void setSpliced(boolean spliced) {
-		if (this.spliced == spliced) {
-			return;
-		}
-		this.spliced = spliced;
-		log.info("Set spliced [{}]", this.spliced);
-
-		if (spliced) {
-			log.info("Set active notation [null]");
-			activeNotation = null;
-		}
-		else {
-			final List<NotationBody> validNotations = getValidNotations();
-
-			if (validNotations.size() > 0){
-				activeNotation = validNotations.iterator().next();
-				log.info("Set active notation [{}]", activeNotation.getNameIncludingNumberOfBells());
-			}
+	public void setStartStroke(Stroke startStroke) {
+		if (this.startStroke != startStroke) {
+			this.startStroke = checkNotNull(startStroke);
+			log.info("[{}] Set start stroke to [{}]", this.title, startStroke);
 		}
 	}
+
+	@Override
+	public Optional<NotationBody> getStartNotation() {
+		return startNotation;
+	}
+
+	@Override
+	public void setStartNotation(NotationBody startNotation) {
+		checkNotNull(startNotation);
+		checkState(startNotation.getNumberOfWorkingBells() == numberOfBells, "Start Notation number of bells must match touch number of bells");
+
+		if (!this.startNotation.isPresent() ||
+				!startNotation.getNotationDisplayString(false).equals(this.startNotation.get().getNotationDisplayString(false))) {
+			this.startNotation = Optional.of(startNotation);
+			log.info("[{}] Set start notation to [{}]", this.title, this.startNotation.get().getNotationDisplayString(false));
+		}
+	}
+
+	@Override
+	public void removeStartNotation() {
+		if (this.startNotation.isPresent()) {
+			this.startNotation = Optional.absent();
+			log.info("[{}] Set start notation to [{}]", this.title, startNotation);
+		}
+	}
+
+	@Override
+	public Optional<Integer> getTerminationMaxRows() {
+		return terminationMaxRows;
+	}
+
+	@Override
+	public void setTerminationMaxRows(int terminationMaxRows) {
+		checkState(terminationMaxRows > 0, "Termination max rows must be greater than 0");
+		this.terminationMaxRows = Optional.of(terminationMaxRows);
+		log.info("[{}] Set termination max rows to [{}]", this.title, this.terminationMaxRows);
+	}
+
+	@Override
+	public void removeTerminationMaxRows() {
+		terminationMaxRows = Optional.absent();
+		log.info("[{}] Set termination max rows to [{}]", this.title, terminationMaxRows);
+	}
+
+	@Override
+	public Optional<Integer> getTerminationMaxLeads() {
+		return terminationMaxLeads;
+	}
+
+	@Override
+	public void setTerminationMaxLeads(int terminationMaxLeads) {
+		checkState(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
+		this.terminationMaxLeads = Optional.of(terminationMaxLeads);
+		log.info("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
+	}
+
+	@Override
+	public void removeTerminationMaxLeads() {
+		this.terminationMaxLeads = Optional.absent();
+		log.info("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
+	}
+
+	@Override
+	public Optional<MethodRow> getTerminationSpecificRow() {
+		return terminationSpecificRow;
+	}
+
+	@Override
+	public void setTerminationSpecificRow(MethodRow terminationSpecificRow) {
+		checkNotNull(terminationSpecificRow, "terminationSpecificRow cant be null");
+		checkArgument(terminationSpecificRow.getNumberOfBells().equals(numberOfBells));
+		this.terminationSpecificRow = Optional.of(terminationSpecificRow);
+		log.info("[{}] Set termination change to [{}]", this.title, this.terminationSpecificRow);
+	}
+
+	@Override
+	public void removeTerminationSpecificRow() {
+		terminationSpecificRow = Optional.absent();
+		log.info("[{}] Set termination change to [{}]", this.title, this.terminationSpecificRow);
+	}
+
 
 	@Override
 	public TouchElement insertCharacter(int columnIndex, int rowIndex, int cellIndex, char character) {
@@ -414,17 +563,6 @@ public class DefaultTouch implements Touch {
 		TouchCell cell = cells.getCell(columnIndex, rowIndex);
 		TouchElement element = cell.getElement(cellIndex);
 		return element;
-	}
-
-	@Override
-	public String getPlainLeadToken() {
-		return plainLeadToken;
-	}
-
-	@Override
-	public void setPlainLeadToken(String plainLeadToken) {
-		this.plainLeadToken = plainLeadToken;
-		log.info("Set plain lead token [{}]", this.plainLeadToken);
 	}
 
 	@Override
@@ -507,118 +645,6 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public MethodRow getStartChange() {
-		return startChange;
-	}
-
-	@Override
-	public void setStartChange(MethodRow startChange) {
-		checkNotNull(startChange);
-		checkState(startChange.getNumberOfBells() == numberOfBells);
-		this.startChange = startChange;
-		log.info("Set start change to [{}]", startChange);
-	}
-
-	@Override
-	public int getStartAtRow() {
-		return startAtRow;
-	}
-
-	@Override
-	public void setStartAtRow(int startAtRow) {
-		checkState(startAtRow >= 0);
-		this.startAtRow = startAtRow;
-		log.info("Set start at row to [{}]", startAtRow);
-	}
-
-	@Override
-	public void setStartStroke(Stroke startStroke) {
-		this.startStroke = startStroke;
-		log.info("Set start stroke to [{}]", startStroke);
-	}
-
-	@Override
-	public Stroke getStartStroke() {
-		return this.startStroke;
-	}
-
-	@Override
-	public Optional<NotationBody> getStartNotation() {
-		return startNotation;
-	}
-
-	@Override
-	public void setStartNotation(NotationBody startNotation) {
-		checkNotNull(startNotation);
-		checkState(startNotation.getNumberOfWorkingBells() == numberOfBells, "Start Notation number of bells must match touch number of bells");
-
-		if (!this.startNotation.isPresent() ||
-			!startNotation.getNotationDisplayString(false).equals(this.startNotation.get().getNotationDisplayString(false))) {
-			this.startNotation = Optional.of(startNotation);
-			log.info("Set start notation to [{}]", this.startNotation.get().getNotationDisplayString(false));
-		}
-	}
-
-	@Override
-	public void removeStartNotation() {
-		if (this.startNotation.isPresent()) {
-			this.startNotation = Optional.absent();
-			log.info("Set start notation to [{}]", startNotation);
-		}
-	}
-
-	@Override
-	public Optional<Integer> getTerminationMaxLeads() {
-		return terminationMaxLeads;
-	}
-
-	@Override
-	public void setTerminationMaxLeads(int terminationMaxLeads) {
-		checkState(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
-
-		this.terminationMaxLeads = Optional.of(terminationMaxLeads);
-	}
-
-	@Override
-	public void removeTerminationMaxLeads() {
-		this.terminationMaxLeads = Optional.absent();
-	}
-
-	@Override
-	public Optional<Integer> getTerminationMaxRows() {
-		return terminationMaxRows;
-	}
-
-	@Override
-	public void setTerminationMaxRows(int terminationMaxRows) {
-		checkState(terminationMaxRows > 0, "Termination max rows must be greater than 0");
-		this.terminationMaxRows = Optional.of(terminationMaxRows);
-	}
-
-	@Override
-	public void removeTerminationMaxRows() {
-		terminationMaxRows = Optional.absent();
-	}
-
-	@Override
-	public Optional<MethodRow> getTerminationSpecificRow() {
-		return terminationSpecificRow;
-	}
-
-	@Override
-	public void setTerminationSpecificRow(MethodRow terminationSpecificRow) {
-		checkNotNull(terminationSpecificRow, "terminationSpecificRow cant be null");
-		checkArgument(terminationSpecificRow.getNumberOfBells().equals(numberOfBells));
-		this.terminationSpecificRow = Optional.of(terminationSpecificRow);
-		log.info("Set termination change to [{}]", this.terminationSpecificRow);
-	}
-
-	@Override
-	public void removeTerminationSpecificRow() {
-		terminationSpecificRow = Optional.absent();
-	}
-
-	@Override
 	public boolean collapseEmptyRowsAndColumns() {
 		boolean changed = false;
 		for (int colIndex=0;colIndex<cells.getColumnCount();colIndex++) {
@@ -658,20 +684,22 @@ public class DefaultTouch implements Touch {
 		return "DefaultTouch{" +
 				"title='" + title + '\'' +
 				", author=" + author +
-				", cells=" + cells +
 				", numberOfBells='" + numberOfBells + '\'' +
+				", touchType=" + touchType +
+				", callFromBell='" + callFromBell + '\'' +
 				", notations=" + notations +
-				", activeNotation=" + activeNotation +
+				", singleMethodActiveNotation=" + singleMethodActiveNotation +
 				", spliced=" + spliced +
 				", plainLeadToken='" + plainLeadToken + '\'' +
-				", touchType=" + touchType +
 				", definitions=" + definitions +
 				", startChange=" + startChange +
 				", startAtRow=" + startAtRow +
 				", startStroke=" + startStroke +
-				", terminationMaxLeads=" + terminationMaxLeads +
+				", startNotation=" + startNotation +
 				", terminationMaxRows=" + terminationMaxRows +
+				", terminationMaxLeads=" + terminationMaxLeads +
 				", terminationSpecificRow=" + terminationSpecificRow +
+				", cells=" + cells +
 				'}';
 	}
 }

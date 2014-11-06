@@ -106,7 +106,7 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationC);
 		touch.addNotation(mockNotationD);
 
-		touch.setActiveNotation(mockNotationC);
+		touch.setSingleMethodActiveNotation(mockNotationC);
 		assertEquals(mockNotationC, touch.getSingleMethodActiveNotation());
 
 		touch.removeNotation(mockNotationC);
@@ -139,7 +139,7 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationC);
 		touch.addNotation(mockNotationDInvalid);
 
-		touch.setActiveNotation(mockNotationC);
+		touch.setSingleMethodActiveNotation(mockNotationC);
 		assertEquals(mockNotationC, touch.getSingleMethodActiveNotation());
 
 		touch.removeNotation(mockNotationC);
@@ -196,7 +196,7 @@ public class DefaultTouchTest {
 		touch.setSpliced(true);
 		assertEquals(true, touch.isSpliced());
 
-		touch.setActiveNotation(mockNotationA);
+		touch.setSingleMethodActiveNotation(mockNotationA);
 		assertEquals(false, touch.isSpliced());
 	}
 

@@ -30,7 +30,7 @@ public interface Touch extends Cloneable {
 	TouchType getTouchType();
 	void setTouchType(TouchType touchType);
 
-	String setNumberOfBells(NumberOfBells numberOfBells);
+	void setNumberOfBells(NumberOfBells numberOfBells);
 	NumberOfBells getNumberOfBells();
 
 	Bell getCallFromBell();
@@ -42,53 +42,50 @@ public interface Touch extends Cloneable {
 	List<NotationBody> getValidNotations();
 	List<NotationBody> getNotationsInUse();
 
-	void setActiveNotation(NotationBody activeNotation);
+	void setSingleMethodActiveNotation(NotationBody activeNotation);
 	NotationBody getSingleMethodActiveNotation();
+
+	boolean isSpliced();
+	void setSpliced(boolean spliced);
+
+	String getPlainLeadToken();
+	void setPlainLeadToken(String plainLeadToken);
 
 	TouchDefinition addDefinition(String name, String characters);
 	Set<TouchDefinition> getDefinitions();
 	void removeDefinition(String name);
 	TouchDefinition findDefinitionByName(String name);
 
-	boolean isSpliced();
-	void setSpliced(boolean spliced);
+	MethodRow getStartChange();
+	void setStartChange(MethodRow startChange);
 
-	/**
-	 * @param columnIndex x cell position
-	 * @param rowIndex y cell position
-	 * @param cellIndex position inside a cell
-	 */
+	int getStartAtRow();
+	void setStartAtRow(int startAtRow);
+
+	void setStartStroke(Stroke startStroke);
+	Stroke getStartStroke();
+
+	Optional<NotationBody> getStartNotation();
+	void setStartNotation(NotationBody startNotation);
+	void removeStartNotation();
+
+	Optional<Integer> getTerminationMaxRows();
+	void setTerminationMaxRows(int terminationMaxRows);
+	void removeTerminationMaxRows();
+
+	Optional<Integer> getTerminationMaxLeads();
+	void setTerminationMaxLeads(int terminationMaxLeads);
+	void removeTerminationMaxLeads();
+
+	Optional<MethodRow> getTerminationSpecificRow();
+	void setTerminationSpecificRow(MethodRow terminationSpecificRow);
+	void removeTerminationSpecificRow();
+
 	TouchElement insertCharacter(int columnIndex, int rowIndex, int cellIndex, char character);
-
-	/**
-	 * @param columnIndex x cell position
-	 * @param rowIndex y cell position
-	 */
 	void addCharacters(int columnIndex, int rowIndex, String characters);
-
-	/**
-	 * @param columnIndex x cell position
-	 * @param rowIndex y cell position
-	 * @param cellIndex position inside a cell
-	 */
 	void removeCharacter(int columnIndex, int rowIndex, int cellIndex);
 
-	/**
-	 * @param columnIndex x cell position
-	 * @param rowIndex y cell position
-	 * @param cellIndex position inside a cell
-	 */
 	TouchElement getElement(int columnIndex, int rowIndex, int cellIndex);
-
-	/**
-	 * The string token that represents a plain lead
-	 */
-	String getPlainLeadToken();
-
-	/**
-	 * The string token that represents a plain lead
-	 */
-	void setPlainLeadToken(String plainLeadToken);
 
 	void resetParseData();
 
@@ -105,31 +102,6 @@ public interface Touch extends Cloneable {
 
 	void incrementColumnCount();
 	void incrementRowCount();
-
-	MethodRow getStartChange();
-	void setStartChange(MethodRow startChange);
-
-	int getStartAtRow();
-	void setStartAtRow(int startAtRow);
-
-	void setStartStroke(Stroke startStroke);
-	Stroke getStartStroke();
-
-	Optional<NotationBody> getStartNotation();
-	void setStartNotation(NotationBody startNotation);
-	void removeStartNotation();
-
-	Optional<Integer> getTerminationMaxLeads();
-	void setTerminationMaxLeads(int terminationMaxLeads);
-	void removeTerminationMaxLeads();
-
-	Optional<Integer> getTerminationMaxRows();
-	void setTerminationMaxRows(int terminationMaxRows);
-	void removeTerminationMaxRows();
-
-	Optional<MethodRow> getTerminationSpecificRow();
-	void setTerminationSpecificRow(MethodRow terminationSpecificRow);
-	void removeTerminationSpecificRow();
 
 	/**
 	 * @return true if changes were made

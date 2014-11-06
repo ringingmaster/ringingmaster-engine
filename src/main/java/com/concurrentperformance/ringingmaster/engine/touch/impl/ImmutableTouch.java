@@ -37,17 +37,27 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public TouchType getTouchType() {
-		return touch.getTouchType();
+	public String getTitle() {
+		return touch.getTitle();
 	}
 
 	@Override
-	public void setTouchType(TouchType touchType) {
+	public void setTitle(String name) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public String setNumberOfBells(NumberOfBells numberOfBells) {
+	public String getAuthor() {
+		return touch.getAuthor();
+	}
+
+	@Override
+	public void setNumberOfBells(NumberOfBells numberOfBells) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
+	public void setAuthor(String author) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -57,8 +67,18 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public TouchType getTouchType() {
+		return touch.getTouchType();
+	}
+
+	@Override
 	public Bell getCallFromBell() {
 		return touch.getCallFromBell();
+	}
+
+	@Override
+	public void setTouchType(TouchType touchType) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
@@ -92,7 +112,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setActiveNotation(NotationBody activeNotation) {
+	public void setSingleMethodActiveNotation(NotationBody activeNotation) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -311,23 +331,4 @@ public class ImmutableTouch implements Touch {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
-	@Override
-	public String getTitle() {
-		return touch.getTitle();
-	}
-
-	@Override
-	public void setTitle(String name) {
-		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
-	}
-
-	@Override
-	public String getAuthor() {
-		return touch.getAuthor();
-	}
-
-	@Override
-	public void setAuthor(String author) {
-		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
-	}
 }

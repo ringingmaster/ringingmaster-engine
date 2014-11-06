@@ -33,12 +33,15 @@ public class TouchBuilder {
 	 * @return
 	 */
 	public static Touch buildPlainCourseInstance(NotationBody notationBody) {
-		Touch touch = getInstance(notationBody.getNumberOfWorkingBells(), 1,1);
+		final Touch touch = new DefaultTouch();
+		touch.setTitle("Plain Course of " + notationBody.getNameIncludingNumberOfBells());
+		touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+		touch.setColumnCount(1);
+		touch.setRowCount(1);
 		touch.addNotation(notationBody);
 		touch.setTouchType(TouchType.LEAD_BASED);
 		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
 		touch.setTerminationMaxRows(10000);// Just as a safety stop
-		touch.setTitle("Plain Course of " + notationBody.getNameIncludingNumberOfBells());
 		return touch;
 	}
 }
