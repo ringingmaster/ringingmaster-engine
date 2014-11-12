@@ -41,7 +41,7 @@ public class TouchBuilder {
 		touch.addNotation(notationBody);
 		touch.setTouchType(TouchType.LEAD_BASED);
 		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
-		touch.setTerminationMaxRows(10000);// Just as a safety stop
+		touch.setTerminationMaxRows(Touch.TERMINATION_MAX_ROWS_SAFETY_VALVE);// Just as a safety stop
 		return touch;
 	}
 }

@@ -165,22 +165,6 @@ public class LeadBasedCompilerTest {
 		checkAgainstFile(result.getCreatedMethod(), "PlainBobMinor.txt");
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void compilingTouchWithNoTerminationThrows() {
-		Touch touch = null;
-		try {
-			touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-			touch.setTouchType(TouchType.LEAD_BASED);
-			touch.removeTerminationMaxRows(); //Remove the default catch all
-			final NotationBody mockedNotationBody = mockNotation(NumberOfBells.BELLS_6, NotationRowHelper.buildNotationRow(NotationPlace.ALL_CHANGE));
-			touch.addNotation(mockedNotationBody);
-		} catch (Exception e) {
-			log.error("", e);
-			fail();
-		}
-		new LeadBasedCompiler(touch);
-	}
-
 	@Test(expected = IllegalArgumentException.class)
 	public void compilingTouchWithNoNotationThrows() {
 		Touch touch = null;

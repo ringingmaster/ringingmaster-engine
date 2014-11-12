@@ -42,9 +42,8 @@ import static com.google.common.base.Preconditions.checkState;
 @NotThreadSafe
 public class DefaultTouch implements Touch {
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private static final int SAFETY_VALVE_MAX_ROWS = 100000;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	//IMPORTANT NOTE: When adding items here, think about the clone method and immutability, and toString. Also toString
 	private String title;
@@ -65,8 +64,8 @@ public class DefaultTouch implements Touch {
 	private Stroke startStroke;
 	private Optional<NotationBody> startNotation;
 
+	private Integer terminationMaxRows;
 	private Optional<Integer> terminationMaxLeads;
-	private Optional<Integer> terminationMaxRows;
 	private Optional<MethodRow> terminationSpecificRow;
 
 	private final Grid<TouchCell> cells;
@@ -96,7 +95,7 @@ public class DefaultTouch implements Touch {
 		startStroke = Stroke.BACKSTROKE;
 		startNotation = Optional.absent();
 
-		terminationMaxRows = Optional.of(SAFETY_VALVE_MAX_ROWS);
+		terminationMaxRows = TERMINATION_MAX_ROWS_SAFETY_VALVE;
 		terminationMaxLeads = Optional.absent();
 		terminationSpecificRow = Optional.absent();
 
@@ -438,7 +437,8 @@ public class DefaultTouch implements Touch {
 	@Override
 	public void setStartAtRow(int startAtRow) {
 		if (this.startAtRow != startAtRow) {
-			checkState(startAtRow >= 0);
+			checkState(startAtRow > 0, "Start at row must be greater than 0");
+			checkState(startAtRow <= START_AT_ROW_MAX, "Start at row must be less than or equal to %s", START_AT_ROW_MAX);
 			this.startAtRow = startAtRow;
 			log.info("[{}] Set start at row to [{}]", this.title, startAtRow);
 		}
@@ -483,21 +483,18 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public Optional<Integer> getTerminationMaxRows() {
+	public int getTerminationMaxRows() {
 		return terminationMaxRows;
 	}
 
 	@Override
 	public void setTerminationMaxRows(int terminationMaxRows) {
-		checkState(terminationMaxRows > 0, "Termination max rows must be greater than 0");
-		this.terminationMaxRows = Optional.of(terminationMaxRows);
-		log.info("[{}] Set termination max rows to [{}]", this.title, this.terminationMaxRows);
-	}
-
-	@Override
-	public void removeTerminationMaxRows() {
-		terminationMaxRows = Optional.absent();
-		log.info("[{}] Set termination max rows to [{}]", this.title, terminationMaxRows);
+		if (this.terminationMaxRows != terminationMaxRows) {
+			checkState(terminationMaxRows > 0, "Termination max rows must be greater than 0");
+			checkState(terminationMaxRows <= TERMINATION_MAX_ROWS_MAX, "Termination max rows must be less than or equal to %s", TERMINATION_MAX_ROWS_MAX);
+			this.terminationMaxRows = terminationMaxRows;
+			log.info("[{}] Set termination max rows to [{}]", this.title, this.terminationMaxRows);
+		}
 	}
 
 	@Override
@@ -508,6 +505,7 @@ public class DefaultTouch implements Touch {
 	@Override
 	public void setTerminationMaxLeads(int terminationMaxLeads) {
 		checkState(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
+		checkState(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
 		this.terminationMaxLeads = Optional.of(terminationMaxLeads);
 		log.info("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
 	}

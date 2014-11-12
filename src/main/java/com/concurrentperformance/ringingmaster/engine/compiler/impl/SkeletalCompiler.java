@@ -61,10 +61,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 
 	public SkeletalCompiler(Touch touch, String logPreamble) {
 		checkArgument(touch.getAllNotations().size() > 0, "touch must have at least one notation");
-		checkState(touch.getTerminationMaxRows().isPresent() ||
-				touch.getTerminationMaxLeads().isPresent() ||
-				touch.getTerminationSpecificRow().isPresent(),
-				"touch must have one or more termination criteria set of (max leads, max row, or specific row)");
+
 		try {
 			this.touch = new ImmutableTouch(touch.clone());
 		} catch (CloneNotSupportedException e) {
@@ -242,9 +239,8 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	}
 
 	private void checkTerminationMaxRows(MethodRow newRow) {
-		if (touch.getTerminationMaxRows().isPresent() &&
-				newRow.getRowNumber() >= touch.getTerminationMaxRows().get()) {
-			terminate(ProofTerminationReason.ROW_COUNT, touch.getTerminationMaxRows().get().toString());
+		if (newRow.getRowNumber() >= touch.getTerminationMaxRows()) {
+			terminate(ProofTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()));
 		}
 	}
 

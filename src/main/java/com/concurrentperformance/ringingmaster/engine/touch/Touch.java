@@ -19,6 +19,11 @@ import java.util.Set;
 @NotThreadSafe
 public interface Touch extends Cloneable {
 
+	public static final int START_AT_ROW_MAX = 10000;
+	public static final int TERMINATION_MAX_ROWS_SAFETY_VALVE = 10000;
+	public static final int TERMINATION_MAX_ROWS_MAX = 10000000;
+	public static final int TERMINATION_MAX_LEADS_MAX = 10000;
+
 	Touch clone() throws CloneNotSupportedException;
 
 	String getTitle();
@@ -69,9 +74,8 @@ public interface Touch extends Cloneable {
 	void setStartNotation(NotationBody startNotation);
 	void removeStartNotation();
 
-	Optional<Integer> getTerminationMaxRows();
+	int getTerminationMaxRows();
 	void setTerminationMaxRows(int terminationMaxRows);
-	void removeTerminationMaxRows();
 
 	Optional<Integer> getTerminationMaxLeads();
 	void setTerminationMaxLeads(int terminationMaxLeads);
