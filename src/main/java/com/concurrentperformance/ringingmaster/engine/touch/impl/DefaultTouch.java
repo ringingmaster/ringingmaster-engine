@@ -66,6 +66,7 @@ public class DefaultTouch implements Touch {
 
 	private Integer terminationMaxRows;
 	private Optional<Integer> terminationMaxLeads;
+	private Optional<Integer> terminationMaxParts;
 	private Optional<MethodRow> terminationSpecificRow;
 
 	private final Grid<TouchCell> cells;
@@ -97,6 +98,7 @@ public class DefaultTouch implements Touch {
 
 		terminationMaxRows = TERMINATION_MAX_ROWS_SAFETY_VALVE;
 		terminationMaxLeads = Optional.absent();
+		terminationMaxParts = Optional.absent();
 		terminationSpecificRow = Optional.absent();
 
 		cells = new DefaultGrid<>(FACTORY, 1, 1);
@@ -126,8 +128,9 @@ public class DefaultTouch implements Touch {
 		touchClone.startStroke = this.startStroke;
 		touchClone.startNotation = this.startNotation;
 
-		touchClone.terminationMaxLeads = this.terminationMaxLeads;
 		touchClone.terminationMaxRows = this.terminationMaxRows;
+		touchClone.terminationMaxLeads = this.terminationMaxLeads;
+		touchClone.terminationMaxParts = this.terminationMaxParts;
 		touchClone.terminationSpecificRow = this.terminationSpecificRow;
 
 		touchClone.cells.setColumnCount(this.cells.getColumnCount());
@@ -515,7 +518,26 @@ public class DefaultTouch implements Touch {
 		this.terminationMaxLeads = Optional.absent();
 		log.info("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
 	}
+	
+	@Override
+	public Optional<Integer> getTerminationMaxParts() {
+		return terminationMaxParts;
+	}
 
+	@Override
+	public void setTerminationMaxParts(int terminationMaxParts) {
+		checkState(terminationMaxParts > 0, "Termination max parts must be greater than 0");
+		checkState(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
+		this.terminationMaxParts = Optional.of(terminationMaxParts);
+		log.info("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
+	}
+
+	@Override
+	public void removeTerminationMaxParts() {
+		this.terminationMaxParts = Optional.absent();
+		log.info("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
+	}
+	
 	@Override
 	public Optional<MethodRow> getTerminationSpecificRow() {
 		return terminationSpecificRow;
@@ -696,6 +718,7 @@ public class DefaultTouch implements Touch {
 				", startNotation=" + startNotation +
 				", terminationMaxRows=" + terminationMaxRows +
 				", terminationMaxLeads=" + terminationMaxLeads +
+				", terminationMaxParts=" + terminationMaxParts +
 				", terminationSpecificRow=" + terminationSpecificRow +
 				", cells=" + cells +
 				'}';

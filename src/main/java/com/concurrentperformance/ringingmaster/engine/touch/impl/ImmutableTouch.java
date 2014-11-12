@@ -297,6 +297,21 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public Optional<Integer> getTerminationMaxParts() {
+		return touch.getTerminationMaxParts();
+	}
+
+	@Override
+	public void setTerminationMaxParts(int terminationMaxParts) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
+	public void removeTerminationMaxParts() {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
 	public int getTerminationMaxRows() {
 		return touch.getTerminationMaxRows();
 	}

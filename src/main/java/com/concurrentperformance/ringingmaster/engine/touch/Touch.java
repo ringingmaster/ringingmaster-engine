@@ -23,6 +23,7 @@ public interface Touch extends Cloneable {
 	public static final int TERMINATION_MAX_ROWS_SAFETY_VALVE = 10000;
 	public static final int TERMINATION_MAX_ROWS_MAX = 10000000;
 	public static final int TERMINATION_MAX_LEADS_MAX = 10000;
+	public static final int TERMINATION_MAX_PARTS_MAX = 10000;
 
 	Touch clone() throws CloneNotSupportedException;
 
@@ -80,6 +81,10 @@ public interface Touch extends Cloneable {
 	Optional<Integer> getTerminationMaxLeads();
 	void setTerminationMaxLeads(int terminationMaxLeads);
 	void removeTerminationMaxLeads();
+
+	Optional<Integer> getTerminationMaxParts();
+	void setTerminationMaxParts(int terminationMaxParts);
+	void removeTerminationMaxParts();
 
 	Optional<MethodRow> getTerminationSpecificRow();
 	void setTerminationSpecificRow(MethodRow terminationSpecificRow);
