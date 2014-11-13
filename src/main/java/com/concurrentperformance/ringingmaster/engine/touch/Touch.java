@@ -20,10 +20,12 @@ import java.util.Set;
 public interface Touch extends Cloneable {
 
 	public static final int START_AT_ROW_MAX = 10000;
-	public static final int TERMINATION_MAX_ROWS_SAFETY_VALVE = 10000;
+	public static final int TERMINATION_MAX_ROWS_INITIAL_VALUE = 10000;
 	public static final int TERMINATION_MAX_ROWS_MAX = 10000000;
 	public static final int TERMINATION_MAX_LEADS_MAX = 10000;
 	public static final int TERMINATION_MAX_PARTS_MAX = 10000;
+	public static final int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE = 2;
+	public static final int TERMINATION_CIRCULAR_TOUCH_MAX = 100000;
 
 	Touch clone() throws CloneNotSupportedException;
 
@@ -85,6 +87,10 @@ public interface Touch extends Cloneable {
 	Optional<Integer> getTerminationMaxParts();
 	void setTerminationMaxParts(int terminationMaxParts);
 	void removeTerminationMaxParts();
+
+	Optional<Integer> getTerminationCircularTouch();
+	void setTerminationCircularTouch(int terminationCircularTouch);
+	void removeTerminationCircularTouch();
 
 	Optional<MethodRow> getTerminationSpecificRow();
 	void setTerminationSpecificRow(MethodRow terminationSpecificRow);

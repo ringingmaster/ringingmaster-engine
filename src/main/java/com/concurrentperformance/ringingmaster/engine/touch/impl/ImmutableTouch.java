@@ -312,6 +312,21 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public Optional<Integer> getTerminationCircularTouch() {
+		return touch.getTerminationCircularTouch();
+	}
+
+	@Override
+	public void setTerminationCircularTouch(int terminationCircularTouch) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
+	public void removeTerminationCircularTouch() {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
 	public int getTerminationMaxRows() {
 		return touch.getTerminationMaxRows();
 	}

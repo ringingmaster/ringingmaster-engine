@@ -67,6 +67,7 @@ public class DefaultTouch implements Touch {
 	private Integer terminationMaxRows;
 	private Optional<Integer> terminationMaxLeads;
 	private Optional<Integer> terminationMaxParts;
+	private Optional<Integer> terminationCircularTouch;
 	private Optional<MethodRow> terminationSpecificRow;
 
 	private final Grid<TouchCell> cells;
@@ -96,9 +97,10 @@ public class DefaultTouch implements Touch {
 		startStroke = Stroke.BACKSTROKE;
 		startNotation = Optional.absent();
 
-		terminationMaxRows = TERMINATION_MAX_ROWS_SAFETY_VALVE;
+		terminationMaxRows = TERMINATION_MAX_ROWS_INITIAL_VALUE;
 		terminationMaxLeads = Optional.absent();
 		terminationMaxParts = Optional.absent();
+		terminationCircularTouch = Optional.of(TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE);
 		terminationSpecificRow = Optional.absent();
 
 		cells = new DefaultGrid<>(FACTORY, 1, 1);
@@ -131,6 +133,7 @@ public class DefaultTouch implements Touch {
 		touchClone.terminationMaxRows = this.terminationMaxRows;
 		touchClone.terminationMaxLeads = this.terminationMaxLeads;
 		touchClone.terminationMaxParts = this.terminationMaxParts;
+		touchClone.terminationCircularTouch = this.terminationCircularTouch;
 		touchClone.terminationSpecificRow = this.terminationSpecificRow;
 
 		touchClone.cells.setColumnCount(this.cells.getColumnCount());
@@ -537,7 +540,26 @@ public class DefaultTouch implements Touch {
 		this.terminationMaxParts = Optional.absent();
 		log.info("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
 	}
-	
+
+	@Override
+	public Optional<Integer> getTerminationCircularTouch() {
+		return terminationCircularTouch;
+	}
+
+	@Override
+	public void setTerminationCircularTouch(int terminationCircularTouch) {
+		checkState(terminationCircularTouch > 0, "Termination max parts must be greater than 0");
+		checkState(terminationCircularTouch <= TERMINATION_CIRCULAR_TOUCH_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_CIRCULAR_TOUCH_MAX);
+		this.terminationCircularTouch = Optional.of(terminationCircularTouch);
+		log.info("[{}] Set termination circular touch to [{}]", this.title, this.terminationCircularTouch);
+	}
+
+	@Override
+	public void removeTerminationCircularTouch() {
+		this.terminationCircularTouch = Optional.absent();
+		log.info("[{}] Set termination circular touch to [{}]", this.title, this.terminationCircularTouch);
+	}
+
 	@Override
 	public Optional<MethodRow> getTerminationSpecificRow() {
 		return terminationSpecificRow;
@@ -719,6 +741,7 @@ public class DefaultTouch implements Touch {
 				", terminationMaxRows=" + terminationMaxRows +
 				", terminationMaxLeads=" + terminationMaxLeads +
 				", terminationMaxParts=" + terminationMaxParts +
+				", terminationCircularTouch=" + terminationCircularTouch +
 				", terminationSpecificRow=" + terminationSpecificRow +
 				", cells=" + cells +
 				'}';
