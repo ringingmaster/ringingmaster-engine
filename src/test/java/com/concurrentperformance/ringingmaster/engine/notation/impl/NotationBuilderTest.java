@@ -279,18 +279,57 @@ public class NotationBuilderTest {
 		assertEquals("Bob", notation.getDefaultCall().getName());
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void addingNotationWithHigherPlacesThrows() {
-		fixture	.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+	@Test
+	public void addingNotationWithEmptyPlacesExcludesPlaces() {
+		NotationBody notation = fixture
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setUnfoldedNotationShorthand("")
+				.build();
+
+		assertEquals(0, notation.getRowCount());
+	}
+	@Test
+	public void addingNotationWithHigherPlacesExcludesPlaces() {
+		NotationBody notation = fixture
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
 				.setUnfoldedNotationShorthand("18")
 				.build();
+
+		assertEquals("", notation.getNotationDisplayString(false));
+		assertEquals(0, notation.getRowCount());
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void addingNotationWithHigherLeadEndThrows() {
-		fixture	.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
-				.setUnfoldedNotationShorthand("16")
-				.setUnfoldedNotationShorthand("18")
+	@Test
+	public void addingNotationWithEmptyLeadEndBuildsCorrectRowCount() {
+		NotationBody notation = fixture
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setFoldedPalindromeNotationShorthand("16", "")
 				.build();
+
+		assertEquals("16", notation.getNotationDisplayString(false));
+		assertEquals(1, notation.getRowCount());
 	}
+
+	@Test
+	public void addingNotationWithHigherLeadEndExcludesPlaces() {
+		NotationBody notation = fixture
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setFoldedPalindromeNotationShorthand("16","18")
+				.build();
+
+		assertEquals("16", notation.getNotationDisplayString(false));
+		assertEquals(1, notation.getRowCount());
+	}
+
+	@Test
+	public void addingNotationMultiLeadEndBuildsMultiRowLeadEnd() {
+		NotationBody notation = fixture
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setFoldedPalindromeNotationShorthand("16","x.14")
+				.build();
+
+		assertEquals("16,-.14", notation.getNotationDisplayString(false));
+		assertEquals(3, notation.getRowCount());
+	}
+
 }

@@ -39,18 +39,12 @@ public class NotationBuilderHelper {
 
 			// 2) Then add the elements in reverse, starting with the penultimate notation
 			final List<NotationRow> notationWithoutPenultimate = notationRows.subList(0, notationRows.size()-1);
-			final List<NotationRow> notationElementsCopy = new ArrayList<NotationRow>(notationWithoutPenultimate);
+			final List<NotationRow> notationElementsCopy = new ArrayList<>(notationWithoutPenultimate);
 			Collections.reverse(notationElementsCopy);
 			normalisedNotationRows.addAll(notationElementsCopy);
 
 			// 3) Add Lead End elements
 			normalisedNotationRows.addAll(leadEndRows);
-
-			// 4) Then add the lead head elements in reverse, starting with the penultimate notation
-			final List<NotationRow> leadHeadNotationWithoutPenultimate = leadEndRows.subList(0, leadEndRows.size()-1);
-			final List<NotationRow> leadHeadNotationElementsCopy = new ArrayList<NotationRow>(leadHeadNotationWithoutPenultimate);
-			Collections.reverse(leadHeadNotationElementsCopy);
-			normalisedNotationRows.addAll(leadHeadNotationElementsCopy);
 		}
 
 		return Collections.unmodifiableList(normalisedNotationRows);

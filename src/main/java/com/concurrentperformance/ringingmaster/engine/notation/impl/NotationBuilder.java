@@ -138,8 +138,7 @@ public class NotationBuilder {
 	 * @param notationShorthand
 	 */
 	public NotationBuilder setUnfoldedNotationShorthand(final String notationShorthand) {
-		this.notationShorthand = checkNotNull(notationShorthand, "foldedPalindromeNotationShorthand must not be null");
-		checkArgument(notationShorthand.length() > 0, "foldedPalindromeNotationShorthand must not be empty");
+		this.notationShorthand = checkNotNull(notationShorthand, "unfoldedNotationShorthand must not be null");
 		foldedPalindrome = false;
 		return this;
 	}
@@ -156,7 +155,7 @@ public class NotationBuilder {
 		this.notationShorthand = checkNotNull(foldedPalindromeNotationShorthand, "foldedPalindromeNotationShorthand must not be null");
 		checkArgument(foldedPalindromeNotationShorthand.length() > 0, "foldedPalindromeNotationShorthand must not be empty");
 		this.leadEndShorthand = checkNotNull(leadEndShorthand, "leadEndShorthand must not be null");
-		checkArgument(leadEndShorthand.length() > 0, "leadEndShorthand must not be empty");
+		//checkArgument(leadEndShorthand.length() > 0, "leadEndShorthand must not be empty");
 		foldedPalindrome = true;
 		return this;
 	}
