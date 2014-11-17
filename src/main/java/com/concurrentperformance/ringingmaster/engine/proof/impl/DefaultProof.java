@@ -21,13 +21,15 @@ public class DefaultProof implements Proof {
 	private final ProofTerminationReason terminationReason;
 	private final Method createdMethod;
 	private final Analysis analysis;
+	private final long proofTime;
 
 
-	public DefaultProof(Touch touch, ProofTerminationReason terminationReason, Method createdMethod, Analysis analysis) {
+	public DefaultProof(Touch touch, ProofTerminationReason terminationReason, Method createdMethod, Analysis analysis, long proofTime) {
 		this.touch = checkNotNull(touch, "touch must not be null");
 		this.terminationReason = checkNotNull(terminationReason, "terminationReason must not be null");
 		this.createdMethod = createdMethod; // createdMethod can be null when termination reason is INVALID_TOUCH
 		this.analysis = analysis; //analysis can be null when not requested
+		this.proofTime = proofTime;
 	}
 
 	@Override
@@ -48,5 +50,10 @@ public class DefaultProof implements Proof {
 	@Override
 	public Analysis getAnalysis() {
 		return analysis;
+	}
+
+	@Override
+	public long getProofTime() {
+		return proofTime;
 	}
 }

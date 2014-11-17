@@ -14,23 +14,17 @@ import com.concurrentperformance.ringingmaster.engine.touch.Touch;
 @Immutable
 public interface Proof {
 
-	/** Get the COPY of the {@link Touch} as it was when the
+	/**
+	 * A **COPY** of the {@link Touch} as it was when the
 	 * proof was requested.
 	 */
 	Touch getTouch();
 
-	/**
-	 * Get the created method.
-	 */
 	Method getCreatedMethod();
 
-	/**
-	 * Get the reason for no more rows being created.
-	 */
 	ProofTerminationReason getTerminationReason();
 
-	/**
-	 * Get the analysis of the created touch.
-	 */
 	Analysis getAnalysis();
+
+	long getProofTime();
 }

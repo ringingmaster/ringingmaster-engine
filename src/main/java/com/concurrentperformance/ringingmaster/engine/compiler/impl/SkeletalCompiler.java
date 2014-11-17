@@ -88,9 +88,9 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 				compileAnalysis();
 			}
 		}
-		proof = new DefaultProof(touch, terminationReason, method, analysis);
-		long duration = System.currentTimeMillis() - start;
-		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), duration);
+		long proofTime = System.currentTimeMillis() - start;
+		proof = new DefaultProof(touch, terminationReason, method, analysis, proofTime);
+		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), proofTime);
 		return proof;
 	}
 
