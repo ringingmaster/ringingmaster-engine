@@ -15,7 +15,9 @@ import com.concurrentperformance.ringingmaster.engine.touch.TouchCell;
 import com.concurrentperformance.ringingmaster.engine.touch.TouchDefinition;
 import com.concurrentperformance.ringingmaster.engine.touch.TouchElement;
 import com.concurrentperformance.ringingmaster.engine.touch.TouchType;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.jcip.annotations.NotThreadSafe;
@@ -270,8 +272,12 @@ public class DefaultTouch implements Touch {
 		// Check duplicate name
 		for (NotationBody existingNotation : notations) {
 			if (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells() &&
-				existingNotation.getName().equals(notationToAdd.getName())) {
+				Objects.equal(existingNotation.getName(), notationToAdd.getName())) {
 				throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "] as it has a duplicate name to existing notation [" + existingNotation + "]");
+			}
+			if (!Strings.isNullOrEmpty(notationToAdd.getSpliceIdentifier()) &&
+				Objects.equal(existingNotation.getSpliceIdentifier(), notationToAdd.getSpliceIdentifier())) {
+				throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "] as it has a duplicate splice identifier to existing notation [" + existingNotation + "]");
 			}
 		}
 

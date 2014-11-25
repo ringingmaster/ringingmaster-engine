@@ -47,7 +47,7 @@ public class NotationBuilder {
 	private boolean foldedPalindrome = false;
 	private List<NotationCallBuilder> notationCallBuilders = new ArrayList<>();
 	private String defaultCallName = "";
-	private String spliceIdentifier = "";
+	private String spliceIdentifier;
 	private Set<Integer> callInitiationRows = new HashSet<>();
 	private Set<NotationMethodCallingPosition> methodCallingPositions = new HashSet<>();
 

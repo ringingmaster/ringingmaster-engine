@@ -1,5 +1,10 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
@@ -8,12 +13,6 @@ import net.jcip.annotations.Immutable;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -62,7 +61,7 @@ public class DefaultNotationBody extends PlainCourseNotationBody implements Nota
 		this.defaultCall = defaultCall;
 		this.callInitiationRow = ImmutableSortedSet.<Integer>naturalOrder().addAll(checkNotNull(callInitiationRow)).build();
 		this.methodBasedCallingPositions = ImmutableSortedSet.<NotationMethodCallingPosition>naturalOrder().addAll(checkNotNull(methodBasedCallingPositions)).build();
-		this.spliceIdentifier = checkNotNull(spliceIdentifier, "spliceIdentifier must not be null");
+		this.spliceIdentifier = spliceIdentifier;
 	}
 
 	@Override
