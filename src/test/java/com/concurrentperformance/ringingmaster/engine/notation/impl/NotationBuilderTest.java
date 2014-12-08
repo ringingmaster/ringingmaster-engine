@@ -306,7 +306,7 @@ public class NotationBuilderTest {
 				.setFoldedPalindromeNotationShorthand("16", "")
 				.build();
 
-		assertEquals("16", notation.getNotationDisplayString(false));
+		assertEquals("16,", notation.getNotationDisplayString(false)); //NOTE: The comma on the end of the 16 indicates folded notation without a lead end
 		assertEquals(1, notation.getRowCount());
 	}
 
@@ -317,7 +317,7 @@ public class NotationBuilderTest {
 				.setFoldedPalindromeNotationShorthand("16","18")
 				.build();
 
-		assertEquals("16", notation.getNotationDisplayString(false));
+		assertEquals("16,", notation.getNotationDisplayString(false)); //NOTE: The comma on the end of the 16 indicates folded notation without a lead end
 		assertEquals(1, notation.getRowCount());
 	}
 

@@ -418,7 +418,7 @@ public class DefaultTouchTest {
 				.setFoldedPalindromeNotationShorthand("x14", "12")
 				.addCall("Bob", "-", "14", true)
 				.addCall("Single", "s", "1234", false)
-				.setSpliceIdentifier("p")
+				.setSpliceIdentifier("l")
 				.build();
 	}
 
