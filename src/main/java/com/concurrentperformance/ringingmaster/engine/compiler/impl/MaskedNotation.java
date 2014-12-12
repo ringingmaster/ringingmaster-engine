@@ -1,18 +1,17 @@
 package com.concurrentperformance.ringingmaster.engine.compiler.impl;
 
-import com.google.common.base.Optional;
-
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedSet;
-
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
+import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -85,6 +84,16 @@ public class MaskedNotation implements NotationBody {
 	@Override
 	public NotationMethodCallingPosition findMethodBasedCallingPositionByName(String callingPositionName) {
 		return currentNotation.findMethodBasedCallingPositionByName(callingPositionName);
+	}
+
+	@Override
+	public String getRawNotationDisplayString(boolean concise) {
+		return currentNotation.getRawNotationDisplayString(concise);
+	}
+
+	@Override
+	public String getRawLeadEndDisplayString(boolean concise) {
+		return currentNotation.getRawLeadEndDisplayString(concise);
 	}
 
 	@Override

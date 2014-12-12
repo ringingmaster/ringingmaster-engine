@@ -66,4 +66,9 @@ public interface NotationBody extends Notation {
 	 */
 	NotationMethodCallingPosition findMethodBasedCallingPositionByName(String callingPositionName);
 
+
+	String getRawNotationDisplayString(boolean concise);
+
+	String getRawLeadEndDisplayString(boolean concise);
+
 }

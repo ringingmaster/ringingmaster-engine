@@ -106,4 +106,9 @@ public enum NumberOfBells implements Iterable<Bell> {
 			}
 		};
 	}
+
+	@Override
+	public String toString() {
+		return getDisplayString();
+	}
 }

@@ -7,6 +7,7 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
+import com.google.common.base.Strings;
 import net.jcip.annotations.NotThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +65,8 @@ public class NotationBuilder {
 	 * @return NotationBody, built to the set values.
 	 */
 	public NotationBody build() {
-		checkState(name != null, "name must not be null");
-		checkState(notationShorthand != null, "set either folded palindrome, or unfolded standard notation");
+		checkState(!Strings.isNullOrEmpty(name), "Please enter a name");
+		checkState(notationShorthand != null, "Please enter a notation");
 
 		final List<NotationRow> notationElements = NotationBuilderHelper.getValidatedRowsFromShorthand(notationShorthand, numberOfWorkingBells);
 		final List<NotationRow> leadEndElements = NotationBuilderHelper.getValidatedRowsFromShorthand(leadEndShorthand, numberOfWorkingBells);
@@ -113,8 +114,8 @@ public class NotationBuilder {
 	 * @param name
 	 */
 	public NotationBuilder setName(final String name) {
-		this.name = checkNotNull(name, "name must not be null");
-		checkArgument(name.length() > 0, "name must not be empty");
+		checkState(!Strings.isNullOrEmpty(name), "Please supply a valid name");
+		this.name = name;
 		return this;
 	}
 

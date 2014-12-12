@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Stephen Lake
  */
 @Immutable
-public class DefaultNotationBody extends PlainCourseNotationBody implements NotationBody {
+public class DefaultNotationBody extends DefaultNotation implements NotationBody {
 
 	/** The raw NotationRow's - only contains half the notation elements for folded palindrome notations */
 	private final List<NotationRow> notationRows;
@@ -62,6 +62,11 @@ public class DefaultNotationBody extends PlainCourseNotationBody implements Nota
 		this.callInitiationRow = ImmutableSortedSet.<Integer>naturalOrder().addAll(checkNotNull(callInitiationRow)).build();
 		this.methodBasedCallingPositions = ImmutableSortedSet.<NotationMethodCallingPosition>naturalOrder().addAll(checkNotNull(methodBasedCallingPositions)).build();
 		this.spliceIdentifier = spliceIdentifier;
+	}
+
+	@Override
+	public String getNameIncludingNumberOfBells() {
+		return getName() + " " + getNumberOfWorkingBells().getName();
 	}
 
 	@Override
@@ -109,6 +114,16 @@ public class DefaultNotationBody extends PlainCourseNotationBody implements Nota
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public String getRawNotationDisplayString(boolean concise) {
+		return getAsDisplayString(notationRows, concise);
+	}
+
+	@Override
+	public String getRawLeadEndDisplayString(boolean concise) {
+		return getAsDisplayString(leadEndRows, concise);
 	}
 
 	@Override
