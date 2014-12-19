@@ -38,10 +38,12 @@ public class NotationBuilderHelper {
 		if (foldedPalindrome) {
 
 			// 2) Then add the elements in reverse, starting with the penultimate notation
-			final List<NotationRow> notationWithoutPenultimate = notationRows.subList(0, notationRows.size()-1);
-			final List<NotationRow> notationElementsCopy = new ArrayList<>(notationWithoutPenultimate);
-			Collections.reverse(notationElementsCopy);
-			normalisedNotationRows.addAll(notationElementsCopy);
+			if (notationRows.size() > 0) {
+				final List<NotationRow> notationWithoutPenultimate = notationRows.subList(0, notationRows.size() - 1);
+				final List<NotationRow> notationElementsCopy = new ArrayList<>(notationWithoutPenultimate);
+				Collections.reverse(notationElementsCopy);
+				normalisedNotationRows.addAll(notationElementsCopy);
+			}
 
 			// 3) Add Lead End elements
 			normalisedNotationRows.addAll(leadEndRows);

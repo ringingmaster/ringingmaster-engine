@@ -139,7 +139,7 @@ public class MaskedNotation implements NotationBody {
 
 	@Override
 	public String getNameIncludingNumberOfBells() {
-		throw new UnsupportedOperationException();
+		return currentNotation.getNameIncludingNumberOfBells();
 	}
 
 	@Override

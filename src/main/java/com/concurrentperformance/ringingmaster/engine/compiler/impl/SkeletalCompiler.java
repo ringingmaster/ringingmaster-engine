@@ -119,9 +119,13 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		MaskedNotation maskedNotation = new MaskedNotation(touch.getSingleMethodActiveNotation());
 
 		final List<MethodLead> leads = new ArrayList<>();
-		while(!isTerminated()) {
+
+		if (maskedNotation.getRowCount() == 0) {
+			terminate(ProofTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
+		}
+		while (!isTerminated()) {
 			log.info("{}   - lead [{}]", logPreamble, leads.size());
-			final MethodLead lead = compileLead(maskedNotation , startChange);
+			final MethodLead lead = compileLead(maskedNotation, startChange);
 			leads.add(lead);
 			startChange = lead.getLastRow();
 			checkTerminationMaxLeads(leads);

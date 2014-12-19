@@ -280,7 +280,7 @@ public class NotationBuilderTest {
 	}
 
 	@Test
-	public void addingNotationWithEmptyPlacesExcludesPlaces() {
+	public void canBuildEmptyUnfolded() {
 		NotationBody notation = fixture
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
 				.setUnfoldedNotationShorthand("")
@@ -288,6 +288,18 @@ public class NotationBuilderTest {
 
 		assertEquals(0, notation.getRowCount());
 	}
+
+	@Test
+	public void canBuildEmptyFoldedPalindrome() {
+		NotationBody notation = fixture
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setFoldedPalindromeNotationShorthand("", "")
+				.build();
+
+		assertEquals(",", notation.getNotationDisplayString(false)); //NOTE: The comma on the end of the 16 indicates folded notation without a lead end
+		assertEquals(0, notation.getRowCount());
+	}
+
 	@Test
 	public void addingNotationWithHigherPlacesExcludesPlaces() {
 		NotationBody notation = fixture

@@ -43,6 +43,36 @@ public class DefaultProof implements Proof {
 	}
 
 	@Override
+	public String getTerminateReasonDisplayString() {
+		switch(getTerminationReason()) {
+
+			case INVALID_TOUCH:
+				return "";
+			case ROW_COUNT:
+				return "Row limit (" + getCreatedMethod().getRowCount() + ")";
+			case LEAD_COUNT:
+				return "Lead limit (" + getCreatedMethod().getLeadCount() + ")";
+			case SPECIFIED_ROW:
+				return "Change (" + getCreatedMethod().getLastRow().getDisplayString(true) + ")";
+			case EMPTY_PARTS:
+				return  "Aborted - Empty parts found";
+			// TODO this is from C++
+//			case TR_PARTS:
+//				str.Format("Part limit (%d)", method->getPartCount());
+//				addLine("Termination:", str, RGB(255, 120, 255));
+//				break;
+//
+//			case TR_CIRCLE:
+//				addLine("Termination:", "Aborted - Circular touch", RGB(255, 120, 120));
+//				break;
+
+			default:
+				throw new RuntimeException("Please code for termination reason [" + getTerminationReason() + "]");
+		}
+	}
+
+
+	@Override
 	public Method getCreatedMethod() {
 		return createdMethod;
 	}

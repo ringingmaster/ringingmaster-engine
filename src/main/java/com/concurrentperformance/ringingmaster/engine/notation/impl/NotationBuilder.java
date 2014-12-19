@@ -154,7 +154,7 @@ public class NotationBuilder {
 	 */
 	public NotationBuilder setFoldedPalindromeNotationShorthand(final String foldedPalindromeNotationShorthand, final String leadEndShorthand) {
 		this.notationShorthand = checkNotNull(foldedPalindromeNotationShorthand, "foldedPalindromeNotationShorthand must not be null");
-		checkArgument(foldedPalindromeNotationShorthand.length() > 0, "foldedPalindromeNotationShorthand must not be empty");
+//		checkArgument(foldedPalindromeNotationShorthand.length() > 0, "Please supply a notation");
 		this.leadEndShorthand = checkNotNull(leadEndShorthand, "leadEndShorthand must not be null");
 		//checkArgument(leadEndShorthand.length() > 0, "leadEndShorthand must not be empty");
 		foldedPalindrome = true;
@@ -267,7 +267,7 @@ public class NotationBuilder {
 
 	private Method buildPlainCourse(List<NotationRow> normalisedNotationElements) {
 		NotationBody plainCourseNotation = new PlainCourseNotationBody(name, numberOfWorkingBells, normalisedNotationElements);
-		return PlainCourseHelper.buildPlainCourse(plainCourseNotation, "[NotationBuilder] ");
+		return PlainCourseHelper.buildPlainCourse(plainCourseNotation, "[NotationBuilder] ", false).getCreatedMethod();
 	}
 
 	private NotationCall getDefaultNotationCall(SortedSet<NotationCall> notationCalls) {

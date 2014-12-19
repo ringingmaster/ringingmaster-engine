@@ -16,11 +16,18 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class PlainCourseHelper {
 
-	public static Method buildPlainCourse(NotationBody notation, String logPreamble) {
+	public static Proof buildPlainCourse(NotationBody notation, String logPreamble, boolean withAnalysis) {
 		Touch plainCourseTouch = TouchBuilder.buildPlainCourseInstance(notation);
-		Proof proof = CompilerFactory.getInstance(plainCourseTouch,  logPreamble).compile(false);
-		checkState(ProofTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(), "Plain course must terminate with [" + ProofTerminationReason.SPECIFIED_ROW + "] but actually terminated with [" + proof.getTerminationReason());
-		return proof.getCreatedMethod();
+		Proof proof = CompilerFactory.getInstance(plainCourseTouch,  logPreamble).compile(withAnalysis);
+		Method createdMethod = proof.getCreatedMethod();
+
+		checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
+		checkState(ProofTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),
+				"Plain course must terminate with row [%s]" +
+						" but actually terminated with [%s]",
+				plainCourseTouch.getTerminationSpecificRow().get().getDisplayString(true),
+				proof.getTerminateReasonDisplayString());
+		return proof;
 	}
 
 }

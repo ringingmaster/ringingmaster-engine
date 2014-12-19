@@ -24,6 +24,8 @@ public interface Proof {
 
 	ProofTerminationReason getTerminationReason();
 
+	String getTerminateReasonDisplayString();
+
 	Analysis getAnalysis();
 
 	long getProofTime();

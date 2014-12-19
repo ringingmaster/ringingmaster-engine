@@ -41,6 +41,9 @@ public class TouchBuilder {
 		touch.addNotation(notationBody);
 		touch.setTouchType(TouchType.LEAD_BASED);
 		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
+		touch.setTerminationMaxLeads(Touch.TERMINATION_MAX_LEADS_MAX);
+		touch.setTerminationMaxRows(Touch.TERMINATION_MAX_ROWS_MAX);
+
 		return touch;
 	}
 }
