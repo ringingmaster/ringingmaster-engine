@@ -37,6 +37,11 @@ public interface NotationBody extends Notation {
 	boolean isFoldedPalindrome();
 
 	/**
+	 * Get the calculated lead head code
+	 * */
+	String getLeadHeadCode();
+
+	/**
 	 * Get all the the calls attached to this notation.
 	 */
 	Set<NotationCall> getCalls();

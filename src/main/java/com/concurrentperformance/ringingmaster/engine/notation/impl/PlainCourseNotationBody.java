@@ -33,6 +33,11 @@ public class PlainCourseNotationBody extends DefaultNotation implements Notation
 	}
 
 	@Override
+	public String getLeadHeadCode()  {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Set<NotationCall> getCalls() {
 		return Collections.emptySet();
 	}

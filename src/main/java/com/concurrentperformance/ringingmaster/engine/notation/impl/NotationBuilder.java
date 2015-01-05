@@ -79,6 +79,7 @@ public class NotationBuilder {
 					notationElements,
 					foldedPalindrome,
 					Collections.emptyList(),
+					"",
 					Collections.emptySet(),
 					null,
 					Collections.emptySet(),
@@ -87,11 +88,12 @@ public class NotationBuilder {
 		}
 		final Method plainCourse = buildPlainCourse(normalisedNotationElements);
 		final int changesCountInPlainLead = plainCourse.getLead(0).getRowCount() - 1; // minus 1 as first and last change are shared between leads.
-		final SortedSet<NotationCall> notationCalls = buildCalls(notationCallBuilders);
+		final SortedSet<NotationCall> notationCalls = buildCalls();
 		final NotationCall defaultNotationCall = getDefaultNotationCall(notationCalls);
 		final Set<Integer> validatedCallInitiationRows = getValidatedCallInitiationRows(callInitiationRows, changesCountInPlainLead);
 		final Set<NotationMethodCallingPosition> validatedNotationMethodCallingPositions =
 				getValidatedMethodCallingPositions(validatedCallInitiationRows, methodCallingPositions, plainCourse.getLeadCount());
+		String leadHeadCode = LeadHeadCalculator.calculateLeadHeadCode(plainCourse.getLead(0));
 
 		return new DefaultNotationBody(name,
 				numberOfWorkingBells,
@@ -99,6 +101,7 @@ public class NotationBuilder {
 				notationElements,
 				foldedPalindrome,
 				leadEndElements,
+				leadHeadCode,
 				notationCalls,
 				defaultNotationCall,
 				validatedCallInitiationRows,
@@ -218,9 +221,9 @@ public class NotationBuilder {
 		return this;
 	}
 
-	private SortedSet<NotationCall> buildCalls(List<NotationCallBuilder> callBuilders) {
+	private SortedSet<NotationCall> buildCalls() {
 		SortedSet<NotationCall> notationCalls = new TreeSet<>(NotationCall.BY_NAME);
-		for (NotationCallBuilder callBuilder : callBuilders) {
+		for (NotationCallBuilder callBuilder : notationCallBuilders) {
 			NotationCall notationCall = callBuilder.build();
 			notationCalls.add(notationCall);
 		}

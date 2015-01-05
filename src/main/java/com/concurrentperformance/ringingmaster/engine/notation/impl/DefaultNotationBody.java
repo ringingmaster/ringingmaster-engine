@@ -29,9 +29,9 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 
 	/** The raw NotationRow's - only contains half the notation elements for folded palindrome notations */
 	private final List<NotationRow> notationRows;
-	private final List<NotationRow> leadEndRows;
 	private final boolean foldedPalindrome;
-
+	private final List<NotationRow> leadEndRows;
+	private final String leadHeadCode;
 	private final Set<NotationCall> notationCalls;
 	private final NotationCall defaultCall;
 	private final SortedSet<Integer> callInitiationRow;
@@ -48,6 +48,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	                    final List<NotationRow> notationRows,
 	                    final boolean foldedPalindrome,
 	                    final List<NotationRow> leadEndRows,
+	                    final String leadHeadCode,
 	                    final Set<NotationCall> notationCalls,
 	                    final NotationCall defaultCall,
 	                    final Set<Integer> callInitiationRow,
@@ -57,6 +58,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		this.notationRows = ImmutableList.<NotationRow>builder().addAll(checkNotNull(notationRows)).build();
 		this.foldedPalindrome = foldedPalindrome;
 		this.leadEndRows = ImmutableList.<NotationRow>builder().addAll(checkNotNull(leadEndRows)).build();
+		this.leadHeadCode = leadHeadCode;
 		this.notationCalls = ImmutableSet.<NotationCall>builder().addAll(checkNotNull(notationCalls)).build();
 		this.defaultCall = defaultCall;
 		this.callInitiationRow = ImmutableSortedSet.<Integer>naturalOrder().addAll(checkNotNull(callInitiationRow)).build();
@@ -72,6 +74,11 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	@Override
 	public boolean isFoldedPalindrome() {
 		return foldedPalindrome;
+	}
+
+	@Override
+	public String getLeadHeadCode() {
+		return leadHeadCode;
 	}
 
 	@Override
@@ -138,6 +145,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		buf.append(", notation=");
 		buf.append(getNotationDisplayString(false)) ;
 		buf.append(", numberOfWorkingBells=").append(getNumberOfWorkingBells());
+		buf.append(", leadHeadCode=").append(getLeadHeadCode());
 		buf.append(", calls=").append(getCalls());
 		buf.append(", defaultCall=").append(getDefaultCall());
 		buf.append(", callInitiationRow=").append(getCallInitiationRows());

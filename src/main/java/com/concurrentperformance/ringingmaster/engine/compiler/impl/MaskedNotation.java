@@ -148,6 +148,11 @@ public class MaskedNotation implements NotationBody {
 	}
 
 	@Override
+	public String getLeadHeadCode() {
+		return currentNotation.getLeadHeadCode();
+	}
+
+	@Override
 	public Set<NotationCall> getCalls() {
 		throw new UnsupportedOperationException();
 	}
