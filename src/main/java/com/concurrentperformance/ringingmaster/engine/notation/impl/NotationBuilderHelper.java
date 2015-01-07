@@ -107,7 +107,7 @@ public class NotationBuilderHelper {
 			}
 		}
 
-		return new HashSet<NotationPlace>(validatedElementsForRow);
+		return new HashSet<>(validatedElementsForRow);
 	}
 
 	private static boolean isEven(final int i) {

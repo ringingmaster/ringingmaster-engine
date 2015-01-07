@@ -26,7 +26,25 @@ public enum NumberOfBells implements Iterable<Bell> {
 	BELLS_9(9, "Caters"),
 	BELLS_10(10, "Royal"),
 	BELLS_11(11, "Cinques"),
-	BELLS_12(12, "Maximus");
+	BELLS_12(12, "Maximus"),
+	BELLS_13(13, "Sextuples"),	
+	BELLS_14(14, "Fourteen"),	
+	BELLS_15(15, "Septuples"),	
+	BELLS_16(16, "Sixteen"),		
+	BELLS_17(17, "Seventeen"),	
+	BELLS_18(18, "Eighteen"),	
+	BELLS_19(19, "Ninteen"),		
+	BELLS_20(20, "Twenty"),		
+	BELLS_21(21, "Twenty-one"),	
+	BELLS_22(22, "Twenty-two"),	
+	BELLS_23(23, "Twenty-three"),
+	BELLS_24(24, "Twenty-four"),	
+	BELLS_25(25, "Twenty-five"),	
+	BELLS_26(26, "Twenty-six"),	
+	BELLS_27(27, "Twenty-seven"),
+	BELLS_28(28, "Twenty-eight"),
+	BELLS_29(29, "Twenty-nine"),	
+	BELLS_30(30, "Thirty");
 
 	private static final NumberOfBells MAX_ITEM = values()[values().length-1];
 

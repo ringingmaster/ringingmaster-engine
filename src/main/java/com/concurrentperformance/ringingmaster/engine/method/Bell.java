@@ -23,7 +23,26 @@ public enum Bell {
 	BELL_9("9"),
 	BELL_10("0"),
 	BELL_11("E"),
-	BELL_12("T");
+	BELL_12("T"),
+	BELL_13("A"),
+	BELL_14("B"),
+	BELL_15("C"),
+	BELL_16("D"),
+	BELL_17("F"),
+	BELL_18("G"),
+	BELL_19("H"),
+	BELL_20("J"),
+	BELL_21("K"),
+	BELL_22("L"),
+	BELL_23("M"),
+	BELL_24("N"),
+	BELL_25("P"),
+	BELL_26("Q"),
+	BELL_27("R"),
+	BELL_28("S"),
+	BELL_29("U"),
+	BELL_30("V");
+
 
 	private static final Map<String, Bell> mnemonicLookup = new ConcurrentHashMap<>();
 
