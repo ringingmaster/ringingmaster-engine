@@ -70,9 +70,10 @@ public class NotationBuilder {
 
 		final List<NotationRow> notationElements = NotationBuilderHelper.getValidatedRowsFromShorthand(notationShorthand, numberOfWorkingBells);
 		final List<NotationRow> leadEndElements = NotationBuilderHelper.getValidatedRowsFromShorthand(leadEndShorthand, numberOfWorkingBells);
-		final List<NotationRow> normalisedNotationElements = NotationBuilderHelper.buildNormalisedNotationRows(notationElements, leadEndElements, foldedPalindrome);
+		List<NotationRow> normalisedNotationElements;
+		normalisedNotationElements = NotationBuilderHelper.buildNormalisedNotationRows(notationElements, leadEndElements, foldedPalindrome);
 		if (normalisedNotationElements.size() == 0) {
-			log.info("After validation, all [{}] notation elements were removed as invalid. Returning empty NotationBody. [{}],[{}], [{}]", name, notationShorthand,leadEndShorthand, numberOfWorkingBells);
+			log.info("After validation, all [{}] notation elements were removed as invalid. Returning empty NotationBody. [{}],[{}], [{}]", name, notationShorthand, leadEndShorthand, numberOfWorkingBells);
 			return new DefaultNotationBody(name,
 					numberOfWorkingBells,
 					normalisedNotationElements,
@@ -93,7 +94,7 @@ public class NotationBuilder {
 		final Set<Integer> validatedCallInitiationRows = getValidatedCallInitiationRows(callInitiationRows, changesCountInPlainLead);
 		final Set<NotationMethodCallingPosition> validatedNotationMethodCallingPositions =
 				getValidatedMethodCallingPositions(validatedCallInitiationRows, methodCallingPositions, plainCourse.getLeadCount());
-		String leadHeadCode = LeadHeadCalculator.calculateLeadHeadCode(plainCourse.getLead(0));
+		String leadHeadCode = LeadHeadCalculator.calculateLeadHeadCode(plainCourse.getLead(0), normalisedNotationElements);
 
 		return new DefaultNotationBody(name,
 				numberOfWorkingBells,

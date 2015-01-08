@@ -41,4 +41,6 @@ public interface NotationRow {
 	 * @return true, if the place is made.
 	 */
 	boolean makesPlace(int place);
+
+	boolean contains(NotationPlace notationPlace);
 }

@@ -1,14 +1,13 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 import net.jcip.annotations.Immutable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 
 /**
  * Default implementation of the NotationRow interface. Only to be constructed from
@@ -26,7 +25,7 @@ public class DefaultNotationRow implements NotationRow {
 	}
 
 	private List<NotationPlace> getSortedElements(final Set<NotationPlace> elements) {
-		final List<NotationPlace> sortedElements = new ArrayList<NotationPlace>(elements);
+		final List<NotationPlace> sortedElements = new ArrayList<>(elements);
 		Collections.sort(sortedElements);
 		return Collections.unmodifiableList(sortedElements);
 	}
@@ -44,6 +43,11 @@ public class DefaultNotationRow implements NotationRow {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean contains(NotationPlace notationPlace) {
+		return sortedElements.contains(notationPlace);
 	}
 
 	@Override
