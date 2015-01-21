@@ -31,7 +31,7 @@ public enum NumberOfBells implements Iterable<Bell> {
 	BELLS_14(14, "Fourteen"),	
 	BELLS_15(15, "Septuples"),	
 	BELLS_16(16, "Sixteen"),		
-	BELLS_17(17, "Seventeen"),	
+	BELLS_17(17, "Seventeen"),
 	BELLS_18(18, "Eighteen"),	
 	BELLS_19(19, "Ninteen"),		
 	BELLS_20(20, "Twenty"),		
