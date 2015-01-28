@@ -75,6 +75,9 @@ public class LeadHeadCalculator {
 
 	static {
 
+		addLeadHeadCode(NumberOfBells.BELLS_4, "1342", "a", "g");
+		addLeadHeadCode(NumberOfBells.BELLS_4, "1423", "f", "m");
+
 		addLeadHeadCode(NumberOfBells.BELLS_5, "12534", "a", "g");
 		addLeadHeadCode(NumberOfBells.BELLS_5, "12453", "f", "m");
 		addLeadHeadCode(NumberOfBells.BELLS_5, "13524", "p", "r");

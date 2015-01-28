@@ -28,7 +28,11 @@
   	<logger name="com.concurrentperformance.ringingmaster">
 		<level value="INFO"/>
 	</logger>
-  
+
+	<logger name="com.concurrentperformance.ringingmaster.engine">
+		<level value="WARN"/>
+	</logger>
+
   	<root>
 		<priority value="info" />
 		<appender-ref ref="CONSOLE" />

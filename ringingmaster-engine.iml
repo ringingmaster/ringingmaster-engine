@@ -42,5 +42,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="ringingmaster-method-extraction" />
   </component>
 </module>
