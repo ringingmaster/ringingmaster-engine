@@ -75,7 +75,7 @@ public enum NumberOfBells implements Iterable<Bell> {
 	}
 
 	/**
-	 * Get the actual integer number of bells. e.g. For BELLS_8 return 8
+	 * Get the 1 based integer number of bells. e.g. For BELLS_8 return 8
 	 * @return int
 	 */
 	public int getBellCount() {
