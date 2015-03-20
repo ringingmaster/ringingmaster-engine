@@ -32,17 +32,17 @@ public class LeadHeadCalculatorTest  {
 
 		long count = methodExtractor
 				.extractNotations()
-				.filter(serializableNotation -> serializableNotation.getName().startsWith("New Bob"))
-				.filter(serializableNotation -> serializableNotation.getStage() == 6)
+//				.filter(serializableNotation -> serializableNotation.getName().startsWith("New Bob"))
+				.filter(serializableNotation -> serializableNotation.getName().startsWith("Grandsire"))
+				.filter(serializableNotation -> serializableNotation.getStage() == 5)
 			    .filter(this::calculatedLeadHeadNotEqualsToSuppliedLH)
+				.peek(serializableNotation -> log.warn(serializableNotation.getName() + " " + serializableNotation.getStage()))
 				.count();
 
 		log.warn("[{}] methods calculated different to supplied LeadHead", count);
 
 	}
 
-
-	// 36 14-16-36- 36-16-14.36
 
 	boolean calculatedLeadHeadNotEqualsToSuppliedLH(SerializableNotation serializableNotation) {
 
