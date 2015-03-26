@@ -9,7 +9,6 @@ import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.proof.Proof;
 import com.concurrentperformance.ringingmaster.generated.notation.persist.SerializableNotation;
-import com.google.common.base.Strings;
 import com.ringingmaster.extraction.CentralCouncilMethodExtractor;
 import com.ringingmaster.extraction.MethodExtractor;
 import org.junit.Test;
@@ -31,8 +30,7 @@ public class LeadHeadCalculatorTest  {
 		int numberNOTOK = 0;
 
 		long count = methodExtractor
-				.extractNotations()
-//				.filter(serializableNotation -> serializableNotation.getName().startsWith("New Bob"))
+				.extractNotationsToStream()
 				.filter(serializableNotation -> serializableNotation.getName().startsWith("Grandsire"))
 				.filter(serializableNotation -> serializableNotation.getStage() == 5)
 			    .filter(this::calculatedLeadHeadNotEqualsToSuppliedLH)
@@ -50,16 +48,18 @@ public class LeadHeadCalculatorTest  {
 
 		String ccName = serializableNotation.getName();
 		int ccStage = serializableNotation.getStage();
+		boolean ccIsPalendromic = serializableNotation.isPalendromic();
 		String ccNotation = serializableNotation.getNotation();
-		String ccLeadEnd = serializableNotation.getLeadEnd();
+		String ccNotation2 = serializableNotation.getNotation2();
 		String ccLeadHead = serializableNotation.getLeadHead();
 
 		NotationBuilder notationBuilder = NotationBuilder.getInstance();
 		notationBuilder.setNumberOfWorkingBells(NumberOfBells.valueOf(ccStage));
-		if (Strings.isNullOrEmpty(ccLeadEnd)) {
+		if (!ccIsPalendromic) {
 			notationBuilder.setUnfoldedNotationShorthand(ccNotation);
 		} else {
-			notationBuilder.setFoldedPalindromeNotationShorthand(ccNotation, ccLeadEnd);
+
+			notationBuilder.setFoldedPalindromeNotationShorthand(ccNotation, ccNotation2);
 		}
 		notationBuilder.setName(ccName);
 

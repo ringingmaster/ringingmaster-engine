@@ -31,7 +31,7 @@ public class LeadHeadCalculator {
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
 
 		NotationRow lastNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
-		NotationPlace highestPlace = NotationPlace.valueOf(numberOfBells.getBellCount() -1 ); // -1 converts to zero based call to NotationPlace.valueOf
+		NotationPlace highestPlace = NotationPlace.valueOf(numberOfBells.getBellCount() -1 ); // -1 converts to zero based for call to NotationPlace.valueOf
 		boolean lastNotationRowContainsHighestPlace = lastNotationRow.contains(highestPlace);
 
 		MethodRow lastMethodRow = plainLead.getLastRow();

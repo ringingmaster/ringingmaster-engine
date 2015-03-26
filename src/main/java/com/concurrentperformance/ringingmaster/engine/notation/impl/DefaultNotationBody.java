@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
  * Default implementation of NotationBody interface. This implementation is Immutable,
@@ -28,9 +29,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class DefaultNotationBody extends DefaultNotation implements NotationBody {
 
 	/** The raw NotationRow's - only contains half the notation elements for folded palindrome notations */
-	private final List<NotationRow> notationRows;
+	private final ImmutableList<ImmutableList<NotationRow>> rawNotationRowsSets;
 	private final boolean foldedPalindrome;
-	private final List<NotationRow> leadEndRows;
 	private final String leadHeadCode;
 	private final Set<NotationCall> notationCalls;
 	private final NotationCall defaultCall;
@@ -45,9 +45,8 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	DefaultNotationBody(final String name,
 	                    final NumberOfBells numberOfWorkingBells,
 	                    final List<NotationRow> normalisedNotationElements,
-	                    final List<NotationRow> notationRows,
+	                    final List<List<NotationRow>> notationRowsSets,
 	                    final boolean foldedPalindrome,
-	                    final List<NotationRow> leadEndRows,
 	                    final String leadHeadCode,
 	                    final Set<NotationCall> notationCalls,
 	                    final NotationCall defaultCall,
@@ -55,9 +54,13 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	                    final Set<NotationMethodCallingPosition> methodBasedCallingPositions,
 	                    final String spliceIdentifier) {
 		super(name, numberOfWorkingBells, normalisedNotationElements);
-		this.notationRows = ImmutableList.<NotationRow>builder().addAll(checkNotNull(notationRows)).build();
+		ImmutableList.Builder<ImmutableList<NotationRow>> rawNotationSetsBuilder = ImmutableList.<ImmutableList<NotationRow>>builder();
+		for (List<NotationRow> notationRows : notationRowsSets) {
+			ImmutableList<NotationRow> immutableRows = ImmutableList.<NotationRow>builder().addAll(notationRows).build();
+			rawNotationSetsBuilder.add(immutableRows);
+		}
+		this.rawNotationRowsSets = rawNotationSetsBuilder.build();
 		this.foldedPalindrome = foldedPalindrome;
-		this.leadEndRows = ImmutableList.<NotationRow>builder().addAll(checkNotNull(leadEndRows)).build();
 		this.leadHeadCode = leadHeadCode;
 		this.notationCalls = ImmutableSet.<NotationCall>builder().addAll(checkNotNull(notationCalls)).build();
 		this.defaultCall = defaultCall;
@@ -84,10 +87,13 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	@Override
 	public String getNotationDisplayString(final boolean concise) {
 		final StringBuilder buf = new StringBuilder();
-		buf.append(getAsDisplayString(notationRows, concise)) ;
-		if (isFoldedPalindrome()) {
-			buf.append(",");
-			buf.append(getAsDisplayString(leadEndRows, concise));
+		boolean firstTime = true;
+		for (List<NotationRow> rawNotationRowsSet : rawNotationRowsSets) {
+			if (!firstTime) {
+				buf.append(",");
+				firstTime = false;
+			}
+			buf.append(getAsDisplayString(rawNotationRowsSet, concise)) ;
 		}
 		return buf.toString();
 	}
@@ -124,13 +130,9 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	}
 
 	@Override
-	public String getRawNotationDisplayString(boolean concise) {
-		return getAsDisplayString(notationRows, concise);
-	}
-
-	@Override
-	public String getRawLeadEndDisplayString(boolean concise) {
-		return getAsDisplayString(leadEndRows, concise);
+	public String getRawNotationDisplayString(int notationIndex, boolean concise) {
+		checkPositionIndex(notationIndex, rawNotationRowsSets.size());
+		return getAsDisplayString(rawNotationRowsSets.get(notationIndex), concise);
 	}
 
 	@Override

@@ -24,29 +24,37 @@ public class NotationBuilderHelper {
 	}
 
 	/**
-	 * Build the normalised notation. This will have all the folded palindrome symmetry
-	 * and LH if any applied
+	 * Build the normalised notation.
 	 *
 	 * @return
 	 */
-	public static List<NotationRow> buildNormalisedNotationRows(final List<NotationRow> notationRows,
-	                                                             final List<NotationRow> leadEndRows,
-	                                                             final boolean foldedPalindrome) {
+	public static List<NotationRow> buildNormalisedFullNotation(List<NotationRow> notationRows) {
 		// 1) Add the normal notation elements
 		final List<NotationRow> normalisedNotationRows = new ArrayList(notationRows);
 
-		if (foldedPalindrome) {
+		return Collections.unmodifiableList(normalisedNotationRows);
+	}
+
+	/**
+	 * Build the normalised notation. This will have all the folded palindrome symmetry applied
+	 *
+	 * @return
+	 */
+	public static List<NotationRow> buildNormalisedFoldedPalindrome(List<List<NotationRow>> notationRowsSets) {
+		final List<NotationRow> normalisedNotationRows = new ArrayList();
+
+		for (List<NotationRow> notationRows : notationRowsSets) {
+
+			// 1) Add the normal notation elements
+			normalisedNotationRows.addAll(notationRows);
 
 			// 2) Then add the elements in reverse, starting with the penultimate notation
-			if (notationRows.size() > 0) {
+			if (notationRows.size() > 1) {
 				final List<NotationRow> notationWithoutPenultimate = notationRows.subList(0, notationRows.size() - 1);
 				final List<NotationRow> notationElementsCopy = new ArrayList<>(notationWithoutPenultimate);
 				Collections.reverse(notationElementsCopy);
 				normalisedNotationRows.addAll(notationElementsCopy);
 			}
-
-			// 3) Add Lead End elements
-			normalisedNotationRows.addAll(leadEndRows);
 		}
 
 		return Collections.unmodifiableList(normalisedNotationRows);

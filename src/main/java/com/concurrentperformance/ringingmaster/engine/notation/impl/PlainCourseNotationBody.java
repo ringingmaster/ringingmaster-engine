@@ -68,12 +68,7 @@ public class PlainCourseNotationBody extends DefaultNotation implements Notation
 	}
 
 	@Override
-	public String getRawNotationDisplayString(boolean concise) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getRawLeadEndDisplayString(boolean concise) {
+	public String getRawNotationDisplayString(int notationIndex, boolean concise) {
 		throw new UnsupportedOperationException();
 	}
 

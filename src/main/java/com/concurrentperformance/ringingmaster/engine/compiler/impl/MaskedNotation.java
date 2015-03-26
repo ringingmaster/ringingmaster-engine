@@ -87,13 +87,8 @@ public class MaskedNotation implements NotationBody {
 	}
 
 	@Override
-	public String getRawNotationDisplayString(boolean concise) {
-		return currentNotation.getRawNotationDisplayString(concise);
-	}
-
-	@Override
-	public String getRawLeadEndDisplayString(boolean concise) {
-		return currentNotation.getRawLeadEndDisplayString(concise);
+	public String getRawNotationDisplayString(int notationIndex, boolean concise) {
+		return currentNotation.getRawNotationDisplayString(notationIndex, concise);
 	}
 
 	@Override

@@ -43,8 +43,7 @@ public class NotationBuilder {
 
 	private String name = "Unknown";
 	private NumberOfBells numberOfWorkingBells = NumberOfBells.BELLS_8;
-	private String notationShorthand; //null to force it to be set.
-	private String leadEndShorthand = "";
+	private final List<String> notationShorthands = new ArrayList<>();
 	private boolean foldedPalindrome = false;
 	private List<NotationCallBuilder> notationCallBuilders = new ArrayList<>();
 	private String defaultCallName = "";
@@ -66,20 +65,29 @@ public class NotationBuilder {
 	 */
 	public NotationBody build() {
 		checkState(!Strings.isNullOrEmpty(name), "Please enter a name");
-		checkState(notationShorthand != null, "Please enter a notation");
+		checkState(notationShorthands.size() > 0, "Please enter a notation");
 
-		final List<NotationRow> notationElements = NotationBuilderHelper.getValidatedRowsFromShorthand(notationShorthand, numberOfWorkingBells);
-		final List<NotationRow> leadEndElements = NotationBuilderHelper.getValidatedRowsFromShorthand(leadEndShorthand, numberOfWorkingBells);
+		final List<List<NotationRow>> notationElementsSets = new ArrayList<>();
+
+		for (String notationShorthand : notationShorthands) {
+			final List<NotationRow> notationElements = NotationBuilderHelper.getValidatedRowsFromShorthand(notationShorthand, numberOfWorkingBells);
+			notationElementsSets.add(notationElements);
+		}
+
 		List<NotationRow> normalisedNotationElements;
-		normalisedNotationElements = NotationBuilderHelper.buildNormalisedNotationRows(notationElements, leadEndElements, foldedPalindrome);
+		if (foldedPalindrome) {
+			normalisedNotationElements = NotationBuilderHelper.buildNormalisedFoldedPalindrome(notationElementsSets);
+		}
+		else {
+			normalisedNotationElements = NotationBuilderHelper.buildNormalisedFullNotation(notationElementsSets.get(0));
+		}
 		if (normalisedNotationElements.size() == 0) {
-			log.info("After validation, all [{}] notation elements were removed as invalid. Returning empty NotationBody. [{}],[{}], [{}]", name, notationShorthand, leadEndShorthand, numberOfWorkingBells);
+			log.info("After validation, all [{}] notation elements were removed as invalid. Returning empty NotationBody. [{}],[{}], [{}]", name, notationShorthands, numberOfWorkingBells);
 			return new DefaultNotationBody(name,
 					numberOfWorkingBells,
 					normalisedNotationElements,
-					notationElements,
+					notationElementsSets,
 					foldedPalindrome,
-					Collections.emptyList(),
 					"",
 					Collections.emptySet(),
 					null,
@@ -99,9 +107,8 @@ public class NotationBuilder {
 		return new DefaultNotationBody(name,
 				numberOfWorkingBells,
 				normalisedNotationElements,
-				notationElements,
+				notationElementsSets,
 				foldedPalindrome,
-				leadEndElements,
 				leadHeadCode,
 				notationCalls,
 				defaultNotationCall,
@@ -143,25 +150,33 @@ public class NotationBuilder {
 	 * @param notationShorthand
 	 */
 	public NotationBuilder setUnfoldedNotationShorthand(final String notationShorthand) {
-		this.notationShorthand = checkNotNull(notationShorthand, "unfoldedNotationShorthand must not be null");
+		checkState(this.notationShorthands.size() == 0, "Only set notation once");
+
+		this.notationShorthands.add(checkNotNull(notationShorthand, "unfoldedNotationShorthand must not be null"));
 		foldedPalindrome = false;
 		return this;
 	}
 
 	/**
-	 * Set a folded palindrome symmetry notation. When using this, the place notation shorthand
+	 * Set a folded palindrome symmetry notation. When using this,each place notation shorthand
 	 * will be used in reverse after being used forward.
 	 * i.e.
-	 *  folded palindrome symmetry notation 'x.14.12 le:16' becomes 'x.14.12.14.x16'
-	 * @param  foldedPalindromeNotationShorthand
-	 * @param leadEndShorthand
+	 *  folded palindrome symmetry notation 'x.14.12', '16' becomes 'x.14.12.14.x16'
+	 *  folded palindrome symmetry notation 'x.14', '18.16' becomes 'x.14.x.18.16.18'
 	 */
-	public NotationBuilder setFoldedPalindromeNotationShorthand(final String foldedPalindromeNotationShorthand, final String leadEndShorthand) {
-		this.notationShorthand = checkNotNull(foldedPalindromeNotationShorthand, "foldedPalindromeNotationShorthand must not be null");
-//		checkArgument(foldedPalindromeNotationShorthand.length() > 0, "Please supply a notation");
-		this.leadEndShorthand = checkNotNull(leadEndShorthand, "leadEndShorthand must not be null");
-		//checkArgument(leadEndShorthand.length() > 0, "leadEndShorthand must not be empty");
-		foldedPalindrome = true;
+ 	public NotationBuilder setFoldedPalindromeNotationShorthand(final String... foldedPalindromeNotationShorthands) {
+		checkNotNull(foldedPalindromeNotationShorthands, "foldedPalindromeNotationShorthands must not be null");
+	    checkArgument(foldedPalindromeNotationShorthands.length > 0, "foldedPalindromeNotationShorthands must supply at least one notation");
+	    checkState(this.notationShorthands.size() == 0, "Only set notation once");
+
+	    for (String foldedPalindromeNotationShorthand : foldedPalindromeNotationShorthands) {
+		    if (foldedPalindromeNotationShorthand != null) {
+			    this.notationShorthands.add(foldedPalindromeNotationShorthand);
+		    }
+	    }
+
+	    checkState(this.notationShorthands.size() > 0);
+	    foldedPalindrome = true;
 		return this;
 	}
 
