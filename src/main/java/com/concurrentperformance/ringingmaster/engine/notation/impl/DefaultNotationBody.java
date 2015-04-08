@@ -91,8 +91,8 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		for (List<NotationRow> rawNotationRowsSet : rawNotationRowsSets) {
 			if (!firstTime) {
 				buf.append(",");
-				firstTime = false;
 			}
+			firstTime = false;
 			buf.append(getAsDisplayString(rawNotationRowsSet, concise)) ;
 		}
 		return buf.toString();

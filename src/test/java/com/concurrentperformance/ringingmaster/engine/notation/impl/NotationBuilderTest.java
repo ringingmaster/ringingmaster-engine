@@ -341,7 +341,7 @@ public class NotationBuilderTest {
 				.build();
 
 		assertEquals("16,-.14", notation.getNotationDisplayString(false));
-		assertEquals(3, notation.getRowCount());
+		assertEquals(4, notation.getRowCount());
 	}
 
 }
