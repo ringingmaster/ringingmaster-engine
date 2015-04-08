@@ -1,12 +1,12 @@
 package com.concurrentperformance.ringingmaster.engine.helper;
 
-import com.concurrentperformance.ringingmaster.engine.compiler.impl.CompilerFactory;
+import com.concurrentperformance.ringingmaster.engine.touch.compiler.impl.CompilerFactory;
 import com.concurrentperformance.ringingmaster.engine.method.Method;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.proof.Proof;
-import com.concurrentperformance.ringingmaster.engine.proof.ProofTerminationReason;
-import com.concurrentperformance.ringingmaster.engine.touch.Touch;
-import com.concurrentperformance.ringingmaster.engine.touch.impl.TouchBuilder;
+import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
+import com.concurrentperformance.ringingmaster.engine.touch.proof.ProofTerminationReason;
+import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
+import com.concurrentperformance.ringingmaster.engine.touch.container.impl.TouchBuilder;
 
 import static com.google.common.base.Preconditions.checkState;
 

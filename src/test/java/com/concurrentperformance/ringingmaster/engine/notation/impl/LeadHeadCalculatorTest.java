@@ -7,7 +7,7 @@ import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.proof.Proof;
+import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 import com.concurrentperformance.ringingmaster.generated.notation.persist.SerializableNotation;
 import com.ringingmaster.extraction.CentralCouncilMethodExtractor;
 import com.ringingmaster.extraction.MethodExtractor;
