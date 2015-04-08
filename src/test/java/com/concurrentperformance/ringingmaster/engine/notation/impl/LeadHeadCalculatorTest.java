@@ -31,10 +31,10 @@ public class LeadHeadCalculatorTest  {
 
 		long count = methodExtractor
 				.extractNotationsToStream()
-				.filter(serializableNotation -> serializableNotation.getName().startsWith("Grandsire"))
-				.filter(serializableNotation -> serializableNotation.getStage() == 5)
+//				.filter(serializableNotation -> serializableNotation.getName().startsWith("Cheeky Little Place"))
+//				.filter(serializableNotation -> serializableNotation.getStage() == 5)
 			    .filter(this::calculatedLeadHeadNotEqualsToSuppliedLH)
-				.peek(serializableNotation -> log.warn(serializableNotation.getName() + " " + serializableNotation.getStage()))
+//				.peek(serializableNotation -> log.warn(serializableNotation.getName() + " " + serializableNotation.getStage()))
 				.count();
 
 		log.warn("[{}] methods calculated different to supplied LeadHead", count);
@@ -48,14 +48,14 @@ public class LeadHeadCalculatorTest  {
 
 		String ccName = serializableNotation.getName();
 		int ccStage = serializableNotation.getStage();
-		boolean ccIsPalendromic = serializableNotation.isPalendromic();
+		boolean ccIsFoldedPalendromic = serializableNotation.isFoldedPalendromic();
 		String ccNotation = serializableNotation.getNotation();
 		String ccNotation2 = serializableNotation.getNotation2();
 		String ccLeadHead = serializableNotation.getLeadHead();
 
 		NotationBuilder notationBuilder = NotationBuilder.getInstance();
 		notationBuilder.setNumberOfWorkingBells(NumberOfBells.valueOf(ccStage));
-		if (!ccIsPalendromic) {
+		if (!ccIsFoldedPalendromic) {
 			notationBuilder.setUnfoldedNotationShorthand(ccNotation);
 		} else {
 
@@ -67,7 +67,7 @@ public class LeadHeadCalculatorTest  {
 
 		Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "TEST", false);
 		MethodLead lead = proof.getCreatedMethod().getLead(0);
-		log.warn(lead.toString());
+		//log.warn(lead.toString());
 
 		//assertEquals(notationBody.getNameIncludingNumberOfBells() + " Lead Head Code", ccLeadHead, notationBody.getLeadHeadCode());
 

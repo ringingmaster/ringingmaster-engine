@@ -4,8 +4,9 @@ import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class LeadHeadCalculator {
 
+	private final static Logger log = LoggerFactory.getLogger(LeadHeadCalculator.class);
+
 	private static Map<MethodRow, LeadHeadCodes> leadHeadCodes = new HashMap<>();
 
 	enum LeadHeadType {
@@ -30,22 +33,33 @@ public class LeadHeadCalculator {
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
 
-		NotationRow lastNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
-		NotationPlace highestPlace = NotationPlace.valueOf(numberOfBells.getBellCount() -1 ); // -1 converts to zero based for call to NotationPlace.valueOf
-		boolean lastNotationRowContainsHighestPlace = lastNotationRow.contains(highestPlace);
+		NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
+		boolean leadEndHasInternalPlaces = hasLeadEndGotInternalPlaces(numberOfBells, leadHeadNotationRow);
 
 		MethodRow lastMethodRow = plainLead.getLastRow();
 
 		LeadHeadType leadHeadType;
 		if (numberOfBells.isEven()) {
-			leadHeadType = lastNotationRowContainsHighestPlace? LeadHeadType.FAR:LeadHeadType.NEAR;
+			leadHeadType = leadEndHasInternalPlaces? LeadHeadType.NEAR:LeadHeadType.FAR;
 		}
 		else {
-			leadHeadType = lastNotationRowContainsHighestPlace? LeadHeadType.NEAR:LeadHeadType.FAR;
+			leadHeadType = leadEndHasInternalPlaces? LeadHeadType.FAR:LeadHeadType.NEAR;
 		}
+
+//		log.warn("Calculated Lead Head Type [{}]", leadHeadType);
 
 		String loadHeadCode = lookupLeadHeadCode(lastMethodRow, leadHeadType);
 		return loadHeadCode;
+	}
+
+	private static boolean hasLeadEndGotInternalPlaces(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
+//		NotationPlace highestPlace = NotationPlace.valueOf(numberOfBells.getBellCount() - 1); // -1 converts to zero based for call to NotationPlace.valueOf
+		for (int i=1;i<numberOfBells.getBellCount()-2;i++) {
+			if (leadHeadNotationRow.makesPlace(i)) {
+				return true;
+			}
+ 		}
+		return false;
 	}
 
 	static String lookupLeadHeadCode(MethodRow row, LeadHeadType type) {
