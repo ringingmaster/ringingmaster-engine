@@ -48,17 +48,16 @@ public class LeadHeadCalculatorTest  {
 
 		String ccName = serializableNotation.getName();
 		int ccStage = serializableNotation.getStage();
-		boolean ccIsFoldedPalendromic = serializableNotation.isFoldedPalendromic();
+		boolean ccIsFoldedPalindrome = serializableNotation.isFoldedPalindrome();
 		String ccNotation = serializableNotation.getNotation();
 		String ccNotation2 = serializableNotation.getNotation2();
 		String ccLeadHead = serializableNotation.getLeadHead();
 
 		NotationBuilder notationBuilder = NotationBuilder.getInstance();
 		notationBuilder.setNumberOfWorkingBells(NumberOfBells.valueOf(ccStage));
-		if (!ccIsFoldedPalendromic) {
+		if (!ccIsFoldedPalindrome) {
 			notationBuilder.setUnfoldedNotationShorthand(ccNotation);
 		} else {
-
 			notationBuilder.setFoldedPalindromeNotationShorthand(ccNotation, ccNotation2);
 		}
 		notationBuilder.setName(ccName);
