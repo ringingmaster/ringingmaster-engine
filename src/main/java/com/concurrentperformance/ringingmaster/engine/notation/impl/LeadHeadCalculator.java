@@ -23,13 +23,13 @@ public class LeadHeadCalculator {
 
 	private final static Logger log = LoggerFactory.getLogger(LeadHeadCalculator.class);
 
-	private static Map<MethodRow, LeadHeadCodes> leadHeadCodes = new HashMap<>();
+	private static Map<MethodRow, LeadHeadCodes> codeLookup = new HashMap<>();
+	private static Map<String,  Map<NumberOfBells, String>> rowLookup = new HashMap<>();
 
 	enum LeadHeadType {
 		NEAR,
 		FAR,
 	}
-
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
 
@@ -52,6 +52,17 @@ public class LeadHeadCalculator {
 		return loadHeadCode;
 	}
 
+	public static String lookupRow(String leadHeadCode, NumberOfBells numberOfBells) {
+		Map<NumberOfBells, String> lookupMap = rowLookup.get(leadHeadCode);
+		if (lookupMap != null) {
+			String fullLeadHeadCode = lookupMap.get(numberOfBells);
+			if (fullLeadHeadCode != null) {
+				return fullLeadHeadCode;
+			}
+		}
+		return leadHeadCode;
+	}
+
 	private static boolean hasLeadEndGotInternalPlaces(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
 //		NotationPlace highestPlace = NotationPlace.valueOf(numberOfBells.getBellCount() - 1); // -1 converts to zero based for call to NotationPlace.valueOf
 		for (int i=1;i<numberOfBells.getBellCount()-2;i++) {
@@ -64,7 +75,7 @@ public class LeadHeadCalculator {
 
 	static String lookupLeadHeadCode(MethodRow row, LeadHeadType type) {
 		checkNotNull(row);
-		LeadHeadCodes leadHeadCode = leadHeadCodes.get(row);
+		LeadHeadCodes leadHeadCode = codeLookup.get(row);
 
 		if (leadHeadCode != null) {
 			switch (type) {
@@ -84,7 +95,19 @@ public class LeadHeadCalculator {
 
 	private static void addLeadHeadCode(NumberOfBells numberOfBells, String change, String nearCode, String farCode) {
 		MethodRow row = MethodBuilder.parse(numberOfBells, change);
-		leadHeadCodes.put(row, new LeadHeadCodes(nearCode, farCode));
+		codeLookup.put(row, new LeadHeadCodes(nearCode, farCode));
+
+		putRowLookup(numberOfBells, change, nearCode);
+		putRowLookup(numberOfBells, change, farCode);
+	}
+
+	private static void putRowLookup(NumberOfBells numberOfBells, String change, String code) {
+		Map<NumberOfBells, String> lookupMap = rowLookup.get(code);
+		if (lookupMap == null) {
+			lookupMap = new HashMap<>();
+			rowLookup.put(code, lookupMap);
+		}
+		lookupMap.put(numberOfBells, change);
 	}
 
 	static {
@@ -135,8 +158,8 @@ public class LeadHeadCalculator {
 		addLeadHeadCode(NumberOfBells.BELLS_10, "1573920486", "b", "h");
 		addLeadHeadCode(NumberOfBells.BELLS_10, "1907856342", "c1", "j1");
 		addLeadHeadCode(NumberOfBells.BELLS_10, "1089674523", "d1", "k1");
-		addLeadHeadCode(NumberOfBells.BELLS_10, "1648203957", "e", "m");
-		addLeadHeadCode(NumberOfBells.BELLS_10, "1426385079", "f", "n");
+		addLeadHeadCode(NumberOfBells.BELLS_10, "1648203957", "e", "l");
+		addLeadHeadCode(NumberOfBells.BELLS_10, "1426385079", "f", "m");
 		addLeadHeadCode(NumberOfBells.BELLS_10, "1253749608", "p", "r");
 		addLeadHeadCode(NumberOfBells.BELLS_10, "1297058364", "p1", "r1");
 		addLeadHeadCode(NumberOfBells.BELLS_10, "1280694735", "q1", "s1");
@@ -160,7 +183,7 @@ public class LeadHeadCalculator {
 		addLeadHeadCode(NumberOfBells.BELLS_12, "1ET907856342", "c2", "j2");
 		addLeadHeadCode(NumberOfBells.BELLS_12, "1T0E89674523", "d2", "k2");
 		addLeadHeadCode(NumberOfBells.BELLS_12, "108T6E492735", "d1", "k1");
-		addLeadHeadCode(NumberOfBells.BELLS_12, "108T6E492735", "d", "k");
+		addLeadHeadCode(NumberOfBells.BELLS_12, "18604T2E3957", "d", "k");
 		addLeadHeadCode(NumberOfBells.BELLS_12, "1648203T5E79", "e", "l");
 		addLeadHeadCode(NumberOfBells.BELLS_12, "142638507T9E", "f", "m");
 		addLeadHeadCode(NumberOfBells.BELLS_12, "12537496E8T0", "p", "r");

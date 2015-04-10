@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class LeadHeadCalculatorTest  {
 
@@ -25,10 +26,7 @@ public class LeadHeadCalculatorTest  {
 
 	@Test
 	public void checkAllCCLibrary() {
-
-		int numberOK = 0;
-		int numberNOTOK = 0;
-
+		fail(); /// TODO
 		long count = methodExtractor
 				.extractNotationsToStream()
 //				.filter(serializableNotation -> serializableNotation.getName().startsWith("Cheeky Little Place"))
