@@ -59,7 +59,7 @@ public class MethodCorrectnessTest   {
 		this.notation2 = notation2;
 		this.leadLength = leadLength;
 		this.leadHead = LeadHeadCalculator.lookupRow(leadHeadCode, numberOfBells);
-		assertTrue( " Method: " + name + " " + numberOfBells + " - " + leadHead + " " + leadHeadCode,leadHead.length() > 1);
+		assertTrue( " Method: " + name + " " + numberOfBells + " - " + leadHead + " " + leadHeadCode, (LeadHeadCalculator.getLeadHeadType(leadHead, numberOfBells) == LeadHeadCalculator.LeadHeadCodeType.VALID_LEADHEAD_ROW));
 	}
 
 	final String name;

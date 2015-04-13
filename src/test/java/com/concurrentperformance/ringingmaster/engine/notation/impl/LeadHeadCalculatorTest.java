@@ -2,12 +2,9 @@ package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
 
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
-import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
-import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 import com.concurrentperformance.ringingmaster.generated.notation.persist.SerializableNotation;
 import com.ringingmaster.extraction.CentralCouncilMethodExtractor;
 import com.ringingmaster.extraction.MethodExtractor;
@@ -16,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class LeadHeadCalculatorTest  {
 
@@ -43,14 +41,14 @@ public class LeadHeadCalculatorTest  {
 		log.info(serializableNotation.toString());
 
 		String ccName = serializableNotation.getName();
-		int ccStage = serializableNotation.getStage();
+		NumberOfBells ccNumberOfBells = NumberOfBells.valueOf(serializableNotation.getStage());
 		boolean ccIsFoldedPalindrome = serializableNotation.isFoldedPalindrome();
 		String ccNotation = serializableNotation.getNotation();
 		String ccNotation2 = serializableNotation.getNotation2();
 		String ccLeadHead = serializableNotation.getLeadHead();
 
 		NotationBuilder notationBuilder = NotationBuilder.getInstance();
-		notationBuilder.setNumberOfWorkingBells(NumberOfBells.valueOf(ccStage));
+		notationBuilder.setNumberOfWorkingBells(ccNumberOfBells);
 		if (!ccIsFoldedPalindrome) {
 			notationBuilder.setUnfoldedNotationShorthand(ccNotation);
 		} else {
@@ -60,11 +58,29 @@ public class LeadHeadCalculatorTest  {
 
 		NotationBody notationBody = notationBuilder.build();
 
-		Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "TEST", false);
-		MethodLead lead = proof.getCreatedMethod().getLead(0);
-		//log.warn(lead.toString());
+		// Uncomment section to log out the changes in the lead
+//		Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "TEST", false);
+//		MethodLead lead = proof.getCreatedMethod().getLead(0);
+//		log.warn(lead.toString());
 
-		//assertEquals(notationBody.getNameIncludingNumberOfBells() + " Lead Head Code", ccLeadHead, notationBody.getLeadHeadCode());
+		// TODO assertEquals(notationBody.getNameIncludingNumberOfBells() + " Lead Head Code", ccLeadHead, notationBody.getLeadHeadCode());
+
+		LeadHeadCalculator.LeadHeadCodeType leadHeadType = LeadHeadCalculator.getLeadHeadType(ccLeadHead, ccNumberOfBells);
+		assertTrue(leadHeadType != LeadHeadCalculator.LeadHeadCodeType.INVALID_LEADHEAD);
+
+		if (leadHeadType == LeadHeadCalculator.LeadHeadCodeType.VALID_LEADHEAD_ROW) {
+			// These rows are where it is not a plain bob lead head, and therefore no code is in the cc library.
+			String lookupRow = LeadHeadCalculator.lookupRow(notationBody.getLeadHeadCode(), notationBody.getNumberOfWorkingBells());
+			if (!ccLeadHead.equals(lookupRow)) {
+				log.warn("[{}] {} [{}](calculated) vs [{}](library) NOT OK", notationBody.getNumberOfWorkingBells().getBellCount(),
+						notationBody.getNameIncludingNumberOfBells(), lookupRow, ccLeadHead);
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
 
 		if (!ccLeadHead.equals(notationBody.getLeadHeadCode())) {
 			log.warn("[{}] {} [{}](calculated) vs [{}](library) NOT OK", notationBody.getNumberOfWorkingBells().getBellCount(),

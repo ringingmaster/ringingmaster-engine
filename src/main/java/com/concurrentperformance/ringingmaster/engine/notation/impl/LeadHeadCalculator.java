@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * TODO Comments
@@ -20,6 +21,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Lake
  */
 public class LeadHeadCalculator {
+
+	public enum LeadHeadCodeType {
+		VALID_LEADHEAD_CODE,
+		VALID_LEADHEAD_ROW,
+		INVALID_LEADHEAD,
+	}
 
 	private final static Logger log = LoggerFactory.getLogger(LeadHeadCalculator.class);
 
@@ -53,6 +60,8 @@ public class LeadHeadCalculator {
 	}
 
 	public static String lookupRow(String leadHeadCode, NumberOfBells numberOfBells) {
+		checkState(getLeadHeadType(leadHeadCode, numberOfBells) != LeadHeadCodeType.INVALID_LEADHEAD);
+
 		Map<NumberOfBells, String> lookupMap = rowLookup.get(leadHeadCode);
 		if (lookupMap != null) {
 			String fullLeadHeadCode = lookupMap.get(numberOfBells);
@@ -61,6 +70,25 @@ public class LeadHeadCalculator {
 			}
 		}
 		return leadHeadCode;
+	}
+
+	public static LeadHeadCodeType getLeadHeadType(String leadHeadCode, NumberOfBells numberOfBells) {
+		Map<NumberOfBells, String> lookupMap = rowLookup.get(leadHeadCode);
+		if (lookupMap != null) {
+			String fullLeadHeadCode = lookupMap.get(numberOfBells);
+			if (fullLeadHeadCode != null) {
+				return LeadHeadCodeType.VALID_LEADHEAD_CODE;
+			}
+		}
+
+		// At this point, it could be a row. Attempt to parse it.
+		try {
+			MethodBuilder.parse(numberOfBells, leadHeadCode);
+			return LeadHeadCodeType.VALID_LEADHEAD_ROW;
+		}
+		catch (Exception e) {
+			return LeadHeadCodeType.INVALID_LEADHEAD;
+		}
 	}
 
 	private static boolean hasLeadEndGotInternalPlaces(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
