@@ -39,7 +39,7 @@ public class MethodCorrectnessTest   {
 
 	public MethodCorrectnessTest(SerializableNotation serializableNotation) {
 		this.serializableNotation = serializableNotation;
-		this.leadHead = LeadHeadCalculator.lookupRow(serializableNotation.getLeadHead(), NumberOfBells.valueOf(serializableNotation.getStage()));
+		this.leadHead = LeadHeadCalculator.lookupRow(serializableNotation.getLeadHead(), NumberOfBells.valueOf(serializableNotation.getNumberOfBells()));
 	}
 
 	private final SerializableNotation serializableNotation;

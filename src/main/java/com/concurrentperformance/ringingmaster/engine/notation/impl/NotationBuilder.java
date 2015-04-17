@@ -120,7 +120,7 @@ public class NotationBuilder {
 
 	public NotationBuilder setFromSerializableNotation(SerializableNotation serializableNotation) {
 
-		setNumberOfWorkingBells(NumberOfBells.valueOf(serializableNotation.getStage()));
+		setNumberOfWorkingBells(NumberOfBells.valueOf(serializableNotation.getNumberOfBells()));
 		if (!serializableNotation.isFoldedPalindrome()) {
 			setUnfoldedNotationShorthand(serializableNotation.getNotation());
 		} else {

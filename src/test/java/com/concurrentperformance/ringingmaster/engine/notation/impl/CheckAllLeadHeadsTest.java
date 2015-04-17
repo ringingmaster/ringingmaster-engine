@@ -28,7 +28,7 @@ public class CheckAllLeadHeadsTest {
 	public static Collection<Object[]> checkAllCCLibrary() {
 		return new CentralCouncilMethodExtractor()
 				.extractNotationsToStream()
-				.filter(serializableNotation -> serializableNotation.getStage() == 5)
+				.filter(serializableNotation -> serializableNotation.getNumberOfBells() == 5)
 				.filter(serializableNotation -> serializableNotation.getName().startsWith("Grandsire") ||
 												serializableNotation.getName().contains("Breastosn"))
 				.map(serializableNotation -> new Object[]{serializableNotation})
@@ -50,7 +50,7 @@ public class CheckAllLeadHeadsTest {
 				.setFromSerializableNotation(serializableNotation)
 				.build();
 
-		NumberOfBells ccNumberOfBells = NumberOfBells.valueOf(serializableNotation.getStage());
+		NumberOfBells ccNumberOfBells = NumberOfBells.valueOf(serializableNotation.getNumberOfBells());
 		String ccLeadHead = serializableNotation.getLeadHead();
 
 
