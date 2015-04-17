@@ -18,15 +18,12 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * TODO Comments
  *
+ * codes a - f and p - q are for seconds place lead ends and codes g - m and r - s for lead ends with no internal places
+ *
  * @author Lake
  */
 public class LeadHeadCalculator {
 
-	public enum LeadHeadCodeType {
-		VALID_LEADHEAD_CODE,
-		VALID_LEADHEAD_ROW,
-		INVALID_LEADHEAD,
-	}
 
 	private final static Logger log = LoggerFactory.getLogger(LeadHeadCalculator.class);
 
@@ -37,6 +34,13 @@ public class LeadHeadCalculator {
 		NEAR,
 		FAR,
 	}
+
+	protected enum LeadHeadCodeType {
+		VALID_LEADHEAD_CODE,
+		VALID_LEADHEAD_ROW,
+		INVALID_LEADHEAD,
+	}
+
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
 
@@ -45,15 +49,7 @@ public class LeadHeadCalculator {
 
 		MethodRow lastMethodRow = plainLead.getLastRow();
 
-		LeadHeadType leadHeadType;
-		if (numberOfBells.isEven()) {
-			leadHeadType = leadEndHasInternalPlaces? LeadHeadType.NEAR:LeadHeadType.FAR;
-		}
-		else {
-			leadHeadType = leadEndHasInternalPlaces? LeadHeadType.FAR:LeadHeadType.NEAR;
-		}
-
-//		log.warn("Calculated Lead Head Type [{}]", leadHeadType);
+		LeadHeadType leadHeadType = leadEndHasInternalPlaces? LeadHeadType.NEAR:LeadHeadType.FAR;
 
 		String loadHeadCode = lookupLeadHeadCode(lastMethodRow, leadHeadType);
 		return loadHeadCode;
@@ -92,8 +88,7 @@ public class LeadHeadCalculator {
 	}
 
 	private static boolean hasLeadEndGotInternalPlaces(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
-//		NotationPlace highestPlace = NotationPlace.valueOf(numberOfBells.getBellCount() - 1); // -1 converts to zero based for call to NotationPlace.valueOf
-		for (int i=1;i<numberOfBells.getBellCount()-2;i++) {
+		for (int i=1;i<numberOfBells.getBellCount()-1;i++) {
 			if (leadHeadNotationRow.makesPlace(i)) {
 				return true;
 			}
@@ -101,7 +96,7 @@ public class LeadHeadCalculator {
 		return false;
 	}
 
-	static String lookupLeadHeadCode(MethodRow row, LeadHeadType type) {
+	private static String lookupLeadHeadCode(MethodRow row, LeadHeadType type) {
 		checkNotNull(row);
 		LeadHeadCodes leadHeadCode = codeLookup.get(row);
 

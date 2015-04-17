@@ -36,13 +36,9 @@ public class DefaultNotationRow implements NotationRow {
 	}
 
 	@Override
-	public boolean makesPlace(final int place) {
-		for (final NotationPlace notationPlace : sortedElements) {
-			if (notationPlace.getZeroBasedPlace() == place) {
-				return true;
-			}
-		}
-		return false;
+	public boolean makesPlace(final int zeroBasedPlace) {
+		NotationPlace notationPlace = NotationPlace.valueOf(zeroBasedPlace);
+		return contains(notationPlace);
 	}
 
 	@Override
