@@ -96,7 +96,7 @@ public class LeadHeadCalculator {
 		return false;
 	}
 
-	private static String lookupLeadHeadCode(MethodRow row, LeadHeadType type) {
+	protected static String lookupLeadHeadCode(MethodRow row, LeadHeadType type) {
 		checkNotNull(row);
 		LeadHeadCodes leadHeadCode = codeLookup.get(row);
 
