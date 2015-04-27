@@ -4,6 +4,9 @@ import net.jcip.annotations.Immutable;
 
 /**
  * Immutable Holder for a Set of NotationElements that make up a single row.
+ *
+ * i.e. if the full notation was 'X.15', then this would represent either the
+ * 'X' or the '15'
  * <br/>
  * 
  * @author Stephen

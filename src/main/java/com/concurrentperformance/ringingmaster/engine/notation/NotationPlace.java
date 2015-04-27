@@ -11,9 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Represents a single 'row' of a notation. i.e. if the full
- * notation was 'X.15.X', then this would represent either the
- * 'X' or the '15'
+ * Represents a single place 'element' of a notation. i.e. if the full
+ * notation was 'X.15', then this would represent either the
+ * 'X' or the '1' or the '5'
  *
  * @author Stephen Lake
  */
