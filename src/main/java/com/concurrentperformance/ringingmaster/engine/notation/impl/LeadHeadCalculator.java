@@ -16,12 +16,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * TODO Comments
  *
- * codes a - f and p - q are for seconds place lead ends and codes g - m and r - s for lead ends with no internal places
+ * <b>For single-hunt methods:</b><br>
+ *   codes a - f and p - q are for seconds place lead ends and codes g - m and r - s for lead ends with no internal places <br>
+ * <br>
+ * <b>For twin-hunt methods:</b><br>
+ *   When the two hunt bells are crossing in 1-2, that is at the first change of the lead rather than the last.
+ *   So twin-hunt methods with Plain Bob lead heads that go off "3" will have codes a-f and those that go off with
+ *   the last bell lying still will have codes g-m.<br>
+ * <br>
+ * This also means that twin-hunt methods will have the same code as the corresponding single-hunt methods,
+ * for example Single/Double Oxford and Single/Double Court.<br>
  *
  * @author Lake
  */
+
+
 public class LeadHeadCalculator {
 
 
@@ -42,6 +52,8 @@ public class LeadHeadCalculator {
 	}
 
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
+
+		plainLead.getHuntBells();
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
 
 		NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
