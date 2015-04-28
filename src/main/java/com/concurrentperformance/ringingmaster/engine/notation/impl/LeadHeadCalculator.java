@@ -4,6 +4,7 @@ import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +53,6 @@ public class LeadHeadCalculator {
 	}
 
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
-
-		plainLead.getHuntBells();
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
 
 		NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
@@ -100,8 +99,10 @@ public class LeadHeadCalculator {
 	}
 
 	private static boolean hasLeadEndGotInternalPlaces(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
-		for (int i=1;i<numberOfBells.getBellCount()-1;i++) {
-			if (leadHeadNotationRow.makesPlace(i)) {
+
+		for (int zeroBasedPlace=1;zeroBasedPlace<numberOfBells.getBellCount()-1;zeroBasedPlace++) {
+			NotationPlace notationPlace = NotationPlace.valueOf(zeroBasedPlace);
+			if (leadHeadNotationRow.makesPlace(notationPlace)) {
 				return true;
 			}
  		}

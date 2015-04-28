@@ -38,12 +38,10 @@ public interface NotationRow {
 	String toDisplayString();
 
 	/**
-	 * Check to see if the passed in zero based place is made in this row.
+	 * Check to see if the passed in notationPlace is made in this row.
 	 * 
-	 * @param place 0 based integer place index
+	 * @param notationPlace
 	 * @return true, if the place is made.
 	 */
-	boolean makesPlace(int place);
-
-	boolean contains(NotationPlace notationPlace);
+	boolean makesPlace(NotationPlace notationPlace);
 }

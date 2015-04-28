@@ -1,6 +1,7 @@
 package com.concurrentperformance.ringingmaster.engine; //TODO where should this live?
 
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,7 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author Stephen Lake
  *
  */
-public enum NumberOfBells implements Iterable<Bell> {
+public enum NumberOfBells implements Iterable<NotationPlace> {
 
 	BELLS_3(3, "Singles"),
 	BELLS_4(4, "Minimus"),
@@ -46,13 +47,7 @@ public enum NumberOfBells implements Iterable<Bell> {
 	BELLS_29(29, "Twenty-nine"),	
 	BELLS_30(30, "Thirty");
 
-	private static final NumberOfBells MAX_ITEM = values()[values().length-1];
-
-	public static final NumberOfBells getMax() {
-		return MAX_ITEM;
-	}
-
-	private static Map<Integer, NumberOfBells> entity = new HashMap<Integer, NumberOfBells>();
+	private static Map<Integer, NumberOfBells> entity = new HashMap<>();
 
 	static {
 		for(final NumberOfBells value : NumberOfBells.values()) {
@@ -103,19 +98,19 @@ public enum NumberOfBells implements Iterable<Bell> {
 	}
 
 	@Override
-	public Iterator<Bell> iterator() {
-		return new Iterator<Bell>() {
+	public Iterator<NotationPlace> iterator() {
+		return new Iterator<NotationPlace>() {
 
-			int bellIndex = 0;
+			int notationPlaaceIndex = 0;
 
 			@Override
 			public boolean hasNext() {
-				return bellIndex < bellCount;
+				return notationPlaaceIndex < bellCount;
 			}
 
 			@Override
-			public Bell next() {
-				return Bell.valueOf(bellIndex++);
+			public NotationPlace next() {
+				return NotationPlace.valueOf(notationPlaaceIndex++);
 			}
 
 			@Override

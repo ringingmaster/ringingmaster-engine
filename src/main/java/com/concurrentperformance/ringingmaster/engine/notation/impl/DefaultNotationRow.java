@@ -38,11 +38,11 @@ public class DefaultNotationRow implements NotationRow {
 	@Override
 	public boolean makesPlace(final int zeroBasedPlace) {
 		NotationPlace notationPlace = NotationPlace.valueOf(zeroBasedPlace);
-		return contains(notationPlace);
+		return makesPlace(notationPlace);
 	}
 
 	@Override
-	public boolean contains(NotationPlace notationPlace) {
+	public boolean makesPlace(NotationPlace notationPlace) {
 		return sortedElements.contains(notationPlace);
 	}
 

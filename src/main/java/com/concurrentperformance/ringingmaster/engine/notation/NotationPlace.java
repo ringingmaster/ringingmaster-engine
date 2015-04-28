@@ -89,10 +89,6 @@ public enum NotationPlace {
 		return display;
 	}
 
-	public int getZeroBasedPlace() {
-		return zeroBasedPlace;
-	}
-
 	/**
 	 * Decode the passed notationShorthand to a Set of NotationElements.
 	 * 

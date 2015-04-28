@@ -1,18 +1,17 @@
 package com.concurrentperformance.ringingmaster.engine;
 
-import static org.junit.Assert.assertEquals;
-
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import org.junit.Test;
 
-import com.concurrentperformance.ringingmaster.engine.method.Bell;
+import static org.junit.Assert.assertEquals;
 
 public class NumberOfBellsTest {
 
 	@Test
-	public void iterstorFunctions() {
+	public void iteratorFunctions() {
 		int i=0;
-		for(final Bell bell : NumberOfBells.BELLS_12) {
-			assertEquals(i,bell.getZeroBasedBell());
+		for(final NotationPlace notationPlace : NumberOfBells.BELLS_12) {
+			assertEquals(notationPlace, NotationPlace.valueOf(i));
 			i++;
 		}
 		assertEquals(i, 12);

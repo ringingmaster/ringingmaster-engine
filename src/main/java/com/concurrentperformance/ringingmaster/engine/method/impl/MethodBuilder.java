@@ -7,6 +7,7 @@ import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.RowCourseType;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 
 import java.util.HashSet;
@@ -145,16 +146,17 @@ public class MethodBuilder {
 		checkNotNull(notationRow, "notationRow cant be null");
 
 		final Bell[] bells = new Bell[previousRow.getNumberOfBells().getBellCount()];
-		for (int place=0;place<previousRow.getNumberOfBells().getBellCount();place++) {
-			if (notationRow.makesPlace(place)) {
+		for (int zeroBasedPlace=0;zeroBasedPlace<previousRow.getNumberOfBells().getBellCount();zeroBasedPlace++) {
+			NotationPlace notationPlace = NotationPlace.valueOf(zeroBasedPlace);
+			if (notationRow.makesPlace(notationPlace)) {
 				//Make the place
-				bells[place] = previousRow.getBellInPlace(place);
+				bells[zeroBasedPlace] = previousRow.getBellInPlace(zeroBasedPlace);
 			}
 			else {
 				// swap 2 bells
-				bells[place]   = previousRow.getBellInPlace(place+1);
-				bells[place+1] = previousRow.getBellInPlace(place);
-				place++;
+				bells[zeroBasedPlace]   = previousRow.getBellInPlace(zeroBasedPlace+1);
+				bells[zeroBasedPlace+1] = previousRow.getBellInPlace(zeroBasedPlace);
+				zeroBasedPlace++;
 			}
 		}
 		final int rowNumber = previousRow.getRowNumber();
