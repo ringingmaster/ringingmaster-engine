@@ -101,16 +101,16 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 	public Iterator<NotationPlace> iterator() {
 		return new Iterator<NotationPlace>() {
 
-			int notationPlaaceIndex = 0;
+			int notationPlaceIndex = 0;
 
 			@Override
 			public boolean hasNext() {
-				return notationPlaaceIndex < bellCount;
+				return notationPlaceIndex < bellCount;
 			}
 
 			@Override
 			public NotationPlace next() {
-				return NotationPlace.valueOf(notationPlaaceIndex++);
+				return NotationPlace.valueOf(notationPlaceIndex++);
 			}
 
 			@Override
