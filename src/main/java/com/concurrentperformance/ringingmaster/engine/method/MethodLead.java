@@ -1,10 +1,11 @@
 package com.concurrentperformance.ringingmaster.engine.method;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import net.jcip.annotations.Immutable;
 
 import java.util.List;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import java.util.Set;
 
 /**
  * Representation of a lead within a method. Contains and allows iteration
@@ -45,6 +46,12 @@ public interface MethodLead extends Iterable<MethodRow> {
 	MethodRow getLastRow();
 
 	/**
+	 * Convenience method to get first method row.
+	 * @return MethodRow
+	 */
+	MethodRow getFirstRow();
+
+	/**
 	 * Get the sequence of places that the bell takes through this
 	 * lead, in the form of a list of integer
 	 * 
@@ -63,12 +70,18 @@ public interface MethodLead extends Iterable<MethodRow> {
 	int[] getLeadSeparatorPositions();
 
 	/**
-	 * Get the start number for a specific bell. The algorithm is to find the position of the
+	 * Get the start place for a specific bell. The algorithm is to find the position of the
 	 * passed in bell, and return the place as a bell so the mnemonic can be retrieved.
 	 * 
 	 * @param bell
 	 */
-	Bell getStartNumber(Bell bell);
+	NotationPlace getStartPlace(Bell bell);
+
+	/**
+	 * Return the places that are in the hunt.
+	 * @return
+	 */
+	Set<NotationPlace> getHuntBellStartPlace();
 
 	/**
 	 * Return all changes as text, using the system separator between each row. i.e.

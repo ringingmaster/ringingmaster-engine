@@ -5,6 +5,7 @@ import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.RowCourseType;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import net.jcip.annotations.Immutable;
 
 import java.util.Arrays;
@@ -37,8 +38,8 @@ public class DefaultMethodRow implements MethodRow {
 	DefaultMethodRow(final NumberOfBells numberOfBells, final Bell[] bells, final int rowNumber, final Stroke stroke, RowCourseType rowCourseType) {
 		this.numberOfBells = checkNotNull(numberOfBells, "numberOfBells can't be null");
 		this.bells = checkNotNull(bells, "bells can't be null"); //TODO should this be copied, or constructed using a List<>() ?
-		checkArgument(numberOfBells.getBellCount() == bells.length, "bells array needs to have [{}] elemnts, but has [{}]", numberOfBells.getBellCount(), bells.length);
-		checkArgument(rowNumber >= 0, "rowNumber must be greater than or equal to 0. [{}]", rowNumber);
+		checkArgument(numberOfBells.getBellCount() == bells.length, "bells array needs to have [%s] elemnts, but has [%s]", numberOfBells.getBellCount(), bells.length);
+		checkArgument(rowNumber >= 0, "rowNumber must be greater than or equal to 0. [%s]", rowNumber);
 		this.rowNumber = rowNumber;
 		this.stroke = checkNotNull(stroke, "stroke can't be null");
 		this.rowCourseType = checkNotNull(rowCourseType, "rowCourseType can't be null");
@@ -54,6 +55,11 @@ public class DefaultMethodRow implements MethodRow {
 		checkPositionIndex(place, bells.length);
 
 		return bells[place];
+	}
+
+	@Override
+	public Bell getBellInPlace(final NotationPlace place) {
+		return getBellInPlace(place.getZeroBasedPlace());
 	}
 
 	@Override

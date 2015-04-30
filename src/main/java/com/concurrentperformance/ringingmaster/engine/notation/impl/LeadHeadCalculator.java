@@ -55,6 +55,8 @@ public class LeadHeadCalculator {
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
 
+		//TOOD plainLead.getHuntBellStartPlace();
+
 		NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
 		boolean leadEndHasInternalPlaces = hasLeadEndGotInternalPlaces(numberOfBells, leadHeadNotationRow);
 

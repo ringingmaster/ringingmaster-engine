@@ -1,5 +1,6 @@
 package com.concurrentperformance.ringingmaster.engine.method;
 
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import net.jcip.annotations.Immutable;
 
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
@@ -32,6 +33,15 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
 	public Bell getBellInPlace(int place); //TODO should this pass in an enum?
+
+	/**
+	 * Get the bell at the specified zero based place.
+	 *
+	 * @param place, the place to get the bell for.
+	 * @return Bell
+	 * @throws ArrayIndexOutOfBoundsException
+	 */
+	public Bell getBellInPlace(NotationPlace place);
 
 	/**
 	 * For a given bell, indicate the place it is in.

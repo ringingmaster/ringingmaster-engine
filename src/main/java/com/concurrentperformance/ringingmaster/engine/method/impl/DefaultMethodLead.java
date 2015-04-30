@@ -4,14 +4,18 @@ import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import com.concurrentperformance.util.conversion.ConvertionUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.jcip.annotations.Immutable;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -99,6 +103,12 @@ public class DefaultMethodLead implements MethodLead {
 	}
 
 	@Override
+	public MethodRow getFirstRow() {
+		// constructor throws exception if null or 0 length
+		return rows[0];
+	}
+
+	@Override
 	public Iterator<MethodRow> iterator() {
 		return new Iterator<MethodRow>() {
 
@@ -135,17 +145,48 @@ public class DefaultMethodLead implements MethodLead {
 	}
 
 	@Override
-	public Bell getStartNumber(final Bell bell) {
+	public NotationPlace getStartPlace(final Bell bell) {
 		checkNotNull(bell);
 
-		Bell startBell = null;
+		NotationPlace startPlace = null;
 		//find the first row
 		if (rows.length > 0) {
 			final MethodRow firstRow = rows[0];
 			final Integer place = firstRow.getPlaceOfBell(bell);
-			startBell = Bell.valueOf(place);
+			startPlace = NotationPlace.valueOf(place);
 		}
-		return startBell;
+		return startPlace;
+	}
+
+	@Override
+	public Set<NotationPlace> getHuntBellStartPlace() {
+		// First, we can only have hunt bell if the number of changes in the led is twice the number of bells + 1
+		// 123
+		// 213
+		// 231
+		// 321
+		// 312
+		// 132
+		// 123
+
+		int expectedNumberOfChanges = (getNumberOfBells().getBellCount() * 2) + 1;
+
+		if (getRowCount() != expectedNumberOfChanges) {
+			return Collections.EMPTY_SET;
+		}
+
+		Set<NotationPlace> huntBellPlaces = new HashSet<>();
+
+		MethodRow firstRow = getFirstRow();
+		MethodRow lastRow = getLastRow();
+
+		for (NotationPlace place : numberOfBells) {
+			if(firstRow.getBellInPlace(place) == lastRow.getBellInPlace(place)) {
+				huntBellPlaces.add(place);
+			}
+		}
+
+		return huntBellPlaces;
 	}
 
 	@Override
