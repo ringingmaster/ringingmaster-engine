@@ -21,8 +21,8 @@ public class LeadHeadCalculatorTest  {
 
 	@Test
 	public void lookupRowFromLeadHeadCodeFunctions() {
-		assertEquals("124638597", LeadHeadCalculator.lookupRow("f", NumberOfBells.BELLS_9));
-		assertEquals("124638597", LeadHeadCalculator.lookupRow("m", NumberOfBells.BELLS_9));
+		assertEquals("124638597", LeadHeadCalculator.lookupRowFromCode("f", NumberOfBells.BELLS_9));
+		assertEquals("124638597", LeadHeadCalculator.lookupRowFromCode("m", NumberOfBells.BELLS_9));
 	}
 
 }

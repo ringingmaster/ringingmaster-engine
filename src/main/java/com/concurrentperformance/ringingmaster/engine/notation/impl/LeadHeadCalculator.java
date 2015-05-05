@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -54,21 +55,34 @@ public class LeadHeadCalculator {
 
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
-
-		//TOOD plainLead.getHuntBellStartPlace();
-
-		NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
-		boolean leadEndHasInternalPlaces = hasLeadEndGotInternalPlaces(numberOfBells, leadHeadNotationRow);
-
 		MethodRow lastMethodRow = plainLead.getLastRow();
+		Set<NotationPlace> huntBellStartPlace = plainLead.getHuntBellStartPlace();
 
-		LeadHeadType leadHeadType = leadEndHasInternalPlaces? LeadHeadType.NEAR:LeadHeadType.FAR;
+		LeadHeadType leadHeadType;
+		if (huntBellStartPlace.size() > 1) {
+			if (huntBellStartPlace.contains(NotationPlace.PLACE_1) &&
+			    huntBellStartPlace.contains(NotationPlace.PLACE_2)) {
+				leadHeadType = LeadHeadType.NEAR;
+			}
+			else if (huntBellStartPlace.contains(NotationPlace.PLACE_1) &&
+					 huntBellStartPlace.contains(NotationPlace.valueOf(numberOfBells.getBellCount()-1))) {
+				leadHeadType = LeadHeadType.FAR;
+			}
+			else {
+				return lastMethodRow.getDisplayString(false);
+			}
+		}
+		else {
+			NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
+			boolean leadEndHasInternalPlaces = hasLeadEndGotInternalPlaces(numberOfBells, leadHeadNotationRow);
+			leadHeadType = leadEndHasInternalPlaces ? LeadHeadType.NEAR : LeadHeadType.FAR;
+		}
 
 		String loadHeadCode = lookupLeadHeadCode(lastMethodRow, leadHeadType);
 		return loadHeadCode;
 	}
 
-	public static String lookupRow(String leadHeadCode, NumberOfBells numberOfBells) {
+	public static String lookupRowFromCode(String leadHeadCode, NumberOfBells numberOfBells) {
 		checkState(getLeadHeadType(leadHeadCode, numberOfBells) != LeadHeadCodeType.INVALID_LEADHEAD);
 
 		Map<NumberOfBells, String> lookupMap = rowLookup.get(leadHeadCode);
