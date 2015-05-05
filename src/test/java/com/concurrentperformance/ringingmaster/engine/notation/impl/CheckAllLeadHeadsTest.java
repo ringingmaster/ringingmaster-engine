@@ -28,7 +28,7 @@ public class CheckAllLeadHeadsTest {
 		return new CentralCouncilMethodExtractor()
 				.extractNotationsToStream()
 //				.filter(serializableNotation -> serializableNotation.getNumberOfBells() == 5)
-//				.filter(serializableNotation -> serializableNotation.getName().startsWith("Breaston Bob Doubles"))
+//				.filter(serializableNotation -> serializableNotation.getName().contains("Reverse Antelope"))
 				.map(serializableNotation -> new Object[]{serializableNotation})
 				.collect(Collectors.toList());
 	}

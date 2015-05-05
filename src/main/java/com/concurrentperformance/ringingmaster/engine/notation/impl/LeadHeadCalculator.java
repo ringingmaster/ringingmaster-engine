@@ -60,12 +60,12 @@ public class LeadHeadCalculator {
 
 		LeadHeadType leadHeadType;
 		if (huntBellStartPlace.size() > 1) {
-			if (huntBellStartPlace.contains(NotationPlace.PLACE_1) &&
-			    huntBellStartPlace.contains(NotationPlace.PLACE_2)) {
+			NotationRow leadHeadNotationRow = normalisedNotationElements.get(0);
+
+			if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_3)) {
 				leadHeadType = LeadHeadType.NEAR;
 			}
-			else if (huntBellStartPlace.contains(NotationPlace.PLACE_1) &&
-					 huntBellStartPlace.contains(NotationPlace.valueOf(numberOfBells.getBellCount()-1))) {
+			else if (leadHeadNotationRow.makesPlace(NotationPlace.valueOf(numberOfBells.getBellCount()-1))) {
 				leadHeadType = LeadHeadType.FAR;
 			}
 			else {
