@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableMap;
 import net.jcip.annotations.Immutable;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -160,20 +159,6 @@ public class DefaultMethodLead implements MethodLead {
 
 	@Override
 	public Set<NotationPlace> getHuntBellStartPlace() {
-		// First, we can only have hunt bell if the number of changes in the led is twice the number of bells + 1
-		// 123
-		// 213
-		// 231
-		// 321
-		// 312
-		// 132
-		// 123
-
-		int expectedNumberOfChanges = (getNumberOfBells().getBellCount() * 2) + 1;
-
-		if (getRowCount() != expectedNumberOfChanges) {
-			return Collections.EMPTY_SET;
-		}
 
 		Set<NotationPlace> huntBellPlaces = new HashSet<>();
 

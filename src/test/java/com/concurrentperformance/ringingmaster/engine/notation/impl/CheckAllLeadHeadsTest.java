@@ -27,8 +27,8 @@ public class CheckAllLeadHeadsTest {
 	public static Collection<Object[]> checkAllCCLibrary() {
 		return new CentralCouncilMethodExtractor()
 				.extractNotationsToStream()
-//				.filter(serializableNotation -> serializableNotation.getNumberOfBells() == 5)
-//				.filter(serializableNotation -> serializableNotation.getName().contains("Reverse Antelope"))
+//				.filter(serializableNotation -> serializableNotation.getNumberOfBells() == 8)
+//				.filter(serializableNotation -> serializableNotation.getName().contains("Waterloo Reverse Bob"))
 				.map(serializableNotation -> new Object[]{serializableNotation})
 				.collect(Collectors.toList());
 	}
@@ -56,29 +56,26 @@ public class CheckAllLeadHeadsTest {
 //		log.warn(notationBody.toString());
 //		log.warn(PlainCourseHelper.buildPlainCourse(notationBody, "TEST", false).getCreatedMethod().getLead(0).toString());
 
-		// TODO assertEquals(notationBody.getNameIncludingNumberOfBells() + " Lead Head Code", ccLeadHead, notationBody.getLeadHeadCode());
-
-
 		LeadHeadCalculator.LeadHeadCodeType leadHeadType = LeadHeadCalculator.getLeadHeadType(ccLeadHead, ccNumberOfBells);
+
+		String calculatedLeadHead = null;
 		if (leadHeadType == LeadHeadCalculator.LeadHeadCodeType.VALID_LEADHEAD_ROW) {
 
 			//TODO need to exclude non plain bob lead heads from calculating a code.
 			// These rows are where it is not a plain bob lead head, and therefore no code is in the cc library.
-			String lookupRow = LeadHeadCalculator.lookupRowFromCode(notationBody.getLeadHeadCode(), notationBody.getNumberOfWorkingBells());
-//			String lookupRow = notationBody.getLeadHeadCode();
-
-
-			assertEquals("[" + notationBody.getNumberOfWorkingBells().getBellCount() + "] " + notationBody.getNameIncludingNumberOfBells() +
-						" [" + lookupRow + "](calculated) vs [" + ccLeadHead + "](library) NOT OK",
-					ccLeadHead, lookupRow);
+//			calculatedLeadHead = LeadHeadCalculator.lookupRowFromCode(notationBody.getLeadHeadCode(), notationBody.getNumberOfWorkingBells());
+			calculatedLeadHead = notationBody.getLeadHeadCode();
 		}
 		else if (leadHeadType == LeadHeadCalculator.LeadHeadCodeType.VALID_LEADHEAD_CODE){
-			assertEquals("[" + notationBody.getNumberOfWorkingBells().getBellCount() + "] " + notationBody.getNameIncludingNumberOfBells() +
-							" [" + notationBody.getLeadHeadCode() + "](calculated) vs [" + ccLeadHead + "](library) NOT OK",
-					ccLeadHead, notationBody.getLeadHeadCode());
+			calculatedLeadHead = notationBody.getLeadHeadCode();
 		}
 		else {
 			fail();
 		}
+
+		assertEquals("[" + notationBody.getNumberOfWorkingBells().getBellCount() + "] " + notationBody.getNameIncludingNumberOfBells() +
+						"[" + ccLeadHead + "](library) vs [" + notationBody.getLeadHeadCode() + "](calculated) NOT OK ",
+				ccLeadHead, calculatedLeadHead);
+
 	}
 }
