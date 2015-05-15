@@ -1,10 +1,9 @@
 package com.concurrentperformance.ringingmaster.engine.method;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import net.jcip.annotations.Immutable;
 
 import java.util.Iterator;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 
 
 /**
@@ -28,6 +27,11 @@ public interface Method extends Iterable<MethodLead> {
 	 * @return int, leads in the method.
 	 */
 	int getLeadCount();
+
+	/**
+	 * Get the number of hunt bells in the first lead.
+	 */
+	int getNumberOfBellsInHunt();
 
 	/**
 	 * Get the lead at the passed index.

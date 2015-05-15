@@ -59,6 +59,14 @@ public class DefaultMethod implements Method {
 	}
 
 	@Override
+	public int getNumberOfBellsInHunt() {
+		if (leads.length > 0) {
+			return getLead(0).getHuntBellStartPlace().size();
+		}
+		return 0;
+	}
+
+	@Override
 	public MethodLead getLead(final int index) {
 		checkElementIndex(index, leads.length);
 		return leads[index];
