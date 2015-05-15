@@ -15,6 +15,8 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public interface NotationRow {
 
+	int getElementCount();
+
 	/**
 	 * Get the NotationPlace at the index position. This is a single place
 	 * on the NotationRow.

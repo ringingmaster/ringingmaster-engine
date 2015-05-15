@@ -31,6 +31,11 @@ public class DefaultNotationRow implements NotationRow {
 	}
 
 	@Override
+	public int getElementCount() {
+		return sortedElements.size();
+	}
+
+	@Override
 	public NotationPlace getElement(final int index) {
 		return sortedElements.get(index);
 	}

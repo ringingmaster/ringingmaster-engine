@@ -59,6 +59,7 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 	private final String displayString;
 	private final int bellCount;
 	private final Bell tenor;
+	private final NotationPlace tenorPlace;
 
 	NumberOfBells(final int bellCount, final String name) {
 		checkArgument(bellCount > 0);
@@ -66,6 +67,7 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 		checkArgument(name.length() > 0);
 		this.bellCount = bellCount;
 		this.tenor = Bell.valueOf(bellCount-1);
+		this.tenorPlace = NotationPlace.valueOf(bellCount-1);
 		this.displayString = name + " (" + bellCount + ")";
 	}
 
@@ -79,6 +81,10 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 
 	public Bell getTenor() {
 		return tenor;
+	}
+
+	public NotationPlace getTenorPlace() {
+		return tenorPlace;
 	}
 
 	public String getName() {

@@ -54,32 +54,90 @@ public class LeadHeadCalculator {
 	}
 
 	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
-		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
-		MethodRow lastMethodRow = plainLead.getLastRow();
 		Set<NotationPlace> huntBellStartPlace = plainLead.getHuntBellStartPlace();
 
-		LeadHeadType leadHeadType;
-		if (huntBellStartPlace.size() > 1) {
-			NotationRow leadHeadNotationRow = normalisedNotationElements.get(0);
+		if (huntBellStartPlace.size() <= 1) {
+			return getLeadHeadCodeForSingleHunt(plainLead, normalisedNotationElements);
+		}
+		else {
+			return getLeadHeadCodeForTwinHunt(plainLead, normalisedNotationElements);
+		}
+	}
 
-			if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_3)) {
-				leadHeadType = LeadHeadType.NEAR;
+	private static String getLeadHeadCodeForSingleHunt(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
+		NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
+		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
+		MethodRow leadHeadRow = plainLead.getLastRow();
+
+		if (!hasLeadEndGotPlainBobPlacesForSingleHunt(numberOfBells, leadHeadNotationRow)) {
+			return leadHeadRow.getDisplayString(false);
+		}
+
+		if (hasLeadEndGotInternalPlaces(numberOfBells, leadHeadNotationRow)) {
+			return lookupLeadHeadCode(leadHeadRow, LeadHeadType.NEAR);
+		}
+		else {
+			return lookupLeadHeadCode(leadHeadRow, LeadHeadType.FAR);
+		}
+	}
+
+	private static boolean hasLeadEndGotPlainBobPlacesForSingleHunt(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
+
+		if (numberOfBells.isEven()) {
+			if (leadHeadNotationRow.getElementCount() == 2) {
+				if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_1) &&
+						leadHeadNotationRow.makesPlace(NotationPlace.PLACE_2)) {
+					return true;
+				}
+				if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_1) &&
+						leadHeadNotationRow.makesPlace(numberOfBells.getTenorPlace())) {
+					return true;
+				}
+
 			}
-			else if (leadHeadNotationRow.makesPlace(NotationPlace.valueOf(numberOfBells.getBellCount()-1))) {
-				leadHeadType = LeadHeadType.FAR;
+			return false;
+
+		}
+		else {
+			if (leadHeadNotationRow.getElementCount() == 1) {
+				if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_1)) {
+					return true;
+				}
 			}
-			else {
-				return lastMethodRow.getDisplayString(false);
+			if (leadHeadNotationRow.getElementCount() == 3) {
+				if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_1) &&
+						leadHeadNotationRow.makesPlace(NotationPlace.PLACE_2) &&
+						leadHeadNotationRow.makesPlace(numberOfBells.getTenorPlace())) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+
+	private static String getLeadHeadCodeForTwinHunt(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
+		NotationRow leadHeadNotationRow = normalisedNotationElements.get(0);
+		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
+		MethodRow leadHeadRow = plainLead.getLastRow();
+
+		if (numberOfBells.isEven()) {
+			if (leadHeadNotationRow.isAllChange()) {
+				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.FAR);
+			} else {
+				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.NEAR);
 			}
 		}
 		else {
-			NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
-			boolean leadEndHasInternalPlaces = hasLeadEndGotInternalPlaces(numberOfBells, leadHeadNotationRow);
-			leadHeadType = leadEndHasInternalPlaces ? LeadHeadType.NEAR : LeadHeadType.FAR;
-		}
 
-		String loadHeadCode = lookupLeadHeadCode(lastMethodRow, leadHeadType);
-		return loadHeadCode;
+			if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_3)) {
+				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.NEAR);
+			} else if (leadHeadNotationRow.makesPlace(NotationPlace.valueOf(numberOfBells.getBellCount() - 1))) {
+				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.FAR);
+			} else {
+				return leadHeadRow.getDisplayString(false);
+			}
+		}
 	}
 
 	public static String lookupRowFromCode(String leadHeadCode, NumberOfBells numberOfBells) {
