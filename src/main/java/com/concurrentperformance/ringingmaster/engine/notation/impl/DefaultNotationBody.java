@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
  * Default implementation of NotationBody interface. This implementation is Immutable,
@@ -131,7 +130,9 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 
 	@Override
 	public String getRawNotationDisplayString(int notationIndex, boolean concise) {
-		checkPositionIndex(notationIndex, rawNotationRowsSets.size());
+		if (notationIndex >= rawNotationRowsSets.size()) {
+			return "";
+		}
 		return getAsDisplayString(rawNotationRowsSets.get(notationIndex), concise);
 	}
 
