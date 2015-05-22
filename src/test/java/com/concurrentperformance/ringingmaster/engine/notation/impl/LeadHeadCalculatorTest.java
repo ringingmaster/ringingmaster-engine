@@ -16,7 +16,7 @@ public class LeadHeadCalculatorTest  {
 		MethodRow row = MethodBuilder.parse(NumberOfBells.BELLS_9, "124638597");
 		assertEquals("124638597", row.getDisplayString(false));
 		assertEquals("f", LeadHeadCalculator.lookupLeadHeadCode(row, LeadHeadCalculator.LeadHeadType.NEAR));
-		assertEquals("m", LeadHeadCalculator.lookupLeadHeadCode(row, LeadHeadCalculator.LeadHeadType.FAR));
+		assertEquals("m", LeadHeadCalculator.lookupLeadHeadCode(row, LeadHeadCalculator.LeadHeadType.EXTREME));
 	}
 
 	@Test

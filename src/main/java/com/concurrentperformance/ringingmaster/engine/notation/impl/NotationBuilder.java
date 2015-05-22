@@ -6,6 +6,7 @@ import com.concurrentperformance.ringingmaster.engine.method.Method;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 import com.concurrentperformance.ringingmaster.generated.notation.persist.SerializableNotation;
 import com.google.common.base.Strings;
@@ -37,6 +38,8 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author Stephen Lake
  */
+
+// TODO need to ensure that canned calls (and other components) are re-created when loaded from serialised. This will then take into account options like type 'm' calls being optionally near or extreme . Will also save space when serialised.
 @NotThreadSafe
 public class NotationBuilder {
 
@@ -47,6 +50,7 @@ public class NotationBuilder {
 	private final List<String> notationShorthands = new ArrayList<>();
 	private boolean foldedPalindrome = false;
 	private List<NotationCallBuilder> notationCallBuilders = new ArrayList<>();
+	private boolean useCannedCalls = false;
 	private String defaultCallName = "";
 	private String spliceIdentifier;
 	private Set<Integer> callInitiationRows = new HashSet<>();
@@ -98,12 +102,13 @@ public class NotationBuilder {
 		}
 		final Method plainCourse = buildPlainCourse(normalisedNotationElements);
 		final int changesCountInPlainLead = plainCourse.getLead(0).getRowCount() - 1; // minus 1 as first and last change are shared between leads.
-		final SortedSet<NotationCall> notationCalls = buildCalls();
+		String leadHeadCode = LeadHeadCalculator.calculateLeadHeadCode(plainCourse.getLead(0), normalisedNotationElements);
+		LeadHeadCalculator.LeadHeadType leadHeadType = LeadHeadCalculator.getLeadHeadType(leadHeadCode);
+		final SortedSet<NotationCall> notationCalls = buildCalls(leadHeadType);
 		final NotationCall defaultNotationCall = getDefaultNotationCall(notationCalls);
 		final Set<Integer> validatedCallInitiationRows = getValidatedCallInitiationRows(callInitiationRows, changesCountInPlainLead);
 		final Set<NotationMethodCallingPosition> validatedNotationMethodCallingPositions =
 				getValidatedMethodCallingPositions(validatedCallInitiationRows, methodCallingPositions, plainCourse.getLeadCount());
-		String leadHeadCode = LeadHeadCalculator.calculateLeadHeadCode(plainCourse.getLead(0), normalisedNotationElements);
 
 		return new DefaultNotationBody(name,
 				numberOfWorkingBells,
@@ -197,6 +202,8 @@ public class NotationBuilder {
 	 * Add a call.
 	 */
 	public NotationBuilder addCall(String name, String nameShorthand, String callNotation, boolean defaultCall) {
+		checkState(useCannedCalls == false, "Set either canned calls or actual calls.");
+
 		NotationCallBuilder newCallBuilder =  new NotationCallBuilder()
 				.setName(name)
 				.setNameShorthand(nameShorthand)
@@ -209,6 +216,13 @@ public class NotationBuilder {
 		if (defaultCall) {
 			this.defaultCallName =  name;
 		}
+		return this;
+	}
+
+	public NotationBuilder setUseCannedCalls() {
+		checkState(notationCallBuilders.size() == 0, "Set either canned calls or actual calls.");
+
+		useCannedCalls = true;
 		return this;
 	}
 
@@ -250,11 +264,52 @@ public class NotationBuilder {
 		return this;
 	}
 
-	private SortedSet<NotationCall> buildCalls() {
+	private SortedSet<NotationCall> buildCalls(LeadHeadCalculator.LeadHeadType leadHeadType) {
 		SortedSet<NotationCall> notationCalls = new TreeSet<>(NotationCall.BY_NAME);
-		for (NotationCallBuilder callBuilder : notationCallBuilders) {
-			NotationCall notationCall = callBuilder.build();
-			notationCalls.add(notationCall);
+
+		if (useCannedCalls) {
+			if (leadHeadType != null) {
+				if (leadHeadType.equals(LeadHeadCalculator.LeadHeadType.NEAR)) {
+					notationCalls.add(
+							new NotationCallBuilder().setName("Bob")
+									.setNameShorthand("-")
+									.setUnfoldedNotationShorthand("14")
+									.setNumberOfWorkingBells(numberOfWorkingBells)
+
+									.build());
+					notationCalls.add(
+							new NotationCallBuilder().setName("Single")
+									.setNameShorthand("s")
+									.setUnfoldedNotationShorthand("1234")
+									.setNumberOfWorkingBells(numberOfWorkingBells)
+									.build());
+				}
+				else if (leadHeadType.equals(LeadHeadCalculator.LeadHeadType.EXTREME)) {
+					notationCalls.add(
+							new NotationCallBuilder().setName("Bob")
+									.setNameShorthand("-")
+									.setUnfoldedNotationShorthand("1" +
+											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 2 -1).toDisplayString())
+									.setNumberOfWorkingBells(numberOfWorkingBells)
+
+									.build());
+					notationCalls.add(
+							new NotationCallBuilder().setName("Single")
+									.setNameShorthand("s")
+									.setUnfoldedNotationShorthand("1" +
+											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 2 - 1).toDisplayString() +
+											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 1 - 1).toDisplayString() +
+											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 0 - 1).toDisplayString())
+									.setNumberOfWorkingBells(numberOfWorkingBells)
+									.build());
+				}
+			}
+		}
+		else {
+			for (NotationCallBuilder callBuilder : notationCallBuilders) {
+				NotationCall notationCall = callBuilder.build();
+				notationCalls.add(notationCall);
+			}
 		}
 
 		for (NotationCall notationCallFrom : notationCalls) {

@@ -33,6 +33,8 @@ import static com.google.common.base.Preconditions.checkState;
  * @author Lake
  */
 
+//TODO Need to handle type 'm' being optionally near for canned calls. file:///Users/Lake/Documents/projects/ringingmaster_cpp/Supporting%20Projects/Web/Ringing%20Master/WebHelp/Option_Library.htm
+
 
 public class LeadHeadCalculator {
 
@@ -41,13 +43,14 @@ public class LeadHeadCalculator {
 
 	private static Map<MethodRow, LeadHeadCodes> codeLookup = new HashMap<>();
 	private static Map<String,  Map<NumberOfBells, String>> rowLookup = new HashMap<>();
+	private static Map<String,  LeadHeadType> typeLookup = new HashMap<>();
 
 	enum LeadHeadType {
 		NEAR,
-		FAR,
+		EXTREME,
 	}
 
-	protected enum LeadHeadCodeType {
+	protected enum LeadHeadResultType {
 		VALID_LEADHEAD_CODE,
 		VALID_LEADHEAD_ROW,
 		INVALID_LEADHEAD,
@@ -77,7 +80,7 @@ public class LeadHeadCalculator {
 			return lookupLeadHeadCode(leadHeadRow, LeadHeadType.NEAR);
 		}
 		else {
-			return lookupLeadHeadCode(leadHeadRow, LeadHeadType.FAR);
+			return lookupLeadHeadCode(leadHeadRow, LeadHeadType.EXTREME);
 		}
 	}
 
@@ -123,7 +126,7 @@ public class LeadHeadCalculator {
 
 		if (numberOfBells.isEven()) {
 			if (leadHeadNotationRow.isAllChange()) {
-				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.FAR);
+				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.EXTREME);
 			} else {
 				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.NEAR);
 			}
@@ -133,7 +136,7 @@ public class LeadHeadCalculator {
 			if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_3)) {
 				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.NEAR);
 			} else if (leadHeadNotationRow.makesPlace(NotationPlace.valueOf(numberOfBells.getBellCount() - 1))) {
-				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.FAR);
+				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.EXTREME);
 			} else {
 				return leadHeadRow.getDisplayString(false);
 			}
@@ -141,7 +144,7 @@ public class LeadHeadCalculator {
 	}
 
 	public static String lookupRowFromCode(String leadHeadCode, NumberOfBells numberOfBells) {
-		checkState(getLeadHeadType(leadHeadCode, numberOfBells) != LeadHeadCodeType.INVALID_LEADHEAD);
+		checkState(getLeadHeadResultType(leadHeadCode, numberOfBells) != LeadHeadResultType.INVALID_LEADHEAD);
 
 		Map<NumberOfBells, String> lookupMap = rowLookup.get(leadHeadCode);
 		if (lookupMap != null) {
@@ -153,23 +156,27 @@ public class LeadHeadCalculator {
 		return leadHeadCode;
 	}
 
-	public static LeadHeadCodeType getLeadHeadType(String leadHeadCode, NumberOfBells numberOfBells) {
+	public static LeadHeadResultType getLeadHeadResultType(String leadHeadCode, NumberOfBells numberOfBells) {
 		Map<NumberOfBells, String> lookupMap = rowLookup.get(leadHeadCode);
 		if (lookupMap != null) {
 			String fullLeadHeadCode = lookupMap.get(numberOfBells);
 			if (fullLeadHeadCode != null) {
-				return LeadHeadCodeType.VALID_LEADHEAD_CODE;
+				return LeadHeadResultType.VALID_LEADHEAD_CODE;
 			}
 		}
 
 		// At this point, it could be a row. Attempt to parse it.
 		try {
 			MethodBuilder.parse(numberOfBells, leadHeadCode);
-			return LeadHeadCodeType.VALID_LEADHEAD_ROW;
+			return LeadHeadResultType.VALID_LEADHEAD_ROW;
 		}
 		catch (Exception e) {
-			return LeadHeadCodeType.INVALID_LEADHEAD;
+			return LeadHeadResultType.INVALID_LEADHEAD;
 		}
+	}
+
+	public static LeadHeadType getLeadHeadType(String leadHeadCode) {
+		return typeLookup.get(leadHeadCode);
 	}
 
 	private static boolean hasLeadEndGotInternalPlaces(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
@@ -191,8 +198,8 @@ public class LeadHeadCalculator {
 			switch (type) {
 				case NEAR:
 					return leadHeadCode.getNear();
-				case FAR:
-					return leadHeadCode.getFar();
+				case EXTREME:
+					return leadHeadCode.getExtreme();
 				default:
 					throw new IllegalArgumentException("Unknown lead head type [" + type + "]");
 			}
@@ -203,12 +210,17 @@ public class LeadHeadCalculator {
 	}
 
 
-	private static void addLeadHeadCode(NumberOfBells numberOfBells, String change, String nearCode, String farCode) {
+	private static void addLeadHeadCode(NumberOfBells numberOfBells, String change, String nearCode, String extremeCode) {
 		MethodRow row = MethodBuilder.parse(numberOfBells, change);
-		codeLookup.put(row, new LeadHeadCodes(nearCode, farCode));
+		codeLookup.put(row, new LeadHeadCodes(nearCode, extremeCode));
+
+		LeadHeadType previousTypeNear = typeLookup.put(nearCode, LeadHeadType.NEAR);
+		checkState(previousTypeNear == null || previousTypeNear == LeadHeadType.NEAR);
+		LeadHeadType previousTypeExtreme = typeLookup.put(extremeCode, LeadHeadType.EXTREME);
+		checkState(previousTypeExtreme == null || previousTypeExtreme == LeadHeadType.EXTREME);
 
 		putRowLookup(numberOfBells, change, nearCode);
-		putRowLookup(numberOfBells, change, farCode);
+		putRowLookup(numberOfBells, change, extremeCode);
 	}
 
 	private static void putRowLookup(NumberOfBells numberOfBells, String change, String code) {
@@ -509,19 +521,19 @@ public class LeadHeadCalculator {
 	private static class LeadHeadCodes {
 
 		private final String near;
-		private final String far;
+		private final String extreme;
 
-		LeadHeadCodes(String near, String far) {
+		LeadHeadCodes(String near, String extreme) {
 			this.near = near;
-			this.far = far;
+			this.extreme = extreme;
 		}
 
 		public String getNear() {
 			return near;
 		}
 
-		public String getFar() {
-			return far;
+		public String getExtreme() {
+			return extreme;
 		}
 	}
 }
