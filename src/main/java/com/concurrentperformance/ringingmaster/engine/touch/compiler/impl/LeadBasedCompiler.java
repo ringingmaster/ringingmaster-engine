@@ -71,7 +71,7 @@ public class LeadBasedCompiler extends SkeletalCompiler<LeadBasedDecomposedCall>
 	                                LeadBasedDecomposedCall nextCallMeta, NotationCall call) {
 		if (nextCallMeta.getParseType().equals(ParseType.PLAIN_LEAD)) {
 			// No Call, but consume the call.
-			log.info("{} Apply Plain lead", getLogPreamble());
+			log.debug("{} Apply Plain lead", getLogPreamble());
 		}
 		else {
 			maskedNotation.applyCall(call, getLogPreamble());

@@ -104,8 +104,8 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 	}
 
 	private void compileTouch() {
-		log.info("{} > create touch", logPreamble);
-		log.info("{}  - part [{}]", logPreamble, partIndex);
+		log.debug("{} > create touch", logPreamble);
+		log.debug("{}  - part [{}]", logPreamble, partIndex);
 		partIndex = 0;
 		// This is required here to handle the case when the first parts are omitted, and a check for empty parts are required.
 		callSequenceIndex = -1;
@@ -123,14 +123,14 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 			terminate(ProofTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
 		}
 		while (!isTerminated()) {
-			log.info("{}   - lead [{}]", logPreamble, leads.size());
+			log.debug("{}   - lead [{}]", logPreamble, leads.size());
 			final MethodLead lead = compileLead(maskedNotation, startChange);
 			leads.add(lead);
 			startChange = lead.getLastRow();
 			checkTerminationMaxLeads(leads);
 		}
 		method = MethodBuilder.buildMethod(touch.getNumberOfBells(), leads);
-		log.info("{} < create touch", logPreamble);
+		log.debug("{} < create touch", logPreamble);
 	}
 
 	private MethodRow createStartChange() {
@@ -201,7 +201,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 					terminate(ProofTerminationReason.EMPTY_PARTS, Integer.toString(EMPTY_PART_TOLERANCE));
 					break;
 				}
-				log.info("{}  - part [{}]", logPreamble, partIndex);
+				log.debug("{}  - part [{}]", logPreamble, partIndex);
 				callSequenceIndex = 0;
 			}
 			nextCall = getImmutableCallSequence().get(callSequenceIndex);
@@ -256,7 +256,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 
 	private void terminate(final ProofTerminationReason terminationReason, String additionalLogging) {
 		if (!isTerminated()) {
-			log.info("{}  - Terminate [{}] {}", logPreamble, additionalLogging, terminationReason);
+			log.debug("{}  - Terminate [{}] {}", logPreamble, additionalLogging, terminationReason);
 			this.terminationReason = terminationReason;
 		}
 		else  {

@@ -42,7 +42,7 @@ public class MaskedNotation implements NotationBody {
 	}
 
 	public void applyCall(NotationCall call, String logPreamble) {
-		log.info("{}   - Applying Call [{}] at index [{}] ", logPreamble, call, iteratorIndex);
+		log.debug("{}   - Applying Call [{}] at index [{}] ", logPreamble, call, iteratorIndex);
 
 		this.call = Optional.of(call);
 		this.callIndex = 0;

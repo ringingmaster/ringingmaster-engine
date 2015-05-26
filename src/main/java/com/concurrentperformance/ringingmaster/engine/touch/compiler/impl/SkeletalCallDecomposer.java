@@ -42,7 +42,7 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	}
 
 	List<DC> createCallSequence() {
-		log.info("{} > create call sequence", logPreamble);
+		log.debug("{} > create call sequence", logPreamble);
 		callFIFO.clear();
 		callFIFO.addFirst(new CallGroup(1));
 
@@ -57,7 +57,7 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 		}
 
 		checkState(callFIFO.size() == 1);
-		log.info("{} < create call sequence {}", logPreamble, callFIFO.getFirst() );
+		log.debug("{} < create call sequence {}", logPreamble, callFIFO.getFirst());
 		return Collections.unmodifiableList(callFIFO.removeFirst());
 	}
 
@@ -99,8 +99,8 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	                           ParseType parseType,ParseType multiplierParseType) {
 		MultiplierAndCall multiplierAndCall = getMultiplierAndCall(word, parseType, multiplierParseType);
 
-		log.info("{}  - Adding call [{}] with multiplier [{}] to group level [{}]",
-				logPreamble, multiplierAndCall.getCallName(),multiplierAndCall.getMultiplier(),callFIFO.size());
+		log.debug("{}  - Adding call [{}] with multiplier [{}] to group level [{}]",
+				logPreamble, multiplierAndCall.getCallName(), multiplierAndCall.getMultiplier(), callFIFO.size());
 		if (multiplierAndCall.getCallName().length() > 0 ) {
 			for (int i=0;i<multiplierAndCall.getMultiplier();i++) {
 				DC decomposedCall = buildDecomposedCall(multiplierAndCall.getCallName(), multiplierAndCall.getVariance(), columnIndex, parseType);
@@ -137,38 +137,38 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 
 	private void openGroup(TouchWord word) {
 		MultiplierAndCall multiplierAndCall = getMultiplierAndCall(word, ParseType.GROUP_OPEN, ParseType.GROUP_OPEN_MULTIPLIER);
-		log.info("Open Group level [{}] with multiplier [{}]", (callFIFO.size()+1),multiplierAndCall.getMultiplier());
+		log.debug("Open Group level [{}] with multiplier [{}]", (callFIFO.size() + 1), multiplierAndCall.getMultiplier());
 		callFIFO.addFirst(new CallGroup(multiplierAndCall.getMultiplier()));
 	}
 
 	private void closeGroup() {
 		CallGroup callGroup = callFIFO.removeFirst();
-		log.info("Close Group level [{}] with multiplier [{}]", (callFIFO.size()+1), callGroup.getMultiplier());
+		log.debug("Close Group level [{}] with multiplier [{}]", (callFIFO.size() + 1), callGroup.getMultiplier());
 		for (int i=0;i<callGroup.getMultiplier();i++) {
 			callFIFO.peekFirst().addAll(callGroup);
 		}
 	}
 
 	private void openVariance(TouchWord word) {
-		log.info("Open variance [{}]",word);
+		log.debug("Open variance [{}]", word);
 		checkArgument(word.getElements().size() == 1, "Open Variance should have a word with a length of 1");
 		currentVariance = word.getElements().get(0).getVariance();
 	}
 
 	private void closeVariance(TouchWord word) {
-		log.info("Close variance []", word);
+		log.debug("Close variance []", word);
 		checkArgument(word.getElements().size() == 1, "Close Variance should have a word with a length of 1");
 		currentVariance = NullVariance.INSTANCE;
 	}
 
 	private void insertDefinition(TouchWord word, int columnIndex) {
-		log.info("Start definition [{}]",word);
+		log.debug("Start definition [{}]", word);
 		String elementsAsString = word.getElementsAsString();
 		TouchDefinition definitionByName = touch.findDefinitionByName(elementsAsString);
 		if (definitionByName != null) {
 			generateCallInstancesForCell(definitionByName, columnIndex);
 		}
-		log.info("Finish definition [{}]",word);
+		log.debug("Finish definition [{}]",word);
 	}
 
 
