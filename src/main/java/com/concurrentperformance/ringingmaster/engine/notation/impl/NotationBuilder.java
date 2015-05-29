@@ -45,6 +45,8 @@ public class NotationBuilder {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	public static final int SPLICE_IDENTIFIER_MAX_LENGTH = 3;
+
 	private String name = "Unknown";
 	private NumberOfBells numberOfWorkingBells = NumberOfBells.BELLS_8;
 	private final List<String> notationShorthands = new ArrayList<>();
@@ -260,7 +262,11 @@ public class NotationBuilder {
 	 * kept to a single character for clarity in a UI.
 	 */
 	public NotationBuilder setSpliceIdentifier(final String spliceIdentifier) {
-		this.spliceIdentifier = checkNotNull(spliceIdentifier, "spliceIdentifier must not be null");
+		// Dont do a null check here is a null is acceptable.
+		if (spliceIdentifier != null) {
+			checkState((spliceIdentifier.length() <= SPLICE_IDENTIFIER_MAX_LENGTH), "Splice identifier should be '%s' characters or less", SPLICE_IDENTIFIER_MAX_LENGTH);
+		}
+		this.spliceIdentifier = spliceIdentifier;
 		return this;
 	}
 
