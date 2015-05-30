@@ -268,7 +268,6 @@ public class DefaultTouch implements Touch {
 	@Override
 	public void addNotation(NotationBody notationToAdd) {
 		checkNotNull(notationToAdd, "notation must not be null");
-		//checkArgument(notationToAdd.getNumberOfWorkingBells().equals(numberOfBells), "notationToAdd [" + notationToAdd + "] must have the same number of bells as the touch [" +numberOfBells + "]");
 		// Check duplicate name
 		for (NotationBody existingNotation : notations) {
 			if (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells() &&
@@ -284,7 +283,7 @@ public class DefaultTouch implements Touch {
 		log.debug("[{}] Add notation [{}]", this.title, notationToAdd.getNameIncludingNumberOfBells());
 		notations.add(notationToAdd);
 		Collections.sort(notations, NotationBody.BY_NAME);
-
+//TODO what if the number of bella is wrong?
 		if (spliced == false && singleMethodActiveNotation == null) {
 			singleMethodActiveNotation = notationToAdd;
 			log.debug("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
