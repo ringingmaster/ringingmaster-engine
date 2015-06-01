@@ -19,6 +19,7 @@ import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +33,7 @@ public class DefaultTouchTest {
 		NotationBody mockNotation1 = mock(NotationBody.class);
 		when(mockNotation1.getName()).thenReturn("Method 1");
 		when(mockNotation1.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotation1.getNotationDisplayString(anyBoolean())).thenReturn("12,34");
 		DefaultTouch touch = new DefaultTouch();
 		touch.addNotation(mockNotation1);
 
@@ -42,6 +44,7 @@ public class DefaultTouchTest {
 		NotationBody mockNotation2 = mock(NotationBody.class);
 		when(mockNotation2.getName()).thenReturn("Method 2");
 		when(mockNotation2.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotation2.getNotationDisplayString(anyBoolean())).thenReturn("12,56");
 		touch.addNotation(mockNotation2);
 
 		retrievedNotations = touch.getAllNotations();
@@ -94,12 +97,16 @@ public class DefaultTouchTest {
 
 		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
 		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
 		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
 		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationB.getNotationDisplayString(anyBoolean())).thenReturn("34,");
 		NotationBody mockNotationC = when(mock(NotationBody.class).getName()).thenReturn("C").getMock();
 		when(mockNotationC.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationC.getNotationDisplayString(anyBoolean())).thenReturn("56,");
 		NotationBody mockNotationD = when(mock(NotationBody.class).getName()).thenReturn("D").getMock();
 		when(mockNotationD.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationD.getNotationDisplayString(anyBoolean())).thenReturn("16,");
 
 		touch.addNotation(mockNotationA);
 		touch.addNotation(mockNotationB);
@@ -127,12 +134,16 @@ public class DefaultTouchTest {
 
 		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
 		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
 		NotationBody mockNotationBInvalid = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
 		when(mockNotationBInvalid.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_7);
+		when(mockNotationBInvalid.getNotationDisplayString(anyBoolean())).thenReturn("34,");
 		NotationBody mockNotationC = when(mock(NotationBody.class).getName()).thenReturn("C").getMock();
 		when(mockNotationC.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationC.getNotationDisplayString(anyBoolean())).thenReturn("56,");
 		NotationBody mockNotationDInvalid = when(mock(NotationBody.class).getName()).thenReturn("D").getMock();
 		when(mockNotationDInvalid.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_7);
+		when(mockNotationDInvalid.getNotationDisplayString(anyBoolean())).thenReturn("16,");
 
 		touch.addNotation(mockNotationA);
 		touch.addNotation(mockNotationBInvalid);
@@ -155,8 +166,10 @@ public class DefaultTouchTest {
 
 		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
 		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
 		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
 		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationB.getNotationDisplayString(anyBoolean())).thenReturn("34,");
 
 		touch.addNotation(mockNotationA);
 		touch.addNotation(mockNotationB);
@@ -172,8 +185,10 @@ public class DefaultTouchTest {
 
 		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
 		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
 		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
 		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
+		when(mockNotationB.getNotationDisplayString(anyBoolean())).thenReturn("34,");
 		touch.addNotation(mockNotationA);
 		touch.addNotation(mockNotationB);
 

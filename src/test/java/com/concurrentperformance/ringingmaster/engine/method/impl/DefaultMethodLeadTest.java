@@ -71,7 +71,7 @@ public class DefaultMethodLeadTest {
 		rows.add(buildRow(NumberOfBells.BELLS_3, 2,1,3));
 		rows.add(buildRow(NumberOfBells.BELLS_3, 2, 3, 1));
 
-		final MethodLead lead = new DefaultMethodLead(NumberOfBells.BELLS_4, rows, empty);
+		final MethodLead lead = new DefaultMethodLead(NumberOfBells.BELLS_3, rows, empty);
 
 		assertEquals(0, lead.getHuntBellStartPlace().size());
 	}
