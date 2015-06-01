@@ -38,13 +38,14 @@ public interface Touch extends Cloneable {
 	TouchType getTouchType();
 	void setTouchType(TouchType touchType);
 
-	void setNumberOfBells(NumberOfBells numberOfBells);
+	void    setNumberOfBells(NumberOfBells numberOfBells);
 	NumberOfBells getNumberOfBells();
 
 	Bell getCallFromBell();
 	void setCallFromBell(Bell callFromBell);
 
 	void addNotation(NotationBody notationToAdd);
+	List<String> checkAddNotation(NotationBody notationToAdd);
 	void removeNotation(NotationBody notationForRemoval);
 	List<NotationBody> getAllNotations();
 	List<NotationBody> getValidNotations();

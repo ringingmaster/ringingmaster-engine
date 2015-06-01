@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -268,16 +269,12 @@ public class DefaultTouch implements Touch {
 	@Override
 	public void addNotation(NotationBody notationToAdd) {
 		checkNotNull(notationToAdd, "notation must not be null");
-		// Check duplicate name
-		for (NotationBody existingNotation : notations) {
-			if (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells() &&
-				Objects.equal(existingNotation.getName(), notationToAdd.getName())) {
-				throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "] as it has a duplicate name to existing notation [" + existingNotation + "]");
-			}
-			if (!Strings.isNullOrEmpty(notationToAdd.getSpliceIdentifier()) &&
-				Objects.equal(existingNotation.getSpliceIdentifier(), notationToAdd.getSpliceIdentifier())) {
-				throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "] as it has a duplicate splice identifier to existing notation [" + existingNotation + "]");
-			}
+
+		List<String> messages = checkAddNotation(notationToAdd);
+
+		if (messages.size() > 0) {
+			String message = messages.stream().collect(Collectors.joining(System.lineSeparator()));
+			throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "]: " + System.lineSeparator() + message);
 		}
 
 		log.debug("[{}] Add notation [{}]", this.title, notationToAdd.getNameIncludingNumberOfBells());
@@ -288,6 +285,29 @@ public class DefaultTouch implements Touch {
 			singleMethodActiveNotation = notationToAdd;
 			log.debug("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
 		}
+	}
+
+	public List<String> checkAddNotation(NotationBody notationToAdd) {
+		List<String> messages = new ArrayList<>();
+
+		messages.addAll(getAllNotations().stream()
+				.filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells()) &&
+						(Objects.equal(existingNotation.getName(), notationToAdd.getName())))
+				.map(existngNotation -> "An existing method with notation '" + existngNotation.getNotationDisplayString(true) + "' has the same Name and Number Of Bells.")
+				.collect(Collectors.toList()));
+
+		messages.addAll(getAllNotations().stream()
+				.filter(existingNotation -> (!Strings.isNullOrEmpty(notationToAdd.getSpliceIdentifier()) &&
+						Objects.equal(existingNotation.getSpliceIdentifier(), notationToAdd.getSpliceIdentifier())))
+				.map(existngNotation -> "An existing method '" + existngNotation.getNameIncludingNumberOfBells()  + "' has the same Splice Identifier.")
+				.collect(Collectors.toList()));
+
+		messages.addAll(getAllNotations().stream()
+				.filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells()) &&
+						Objects.equal(existingNotation.getNotationDisplayString(true), notationToAdd.getNotationDisplayString(true)))
+				.map(existngNotation -> "An existing method '" + existngNotation.getNameIncludingNumberOfBells() + "' has the same Notation '" + notationToAdd.getNotationDisplayString(false) + "'.")
+				.collect(Collectors.toList()));
+		return messages;
 	}
 
 	@Override

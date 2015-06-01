@@ -92,6 +92,11 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public List<String> checkAddNotation(NotationBody notationToAdd) {
+		return touch.checkAddNotation(notationToAdd);
+	}
+
+	@Override
 	public void removeNotation(NotationBody notationForRemoval) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
