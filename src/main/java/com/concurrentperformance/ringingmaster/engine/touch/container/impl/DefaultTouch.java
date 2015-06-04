@@ -75,12 +75,7 @@ public class DefaultTouch implements Touch {
 
 	private final Grid<TouchCell> cells;
 
-	private static GridCellFactory<TouchCell> FACTORY = new GridCellFactory<TouchCell>() {
-		@Override
-		public TouchCell buildCell(int columnIndex, int rowIndex) {
-			return new DefaultTouchCell();
-		}
-	};
+	private static GridCellFactory<TouchCell> FACTORY = (columnIndex, rowIndex) -> new DefaultTouchCell();
 
 	DefaultTouch() {
 		title = "";
