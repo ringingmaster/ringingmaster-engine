@@ -1,12 +1,13 @@
 package com.concurrentperformance.ringingmaster.engine.touch.proof.impl;
 
+import com.concurrentperformance.ringingmaster.engine.method.Method;
+import com.concurrentperformance.ringingmaster.engine.touch.analysis.Analysis;
+import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
+import com.concurrentperformance.ringingmaster.engine.touch.proof.ProofTerminationReason;
 import net.jcip.annotations.Immutable;
 
-import com.concurrentperformance.ringingmaster.engine.touch.analysis.Analysis;
-import com.concurrentperformance.ringingmaster.engine.method.Method;
-import com.concurrentperformance.ringingmaster.engine.touch.proof.ProofTerminationReason;
-import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -19,16 +20,19 @@ public class DefaultProof implements Proof {
 
 	private final Touch touch;
 	private final ProofTerminationReason terminationReason;
-	private final Method createdMethod;
-	private final Analysis analysis;
+	private final Optional<String> terminateNotes;
+	private final Optional<Method> createdMethod;
+	private final Optional<Analysis> analysis;
 	private final long proofTime;
 
 
-	public DefaultProof(Touch touch, ProofTerminationReason terminationReason, Method createdMethod, Analysis analysis, long proofTime) {
+	public DefaultProof(Touch touch, ProofTerminationReason terminationReason, Optional<String> terminateNotes,
+	                    Optional<Method> createdMethod, Optional<Analysis> analysis, long proofTime) {
 		this.touch = checkNotNull(touch, "touch must not be null");
 		this.terminationReason = checkNotNull(terminationReason, "terminationReason must not be null");
-		this.createdMethod = createdMethod; // createdMethod can be null when termination reason is INVALID_TOUCH
-		this.analysis = analysis; //analysis can be null when not requested
+		this.terminateNotes = checkNotNull(terminateNotes, "terminateNotes must not be null");
+		this.createdMethod = checkNotNull(createdMethod); // createdMethod can be absent when termination reason is INVALID_TOUCH
+		this.analysis = checkNotNull(analysis); //analysis can be absent when not requested
 		this.proofTime = proofTime;
 	}
 
@@ -47,13 +51,13 @@ public class DefaultProof implements Proof {
 		switch(getTerminationReason()) {
 
 			case INVALID_TOUCH:
-				return "";
+				return (terminateNotes.isPresent())?terminateNotes.get():"";
 			case ROW_COUNT:
-				return "Row limit (" + getCreatedMethod().getRowCount() + ")";
+				return "Row limit (" + getCreatedMethod().get().getRowCount() + ")";
 			case LEAD_COUNT:
-				return "Lead limit (" + getCreatedMethod().getLeadCount() + ")";
+				return "Lead limit (" + getCreatedMethod().get().getLeadCount() + ")";
 			case SPECIFIED_ROW:
-				return "Change (" + getCreatedMethod().getLastRow().getDisplayString(true) + ")";
+				return "Change (" + getCreatedMethod().get().getLastRow().getDisplayString(true) + ")";
 			case EMPTY_PARTS:
 				return  "Aborted - Empty parts found";
 			// TODO this is from C++
@@ -73,12 +77,12 @@ public class DefaultProof implements Proof {
 
 
 	@Override
-	public Method getCreatedMethod() {
+	public Optional<Method> getCreatedMethod() {
 		return createdMethod;
 	}
 
 	@Override
-	public Analysis getAnalysis() {
+	public Optional<Analysis> getAnalysis() {
 		return analysis;
 	}
 

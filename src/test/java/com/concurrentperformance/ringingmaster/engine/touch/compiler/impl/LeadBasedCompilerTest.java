@@ -58,7 +58,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getCreatedMethod();
+		Method method = result.getCreatedMethod().get();
 
 		assertNotNull("Should return non null Method", method);
 		assertEquals("X should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
@@ -73,7 +73,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getCreatedMethod();
+		Method method = result.getCreatedMethod().get();
 
 		assertEquals("14 should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
 		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
@@ -90,7 +90,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getCreatedMethod();
+		Method method = result.getCreatedMethod().get();
 
 		assertArrayEquals(new int[]{1}, method.getLead(0).getLeadSeparatorPositions());
 	}
@@ -109,7 +109,7 @@ public class LeadBasedCompilerTest {
 
 			touch.setTerminationMaxLeads(i);
 			Proof result = new LeadBasedCompiler(touch).compile(false);
-			Method method = result.getCreatedMethod();
+			Method method = result.getCreatedMethod().get();
 
 			assertEquals(i, method.getLeadCount());
 			assertEquals(ProofTerminationReason.LEAD_COUNT, result.getTerminationReason());
@@ -130,7 +130,7 @@ public class LeadBasedCompilerTest {
 		for (int i=1; i< 200; i++) {
 			touch.setTerminationMaxRows(i);
 			Proof result = new LeadBasedCompiler(touch).compile(false);
-			Method method = result.getCreatedMethod();
+			Method method = result.getCreatedMethod().get();
 
 			assertEquals(i, method.getRowCount());
 			assertEquals(ProofTerminationReason.ROW_COUNT, result.getTerminationReason());
@@ -150,7 +150,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationSpecificRow(roundsRow);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
-		Method method = result.getCreatedMethod();
+		Method method = result.getCreatedMethod().get();
 
 		assertEquals(roundsRow, method.getLastRow());
 	}
@@ -160,9 +160,9 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(buildPlainBobMinor());
 		Proof result = new LeadBasedCompiler(touch).compile(false);
 		assertEquals("Plain Course of Plain Bob Minor", result.getTouch().getTitle());
-		assertEquals(60, result.getCreatedMethod().getRowCount());
-		assertEquals(5, result.getCreatedMethod().getLeadCount());
-		checkAgainstFile(result.getCreatedMethod(), "PlainBobMinor.txt");
+		assertEquals(60, result.getCreatedMethod().get().getRowCount());
+		assertEquals(5, result.getCreatedMethod().get().getLeadCount());
+		checkAgainstFile(result.getCreatedMethod().get(), "PlainBobMinor.txt");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -261,9 +261,9 @@ public class LeadBasedCompilerTest {
 	                                 ProofTerminationReason terminationReason, Touch touch) throws IOException {
 		Proof proof = new LeadBasedCompiler(touch).compile(true);
 		assertEquals(terminationReason, proof.getTerminationReason());
-		assertEquals(expectedLeadCount, proof.getCreatedMethod().getLeadCount());
-		checkAgainstFile(proof.getCreatedMethod(), fileName);
-		assertEquals(trueTouch, proof.getAnalysis().isTrueTouch());
+		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
+		checkAgainstFile(proof.getCreatedMethod().get(), fileName);
+		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
 		return proof;
 	}
 

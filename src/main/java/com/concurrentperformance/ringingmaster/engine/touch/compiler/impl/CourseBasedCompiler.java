@@ -1,27 +1,26 @@
 	package com.concurrentperformance.ringingmaster.engine.touch.compiler.impl;
 
-	import com.concurrentperformance.ringingmaster.engine.touch.compiler.Compiler;
 	import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
-	import com.concurrentperformance.ringingmaster.engine.method.Bell;
-	import com.concurrentperformance.ringingmaster.engine.method.Method;
-	import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
-	import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-	import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
-	import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
-	import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
-	import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
-	import com.google.common.collect.ImmutableList;
-	import net.jcip.annotations.ThreadSafe;
-	import org.slf4j.Logger;
-	import org.slf4j.LoggerFactory;
+import com.concurrentperformance.ringingmaster.engine.method.Bell;
+import com.concurrentperformance.ringingmaster.engine.method.Method;
+import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
+import com.concurrentperformance.ringingmaster.engine.touch.compiler.Compiler;
+import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
+import com.google.common.collect.ImmutableList;
+import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	import java.util.HashMap;
-	import java.util.List;
-	import java.util.Map;
-	import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-	import static com.google.common.base.Preconditions.checkArgument;
-	import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Takes a parsed touch, and converts it into a compiled proof. A proof consists of an expanded Method and
@@ -46,22 +45,6 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 	}
 
 	@Override
-	protected Optional<String> checkInvalidTouch(Touch touch) {
-		if (touch.isSpliced()) {
-			if (touch.getNotationsInUse().size() == 0) {
-				return Optional.of("Spliced touch has no valid methods");
-			}
-		}
-		else { // Not Spliced
-			if (touch.getSingleMethodActiveNotation() == null) {
-				return Optional.of("No active method");
-			}
-		}
-
-		return Optional.empty();
-	}
-
-	@Override
 	protected void preCompile(Touch touch) {
 		immutableCallSequence = buildImmutableCallSequence(touch);
 		callingPositionToCallBellPlace = buildCallingPositionLookup(touch);
@@ -75,7 +58,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 		log.info("{} > Build calling bell positions",getLogPreamble());
 		// Build a plain course.
 		NotationBody activeNotation = touch.getSingleMethodActiveNotation();
-		Method plainCourse = PlainCourseHelper.buildPlainCourse(activeNotation, getLogPreamble() +  "  | ",false).getCreatedMethod();
+		Method plainCourse = PlainCourseHelper.buildPlainCourse(activeNotation, getLogPreamble() +  "  | ",false).getCreatedMethod().get();
 
 		// build the map.
 		Map<NotationMethodCallingPosition, Integer> callingPositionMap = new HashMap<>();

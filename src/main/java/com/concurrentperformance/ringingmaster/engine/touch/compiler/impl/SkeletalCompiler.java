@@ -1,7 +1,5 @@
 package com.concurrentperformance.ringingmaster.engine.touch.compiler.impl;
 
-import com.concurrentperformance.ringingmaster.engine.touch.analysis.Analysis;
-import com.concurrentperformance.ringingmaster.engine.touch.analysis.impl.AnalysisBuilder;
 import com.concurrentperformance.ringingmaster.engine.method.Method;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
@@ -10,11 +8,13 @@ import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
+import com.concurrentperformance.ringingmaster.engine.touch.analysis.Analysis;
+import com.concurrentperformance.ringingmaster.engine.touch.analysis.impl.AnalysisBuilder;
+import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
+import com.concurrentperformance.ringingmaster.engine.touch.container.impl.ImmutableTouch;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.ProofTerminationReason;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.impl.DefaultProof;
-import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
-import com.concurrentperformance.ringingmaster.engine.touch.container.impl.ImmutableTouch;
 import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -52,15 +51,14 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 	private Map<String, NotationCall> callLookupByName;
 
 	// outputs
-	private volatile Method method;
-	private volatile Analysis analysis;
-	private volatile ProofTerminationReason terminationReason;
+	private volatile Optional<Method> method = Optional.empty();
+	private volatile Optional<Analysis> analysis = Optional.empty();
+	private volatile Optional<ProofTerminationReason> terminationReason = Optional.empty();
+	private volatile Optional<String> terminateNotes = Optional.empty();
 	private volatile Proof proof;
 
 
 	public SkeletalCompiler(Touch touch, String logPreamble) {
-		checkArgument(touch.getAllNotations().size() > 0, "touch must have at least one notation");
-
 		try {
 			this.touch = new ImmutableTouch(touch.clone());
 		} catch (CloneNotSupportedException e) {
@@ -88,12 +86,25 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 			}
 		}
 		long proofTime = System.currentTimeMillis() - start;
-		proof = new DefaultProof(touch, terminationReason, method, analysis, proofTime);
+		proof = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, analysis, proofTime);
 		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), proofTime);
 		return proof;
 	}
 
-	protected abstract Optional<String> checkInvalidTouch(Touch touch);
+	private Optional<String> checkInvalidTouch(Touch touch) {
+		if (touch.isSpliced()) {
+			if (touch.getNotationsInUse().size() == 0) {
+				return Optional.of("Spliced touch has no valid methods");
+			}
+		}
+		else { // Not Spliced
+			if (touch.getSingleMethodActiveNotation() == null) {
+				return Optional.of("No active method");
+			}
+		}
+
+		return Optional.empty();
+	}
 
 	protected abstract void preCompile(Touch touch);
 
@@ -129,7 +140,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 			startChange = lead.getLastRow();
 			checkTerminationMaxLeads(leads);
 		}
-		method = MethodBuilder.buildMethod(touch.getNumberOfBells(), leads);
+		method = Optional.of(MethodBuilder.buildMethod(touch.getNumberOfBells(), leads));
 		log.debug("{} < create touch", logPreamble);
 	}
 
@@ -254,23 +265,24 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 		}
 	}
 
-	private void terminate(final ProofTerminationReason terminationReason, String additionalLogging) {
+	private void terminate(final ProofTerminationReason terminationReason, String terminateNotes) {
 		if (!isTerminated()) {
-			log.debug("{}  - Terminate [{}] {}", logPreamble, additionalLogging, terminationReason);
-			this.terminationReason = terminationReason;
+			log.debug("{}  - Terminate [{}] {}", logPreamble, terminateNotes, terminationReason);
+			this.terminationReason = Optional.of(terminationReason);
+			this.terminateNotes = Optional.of(terminateNotes);
 		}
 		else  {
-			log.warn("Requesting second terminate [{}]{}", terminationReason, additionalLogging);
+			log.warn("Requesting second terminate [{}]{}", terminationReason, terminateNotes);
 		}
 	}
 
 	private boolean isTerminated() {
-		return terminationReason != null;
+		return terminationReason.isPresent();
 	}
 
 	private void compileAnalysis() {
-		analysis = AnalysisBuilder.buildAnalysisStructure();
-		AnalysisBuilder.falseRowAnalysis(method, analysis);
+		analysis = Optional.of(AnalysisBuilder.buildAnalysisStructure());
+		AnalysisBuilder.falseRowAnalysis(method.get(), analysis.get());
 	}
 
 

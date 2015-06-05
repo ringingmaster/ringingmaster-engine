@@ -77,9 +77,9 @@ public class CourseBasedCompilerTest {
 		parser.parseAndAnnotate(touch);
 		Proof proof = new CourseBasedCompiler(touch, "").compile(true);
 		assertEquals(terminationReason, proof.getTerminationReason());
-		assertEquals(expectedLeadCount, proof.getCreatedMethod().getLeadCount());
-		checkAgainstFile(proof.getCreatedMethod(), fileName);
-		assertEquals(trueTouch, proof.getAnalysis().isTrueTouch());
+		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
+		checkAgainstFile(proof.getCreatedMethod().get(), fileName);
+		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
 		return proof;
 	}
 

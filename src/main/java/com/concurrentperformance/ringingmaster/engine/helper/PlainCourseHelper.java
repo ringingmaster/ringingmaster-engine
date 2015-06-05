@@ -19,7 +19,7 @@ public class PlainCourseHelper {
 	public static Proof buildPlainCourse(NotationBody notation, String logPreamble, boolean withAnalysis) {
 		Touch plainCourseTouch = TouchBuilder.buildPlainCourseInstance(notation);
 		Proof proof = CompilerFactory.getInstance(plainCourseTouch,  logPreamble).compile(withAnalysis);
-		Method createdMethod = proof.getCreatedMethod();
+		Method createdMethod = proof.getCreatedMethod().get();
 
 		checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
 		checkState(ProofTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),

@@ -53,7 +53,7 @@ public class MethodCorrectnessTest   {
 				.build();
 
 		Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
-		MethodLead lead = proof.getCreatedMethod().getLead(0);
+		MethodLead lead = proof.getCreatedMethod().get().getLead(0);
 	//	log.info(lead.toString());
 
 		assertEquals(serializableNotation.getLeadLength(), lead.getRowCount() - 1);

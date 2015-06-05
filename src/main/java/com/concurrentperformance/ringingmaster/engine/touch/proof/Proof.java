@@ -1,10 +1,11 @@
 package com.concurrentperformance.ringingmaster.engine.touch.proof;
 
+import com.concurrentperformance.ringingmaster.engine.method.Method;
+import com.concurrentperformance.ringingmaster.engine.touch.analysis.Analysis;
+import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import net.jcip.annotations.Immutable;
 
-import com.concurrentperformance.ringingmaster.engine.touch.analysis.Analysis;
-import com.concurrentperformance.ringingmaster.engine.method.Method;
-import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
+import java.util.Optional;
 
 /**
  * TODO comments.
@@ -20,13 +21,13 @@ public interface Proof {
 	 */
 	Touch getTouch();
 
-	Method getCreatedMethod();
-
 	ProofTerminationReason getTerminationReason();
 
 	String getTerminateReasonDisplayString();
 
-	Analysis getAnalysis();
+	Optional<Method> getCreatedMethod();
+
+	Optional<Analysis> getAnalysis();
 
 	long getProofTime();
 }

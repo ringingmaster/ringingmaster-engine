@@ -360,7 +360,7 @@ public class NotationBuilder {
 
 	private Method buildPlainCourse(List<NotationRow> normalisedNotationElements) {
 		NotationBody plainCourseNotation = new PlainCourseNotationBody(name, numberOfWorkingBells, normalisedNotationElements);
-		return PlainCourseHelper.buildPlainCourse(plainCourseNotation, "[NotationBuilder] ", false).getCreatedMethod();
+		return PlainCourseHelper.buildPlainCourse(plainCourseNotation, "[NotationBuilder] ", false).getCreatedMethod().get();
 	}
 
 	private NotationCall getDefaultNotationCall(SortedSet<NotationCall> notationCalls) {

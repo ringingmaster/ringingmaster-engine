@@ -1,18 +1,17 @@
 package com.concurrentperformance.ringingmaster.engine.touch.compiler.impl;
 
-import com.concurrentperformance.ringingmaster.engine.touch.compiler.Compiler;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
-import com.concurrentperformance.ringingmaster.engine.touch.parser.ParseType;
+import com.concurrentperformance.ringingmaster.engine.touch.compiler.Compiler;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
+import com.concurrentperformance.ringingmaster.engine.touch.parser.ParseType;
 import com.google.common.collect.ImmutableList;
 import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -38,22 +37,6 @@ public class LeadBasedCompiler extends SkeletalCompiler<LeadBasedDecomposedCall>
 	LeadBasedCompiler(Touch touch, String logPreamble) {
 		super(touch, logPreamble);
 		checkArgument(touch.getTouchType() == TouchType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getTouchType() + "]");
-	}
-
-	@Override
-	protected Optional<String> checkInvalidTouch(Touch touch) {
-		if (touch.isSpliced()) {
-			if (touch.getNotationsInUse().size() == 0) {
-				return Optional.of("Spliced touch has no valid methods");
-			}
-		}
-		else { // Not Spliced
-			if (touch.getSingleMethodActiveNotation() == null) {
-				return Optional.of("No active method");
-			}
-		}
-
-		return Optional.empty();
 	}
 
 	@Override
