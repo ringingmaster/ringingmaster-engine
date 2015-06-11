@@ -102,6 +102,11 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
+	public void exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
+	}
+
+	@Override
 	public List<NotationBody> getAllNotations() {
 		return touch.getAllNotations();
 	}

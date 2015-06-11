@@ -330,6 +330,22 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
+	public void exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+		checkNotNull(originalNotation, "originalNotation must not be null");
+		checkNotNull(replacementNotation, "replacementNotation must not be null");
+		checkState(notations.contains(originalNotation));
+
+		log.info("[{}] exchangeNotation notation [{}] with [{}]", this.title, originalNotation.getNameIncludingNumberOfBells(), replacementNotation.getNameIncludingNumberOfBells());
+
+		notations.remove(originalNotation);
+		notations.add(replacementNotation);
+
+		if (singleMethodActiveNotation == originalNotation) {
+			singleMethodActiveNotation = originalNotation;
+		}
+	}
+
+	@Override
 	public List<NotationBody> getAllNotations() {
 		return Collections.unmodifiableList(notations);
 	}
