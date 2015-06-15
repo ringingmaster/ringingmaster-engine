@@ -87,7 +87,7 @@ public class DefaultProof implements Proof {
 	}
 
 	@Override
-	public long getProofTime() {
+	public long getProofTimeMs() {
 		return proofTime;
 	}
 }

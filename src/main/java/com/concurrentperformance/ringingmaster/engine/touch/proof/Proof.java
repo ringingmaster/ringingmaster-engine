@@ -29,5 +29,5 @@ public interface Proof {
 
 	Optional<Analysis> getAnalysis();
 
-	long getProofTime();
+	long getProofTimeMs();
 }
