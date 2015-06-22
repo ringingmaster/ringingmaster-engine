@@ -52,7 +52,7 @@ public class NotationBuilder {
 	private final List<String> notationShorthands = new ArrayList<>();
 	private boolean foldedPalindrome = false;
 	private List<NotationCallBuilder> notationCallBuilders = new ArrayList<>();
-	private boolean useCannedCalls = false;
+	private boolean cannedCalls = false;
 	private String defaultCallName = "";
 	private String spliceIdentifier;
 	private Set<Integer> callInitiationRows = new HashSet<>();
@@ -96,6 +96,7 @@ public class NotationBuilder {
 					notationElementsSets,
 					foldedPalindrome,
 					"",
+					cannedCalls,
 					Collections.emptySet(),
 					null,
 					Collections.emptySet(),
@@ -118,6 +119,7 @@ public class NotationBuilder {
 				notationElementsSets,
 				foldedPalindrome,
 				leadHeadCode,
+				cannedCalls,
 				notationCalls,
 				defaultNotationCall,
 				validatedCallInitiationRows,
@@ -204,7 +206,7 @@ public class NotationBuilder {
 	 * Add a call.
 	 */
 	public NotationBuilder addCall(String name, String nameShorthand, String callNotation, boolean defaultCall) {
-		checkState(useCannedCalls == false, "Set either canned calls or actual calls.");
+		checkState(cannedCalls == false, "Set either canned calls or actual calls.");
 
 		NotationCallBuilder newCallBuilder =  new NotationCallBuilder()
 				.setName(name)
@@ -221,10 +223,10 @@ public class NotationBuilder {
 		return this;
 	}
 
-	public NotationBuilder setUseCannedCalls() {
+	public NotationBuilder setCannedCalls() {
 		checkState(notationCallBuilders.size() == 0, "Set either canned calls or actual calls.");
 
-		useCannedCalls = true;
+		cannedCalls = true;
 		return this;
 	}
 
@@ -273,7 +275,7 @@ public class NotationBuilder {
 	private SortedSet<NotationCall> buildCalls(LeadHeadCalculator.LeadHeadType leadHeadType) {
 		SortedSet<NotationCall> notationCalls = new TreeSet<>(NotationCall.BY_NAME);
 
-		if (useCannedCalls) {
+		if (cannedCalls) {
 			if (leadHeadType != null) {
 				if (leadHeadType.equals(LeadHeadCalculator.LeadHeadType.NEAR)) {
 					notationCalls.add(

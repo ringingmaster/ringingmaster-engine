@@ -38,6 +38,11 @@ public class PlainCourseNotationBody extends DefaultNotation implements Notation
 	}
 
 	@Override
+	public boolean isCannedCalls()   {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Set<NotationCall> getCalls() {
 		return Collections.emptySet();
 	}

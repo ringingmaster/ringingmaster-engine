@@ -31,6 +31,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	private final ImmutableList<ImmutableList<NotationRow>> rawNotationRowsSets;
 	private final boolean foldedPalindrome;
 	private final String leadHeadCode;
+	private final boolean cannedCalls;
 	private final Set<NotationCall> notationCalls;
 	private final NotationCall defaultCall;
 	private final SortedSet<Integer> callInitiationRow;
@@ -47,6 +48,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	                    final List<List<NotationRow>> notationRowsSets,
 	                    final boolean foldedPalindrome,
 	                    final String leadHeadCode,
+	                    final boolean cannedCalls,
 	                    final Set<NotationCall> notationCalls,
 	                    final NotationCall defaultCall,
 	                    final Set<Integer> callInitiationRow,
@@ -61,6 +63,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		this.rawNotationRowsSets = rawNotationSetsBuilder.build();
 		this.foldedPalindrome = foldedPalindrome;
 		this.leadHeadCode = leadHeadCode;
+		this.cannedCalls = cannedCalls;
 		this.notationCalls = ImmutableSet.<NotationCall>builder().addAll(checkNotNull(notationCalls)).build();
 		this.defaultCall = defaultCall;
 		this.callInitiationRow = ImmutableSortedSet.<Integer>naturalOrder().addAll(checkNotNull(callInitiationRow)).build();
@@ -84,6 +87,11 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	}
 
 	@Override
+	public boolean isCannedCalls() {
+		return cannedCalls;
+	}
+
+	@Override
 	public String getNotationDisplayString(final boolean concise) {
 		final StringBuilder buf = new StringBuilder();
 		boolean firstTime = true;
@@ -96,6 +104,8 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		}
 		return buf.toString();
 	}
+
+
 
 	@Override
 	public Set<NotationCall> getCalls() {

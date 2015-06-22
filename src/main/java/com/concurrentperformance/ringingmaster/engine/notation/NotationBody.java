@@ -42,6 +42,11 @@ public interface NotationBody extends Notation {
 	String getLeadHeadCode();
 
 	/**
+	 * return true if the calls are generated.
+	 */
+	boolean isCannedCalls();
+
+	/**
 	 * Get all the the calls attached to this notation.
 	 */
 	Set<NotationCall> getCalls();

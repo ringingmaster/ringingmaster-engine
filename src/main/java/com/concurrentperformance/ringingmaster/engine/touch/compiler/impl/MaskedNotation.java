@@ -148,6 +148,11 @@ public class MaskedNotation implements NotationBody {
 	}
 
 	@Override
+	public boolean isCannedCalls() {
+		return currentNotation.isCannedCalls();
+	}
+
+	@Override
 	public Set<NotationCall> getCalls() {
 		throw new UnsupportedOperationException();
 	}
