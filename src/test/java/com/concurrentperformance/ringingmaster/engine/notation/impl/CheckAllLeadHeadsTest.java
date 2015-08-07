@@ -2,8 +2,7 @@ package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
 
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.generated.notation.persist.SerializableNotation;
-import com.ringingmaster.extraction.CentralCouncilMethodExtractor;
+import com.concurrentperformance.ringingmaster.generated.persist.Notation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,30 +21,29 @@ public class CheckAllLeadHeadsTest {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> checkAllCCLibrary() {
-		return new CentralCouncilMethodExtractor()
-				.extractNotationsToStream()
-//				.filter(serializableNotation -> serializableNotation.getNumberOfBells() == 8)
-//				.filter(serializableNotation -> serializableNotation.getName().contains("Chipstead Slow Course"))
-				.map(serializableNotation -> new Object[]{serializableNotation})
-				.collect(Collectors.toList());
+//TODO		return new CentralCouncilXmlLibraryNotationExtractor()
+//				.extractNotationLibraryToStream()
+//				.map(notation -> new Object[]{notation})
+//				.collect(Collectors.toList());
+		return null;
 	}
 
-	public CheckAllLeadHeadsTest(SerializableNotation serializableNotation) {
-		this.serializableNotation = serializableNotation;
+	public CheckAllLeadHeadsTest(Notation notation) {
+		this.notation = notation;
 	}
 
-	private final SerializableNotation serializableNotation;
+	private final Notation notation;
 
 	@Test
 	public void checkLeadHeadCorrectness() {
 
-		log.info(serializableNotation.toString());
+		log.info(notation.toString());
 
 		NotationBody notationBody = NotationBuilder.getInstance()
-				.setFromSerializableNotation(serializableNotation)
+				.setFromSerializableNotation(notation)
 				.build();
 
-		String ccLeadHead = serializableNotation.getLeadHead();
+		String ccLeadHead = notation.getLeadHead();
 		String calculatedLeadHead = notationBody.getLeadHeadCode();
 
 		// Uncomment section to log out the changes in the lead

@@ -8,7 +8,7 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
-import com.concurrentperformance.ringingmaster.generated.notation.persist.SerializableNotation;
+import com.concurrentperformance.ringingmaster.generated.persist.Notation;
 import com.google.common.base.Strings;
 import net.jcip.annotations.NotThreadSafe;
 import org.slf4j.Logger;
@@ -127,15 +127,15 @@ public class NotationBuilder {
 				spliceIdentifier);
 	}
 
-	public NotationBuilder setFromSerializableNotation(SerializableNotation serializableNotation) {
+	public NotationBuilder setFromSerializableNotation(Notation notation) {
 
-		setNumberOfWorkingBells(NumberOfBells.valueOf(serializableNotation.getNumberOfBells()));
-		if (!serializableNotation.isFoldedPalindrome()) {
-			setUnfoldedNotationShorthand(serializableNotation.getNotation());
+		setNumberOfWorkingBells(NumberOfBells.valueOf(notation.getNumberOfBells()));
+		if (!notation.isFoldedPalindrome()) {
+			setUnfoldedNotationShorthand(notation.getNotation());
 		} else {
-			setFoldedPalindromeNotationShorthand(serializableNotation.getNotation(), serializableNotation.getNotation2());
+			setFoldedPalindromeNotationShorthand(notation.getNotation(), notation.getNotation2());
 		}
-		setName(serializableNotation.getName());
+		setName(notation.getName());
 
 		return this;
 	}

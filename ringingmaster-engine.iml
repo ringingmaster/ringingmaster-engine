@@ -42,6 +42,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="ringingmaster-method-extraction" />
+    <orderEntry type="module" module-name="ringingmaster-persist" />
   </component>
 </module>
