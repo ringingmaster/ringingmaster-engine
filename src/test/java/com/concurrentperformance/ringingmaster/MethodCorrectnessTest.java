@@ -5,15 +5,19 @@ import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.LeadHeadCalculator;
-import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
+import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
-import com.concurrentperformance.ringingmaster.generated.persist.Notation;
+import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.PersistableNotation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,37 +30,36 @@ import static org.junit.Assert.assertEquals;
 public class MethodCorrectnessTest   {
 
 
+	public static final Path LIBRARY_PATH = Paths.get("./src/test/resource/notationlibrary.xml");
+
 	@Parameters
 	public static Collection<Object[]> checkAllCCLibrary() {
-
-//TODO		return new CentralCouncilXmlLibraryNotationExtractor()
-//				.extractNotationLibraryToStream()
-//				.map(serializableNotation -> new Object[]{serializableNotation})
-//				.collect(Collectors.toList());
-
-		return null;
+		return new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
+				.getNotation().stream()
+				.map(serializableNotation -> new Object[]{serializableNotation})
+				.collect(Collectors.toList());
 	}
 
-	public MethodCorrectnessTest(Notation serializableNotation) {
-		this.notation = serializableNotation;
-		this.leadHead = LeadHeadCalculator.lookupRowFromCode(serializableNotation.getLeadHead(), NumberOfBells.valueOf(serializableNotation.getNumberOfBells()));
+	public MethodCorrectnessTest(PersistableNotation serializablePersistableNotation) {
+		this.persistableNotation = serializablePersistableNotation;
+		this.leadHead = LeadHeadCalculator.lookupRowFromCode(serializablePersistableNotation.getLeadHead(), NumberOfBells.valueOf(serializablePersistableNotation.getNumberOfBells()));
 	}
 
-	private final Notation notation;
+	private final PersistableNotation persistableNotation;
 	private final String leadHead;
 
 	@Test
 	public void checkCalculatedMethodLength() {
 
-		NotationBody notationBody = NotationBuilder.getInstance()
-				.setFromSerializableNotation(notation)
+		NotationBody notationBody = PersistableNotationTransformer
+				.populateBuilderFromPersistableNotation(persistableNotation)
 				.build();
 
 		Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
 		MethodLead lead = proof.getCreatedMethod().get().getLead(0);
 	//	log.info(lead.toString());
 
-		assertEquals(notation.getLeadLength(), lead.getRowCount() - 1);
+		assertEquals(persistableNotation.getLeadLength(), lead.getRowCount() - 1);
 		assertEquals(leadHead, lead.getLastRow().getDisplayString(false));
 
 

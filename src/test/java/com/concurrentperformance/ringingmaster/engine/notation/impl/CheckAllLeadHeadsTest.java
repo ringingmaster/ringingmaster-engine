@@ -2,14 +2,19 @@ package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
 
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.generated.persist.Notation;
+import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
+import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.PersistableNotation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,31 +24,32 @@ public class CheckAllLeadHeadsTest {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 
+	public static final Path LIBRARY_PATH = Paths.get("./src/test/resource/notationlibrary.xml");
+
 	@Parameterized.Parameters
 	public static Collection<Object[]> checkAllCCLibrary() {
-//TODO		return new CentralCouncilXmlLibraryNotationExtractor()
-//				.extractNotationLibraryToStream()
-//				.map(notation -> new Object[]{notation})
-//				.collect(Collectors.toList());
-		return null;
+		return new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
+				.getNotation().stream()
+				.map(notation -> new Object[]{notation})
+				.collect(Collectors.toList());
 	}
 
-	public CheckAllLeadHeadsTest(Notation notation) {
-		this.notation = notation;
+	public CheckAllLeadHeadsTest(PersistableNotation persistableNotation) {
+		this.persistableNotation = persistableNotation;
 	}
 
-	private final Notation notation;
+	private final PersistableNotation persistableNotation;
 
 	@Test
 	public void checkLeadHeadCorrectness() {
 
-		log.info(notation.toString());
+		log.info(persistableNotation.toString());
 
-		NotationBody notationBody = NotationBuilder.getInstance()
-				.setFromSerializableNotation(notation)
+		NotationBody notationBody = PersistableNotationTransformer
+				.populateBuilderFromPersistableNotation(persistableNotation)
 				.build();
 
-		String ccLeadHead = notation.getLeadHead();
+		String ccLeadHead = persistableNotation.getLeadHead();
 		String calculatedLeadHead = notationBody.getLeadHeadCode();
 
 		// Uncomment section to log out the changes in the lead
