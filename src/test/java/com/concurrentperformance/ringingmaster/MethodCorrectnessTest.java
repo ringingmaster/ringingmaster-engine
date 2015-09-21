@@ -8,7 +8,7 @@ import com.concurrentperformance.ringingmaster.engine.notation.impl.LeadHeadCalc
 import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
-import com.concurrentperformance.ringingmaster.persist.generated.v1.PersistableNotation;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.Notation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,12 +40,12 @@ public class MethodCorrectnessTest   {
 				.collect(Collectors.toList());
 	}
 
-	public MethodCorrectnessTest(PersistableNotation serializablePersistableNotation) {
-		this.persistableNotation = serializablePersistableNotation;
-		this.leadHead = LeadHeadCalculator.lookupRowFromCode(serializablePersistableNotation.getLeadHead(), NumberOfBells.valueOf(serializablePersistableNotation.getNumberOfBells()));
+	public MethodCorrectnessTest(Notation persistableNotation) {
+		this.persistableNotation = persistableNotation;
+		this.leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfBells()));
 	}
 
-	private final PersistableNotation persistableNotation;
+	private final Notation persistableNotation;
 	private final String leadHead;
 
 	@Test

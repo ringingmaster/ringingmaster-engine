@@ -4,7 +4,8 @@ package com.concurrentperformance.ringingmaster.engine.notation.impl;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
-import com.concurrentperformance.ringingmaster.persist.generated.v1.PersistableNotation;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.Notation;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.NotationLibrary;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,21 +25,23 @@ public class CheckAllLeadHeadsTest {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 
-	public static final Path LIBRARY_PATH = Paths.get("./src/test/resource/notationlibrary.xml");
+	public static final Path LIBRARY_PATH = Paths.get("./src/test/java/resource/notationlibrary.xml");
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> checkAllCCLibrary() {
+		NotationLibrary notationLibrary = new DocumentPersist().readNotationLibrary(LIBRARY_PATH);
+
 		return new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.map(notation -> new Object[]{notation})
 				.collect(Collectors.toList());
 	}
 
-	public CheckAllLeadHeadsTest(PersistableNotation persistableNotation) {
+	public CheckAllLeadHeadsTest(Notation persistableNotation) {
 		this.persistableNotation = persistableNotation;
 	}
 
-	private final PersistableNotation persistableNotation;
+	private final Notation persistableNotation;
 
 	@Test
 	public void checkLeadHeadCorrectness() {
