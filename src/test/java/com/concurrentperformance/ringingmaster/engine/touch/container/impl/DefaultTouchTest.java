@@ -5,7 +5,7 @@ import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
-import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.concurrentperformance.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
 import com.google.common.collect.Iterators;
@@ -317,9 +317,9 @@ public class DefaultTouchTest {
 	@Test
 	public void canSetCallingStyle() {
 		DefaultTouch touch = new DefaultTouch();
-		org.junit.Assert.assertEquals(TouchType.COURSE_BASED, touch.getTouchType());
-		touch.setTouchType(TouchType.LEAD_BASED);
-		org.junit.Assert.assertEquals(TouchType.LEAD_BASED, touch.getTouchType());
+		org.junit.Assert.assertEquals(TouchCheckingType.COURSE_BASED, touch.getTouchCheckingType());
+		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		org.junit.Assert.assertEquals(TouchCheckingType.LEAD_BASED, touch.getTouchCheckingType());
 	}
 
 	@Test

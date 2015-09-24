@@ -4,7 +4,7 @@ package com.concurrentperformance.ringingmaster.engine.touch.container;
  * TODO comments???
  * User: Stephen
  */
-public enum TouchType {
+public enum TouchCheckingType {
 
 	/** Uses calling positions. i.e. W B M H*/
 	COURSE_BASED("Course Based"),
@@ -14,7 +14,7 @@ public enum TouchType {
 
 	private final String name;
 
-	TouchType(String name) {
+	TouchCheckingType(String name) {
 		this.name = name;
 	}
 

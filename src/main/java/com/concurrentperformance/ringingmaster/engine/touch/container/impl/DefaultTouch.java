@@ -14,7 +14,7 @@ import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCell;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchElement;
-import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -53,7 +53,7 @@ public class DefaultTouch implements Touch {
 	private String author;
 
 	private NumberOfBells numberOfBells;
-	private TouchType touchType;
+	private TouchCheckingType touchCheckingType;
 
 	private Bell callFromBell;
 	private final List<NotationBody> notations;
@@ -82,7 +82,7 @@ public class DefaultTouch implements Touch {
 		author = "";
 
 		numberOfBells = NumberOfBells.BELLS_6;
-		touchType = TouchType.COURSE_BASED;
+		touchCheckingType = TouchCheckingType.COURSE_BASED;
 
 		callFromBell = numberOfBells.getTenor();
 		notations = new ArrayList<>();
@@ -112,7 +112,7 @@ public class DefaultTouch implements Touch {
 		touchClone.author = this.author;
 
 		touchClone.numberOfBells = numberOfBells;
-		touchClone.touchType = this.touchType;
+		touchClone.touchCheckingType = this.touchCheckingType;
 
 		touchClone.callFromBell = callFromBell;
 		touchClone.notations.addAll(this.notations);
@@ -234,15 +234,15 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public TouchType getTouchType() {
-		return touchType;
+	public TouchCheckingType getTouchCheckingType() {
+		return touchCheckingType;
 	}
 
 	@Override
-	public void setTouchType(TouchType touchType) {
-		if (this.touchType != touchType) {
-			this.touchType = checkNotNull(touchType);
-			log.debug("[{}] Set touch type [{}]", this.title, this.touchType.getName());
+	public void setTouchCheckingType(TouchCheckingType touchCheckingType) {
+		if (this.touchCheckingType != touchCheckingType) {
+			this.touchCheckingType = checkNotNull(touchCheckingType);
+			log.debug("[{}] Set touch type [{}]", this.title, this.touchCheckingType.getName());
 		}
 	}
 
@@ -671,7 +671,7 @@ public class DefaultTouch implements Touch {
 				0,
 				(isSpliced() ? (cells.getColumnCount() - 1) : cells.getColumnCount()),
 				0,
-				(getTouchType() == TouchType.COURSE_BASED ? 1 : 0));
+				(getTouchCheckingType() == TouchCheckingType.COURSE_BASED ? 1 : 0));
 	}
 
 	@Override
@@ -679,7 +679,7 @@ public class DefaultTouch implements Touch {
 		return cells.unmodifiableSubGrid(
 				0,
 				(isSpliced() ? (cells.getColumnCount() - 1) : cells.getColumnCount()),
-				(getTouchType() == TouchType.COURSE_BASED ? 1 : 0),
+				(getTouchCheckingType() == TouchCheckingType.COURSE_BASED ? 1 : 0),
 				cells.getRowCount());
 	}
 
@@ -688,7 +688,7 @@ public class DefaultTouch implements Touch {
 		return cells.unmodifiableSubGrid(
 				(isSpliced() ? (cells.getColumnCount() - 1) : cells.getColumnCount()),
 				cells.getColumnCount(),
-				(getTouchType() == TouchType.COURSE_BASED ? 1 : 0),
+				(getTouchCheckingType() == TouchCheckingType.COURSE_BASED ? 1 : 0),
 				cells.getRowCount());
 	}
 
@@ -763,7 +763,7 @@ public class DefaultTouch implements Touch {
 				"title='" + title + '\'' +
 				", author=" + author +
 				", numberOfBells='" + numberOfBells + '\'' +
-				", touchType=" + touchType +
+				", touchType=" + touchCheckingType +
 				", callFromBell='" + callFromBell + '\'' +
 				", notations=" + notations +
 				", singleMethodActiveNotation=" + singleMethodActiveNotation +

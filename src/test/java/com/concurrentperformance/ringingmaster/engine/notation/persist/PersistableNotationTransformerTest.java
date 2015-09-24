@@ -2,7 +2,7 @@ package com.concurrentperformance.ringingmaster.engine.notation.persist;
 
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
-import com.concurrentperformance.ringingmaster.persist.generated.v1.Notation;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.NotationType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class PersistableNotationTransformerTest {
 	private void checkRoundTrip(final NotationBody originalNotationBody)
 			throws IOException, ClassNotFoundException {
 
-		Notation persistablePersistableNotation = PersistableNotationTransformer.buildPersistableNotation(originalNotationBody);
+		NotationType persistablePersistableNotation = PersistableNotationTransformer.buildPersistableNotation(originalNotationBody);
 
 		NotationBody deserialisedNotationBody = PersistableNotationTransformer
 				.populateBuilderFromPersistableNotation(persistablePersistableNotation)

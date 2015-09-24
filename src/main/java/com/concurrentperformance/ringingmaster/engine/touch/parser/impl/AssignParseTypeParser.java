@@ -7,7 +7,7 @@ import com.concurrentperformance.ringingmaster.engine.touch.parser.ParseType;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCell;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
-import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.google.common.base.Strings;
 
 import java.util.Comparator;
@@ -44,7 +44,7 @@ public class AssignParseTypeParser {
 	}
 
 	private void parseCallPositionArea(Touch touch) {
-		if (touch.getTouchType() != TouchType.COURSE_BASED) {
+		if (touch.getTouchCheckingType() != TouchCheckingType.COURSE_BASED) {
 			return;
 		}
 		SortedMap<String, ParseType> parseTokenMappings = new TreeMap<>(SORT_SIZE_THEN_NAME);
@@ -131,7 +131,7 @@ public class AssignParseTypeParser {
 	}
 
 	private void addPlainLeadToken(Touch touch, SortedMap<String, ParseType> parsings) {
-		if (touch.getTouchType() == TouchType.LEAD_BASED) {
+		if (touch.getTouchCheckingType() == TouchCheckingType.LEAD_BASED) {
 			parsings.put(touch.getPlainLeadToken(), ParseType.PLAIN_LEAD);
 		}
 	}

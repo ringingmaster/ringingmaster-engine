@@ -10,7 +10,7 @@ import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCell;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchElement;
-import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.google.common.base.Optional;
 import net.jcip.annotations.Immutable;
 
@@ -67,8 +67,8 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public TouchType getTouchType() {
-		return touch.getTouchType();
+	public TouchCheckingType getTouchCheckingType() {
+		return touch.getTouchCheckingType();
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTouchType(TouchType touchType) {
+	public void setTouchCheckingType(TouchCheckingType touchCheckingType) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

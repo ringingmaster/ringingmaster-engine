@@ -4,7 +4,7 @@ import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.touch.compiler.Compiler;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
-import com.concurrentperformance.ringingmaster.engine.touch.container.TouchType;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.concurrentperformance.ringingmaster.engine.touch.parser.ParseType;
 import com.google.common.collect.ImmutableList;
 import net.jcip.annotations.ThreadSafe;
@@ -31,12 +31,12 @@ public class LeadBasedCompiler extends SkeletalCompiler<LeadBasedDecomposedCall>
 
 	LeadBasedCompiler(Touch touch) {
 		super(touch, "");
-		checkArgument(touch.getTouchType() == TouchType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getTouchType() + "]");
+		checkArgument(touch.getTouchCheckingType() == TouchCheckingType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getTouchCheckingType() + "]");
 	}
 
 	LeadBasedCompiler(Touch touch, String logPreamble) {
 		super(touch, logPreamble);
-		checkArgument(touch.getTouchType() == TouchType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getTouchType() + "]");
+		checkArgument(touch.getTouchCheckingType() == TouchCheckingType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getTouchCheckingType() + "]");
 	}
 
 	@Override
