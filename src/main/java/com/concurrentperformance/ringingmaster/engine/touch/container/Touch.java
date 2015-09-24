@@ -19,13 +19,13 @@ import java.util.Set;
 @NotThreadSafe
 public interface Touch extends Cloneable {
 
-	public static final int START_AT_ROW_MAX                         = 10000;
-	public static final int TERMINATION_MAX_ROWS_INITIAL_VALUE       = 10000;
-	public static final int TERMINATION_MAX_ROWS_MAX                 = 10000000;
-	public static final int TERMINATION_MAX_LEADS_MAX                = 10000;
-	public static final int TERMINATION_MAX_PARTS_MAX                = 10000;
-	public static final int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE = 2;
-	public static final int TERMINATION_CIRCULAR_TOUCH_MAX           = 100000;
+	int START_AT_ROW_MAX                         = 10000;
+	int TERMINATION_MAX_ROWS_INITIAL_VALUE       = 10000;
+	int TERMINATION_MAX_ROWS_MAX                 = 10000000;
+	int TERMINATION_MAX_LEADS_MAX                = 10000;
+	int TERMINATION_MAX_PARTS_MAX                = 10000;
+	int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE = 2;
+	int TERMINATION_CIRCULAR_TOUCH_MAX           = 100000;
 
 	Touch clone() throws CloneNotSupportedException;
 
@@ -35,8 +35,8 @@ public interface Touch extends Cloneable {
 	String getAuthor();
 	void setAuthor(String author);
 
-	TouchType getTouchType();
-	void setTouchType(TouchType touchType);
+	TouchCheckingType getTouchCheckingType();
+	void setTouchCheckingType(TouchCheckingType touchCheckingType);
 
 	void    setNumberOfBells(NumberOfBells numberOfBells);
 	NumberOfBells getNumberOfBells();
