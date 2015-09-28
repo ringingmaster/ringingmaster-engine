@@ -5,7 +5,7 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
 import com.concurrentperformance.ringingmaster.persist.generated.v1.LibraryNotationPersist;
-import com.concurrentperformance.ringingmaster.persist.generated.v1.NotationLibraryType;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.NotationLibraryPersist;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,7 +29,7 @@ public class CheckAllLeadHeadsTest {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> checkAllCCLibrary() {
-		NotationLibraryType notationLibrary = new DocumentPersist().readNotationLibrary(LIBRARY_PATH);
+		NotationLibraryPersist notationLibrary = new DocumentPersist().readNotationLibrary(LIBRARY_PATH);
 
 		return new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
