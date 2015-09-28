@@ -1,8 +1,8 @@
 package com.concurrentperformance.ringingmaster.engine.touch.container;
 
-import java.util.List;
-
 import com.concurrentperformance.ringingmaster.engine.touch.parser.ParseType;
+
+import java.util.List;
 
 /**
  * TODO comments???
@@ -20,6 +20,8 @@ public interface TouchCell extends Iterable<TouchElement> , Cloneable {
 	void remove(int index);
 
 	void add(String characters);
+
+	String getAsString();
 
 	String getAsStringWithParsedElementsAsWhitespace();
 

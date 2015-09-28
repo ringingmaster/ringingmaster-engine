@@ -3,7 +3,7 @@ package com.concurrentperformance.ringingmaster.engine.notation.persist;
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
-import com.concurrentperformance.ringingmaster.persist.generated.v1.NotationType;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.LibraryNotationType;
 
 /**
  * Manage the conversion of the persistable and engine version of notations.
@@ -14,7 +14,7 @@ import com.concurrentperformance.ringingmaster.persist.generated.v1.NotationType
 public class PersistableNotationTransformer {
 
 
-	public static NotationBuilder populateBuilderFromPersistableNotation(NotationType persistableNotation) {
+	public static NotationBuilder populateBuilderFromPersistableNotation(LibraryNotationType persistableNotation) {
 		NotationBuilder notationBuilder = NotationBuilder.getInstance();
 
 		notationBuilder.setNumberOfWorkingBells(NumberOfBells.valueOf(persistableNotation.getNumberOfBells()));
@@ -28,9 +28,9 @@ public class PersistableNotationTransformer {
 		return notationBuilder;
 	}
 
-	public static NotationType buildPersistableNotation(NotationBody notationBody) {
+	public static LibraryNotationType buildPersistableNotation(NotationBody notationBody) {
 
-		NotationType persistableNotation = new NotationType();
+		LibraryNotationType persistableNotation = new LibraryNotationType();
 		persistableNotation.setName(notationBody.getName());
 		persistableNotation.setNumberOfBells(notationBody.getNumberOfWorkingBells().getBellCount());
 		persistableNotation.setFoldedPalindrome(notationBody.isFoldedPalindrome());

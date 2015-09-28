@@ -1,14 +1,14 @@
 package com.concurrentperformance.ringingmaster.engine.touch.container.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCell;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchElement;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchWord;
 import com.concurrentperformance.ringingmaster.engine.touch.parser.ParseType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
@@ -75,6 +75,15 @@ public class DefaultTouchCell implements TouchCell {
 	}
 
 	@Override
+	public String getAsString() {
+		StringBuilder asString = new StringBuilder();
+		for (TouchElement element : elements) {
+			asString.append(element.getCharacter());
+		}
+		return asString.toString();
+	}
+
+	@Override
 	public String getAsStringWithParsedElementsAsWhitespace() {
 		StringBuilder asString = new StringBuilder();
 		for (TouchElement element : elements) {
@@ -86,7 +95,6 @@ public class DefaultTouchCell implements TouchCell {
 			}
 		}
 		return asString.toString();
-
 	}
 
 	@Override

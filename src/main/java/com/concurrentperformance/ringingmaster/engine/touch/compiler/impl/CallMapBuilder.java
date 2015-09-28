@@ -27,8 +27,8 @@ public class CallMapBuilder {
 	public Map<String, NotationCall> createCallMap() {
 		log.debug("{} > creating call map", logPreamble);
 		Map<String, NotationCall> callNameToCall = new HashMap<>();
-		if (touch.getSingleMethodActiveNotation() != null) {
-			for (NotationCall notationCall : touch.getSingleMethodActiveNotation().getCalls()) {
+		if (touch.getNonSplicedActiveNotation() != null) {
+			for (NotationCall notationCall : touch.getNonSplicedActiveNotation().getCalls()) {
 				callNameToCall.put(notationCall.getName(), notationCall);
 				callNameToCall.put(notationCall.getNameShorthand(), notationCall);
 			}

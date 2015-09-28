@@ -86,7 +86,7 @@ public class DefaultTouchTest {
 		when(mockNotation.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
 		touch.addNotation(mockNotation);
 
-		assertEquals(mockNotation, touch.getSingleMethodActiveNotation());
+		assertEquals(mockNotation, touch.getNonSplicedActiveNotation());
 		assertFalse(touch.isSpliced());
 	}
 
@@ -113,17 +113,17 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationC);
 		touch.addNotation(mockNotationD);
 
-		touch.setSingleMethodActiveNotation(mockNotationC);
-		assertEquals(mockNotationC, touch.getSingleMethodActiveNotation());
+		touch.setNonSplicedActiveNotation(mockNotationC);
+		assertEquals(mockNotationC, touch.getNonSplicedActiveNotation());
 
 		touch.removeNotation(mockNotationC);
-		assertEquals(mockNotationD, touch.getSingleMethodActiveNotation());
+		assertEquals(mockNotationD, touch.getNonSplicedActiveNotation());
 		touch.removeNotation(mockNotationD);
-		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
+		assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
 		touch.removeNotation(mockNotationB);
-		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
+		assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
 		touch.removeNotation(mockNotationA);
-		assertNull(touch.getSingleMethodActiveNotation());
+		assertNull(touch.getNonSplicedActiveNotation());
 	}
 
 	@Test
@@ -150,13 +150,13 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationC);
 		touch.addNotation(mockNotationDInvalid);
 
-		touch.setSingleMethodActiveNotation(mockNotationC);
-		assertEquals(mockNotationC, touch.getSingleMethodActiveNotation());
+		touch.setNonSplicedActiveNotation(mockNotationC);
+		assertEquals(mockNotationC, touch.getNonSplicedActiveNotation());
 
 		touch.removeNotation(mockNotationC);
-		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
+		assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
 		touch.removeNotation(mockNotationA);
-		assertNull(touch.getSingleMethodActiveNotation());
+		assertNull(touch.getNonSplicedActiveNotation());
 	}
 
 	@Test
@@ -174,9 +174,9 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationA);
 		touch.addNotation(mockNotationB);
 
-		assertNotNull(touch.getSingleMethodActiveNotation());
+		assertNotNull(touch.getNonSplicedActiveNotation());
 		touch.setSpliced(true);
-		assertNull(touch.getSingleMethodActiveNotation());
+		assertNull(touch.getNonSplicedActiveNotation());
 	}
 
 	@Test
@@ -193,9 +193,9 @@ public class DefaultTouchTest {
 		touch.addNotation(mockNotationB);
 
 		touch.setSpliced(true);
-		assertNull(touch.getSingleMethodActiveNotation());
+		assertNull(touch.getNonSplicedActiveNotation());
 		touch.setSpliced(false);
-		assertEquals(mockNotationA, touch.getSingleMethodActiveNotation());
+		assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
 	}
 
 	@Test
@@ -211,7 +211,7 @@ public class DefaultTouchTest {
 		touch.setSpliced(true);
 		assertEquals(true, touch.isSpliced());
 
-		touch.setSingleMethodActiveNotation(mockNotationA);
+		touch.setNonSplicedActiveNotation(mockNotationA);
 		assertEquals(false, touch.isSpliced());
 	}
 
@@ -326,11 +326,11 @@ public class DefaultTouchTest {
 	public void canAddAndRemoveDefinitions() {
 		DefaultTouch touch = new DefaultTouch();
 		TouchDefinition a = touch.addDefinition("a", "p-p");
-		assertEquals("a", Iterators.getOnlyElement(touch.getDefinitions().iterator()).getName());
+		assertEquals("a", Iterators.getOnlyElement(touch.getDefinitions().iterator()).getShorthand());
 		touch.addDefinition("b", "-p-");
 		assertEquals(2, touch.getDefinitions().size());
-		touch.removeDefinition(a.getName());
-		assertEquals("b", Iterators.getOnlyElement(touch.getDefinitions().iterator()).getName());
+		touch.removeDefinition(a.getShorthand());
+		assertEquals("b", Iterators.getOnlyElement(touch.getDefinitions().iterator()).getShorthand());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -364,10 +364,10 @@ public class DefaultTouchTest {
 		touch.addNotation(buildPlainBobMMajor());
 		touch.addNotation(buildPlainBobMinor());
 
-		assertEquals("Plain Bob Major", touch.getSingleMethodActiveNotation().getNameIncludingNumberOfBells());
+		assertEquals("Plain Bob Major", touch.getNonSplicedActiveNotation().getNameIncludingNumberOfBells());
 
 		touch.setNumberOfBells(NumberOfBells.BELLS_6);
-		assertEquals("Plain Bob Minor", touch.getSingleMethodActiveNotation().getNameIncludingNumberOfBells());
+		assertEquals("Plain Bob Minor", touch.getNonSplicedActiveNotation().getNameIncludingNumberOfBells());
 	}
 
 	@Test(expected = IllegalStateException.class)

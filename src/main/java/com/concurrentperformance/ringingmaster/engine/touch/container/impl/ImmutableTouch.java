@@ -122,13 +122,13 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setSingleMethodActiveNotation(NotationBody activeNotation) {
+	public void setNonSplicedActiveNotation(NotationBody activeNotation) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public NotationBody getSingleMethodActiveNotation() {
-		return touch.getSingleMethodActiveNotation();
+	public NotationBody getNonSplicedActiveNotation() {
+		return touch.getNonSplicedActiveNotation();
 	}
 
 	@Override

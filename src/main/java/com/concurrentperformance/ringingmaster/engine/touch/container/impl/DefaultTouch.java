@@ -57,7 +57,7 @@ public class DefaultTouch implements Touch {
 
 	private Bell callFromBell;
 	private final List<NotationBody> notations;
-	private NotationBody singleMethodActiveNotation;
+	private NotationBody nonSplicedActiveNotation;
 	private boolean spliced; // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
 	private String plainLeadToken;
 	private SortedMap<String, TouchDefinition> definitions;
@@ -116,11 +116,11 @@ public class DefaultTouch implements Touch {
 
 		touchClone.callFromBell = callFromBell;
 		touchClone.notations.addAll(this.notations);
-		touchClone.singleMethodActiveNotation = this.singleMethodActiveNotation;
+		touchClone.nonSplicedActiveNotation = this.nonSplicedActiveNotation;
 		touchClone.spliced = this.spliced;
 		touchClone.plainLeadToken = this.plainLeadToken;
 		for (TouchDefinition definition : definitions.values()) {
-			touchClone.definitions.put(definition.getName(), definition.clone());
+			touchClone.definitions.put(definition.getShorthand(), definition.clone());
 		}
 
 		touchClone.startChange = this.startChange;
@@ -201,14 +201,14 @@ public class DefaultTouch implements Touch {
 			}
 
 			if (!isSpliced() &&
-					singleMethodActiveNotation != null &&
-					singleMethodActiveNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
+					nonSplicedActiveNotation != null &&
+					nonSplicedActiveNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
 				final List<NotationBody> filteredNotations = NotationBuilderHelper.filterNotations(notations, numberOfBells);
 				if (filteredNotations.size() > 0) {
-					singleMethodActiveNotation = filteredNotations.get(0);
-					log.debug("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+					nonSplicedActiveNotation = filteredNotations.get(0);
+					log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
 				} else {
-					singleMethodActiveNotation = null;
+					nonSplicedActiveNotation = null;
 					log.debug("[{}] Set active notation [null]", this.title);
 				}
 			}
@@ -276,9 +276,9 @@ public class DefaultTouch implements Touch {
 		notations.add(notationToAdd);
 		Collections.sort(notations, NotationBody.BY_NAME);
 //TODO what if the number of bella is wrong?
-		if (spliced == false && singleMethodActiveNotation == null) {
-			singleMethodActiveNotation = notationToAdd;
-			log.debug("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+		if (spliced == false && nonSplicedActiveNotation == null) {
+			nonSplicedActiveNotation = notationToAdd;
+			log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
 		}
 	}
 
@@ -312,19 +312,19 @@ public class DefaultTouch implements Touch {
 		log.info("[{}] Remove notation [{}]", this.title, notationForRemoval.getNameIncludingNumberOfBells());
 
 		// Sort out the next notation if it is the active notation
-		if (notationForRemoval.equals(singleMethodActiveNotation)) {
-			singleMethodActiveNotation = null;
+		if (notationForRemoval.equals(nonSplicedActiveNotation)) {
+			nonSplicedActiveNotation = null;
 			final List<NotationBody> validNotations = getValidNotations();
 			for (NotationBody notation : validNotations) {
 				if (notation.getName().compareTo(notationForRemoval.getName()) > 0) {
-					singleMethodActiveNotation = notation;
-					log.debug("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+					nonSplicedActiveNotation = notation;
+					log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
 					break;
 				}
 			}
-			if (singleMethodActiveNotation == null && validNotations.size() > 0) {
-				singleMethodActiveNotation = validNotations.iterator().next();
-				log.debug("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+			if (nonSplicedActiveNotation == null && validNotations.size() > 0) {
+				nonSplicedActiveNotation = validNotations.iterator().next();
+				log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
 			}
 		}
 	}
@@ -339,9 +339,10 @@ public class DefaultTouch implements Touch {
 
 		notations.remove(originalNotation);
 		notations.add(replacementNotation);
+		Collections.sort(notations, NotationBody.BY_NAME);
 
-		if (singleMethodActiveNotation == originalNotation) {
-			singleMethodActiveNotation = originalNotation;
+		if (nonSplicedActiveNotation == originalNotation) {
+			nonSplicedActiveNotation = originalNotation;
 		}
 	}
 
@@ -362,8 +363,8 @@ public class DefaultTouch implements Touch {
 		}
 		else {
 			// Not Spliced
-			if (singleMethodActiveNotation != null) {
-				return Lists.<NotationBody>newArrayList(singleMethodActiveNotation);
+			if (nonSplicedActiveNotation != null) {
+				return Lists.<NotationBody>newArrayList(nonSplicedActiveNotation);
 			}
 		}
 
@@ -372,14 +373,14 @@ public class DefaultTouch implements Touch {
 
 
 	@Override
-	public NotationBody getSingleMethodActiveNotation() {
-		return singleMethodActiveNotation;
+	public NotationBody getNonSplicedActiveNotation() {
+		return nonSplicedActiveNotation;
 	}
 
 	@Override
-	public void setSingleMethodActiveNotation(NotationBody singleMethodActiveNotation) {
-		this.singleMethodActiveNotation = checkNotNull(singleMethodActiveNotation);
-		log.debug("[{}] Set single method active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+	public void setNonSplicedActiveNotation(NotationBody nonSplicedActiveNotation) {
+		this.nonSplicedActiveNotation = checkNotNull(nonSplicedActiveNotation);
+		log.debug("[{}] Set single method active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
 
 		if (spliced == true) {
 			spliced = false;
@@ -400,13 +401,13 @@ public class DefaultTouch implements Touch {
 
 			if (spliced) {
 				log.debug("[{}] Set active notation [null]", this.title);
-				singleMethodActiveNotation = null;
+				nonSplicedActiveNotation = null;
 			} else {
 				final List<NotationBody> validNotations = getValidNotations();
 
 				if (validNotations.size() > 0) {
-					singleMethodActiveNotation = validNotations.iterator().next();
-					log.debug("[{}] Set active notation [{}]", this.title, singleMethodActiveNotation.getNameIncludingNumberOfBells());
+					nonSplicedActiveNotation = validNotations.iterator().next();
+					log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
 				}
 			}
 		}
@@ -436,17 +437,17 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public TouchDefinition addDefinition(String name, String characters) {
-		checkNotNull(name, "name must not be null");
-		checkNotNull(name.length() > 0, "name must contain some characters");
+	public TouchDefinition addDefinition(String shorthand, String characters) {
+		checkNotNull(shorthand, "shorthand must not be null");
+		checkNotNull(shorthand.length() > 0, "shorthand must contain some characters");
 		// Check duplicate name
-		if (definitions.get(name) != null) {
-			throw new IllegalArgumentException("Can't add definition [" + name + "] as it has a duplicate name to existing definition [" + definitions.get(name) + "]");
+		if (definitions.get(shorthand) != null) {
+			throw new IllegalArgumentException("Can't add definition [" + shorthand + "] as it has a duplicate shorthand to existing definition [" + definitions.get(shorthand) + "]");
 		}
 
-		TouchDefinition definition = new DefaultTouchDefinition(name);
+		TouchDefinition definition = new DefaultTouchDefinition(shorthand);
 		definition.add(characters);
-		definitions.put(definition.getName(), definition);
+		definitions.put(definition.getShorthand(), definition);
 
 		log.debug("[{}] Add definition [{}]", this.title, definition);
 
@@ -454,8 +455,8 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void removeDefinition(String name) {
-		definitions.remove(name);
+	public void removeDefinition(String shorthand) {
+		definitions.remove(shorthand);
 	}
 
 	@Override
@@ -766,7 +767,7 @@ public class DefaultTouch implements Touch {
 				", touchType=" + touchCheckingType +
 				", callFromBell='" + callFromBell + '\'' +
 				", notations=" + notations +
-				", singleMethodActiveNotation=" + singleMethodActiveNotation +
+				", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
 				", spliced=" + spliced +
 				", plainLeadToken='" + plainLeadToken + '\'' +
 				", definitions=" + definitions +

@@ -8,27 +8,27 @@ import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefin
  */
 public class DefaultTouchDefinition extends DefaultTouchCell implements TouchDefinition {
 
-	private final String name;
+	private final String shorthand;
 
-	public DefaultTouchDefinition(String name) {
-		this.name = name;
+	public DefaultTouchDefinition(String shorthand) {
+		this.shorthand = shorthand;
 	}
 
 	@Override
 	public TouchDefinition clone() throws CloneNotSupportedException {
-		DefaultTouchDefinition definitionClone = new DefaultTouchDefinition(name);
+		DefaultTouchDefinition definitionClone = new DefaultTouchDefinition(shorthand);
 		cloneElementsTo(definitionClone);
 		return definitionClone;
 	}
 
 
 	@Override
-	public String getName() {
-		return name;
+	public String getShorthand() {
+		return shorthand;
 	}
 
 	@Override
 	public String toString() {
-		return "TouchDefinition{name=" + name +   super.toString() + "}";
+		return "TouchDefinition{shorthand=" + shorthand +   super.toString() + "}";
 	}
 }

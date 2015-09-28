@@ -52,8 +52,8 @@ public interface Touch extends Cloneable {
 	List<NotationBody> getValidNotations();
 	List<NotationBody> getNotationsInUse();
 
-	void setSingleMethodActiveNotation(NotationBody activeNotation);
-	NotationBody getSingleMethodActiveNotation();
+	void setNonSplicedActiveNotation(NotationBody activeNotation);
+	NotationBody getNonSplicedActiveNotation();
 
 	boolean isSpliced();
 	void setSpliced(boolean spliced);

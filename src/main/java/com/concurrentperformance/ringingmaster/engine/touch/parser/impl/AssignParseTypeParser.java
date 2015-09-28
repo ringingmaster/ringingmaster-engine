@@ -157,7 +157,7 @@ public class AssignParseTypeParser {
 
 	private void addDefinitionTokens(Touch touch, SortedMap<String, ParseType> parsings) {
 		for (TouchDefinition definition : touch.getDefinitions()) {
-			parsings.put(definition.getName(), ParseType.DEFINITION);
+			parsings.put(definition.getShorthand(), ParseType.DEFINITION);
 		}
 	}
 

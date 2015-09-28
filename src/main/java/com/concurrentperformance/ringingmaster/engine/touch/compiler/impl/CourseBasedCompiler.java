@@ -57,7 +57,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 	private Map<NotationMethodCallingPosition, Integer> buildCallingPositionLookup(Touch touch) {
 		log.info("{} > Build calling bell positions",getLogPreamble());
 		// Build a plain course.
-		NotationBody activeNotation = touch.getSingleMethodActiveNotation();
+		NotationBody activeNotation = touch.getNonSplicedActiveNotation();
 		Method plainCourse = PlainCourseHelper.buildPlainCourse(activeNotation, getLogPreamble() +  "  | ",false).getCreatedMethod().get();
 
 		// build the map.

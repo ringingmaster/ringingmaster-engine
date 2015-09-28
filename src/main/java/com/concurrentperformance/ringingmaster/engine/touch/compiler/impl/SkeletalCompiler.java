@@ -98,7 +98,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 			}
 		}
 		else { // Not Spliced
-			if (touch.getSingleMethodActiveNotation() == null) {
+			if (touch.getNonSplicedActiveNotation() == null) {
 				return Optional.of("No active method");
 			}
 		}
@@ -126,7 +126,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 
 		MethodRow startChange = createStartChange();
 
-		MaskedNotation maskedNotation = new MaskedNotation(touch.getSingleMethodActiveNotation());
+		MaskedNotation maskedNotation = new MaskedNotation(touch.getNonSplicedActiveNotation());
 
 		final List<MethodLead> leads = new ArrayList<>();
 
