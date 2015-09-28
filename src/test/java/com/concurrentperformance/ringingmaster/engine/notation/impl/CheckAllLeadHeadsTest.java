@@ -4,7 +4,7 @@ package com.concurrentperformance.ringingmaster.engine.notation.impl;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
-import com.concurrentperformance.ringingmaster.persist.generated.v1.LibraryNotationType;
+import com.concurrentperformance.ringingmaster.persist.generated.v1.LibraryNotationPersist;
 import com.concurrentperformance.ringingmaster.persist.generated.v1.NotationLibraryType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +37,11 @@ public class CheckAllLeadHeadsTest {
 				.collect(Collectors.toList());
 	}
 
-	public CheckAllLeadHeadsTest(LibraryNotationType persistableNotation) {
+	public CheckAllLeadHeadsTest(LibraryNotationPersist persistableNotation) {
 		this.persistableNotation = persistableNotation;
 	}
 
-	private final LibraryNotationType persistableNotation;
+	private final LibraryNotationPersist persistableNotation;
 
 	@Test
 	public void checkLeadHeadCorrectness() {
