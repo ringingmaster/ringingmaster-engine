@@ -401,7 +401,7 @@ public class DefaultTouchTest {
 		touch.setSpliced(true);
 		touch.setTerminationMaxLeads(10);
 		touch.setTerminationMaxRows(100);
-		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_8));
+		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_8));
 		new DefaultParser().parseAndAnnotate(touch);
 
 		Touch clone = touch.clone();

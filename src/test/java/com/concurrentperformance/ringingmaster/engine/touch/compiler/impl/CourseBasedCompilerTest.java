@@ -56,7 +56,7 @@ public class CourseBasedCompilerTest {
 		touch.setTitle("Test Touch");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setTouchCheckingType(TouchCheckingType.COURSE_BASED);
-		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
 		return touch;
 	}
 

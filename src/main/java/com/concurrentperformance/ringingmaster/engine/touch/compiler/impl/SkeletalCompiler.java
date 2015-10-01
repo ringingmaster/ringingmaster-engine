@@ -174,7 +174,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 			currentMethodRow = buildNextRow(notationRow, currentMethodRow);
 			rows.add(currentMethodRow);
 
-			checkTerminationSpecificRow(currentMethodRow);
+			checkTerminationChange(currentMethodRow);
 			checkTerminationMaxRows(currentMethodRow);
 			if (isTerminated()) {
 				break;
@@ -258,10 +258,10 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 		}
 	}
 
-	private void checkTerminationSpecificRow(MethodRow newRow) {
-		if (touch.getTerminationSpecificRow().isPresent() &&
-				touch.getTerminationSpecificRow().get().equals(newRow)) {
-			terminate(ProofTerminationReason.SPECIFIED_ROW, touch.getTerminationSpecificRow().get().toString());
+	private void checkTerminationChange(MethodRow newRow) {
+		if (touch.getTerminationChange().isPresent() &&
+				touch.getTerminationChange().get().equals(newRow)) {
+			terminate(ProofTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString());
 		}
 	}
 

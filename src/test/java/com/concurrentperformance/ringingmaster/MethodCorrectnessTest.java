@@ -43,7 +43,7 @@ public class MethodCorrectnessTest   {
 
 	public MethodCorrectnessTest(LibraryNotationPersist persistableNotation) {
 		this.persistableNotation = persistableNotation;
-		this.leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfBells()));
+		this.leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
 	}
 
 	private final LibraryNotationPersist persistableNotation;

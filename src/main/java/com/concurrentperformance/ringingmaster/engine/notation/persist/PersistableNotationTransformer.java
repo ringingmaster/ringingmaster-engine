@@ -17,7 +17,7 @@ public class PersistableNotationTransformer {
 	public static NotationBuilder populateBuilderFromPersistableNotation(LibraryNotationPersist persistableNotation) {
 		NotationBuilder notationBuilder = NotationBuilder.getInstance();
 
-		notationBuilder.setNumberOfWorkingBells(NumberOfBells.valueOf(persistableNotation.getNumberOfBells()));
+		notationBuilder.setNumberOfWorkingBells(NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
 		if (!persistableNotation.isFoldedPalindrome()) {
 			notationBuilder.setUnfoldedNotationShorthand(persistableNotation.getNotation());
 		} else {
@@ -32,7 +32,7 @@ public class PersistableNotationTransformer {
 
 		LibraryNotationPersist persistableNotation = new LibraryNotationPersist();
 		persistableNotation.setName(notationBody.getName());
-		persistableNotation.setNumberOfBells(notationBody.getNumberOfWorkingBells().getBellCount());
+		persistableNotation.setNumberOfWorkingBells(notationBody.getNumberOfWorkingBells().getBellCount());
 		persistableNotation.setFoldedPalindrome(notationBody.isFoldedPalindrome());
 		persistableNotation.setNotation(notationBody.getRawNotationDisplayString(0, true));
 		persistableNotation.setNotation2(notationBody.getRawNotationDisplayString(1, true));

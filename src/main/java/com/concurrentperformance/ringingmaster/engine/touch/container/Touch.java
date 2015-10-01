@@ -61,7 +61,7 @@ public interface Touch extends Cloneable {
 	String getPlainLeadToken();
 	void setPlainLeadToken(String plainLeadToken);
 
-	TouchDefinition addDefinition(String name, String characters);
+	TouchDefinition addDefinition(String shorthand, String characters);
 	Set<TouchDefinition> getDefinitions();
 	void removeDefinition(String name);
 	TouchDefinition findDefinitionByName(String name);
@@ -90,13 +90,13 @@ public interface Touch extends Cloneable {
 	void setTerminationMaxParts(int terminationMaxParts);
 	void removeTerminationMaxParts();
 
-	Optional<Integer> getTerminationCircularTouch();
-	void setTerminationCircularTouch(int terminationCircularTouch);
-	void removeTerminationCircularTouch();
+	Optional<Integer> getTerminationMaxCircularTouch();
+	void setTerminationMaxCircularTouch(int terminationCircularTouch);
+	void removeTerminationMaxCircularTouch();
 
-	Optional<MethodRow> getTerminationSpecificRow();
-	void setTerminationSpecificRow(MethodRow terminationSpecificRow);
-	void removeTerminationSpecificRow();
+	Optional<MethodRow> getTerminationChange();
+	void setTerminationChange(MethodRow terminationChange);
+	void removeTerminationChange();
 
 	TouchElement insertCharacter(int columnIndex, int rowIndex, int cellIndex, char character);
 	void addCharacters(int columnIndex, int rowIndex, String characters);

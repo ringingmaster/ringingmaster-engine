@@ -70,8 +70,8 @@ public class DefaultTouch implements Touch {
 	private Integer terminationMaxRows;
 	private Optional<Integer> terminationMaxLeads;
 	private Optional<Integer> terminationMaxParts;
-	private Optional<Integer> terminationCircularTouch;
-	private Optional<MethodRow> terminationSpecificRow;
+	private Optional<Integer> terminationMaxCircularTouch;
+	private Optional<MethodRow> terminationChange;
 
 	private final Grid<TouchCell> cells;
 
@@ -98,8 +98,8 @@ public class DefaultTouch implements Touch {
 		terminationMaxRows = TERMINATION_MAX_ROWS_INITIAL_VALUE;
 		terminationMaxLeads = Optional.absent();
 		terminationMaxParts = Optional.absent();
-		terminationCircularTouch = Optional.of(TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE);
-		terminationSpecificRow = Optional.absent();
+		terminationMaxCircularTouch = Optional.of(TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE);
+		terminationChange = Optional.absent();
 
 		cells = new DefaultGrid<>(FACTORY, 1, 1);
 	}
@@ -131,8 +131,8 @@ public class DefaultTouch implements Touch {
 		touchClone.terminationMaxRows = this.terminationMaxRows;
 		touchClone.terminationMaxLeads = this.terminationMaxLeads;
 		touchClone.terminationMaxParts = this.terminationMaxParts;
-		touchClone.terminationCircularTouch = this.terminationCircularTouch;
-		touchClone.terminationSpecificRow = this.terminationSpecificRow;
+		touchClone.terminationMaxCircularTouch = this.terminationMaxCircularTouch;
+		touchClone.terminationChange = this.terminationChange;
 
 		touchClone.cells.setColumnCount(this.cells.getColumnCount());
 		touchClone.cells.setRowCount(this.cells.getRowCount());
@@ -194,10 +194,10 @@ public class DefaultTouch implements Touch {
 			final MethodRow newStartChange = MethodBuilder.transformToNewNumberOfBells(existingStartChange, numberOfBells);
 			setStartChange(newStartChange);
 
-			if (terminationSpecificRow.isPresent()) {
-				final MethodRow existingTerminationRow = getTerminationSpecificRow().get();
+			if (terminationChange.isPresent()) {
+				final MethodRow existingTerminationRow = getTerminationChange().get();
 				final MethodRow newTerminationRow = MethodBuilder.transformToNewNumberOfBells(existingTerminationRow, numberOfBells);
-				setTerminationSpecificRow(newTerminationRow);
+				setTerminationChange(newTerminationRow);
 			}
 
 			if (!isSpliced() &&
@@ -579,41 +579,41 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public Optional<Integer> getTerminationCircularTouch() {
-		return terminationCircularTouch;
+	public Optional<Integer> getTerminationMaxCircularTouch() {
+		return terminationMaxCircularTouch;
 	}
 
 	@Override
-	public void setTerminationCircularTouch(int terminationCircularTouch) {
-		checkState(terminationCircularTouch > 0, "Termination max parts must be greater than 0");
-		checkState(terminationCircularTouch <= TERMINATION_CIRCULAR_TOUCH_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_CIRCULAR_TOUCH_MAX);
-		this.terminationCircularTouch = Optional.of(terminationCircularTouch);
-		log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationCircularTouch);
+	public void setTerminationMaxCircularTouch(int terminationMaxCircularTouch) {
+		checkState(terminationMaxCircularTouch > 0, "Termination max parts must be greater than 0");
+		checkState(terminationMaxCircularTouch <= TERMINATION_CIRCULAR_TOUCH_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_CIRCULAR_TOUCH_MAX);
+		this.terminationMaxCircularTouch = Optional.of(terminationMaxCircularTouch);
+		log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationMaxCircularTouch);
 	}
 
 	@Override
-	public void removeTerminationCircularTouch() {
-		this.terminationCircularTouch = Optional.absent();
-		log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationCircularTouch);
+	public void removeTerminationMaxCircularTouch() {
+		this.terminationMaxCircularTouch = Optional.absent();
+		log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationMaxCircularTouch);
 	}
 
 	@Override
-	public Optional<MethodRow> getTerminationSpecificRow() {
-		return terminationSpecificRow;
+	public Optional<MethodRow> getTerminationChange() {
+		return terminationChange;
 	}
 
 	@Override
-	public void setTerminationSpecificRow(MethodRow terminationSpecificRow) {
-		checkNotNull(terminationSpecificRow, "terminationSpecificRow cant be null");
-		checkArgument(terminationSpecificRow.getNumberOfBells().equals(numberOfBells));
-		this.terminationSpecificRow = Optional.of(terminationSpecificRow);
-		log.debug("[{}] Set termination change to [{}]", this.title, this.terminationSpecificRow);
+	public void setTerminationChange(MethodRow terminationChange) {
+		checkNotNull(terminationChange, "terminationChange cant be null");
+		checkArgument(terminationChange.getNumberOfBells().equals(numberOfBells));
+		this.terminationChange = Optional.of(terminationChange);
+		log.debug("[{}] Set termination change to [{}]", this.title, this.terminationChange);
 	}
 
 	@Override
-	public void removeTerminationSpecificRow() {
-		terminationSpecificRow = Optional.absent();
-		log.debug("[{}] Set termination change to [{}]", this.title, this.terminationSpecificRow);
+	public void removeTerminationChange() {
+		terminationChange = Optional.absent();
+		log.debug("[{}] Set termination change to [{}]", this.title, this.terminationChange);
 	}
 
 
@@ -778,8 +778,8 @@ public class DefaultTouch implements Touch {
 				", terminationMaxRows=" + terminationMaxRows +
 				", terminationMaxLeads=" + terminationMaxLeads +
 				", terminationMaxParts=" + terminationMaxParts +
-				", terminationCircularTouch=" + terminationCircularTouch +
-				", terminationSpecificRow=" + terminationSpecificRow +
+				", terminationMaxCircularTouch=" + terminationMaxCircularTouch +
+				", terminationChange=" + terminationChange +
 				", cells=" + cells +
 				'}';
 	}

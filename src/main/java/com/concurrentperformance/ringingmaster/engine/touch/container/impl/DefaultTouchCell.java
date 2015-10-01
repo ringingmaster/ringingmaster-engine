@@ -75,7 +75,7 @@ public class DefaultTouchCell implements TouchCell {
 	}
 
 	@Override
-	public String getAsString() {
+	public String getCharacters() {
 		StringBuilder asString = new StringBuilder();
 		for (TouchElement element : elements) {
 			asString.append(element.getCharacter());

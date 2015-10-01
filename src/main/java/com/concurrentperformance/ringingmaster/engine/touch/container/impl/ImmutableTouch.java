@@ -132,7 +132,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public TouchDefinition addDefinition(String name, String characters) {
+	public TouchDefinition addDefinition(String shorthand, String characters) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -322,17 +322,17 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public Optional<Integer> getTerminationCircularTouch() {
-		return touch.getTerminationCircularTouch();
+	public Optional<Integer> getTerminationMaxCircularTouch() {
+		return touch.getTerminationMaxCircularTouch();
 	}
 
 	@Override
-	public void setTerminationCircularTouch(int terminationCircularTouch) {
+	public void setTerminationMaxCircularTouch(int terminationCircularTouch) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void removeTerminationCircularTouch() {
+	public void removeTerminationMaxCircularTouch() {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -347,17 +347,17 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public Optional<MethodRow> getTerminationSpecificRow() {
-		return touch.getTerminationSpecificRow();
+	public Optional<MethodRow> getTerminationChange() {
+		return touch.getTerminationChange();
 	}
 
 	@Override
-	public void setTerminationSpecificRow(MethodRow terminationSpecificRow) {
+	public void setTerminationChange(MethodRow terminationChange) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void removeTerminationSpecificRow() {
+	public void removeTerminationChange() {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

@@ -159,6 +159,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		buf.append(getNotationDisplayString(false)) ;
 		buf.append(", numberOfWorkingBells=").append(getNumberOfWorkingBells());
 		buf.append(", leadHeadCode=").append(getLeadHeadCode());
+		buf.append(", useCannedCalls=").append(isCannedCalls());
 		buf.append(", calls=").append(getCalls());
 		buf.append(", defaultCall=").append(getDefaultCall());
 		buf.append(", callInitiationRow=").append(getCallInitiationRows());

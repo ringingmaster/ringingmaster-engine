@@ -103,7 +103,7 @@ public class LeadBasedCompilerTest {
 				NotationRowHelper.buildNotationRow(NotationPlace.ALL_CHANGE));
 
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
-		touch.removeTerminationSpecificRow();
+		touch.removeTerminationChange();
 
 		for (int i=1; i< 50; i++) {
 
@@ -125,7 +125,7 @@ public class LeadBasedCompilerTest {
 				NotationRowHelper.buildNotationRow(NotationPlace.PLACE_1, NotationPlace.PLACE_4));
 
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
-		touch.removeTerminationSpecificRow();
+		touch.removeTerminationChange();
 
 		for (int i=1; i< 200; i++) {
 			touch.setTerminationMaxRows(i);
@@ -148,7 +148,7 @@ public class LeadBasedCompilerTest {
 
 		final MethodRow roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
-		touch.setTerminationSpecificRow(roundsRow);
+		touch.setTerminationChange(roundsRow);
 		Proof result = new LeadBasedCompiler(touch).compile(false);
 		Method method = result.getCreatedMethod().get();
 
@@ -252,7 +252,7 @@ public class LeadBasedCompilerTest {
 		Touch touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
 		touch.addNotation(buildPlainBobMinor());
 		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
-		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
 		touch.setPlainLeadToken("p");
 		return touch;
 	}

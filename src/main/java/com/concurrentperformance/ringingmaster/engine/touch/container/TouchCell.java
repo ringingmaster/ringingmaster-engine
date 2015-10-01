@@ -21,7 +21,7 @@ public interface TouchCell extends Iterable<TouchElement> , Cloneable {
 
 	void add(String characters);
 
-	String getAsString();
+	String getCharacters();
 
 	String getAsStringWithParsedElementsAsWhitespace();
 

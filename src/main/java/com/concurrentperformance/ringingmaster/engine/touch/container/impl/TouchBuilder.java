@@ -40,7 +40,7 @@ public class TouchBuilder {
 		touch.setRowCount(1);
 		touch.addNotation(notationBody);
 		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
-		touch.setTerminationSpecificRow(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
+		touch.setTerminationChange(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
 		touch.setTerminationMaxLeads(Touch.TERMINATION_MAX_LEADS_MAX);
 		touch.setTerminationMaxRows(Touch.TERMINATION_MAX_ROWS_MAX);
 

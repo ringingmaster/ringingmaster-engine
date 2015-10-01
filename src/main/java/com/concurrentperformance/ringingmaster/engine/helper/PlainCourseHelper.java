@@ -25,7 +25,7 @@ public class PlainCourseHelper {
 		checkState(ProofTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),
 				"Plain course must terminate with row [%s]" +
 						" but actually terminated with [%s]",
-				plainCourseTouch.getTerminationSpecificRow().get().getDisplayString(true),
+				plainCourseTouch.getTerminationChange().get().getDisplayString(true),
 				proof.getTerminateReasonDisplayString());
 		return proof;
 	}
