@@ -12,11 +12,10 @@ import com.concurrentperformance.ringingmaster.engine.touch.container.Grid;
 import com.concurrentperformance.ringingmaster.engine.touch.container.GridCellFactory;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCell;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchElement;
-import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -27,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -93,13 +93,13 @@ public class DefaultTouch implements Touch {
 		startChange = MethodBuilder.buildRoundsRow(numberOfBells);
 		startAtRow = 0;
 		startStroke = Stroke.BACKSTROKE;
-		startNotation = Optional.absent();
+		startNotation = Optional.empty();
 
 		terminationMaxRows = TERMINATION_MAX_ROWS_INITIAL_VALUE;
-		terminationMaxLeads = Optional.absent();
-		terminationMaxParts = Optional.absent();
+		terminationMaxLeads = Optional.empty();
+		terminationMaxParts = Optional.empty();
 		terminationMaxCircularTouch = Optional.of(TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE);
-		terminationChange = Optional.absent();
+		terminationChange = Optional.empty();
 
 		cells = new DefaultGrid<>(FACTORY, 1, 1);
 	}
@@ -221,7 +221,7 @@ public class DefaultTouch implements Touch {
 						.build();
 				if (!originalNotation.equals(builtNotation.getNotationDisplayString(false))) {
 					if (builtNotation.getRowCount() == 0) {
-						startNotation = Optional.absent();
+						startNotation = Optional.empty();
 						log.debug("[{}] Set start notation to [{}]", this.title, this.startNotation);
 					} else {
 						startNotation = Optional.of(builtNotation);
@@ -520,7 +520,7 @@ public class DefaultTouch implements Touch {
 	@Override
 	public void removeStartNotation() {
 		if (this.startNotation.isPresent()) {
-			this.startNotation = Optional.absent();
+			this.startNotation = Optional.empty();
 			log.debug("[{}] Set start notation to [{}]", this.title, startNotation);
 		}
 	}
@@ -555,7 +555,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void removeTerminationMaxLeads() {
-		this.terminationMaxLeads = Optional.absent();
+		this.terminationMaxLeads = Optional.empty();
 		log.debug("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
 	}
 	
@@ -574,7 +574,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void removeTerminationMaxParts() {
-		this.terminationMaxParts = Optional.absent();
+		this.terminationMaxParts = Optional.empty();
 		log.debug("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
 	}
 
@@ -593,7 +593,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void removeTerminationMaxCircularTouch() {
-		this.terminationMaxCircularTouch = Optional.absent();
+		this.terminationMaxCircularTouch = Optional.empty();
 		log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationMaxCircularTouch);
 	}
 
@@ -612,7 +612,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public void removeTerminationChange() {
-		terminationChange = Optional.absent();
+		terminationChange = Optional.empty();
 		log.debug("[{}] Set termination change to [{}]", this.title, this.terminationChange);
 	}
 

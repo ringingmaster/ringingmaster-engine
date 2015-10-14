@@ -5,11 +5,11 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -29,7 +29,7 @@ public class MaskedNotation implements NotationBody {
 
 	private NotationBody currentNotation;
 	private int iteratorIndex = 0;
-	private Optional<NotationCall> call = Optional.absent();
+	private Optional<NotationCall> call = Optional.empty();
 	private int callIndex;
 
 	public MaskedNotation(NotationBody activeNotation) {
@@ -44,7 +44,7 @@ public class MaskedNotation implements NotationBody {
 	public void applyCall(NotationCall call, String logPreamble) {
 		log.debug("{}   - Applying Call [{}] at index [{}] ", logPreamble, call, iteratorIndex);
 
-		this.call = Optional.fromNullable(call);
+		this.call = Optional.ofNullable(call);
 		this.callIndex = 0;
 	}
 
@@ -59,7 +59,7 @@ public class MaskedNotation implements NotationBody {
 				return call.get().getRow(callIndex++);
 			}
 			else {
-				call = Optional.absent();
+				call = Optional.empty();
 				callIndex = 0;
 			}
 		}

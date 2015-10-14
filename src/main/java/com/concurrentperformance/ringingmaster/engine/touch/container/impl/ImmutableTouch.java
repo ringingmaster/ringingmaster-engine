@@ -11,7 +11,7 @@ import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCell;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchElement;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import net.jcip.annotations.Immutable;
 
 import java.util.List;

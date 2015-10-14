@@ -5,7 +5,7 @@ import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import net.jcip.annotations.NotThreadSafe;
 
 import java.util.List;
