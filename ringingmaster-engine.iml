@@ -19,6 +19,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="util" />
+    <orderEntry type="module" module-name="ringingmaster-persist" />
     <orderEntry type="module-library">
       <library name="IvyIDEA-ringingmaster-engine-lib">
         <CLASSES>
@@ -42,6 +43,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="ringingmaster-persist" />
   </component>
 </module>
