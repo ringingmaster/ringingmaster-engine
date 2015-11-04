@@ -1,10 +1,10 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
-import java.util.List;
-
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -60,14 +60,26 @@ public class NotationCallBuilder {
 	public void checkClashWith(NotationCallBuilder otherCallBuilder) {
 		if (name.equals(otherCallBuilder.name)||
 				name.equals(otherCallBuilder.nameShorthand) ||
-				nameShorthand.equals(otherCallBuilder.nameShorthand) ||
-				nameShorthand.equals(otherCallBuilder.name)) {
-			throw new IllegalArgumentException("Name clash between [" + toString() + "] and [" + otherCallBuilder + "]");
+				nameShorthand.equals(otherCallBuilder.name) ||
+				nameShorthand.equals(otherCallBuilder.nameShorthand)) {
+			throw new IllegalArgumentException("Name clash between Calls [" + toDisplayString() + "] and [" + otherCallBuilder.toDisplayString() + "]");
 		}
 		if (notationShorthand.equals(otherCallBuilder.notationShorthand)) {
-			throw new IllegalArgumentException("Notation clash between [" + toString() + "] and [" + otherCallBuilder + "]");
+			throw new IllegalArgumentException("Notation clash between Calls [" + toDisplayString() + "] and [" + otherCallBuilder.toDisplayString() + "]");
 		}
 	}
 
+	public String toDisplayString() {
+		return name + "(" + nameShorthand + ") :" + notationShorthand;
 
+	}
+		@Override
+	public String toString() {
+		return "NotationCallBuilder{" +
+				"name='" + name + '\'' +
+				", shorthand='" + nameShorthand + '\'' +
+				", numberOfWorkingBells=" + numberOfWorkingBells +
+				", notationShorthand='" + notationShorthand + '\'' +
+				'}';
+	}
 }
