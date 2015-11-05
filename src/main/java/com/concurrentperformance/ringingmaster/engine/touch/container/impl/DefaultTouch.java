@@ -342,7 +342,7 @@ public class DefaultTouch implements Touch {
 		Collections.sort(notations, NotationBody.BY_NAME);
 
 		if (nonSplicedActiveNotation == originalNotation) {
-			nonSplicedActiveNotation = originalNotation;
+			nonSplicedActiveNotation = replacementNotation;
 		}
 	}
 

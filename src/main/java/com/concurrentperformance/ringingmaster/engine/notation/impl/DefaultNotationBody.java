@@ -155,9 +155,8 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	public String toString() {
 		final StringBuilder buf = new StringBuilder();
 		buf.append("NotationBody [name=").append(getName());
-		buf.append(", notation=");
-		buf.append(getNotationDisplayString(false)) ;
 		buf.append(", numberOfWorkingBells=").append(getNumberOfWorkingBells());
+		buf.append(", notation=").append(getNotationDisplayString(false)) ;
 		buf.append(", leadHeadCode=").append(getLeadHeadCode());
 		buf.append(", useCannedCalls=").append(isCannedCalls());
 		buf.append(", calls=").append(getCalls());
