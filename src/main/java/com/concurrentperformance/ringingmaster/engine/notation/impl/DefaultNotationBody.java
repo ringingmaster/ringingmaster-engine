@@ -100,7 +100,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 				buf.append(",");
 			}
 			firstTime = false;
-			buf.append(getAsDisplayString(rawNotationRowsSet, concise)) ;
+			buf.append(NotationBuilderHelper.getAsDisplayString(rawNotationRowsSet, concise)) ;
 		}
 		return buf.toString();
 	}
@@ -143,7 +143,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		if (notationIndex >= rawNotationRowsSets.size()) {
 			return "";
 		}
-		return getAsDisplayString(rawNotationRowsSets.get(notationIndex), concise);
+		return NotationBuilderHelper.getAsDisplayString(rawNotationRowsSets.get(notationIndex), concise);
 	}
 
 	@Override

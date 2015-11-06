@@ -1,14 +1,13 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.notation.Notation;
+import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 import com.google.common.collect.ImmutableList;
 import net.jcip.annotations.Immutable;
 
 import java.util.Iterator;
 import java.util.List;
-
-import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
-import com.concurrentperformance.ringingmaster.engine.notation.Notation;
-import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -83,23 +82,6 @@ public abstract class DefaultNotation implements Notation {
 				throw new UnsupportedOperationException("DefaultNotationBody.iterator() does not support remove()");
 			}
 		};
-	}
-
-	protected static String getAsDisplayString(final List<NotationRow> rows, final boolean concise) {
-		final StringBuilder buff = new StringBuilder();
-		NotationRow lastRow = null;
-		for (final NotationRow row : rows) {
-			// Add a separator if required
-			if ((!concise && (lastRow != null)) || //The lastRow being null is used as a flag for first row.
-					((lastRow != null) && !lastRow.isAllChange() && !row.isAllChange())) {
-				buff.append(ROW_SEPARATOR);
-			}
-
-			buff.append(row.toDisplayString());
-
-			lastRow = row;
-		}
-		return buff.toString();
 	}
 
 }

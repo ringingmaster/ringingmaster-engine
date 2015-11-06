@@ -47,7 +47,7 @@ public class NotationBuilder {
 	public static final int SPLICE_IDENTIFIER_MAX_LENGTH = 3;
 
 	private String name = "Unknown";
-	private NumberOfBells numberOfWorkingBells = NumberOfBells.BELLS_8;
+	private NumberOfBells numberOfWorkingBells;
 	private final List<String> notationShorthands = new ArrayList<>();
 	private boolean foldedPalindrome = false;
 	private List<NotationCallBuilder> notationCallBuilders = new ArrayList<>();
@@ -268,25 +268,19 @@ public class NotationBuilder {
 							new NotationCallBuilder().setName("Bob")
 									.setNameShorthand("-")
 									.setUnfoldedNotationShorthand("14")
-									.setNumberOfWorkingBells(numberOfWorkingBells)
-
-									.build());
+									.build(numberOfWorkingBells));
 					notationCalls.add(
 							new NotationCallBuilder().setName("Single")
 									.setNameShorthand("s")
 									.setUnfoldedNotationShorthand("1234")
-									.setNumberOfWorkingBells(numberOfWorkingBells)
-									.build());
+									.build(numberOfWorkingBells));
 				}
 				else if (leadHeadType.equals(LeadHeadCalculator.LeadHeadType.EXTREME)) {
 					notationCalls.add(
 							new NotationCallBuilder().setName("Bob")
 									.setNameShorthand("-")
-									.setUnfoldedNotationShorthand("1" +
-											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 2 -1).toDisplayString())
-									.setNumberOfWorkingBells(numberOfWorkingBells)
-
-									.build());
+									.setUnfoldedNotationShorthand("1" + NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 2 - 1).toDisplayString())
+									.build(numberOfWorkingBells));
 					notationCalls.add(
 							new NotationCallBuilder().setName("Single")
 									.setNameShorthand("s")
@@ -294,14 +288,13 @@ public class NotationBuilder {
 											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 2 - 1).toDisplayString() +
 											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 1 - 1).toDisplayString() +
 											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 0 - 1).toDisplayString())
-									.setNumberOfWorkingBells(numberOfWorkingBells)
-									.build());
+									.build(numberOfWorkingBells));
 				}
 			}
 		}
 		else {
 			for (NotationCallBuilder callBuilder : notationCallBuilders) {
-				NotationCall notationCall = callBuilder.build();
+				NotationCall notationCall = callBuilder.build(numberOfWorkingBells);
 				notationCalls.add(notationCall);
 			}
 		}
@@ -313,7 +306,7 @@ public class NotationBuilder {
 					String displayStringFrom = notationCallFrom.getNotationDisplayString(true);
 					String displayStringTo = notationCallTo.getNotationDisplayString(true);
 					if (displayStringFrom.equals(displayStringTo)) {
-						throw new IllegalArgumentException("Notation clash between [" + notationCallFrom + "] and [" + notationCallTo + "]");
+						throw new IllegalArgumentException("Notation of call [" + notationCallFrom.toDisplayString() + "] clashes with Notation of call [" + notationCallTo.toDisplayString() + "]");
 					}
 				}
 			}

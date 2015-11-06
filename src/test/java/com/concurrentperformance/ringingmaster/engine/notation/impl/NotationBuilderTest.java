@@ -63,6 +63,7 @@ public class NotationBuilderTest {
 		final NotationBody notationBody =
 				fixture
 				.setUnfoldedNotationShorthand("X14")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 		assertFalse(notationBody.isFoldedPalindrome());
 		assertEquals("notationBody of 'X14' should return a 2 rows", 2, notationBody.getRowCount());
@@ -77,6 +78,7 @@ public class NotationBuilderTest {
 	public void canCreateNotationWithOneElement()  {
 		final NotationBody notationBody = fixture
 				.setUnfoldedNotationShorthand("X")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 		assertFalse(notationBody.isFoldedPalindrome());
 		assertEquals("notationBody of 'X' should return a single row", 1, notationBody.getRowCount());
@@ -89,6 +91,7 @@ public class NotationBuilderTest {
 		final NotationBody notationBody =
 				fixture
 				.setUnfoldedNotationShorthand("x18x")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		assertEquals("'x18x is correctly separated", 3, notationBody.getRowCount());
@@ -112,6 +115,7 @@ public class NotationBuilderTest {
 		final NotationBody notationBody =
 				fixture
 				.setUnfoldedNotationShorthand("12.Zxy.w12f.g")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		assertEquals("invalidNotationCharacters in '12.Zxy.w12f.g' should return a 3 rows", 3, notationBody.getRowCount());
@@ -127,6 +131,7 @@ public class NotationBuilderTest {
 		final NotationBody notationBody =
 				fixture
 				.setUnfoldedNotationShorthand("8714")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		final NotationRow row = notationBody.getRow(0);
@@ -165,6 +170,7 @@ public class NotationBuilderTest {
 		final NotationBody notationBody = fixture
 				.addCall("test", "r", "12.34", true)
 				.setUnfoldedNotationShorthand("-")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 		System.out.println(notationBody.toString());
 	}
@@ -174,6 +180,7 @@ public class NotationBuilderTest {
 		NotationBody notationBody =
 				fixture.addCall("Bob", "A", "12.-.34", true)
 						.setUnfoldedNotationShorthand("-")
+						.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 						.build();
 
 		NotationCall call = notationBody.getCalls().iterator().next();
@@ -192,19 +199,25 @@ public class NotationBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void buildingNotationWithDuplicateCallShortcutNamesThrows()  {
 		fixture.addCall("A", "DUPLICATE", "12.34", true)
-				.addCall("B", "DUPLICATE", "56.34", false);
+				.addCall("B", "DUPLICATE", "56.34", false)
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+		;
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void buildingNotationWithDuplicateCallNotationThrows()  {
 		fixture.addCall("A", "C", "12.34", true)
-				.addCall("B", "D", "12.34", false);
+				.addCall("B", "D", "12.34", false)
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+		;
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void buildingNotationWithDuplicateCallShorthandAndNameThrows()  {
 		fixture.addCall("DUPLICATE", "A", "12.34", true)
-				.addCall("B", "DUPLICATE", "56.34", false);
+				.addCall("B", "DUPLICATE", "56.34", false)
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+		;
 	}
 
 	@Test
@@ -212,6 +225,7 @@ public class NotationBuilderTest {
 		String spliceIdentifier = "SP";
 		NotationBody notation = fixture.setSpliceIdentifier(spliceIdentifier)
 				.setUnfoldedNotationShorthand("-")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 		assertEquals(spliceIdentifier, notation.getSpliceIdentifier());
 	}
@@ -220,6 +234,7 @@ public class NotationBuilderTest {
 	public void setAndRetrieveCallInitiationRows()  {
 		NotationBody notation = fixture.setUnfoldedNotationShorthand("12.34")
 				.addCallInitiationRow(2)
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		assertEquals(2, notation.getCallInitiationRows().iterator().next().intValue());
@@ -234,6 +249,7 @@ public class NotationBuilderTest {
 	public void addingCallInitiationRowGreaterThanPlainLeadLengthThrows()  {
 		fixture .setUnfoldedNotationShorthand("12.34")
 				.addCallInitiationRow(3)
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 	}
@@ -241,6 +257,7 @@ public class NotationBuilderTest {
 	@Test
 	public void addingNoLeadBasedCallingPositionAddsDefault()  {
 		NotationBody notation = fixture.setUnfoldedNotationShorthand("12.34")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 		assertEquals(1, notation.getCallInitiationRows().size());
 		assertEquals(1, (int)notation.getCallInitiationRows().first());
@@ -252,6 +269,7 @@ public class NotationBuilderTest {
 				.addCall("AAA", "A", "12.34", false)
 				.addCall("BBB", "B", "56.34", true)
 				.setUnfoldedNotationShorthand("-")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		assertEquals("BBB", notation.getDefaultCall().getName());
@@ -263,6 +281,7 @@ public class NotationBuilderTest {
 				.addCall("BBB", "B", "56.34", false)
 				.addCall("AAA", "A", "12.34", false)
 				.setUnfoldedNotationShorthand("-")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		assertEquals("AAA", notation.getDefaultCall().getName());
@@ -274,6 +293,7 @@ public class NotationBuilderTest {
 				.addCall("Bob", "-", "56.34", false)
 				.addCall("AAA", "A", "12.34", false)
 				.setUnfoldedNotationShorthand("-")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		assertEquals("Bob", notation.getDefaultCall().getName());
@@ -284,6 +304,7 @@ public class NotationBuilderTest {
 		NotationBody notation = fixture
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
 				.setUnfoldedNotationShorthand("")
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.build();
 
 		assertEquals(0, notation.getRowCount());

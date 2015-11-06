@@ -18,10 +18,10 @@ public class NotationCallBuilder {
 
 	private String name;
 	private String nameShorthand;
-	private NumberOfBells numberOfWorkingBells = NumberOfBells.BELLS_8;
 	private String notationShorthand;
 
-	public NotationCall build() {
+	public NotationCall build(NumberOfBells numberOfWorkingBells) {
+		checkState(numberOfWorkingBells != null, "numberOfWorkingBells must not be null");
 		checkState(name != null, "name must not be null");
 		checkState(nameShorthand != null, "nameShorthand must not be null");
 		checkState(notationShorthand != null, "notationShorthand must not be null");
@@ -43,11 +43,6 @@ public class NotationCallBuilder {
 	public NotationCallBuilder setNameShorthand(final String nameShorthand) {
 		this.nameShorthand = checkNotNull(nameShorthand, "nameShorthand must not be null");
 		checkArgument(nameShorthand.length() > 0, "name must not be empty");
-		return this;
-	}
-
-	public NotationCallBuilder setNumberOfWorkingBells(final NumberOfBells numberOfWorkingBells) {
-		this.numberOfWorkingBells = checkNotNull(numberOfWorkingBells, "numberOfWorkingBells must not be null");
 		return this;
 	}
 
@@ -76,15 +71,13 @@ public class NotationCallBuilder {
 	}
 
 	public String toDisplayString() {
-		return name + "(" + nameShorthand + ") :" + notationShorthand;
-
+		return name + " (" + nameShorthand + ") :" + notationShorthand;
 	}
 		@Override
 	public String toString() {
 		return "NotationCallBuilder{" +
 				"name='" + name + '\'' +
 				", shorthand='" + nameShorthand + '\'' +
-				", numberOfWorkingBells=" + numberOfWorkingBells +
 				", notationShorthand='" + notationShorthand + '\'' +
 				'}';
 	}

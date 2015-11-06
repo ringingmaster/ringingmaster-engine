@@ -1,6 +1,7 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
+import com.concurrentperformance.ringingmaster.engine.notation.Notation;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationPlace;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
@@ -132,4 +133,26 @@ public class NotationBuilderHelper {
 		return filteredNotations;
 	}
 
+	public static String getAsDisplayString(final List<NotationRow> rows, final boolean concise) {
+		final StringBuilder buff = new StringBuilder();
+		NotationRow lastRow = null;
+		for (final NotationRow row : rows) {
+			// Add a separator if required
+			if ((!concise && (lastRow != null)) || //The lastRow being null is used as a flag for first row.
+					((lastRow != null) && !lastRow.isAllChange() && !row.isAllChange())) {
+				buff.append(Notation.ROW_SEPARATOR);
+			}
+
+			buff.append(row.toDisplayString());
+
+			lastRow = row;
+		}
+		return buff.toString();
+	}
+
+
+	public static String validateAsDisplayString(String notationShorthand, NumberOfBells numberOfBells, boolean concise) {
+		List<NotationRow> validatedRowsFromShorthand = getValidatedRowsFromShorthand(notationShorthand, numberOfBells);
+		return getAsDisplayString(validatedRowsFromShorthand, concise);
+	}
 }

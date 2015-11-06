@@ -1,10 +1,10 @@
 package com.concurrentperformance.ringingmaster.engine.notation.impl;
 
-import java.util.List;
-
 import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationCall;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationRow;
+
+import java.util.List;
 
 /**
  * Representation of a single call.
@@ -29,7 +29,16 @@ public class DefaultNotationCall extends DefaultNotation implements NotationCall
 
 	@Override
 	public String getNotationDisplayString(boolean concise) {
-		return getAsDisplayString(getNormalisedNotationElements(), concise);
+		return NotationBuilderHelper.getAsDisplayString(getNormalisedNotationElements(), concise);
+	}
+
+	@Override
+	public String toDisplayString() {
+		final StringBuilder buf = new StringBuilder();
+		buf.append(getName());
+		buf.append(" (").append(getNameShorthand()).append(") :");
+		buf.append(getNotationDisplayString(false));
+		return buf.toString();
 	}
 
 	@Override
