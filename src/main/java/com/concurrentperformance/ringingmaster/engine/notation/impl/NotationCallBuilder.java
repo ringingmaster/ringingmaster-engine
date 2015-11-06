@@ -58,14 +58,20 @@ public class NotationCallBuilder {
 	}
 
 	public void checkClashWith(NotationCallBuilder otherCallBuilder) {
-		if (name.equals(otherCallBuilder.name)||
-				name.equals(otherCallBuilder.nameShorthand) ||
-				nameShorthand.equals(otherCallBuilder.name) ||
-				nameShorthand.equals(otherCallBuilder.nameShorthand)) {
-			throw new IllegalArgumentException("Name clash between Calls [" + toDisplayString() + "] and [" + otherCallBuilder.toDisplayString() + "]");
+		if (name.equals(otherCallBuilder.name)) {
+			throw new IllegalArgumentException("Name of call [" + toDisplayString() + "] clashes with name of call [" + otherCallBuilder.toDisplayString() + "]");
+		}
+		if (name.equals(otherCallBuilder.nameShorthand)) {
+			throw new IllegalArgumentException("Name of call [" + toDisplayString() + "] clashes with shorthand of call [" + otherCallBuilder.toDisplayString() + "]");
+		}
+		if (nameShorthand.equals(otherCallBuilder.name)) {
+			throw new IllegalArgumentException("Shorthand of call [" + toDisplayString() + "] clashes with name of call [" + otherCallBuilder.toDisplayString() + "]");
+		}
+		if (nameShorthand.equals(otherCallBuilder.nameShorthand)) {
+			throw new IllegalArgumentException("Shorthand of call [" + toDisplayString() + "] clashes with shorthand of call [" + otherCallBuilder.toDisplayString() + "]");
 		}
 		if (notationShorthand.equals(otherCallBuilder.notationShorthand)) {
-			throw new IllegalArgumentException("Notation clash between Calls [" + toDisplayString() + "] and [" + otherCallBuilder.toDisplayString() + "]");
+			throw new IllegalArgumentException("Notation of call [" + toDisplayString() + "] clashes with Notation of call [" + otherCallBuilder.toDisplayString() + "]");
 		}
 	}
 
