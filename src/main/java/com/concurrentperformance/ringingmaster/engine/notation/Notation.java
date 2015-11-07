@@ -12,25 +12,16 @@ import java.util.Comparator;
  */
 public interface Notation extends Iterable<NotationRow> {
 
-	public static final String ROW_SEPARATOR = ".";
+	String ROW_SEPARATOR = ".";
 
-	public static final Comparator<Notation> BY_NAME = new Comparator<Notation>() {
-		@Override
-		public int compare(Notation o1, Notation o2) {
-			return ComparisonChain.start()
-					.compare(o1.getName(), o2.getName())
-					.result();
-		}
-	};
-	public static final Comparator<Notation> BY_NUMBER_THEN_NAME = new Comparator<Notation>() {
-		@Override
-		public int compare(Notation o1, Notation o2) {
-			return ComparisonChain.start()
-					.compare(o1.getNumberOfWorkingBells(),o2.getNumberOfWorkingBells())
-					.compare(o1.getName(), o2.getName())
-					.result();
-		}
-	};
+	Comparator<Notation> BY_NAME = (o1, o2) -> ComparisonChain.start()
+			.compare(o1.getName(), o2.getName())
+			.result();
+
+	Comparator<Notation> BY_NUMBER_THEN_NAME = (o1, o2) -> ComparisonChain.start()
+			.compare(o1.getNumberOfWorkingBells(),o2.getNumberOfWorkingBells())
+			.compare(o1.getName(), o2.getName())
+			.result();
 
 	/**
 	 * Get the name of the method, excluding the Number of bells
