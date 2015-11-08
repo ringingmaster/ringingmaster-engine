@@ -57,7 +57,7 @@ public class LeadBasedCompilerTest {
 
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
-		Proof result = new LeadBasedCompiler(touch).compile(false);
+		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
 		Method method = result.getCreatedMethod().get();
 
 		assertNotNull("Should return non null Method", method);
@@ -72,7 +72,7 @@ public class LeadBasedCompilerTest {
 
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
-		Proof result = new LeadBasedCompiler(touch).compile(false);
+		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
 		Method method = result.getCreatedMethod().get();
 
 		assertEquals("14 should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
@@ -89,7 +89,7 @@ public class LeadBasedCompilerTest {
 
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationMaxLeads(1);
-		Proof result = new LeadBasedCompiler(touch).compile(false);
+		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
 		Method method = result.getCreatedMethod().get();
 
 		assertArrayEquals(new int[]{1}, method.getLead(0).getLeadSeparatorPositions());
@@ -108,7 +108,7 @@ public class LeadBasedCompilerTest {
 		for (int i=1; i< 50; i++) {
 
 			touch.setTerminationMaxLeads(i);
-			Proof result = new LeadBasedCompiler(touch).compile(false);
+			Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
 			Method method = result.getCreatedMethod().get();
 
 			assertEquals(i, method.getLeadCount());
@@ -129,7 +129,7 @@ public class LeadBasedCompilerTest {
 
 		for (int i=1; i< 200; i++) {
 			touch.setTerminationMaxRows(i);
-			Proof result = new LeadBasedCompiler(touch).compile(false);
+			Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
 			Method method = result.getCreatedMethod().get();
 
 			assertEquals(i, method.getRowCount());
@@ -149,7 +149,7 @@ public class LeadBasedCompilerTest {
 		final MethodRow roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
 		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 		touch.setTerminationChange(roundsRow);
-		Proof result = new LeadBasedCompiler(touch).compile(false);
+		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
 		Method method = result.getCreatedMethod().get();
 
 		assertEquals(roundsRow, method.getLastRow());
@@ -158,7 +158,7 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void compilePlainCourseOfPlainBobMinor() throws IOException {
 		Touch touch = TouchBuilder.buildPlainCourseInstance(buildPlainBobMinor());
-		Proof result = new LeadBasedCompiler(touch).compile(false);
+		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
 		assertEquals("Plain Course of Plain Bob Minor", result.getTouch().getTitle());
 		assertEquals(60, result.getCreatedMethod().get().getRowCount());
 		assertEquals(5, result.getCreatedMethod().get().getLeadCount());
@@ -259,7 +259,7 @@ public class LeadBasedCompilerTest {
 
 	private Proof proveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
 	                                 ProofTerminationReason terminationReason, Touch touch) throws IOException {
-		Proof proof = new LeadBasedCompiler(touch).compile(true);
+		Proof proof = new LeadBasedCompiler(touch).compile(true, () -> false);
 		assertEquals(terminationReason, proof.getTerminationReason());
 		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
 		checkAgainstFile(proof.getCreatedMethod().get(), fileName);

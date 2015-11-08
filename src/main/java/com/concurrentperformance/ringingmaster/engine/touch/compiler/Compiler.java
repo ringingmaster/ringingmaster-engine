@@ -1,8 +1,9 @@
 package com.concurrentperformance.ringingmaster.engine.touch.compiler;
 
+import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 import net.jcip.annotations.ThreadSafe;
 
-import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
+import java.util.function.Supplier;
 
 /**
  * Compile Touch into a Proof
@@ -11,7 +12,5 @@ import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 @ThreadSafe
 public interface Compiler {
 
-	Proof compile(boolean withAnalysis);
-
-	Proof getProof();
+	Proof compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly);
 }

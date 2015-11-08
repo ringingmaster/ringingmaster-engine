@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -68,7 +68,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 		this.logPreamble = logPreamble;
 	}
 
-	public Proof compile(boolean withAnalysis) {
+	public Proof compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly) {
 		log.info("{}> Start compiling [{}]", logPreamble, touch.getTitle());
 		long start = System.currentTimeMillis();
 
@@ -79,16 +79,29 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 		}
 		else {
 			preCompile(touch);
+			checkTerminateEarly(shouldTerminateEarly);
+
 			buildCallLookupByName();
-			compileTouch();
+			checkTerminateEarly(shouldTerminateEarly);
+
+			compileTouch(shouldTerminateEarly);
+			checkTerminateEarly(shouldTerminateEarly);
+
 			if (withAnalysis) {
 				compileAnalysis();
+				checkTerminateEarly(shouldTerminateEarly);
 			}
 		}
 		long proofTime = System.currentTimeMillis() - start;
 		proof = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, analysis, proofTime);
 		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), proofTime);
 		return proof;
+	}
+
+	private void checkTerminateEarly(Supplier<Boolean> shouldTerminateEarly) {
+		if (shouldTerminateEarly.get()) {
+			throw new TerminateEarlyException("Terminate Early request");
+		}
 	}
 
 	private Optional<String> checkInvalidTouch(Touch touch) {
@@ -114,7 +127,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 		callLookupByName = new CallMapBuilder(touch, logPreamble).createCallMap();
 	}
 
-	private void compileTouch() {
+	private void compileTouch(Supplier<Boolean> shouldTerminateEarly) {
 		log.debug("{} > create touch", logPreamble);
 		log.debug("{}  - part [{}]", logPreamble, partIndex);
 		partIndex = 0;
@@ -139,6 +152,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 			leads.add(lead);
 			startChange = lead.getLastRow();
 			checkTerminationMaxLeads(leads);
+			checkTerminateEarly(shouldTerminateEarly);
 		}
 		method = Optional.of(MethodBuilder.buildMethod(touch.getNumberOfBells(), leads));
 		log.debug("{} < create touch", logPreamble);
@@ -283,13 +297,6 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 	private void compileAnalysis() {
 		analysis = Optional.of(AnalysisBuilder.buildAnalysisStructure());
 		AnalysisBuilder.falseRowAnalysis(method.get(), analysis.get());
-	}
-
-
-	@Override
-	public Proof getProof() {
-		checkNotNull(proof);
-		return proof;
 	}
 
 	public String getLogPreamble() {

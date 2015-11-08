@@ -75,7 +75,7 @@ public class CourseBasedCompilerTest {
 	private Proof parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
 	                                      ProofTerminationReason terminationReason, Touch touch) throws IOException {
 		parser.parseAndAnnotate(touch);
-		Proof proof = new CourseBasedCompiler(touch, "").compile(true);
+		Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);
 		assertEquals(terminationReason, proof.getTerminationReason());
 		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
 		checkAgainstFile(proof.getCreatedMethod().get(), fileName);

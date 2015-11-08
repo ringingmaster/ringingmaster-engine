@@ -5,10 +5,10 @@ import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import java.util.Optional;
 import net.jcip.annotations.NotThreadSafe;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -21,7 +21,7 @@ public interface Touch extends Cloneable {
 
 	int START_AT_ROW_MAX                         = 10000;
 	int TERMINATION_MAX_ROWS_INITIAL_VALUE       = 10000;
-	int TERMINATION_MAX_ROWS_MAX                 = 10000000;
+	int TERMINATION_MAX_ROWS_MAX                 = 1000000;
 	int TERMINATION_MAX_LEADS_MAX                = 10000;
 	int TERMINATION_MAX_PARTS_MAX                = 10000;
 	int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE = 2;

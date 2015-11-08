@@ -1,12 +1,12 @@
 package com.concurrentperformance.ringingmaster.engine.helper;
 
-import com.concurrentperformance.ringingmaster.engine.touch.compiler.impl.CompilerFactory;
 import com.concurrentperformance.ringingmaster.engine.method.Method;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
-import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
-import com.concurrentperformance.ringingmaster.engine.touch.proof.ProofTerminationReason;
+import com.concurrentperformance.ringingmaster.engine.touch.compiler.impl.CompilerFactory;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.impl.TouchBuilder;
+import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
+import com.concurrentperformance.ringingmaster.engine.touch.proof.ProofTerminationReason;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -18,7 +18,7 @@ public class PlainCourseHelper {
 
 	public static Proof buildPlainCourse(NotationBody notation, String logPreamble, boolean withAnalysis) {
 		Touch plainCourseTouch = TouchBuilder.buildPlainCourseInstance(notation);
-		Proof proof = CompilerFactory.getInstance(plainCourseTouch,  logPreamble).compile(withAnalysis);
+		Proof proof = CompilerFactory.getInstance(plainCourseTouch,  logPreamble).compile(withAnalysis, () -> false);
 		Method createdMethod = proof.getCreatedMethod().get();
 
 		checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
