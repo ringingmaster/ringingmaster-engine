@@ -27,13 +27,18 @@ public interface Touch extends Cloneable {
 	int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE = 2;
 	int TERMINATION_CIRCULAR_TOUCH_MAX           = 100000;
 
+	enum Mutated {
+		MUTATED,
+		UNCHANGED
+	}
+
 	Touch clone() throws CloneNotSupportedException;
 
 	String getTitle();
-	void setTitle(String title);
+	Mutated setTitle(String title);
 
 	String getAuthor();
-	void setAuthor(String author);
+	Mutated setAuthor(String author);
 
 	TouchCheckingType getTouchCheckingType();
 	void setTouchCheckingType(TouchCheckingType touchCheckingType);
@@ -126,3 +131,4 @@ public interface Touch extends Cloneable {
 	boolean collapseEmptyRowsAndColumns();
 
 }
+

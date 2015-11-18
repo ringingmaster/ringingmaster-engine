@@ -8,13 +8,13 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Grid;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCell;
+import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchElement;
-import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
-import java.util.Optional;
 import net.jcip.annotations.Immutable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -42,7 +42,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTitle(String name) {
+	public Mutated setTitle(String name) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -57,7 +57,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setAuthor(String author) {
+	public Mutated setAuthor(String author) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

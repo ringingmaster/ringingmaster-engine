@@ -32,6 +32,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static com.concurrentperformance.ringingmaster.engine.touch.container.Touch.Mutated.MUTATED;
+import static com.concurrentperformance.ringingmaster.engine.touch.container.Touch.Mutated.UNCHANGED;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -153,11 +155,12 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setTitle(String title) {
+	public Mutated setTitle(String title) {
 		if (!this.title.equals(title)) {
-			log.debug("[{}] Set title [{}]", this.title, title);
 			this.title = checkNotNull(title);
+			return MUTATED;
 		}
+		return UNCHANGED;
 	}
 
 	@Override
@@ -166,11 +169,13 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setAuthor(String author) {
+	public Mutated setAuthor(String author) {
 		if (!this.author.equals(author)) {
 			this.author = checkNotNull(author);
 			log.debug("[{}] Set author [{}]", this.title, this.author);
+			return MUTATED;
 		}
+		return UNCHANGED;
 	}
 
 	@Override
