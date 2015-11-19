@@ -41,30 +41,30 @@ public interface Touch extends Cloneable {
 	Mutated setAuthor(String author);
 
 	TouchCheckingType getTouchCheckingType();
-	void setTouchCheckingType(TouchCheckingType touchCheckingType);
+	Mutated setTouchCheckingType(TouchCheckingType touchCheckingType);
 
-	void    setNumberOfBells(NumberOfBells numberOfBells);
+	Mutated setNumberOfBells(NumberOfBells numberOfBells);
 	NumberOfBells getNumberOfBells();
 
 	Bell getCallFromBell();
-	void setCallFromBell(Bell callFromBell);
+	Mutated setCallFromBell(Bell callFromBell);
 
-	void addNotation(NotationBody notationToAdd);
+	Mutated addNotation(NotationBody notationToAdd);
 	List<String> checkAddNotation(NotationBody notationToAdd);
-	void removeNotation(NotationBody notationForRemoval);
-	void exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation);
+	Mutated removeNotation(NotationBody notationForRemoval);
+	Mutated exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation);
 	List<NotationBody> getAllNotations();
 	List<NotationBody> getValidNotations();
 	List<NotationBody> getNotationsInUse();
 
-	void setNonSplicedActiveNotation(NotationBody activeNotation);
+	Mutated setNonSplicedActiveNotation(NotationBody activeNotation);
 	NotationBody getNonSplicedActiveNotation();
 
 	boolean isSpliced();
-	void setSpliced(boolean spliced);
+	Mutated setSpliced(boolean spliced);
 
 	String getPlainLeadToken();
-	void setPlainLeadToken(String plainLeadToken);
+	Mutated setPlainLeadToken(String plainLeadToken);
 
 	TouchDefinition addDefinition(String shorthand, String characters);
 	Set<TouchDefinition> getDefinitions();
@@ -75,10 +75,10 @@ public interface Touch extends Cloneable {
 	void setStartChange(MethodRow startChange);
 
 	int getStartAtRow();
-	void setStartAtRow(int startAtRow);
+	Mutated setStartAtRow(int startAtRow);
 
-	void setStartStroke(Stroke startStroke);
 	Stroke getStartStroke();
+	Mutated setStartStroke(Stroke startStroke);
 
 	Optional<NotationBody> getStartNotation();
 	void setStartNotation(NotationBody startNotation);

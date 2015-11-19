@@ -52,7 +52,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setNumberOfBells(NumberOfBells numberOfBells) {
+	public Mutated setNumberOfBells(NumberOfBells numberOfBells) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -77,17 +77,17 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTouchCheckingType(TouchCheckingType touchCheckingType) {
+	public Mutated setTouchCheckingType(TouchCheckingType touchCheckingType) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void setCallFromBell(Bell callFromBell) {
+	public Mutated setCallFromBell(Bell callFromBell) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void addNotation(NotationBody notationToAdd) {
+	public Mutated addNotation(NotationBody notationToAdd) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -97,12 +97,12 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void removeNotation(NotationBody notationForRemoval) {
+	public Mutated removeNotation(NotationBody notationForRemoval) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+	public Mutated exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -122,7 +122,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setNonSplicedActiveNotation(NotationBody activeNotation) {
+	public Mutated setNonSplicedActiveNotation(NotationBody activeNotation) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -157,7 +157,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setSpliced(boolean spliced) {
+	public Mutated setSpliced(boolean spliced) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -187,7 +187,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setPlainLeadToken(String plainLeadToken) {
+	public Mutated setPlainLeadToken(String plainLeadToken) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -257,7 +257,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setStartAtRow(int startAtRow) {
+	public Mutated setStartAtRow(int startAtRow) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -282,7 +282,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setStartStroke(Stroke startStroke) {
+	public Mutated setStartStroke(Stroke startStroke) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

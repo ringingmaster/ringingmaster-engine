@@ -16,14 +16,14 @@ import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 @Immutable
 public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 
-	public static final String ROUNDS_TOKEN = "Rounds";
+	String ROUNDS_TOKEN = "Rounds";
 
 	/**
 	 * Get the number of bells in this row, including any covers.
 	 * 
 	 * @return NumberOfBells
 	 */
-	public NumberOfBells getNumberOfBells();
+	NumberOfBells getNumberOfBells();
 
 	/**
 	 * Get the bell at the specified zero based place.
@@ -32,7 +32,7 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 	 * @return Bell
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public Bell getBellInPlace(int place); //TODO should this pass in an enum?
+	Bell getBellInPlace(int place); //TODO should this pass in an enum?
 
 	/**
 	 * Get the bell at the specified zero based place.
@@ -41,7 +41,7 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 	 * @return Bell
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public Bell getBellInPlace(NotationPlace place);
+	Bell getBellInPlace(NotationPlace place);
 
 	/**
 	 * For a given bell, indicate the place it is in.
@@ -49,38 +49,38 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 	 * @param bell bell to test the place for. not null
 	 * @return Integer if valid, otherwise null.
 	 */
-	public Integer getPlaceOfBell(Bell bell);
+	Integer getPlaceOfBell(Bell bell);
 
 	/**
 	 * Get the row number with reference to the whole method,
 	 * with the first (usually rounds) being 0.
 	 * @return int, the row number
 	 */
-	public int getRowNumber();
+	int getRowNumber();
 
 	/**
 	 * Get the stroke of the row. This alternates from row to row.
 	 * @return
 	 */
-	public Stroke getStroke();
+	Stroke getStroke();
 
 	/**
 	 * Set the Stroke. As this class is immutable, it returns a new instance
 	 * @param stroke
 	 */
-	public MethodRow setStroke(Stroke stroke);
+	MethodRow setStroke(Stroke stroke);
 
 	/**
 	 * Get the row course type.
 	 * @return RowCourseType row course type.
 	 */
-	public RowCourseType getRowCourseType();
+	RowCourseType getRowCourseType();
 
 
 	/**
 	 * @return Return true if this row represents rounds for the specified number.
 	 */
-	public boolean isRounds();
+	boolean isRounds();
 
 	/**
 	 * Get the row as a display string. i.e. rounds on 12 would return '1234567890ET',
@@ -88,6 +88,6 @@ public interface MethodRow extends Iterable<Bell>, Comparable<MethodRow> {
 	 * 
 	 * @return String
 	 */
-	public String getDisplayString(boolean useRoundsWord);
+	String getDisplayString(boolean useRoundsWord);
 
 }
