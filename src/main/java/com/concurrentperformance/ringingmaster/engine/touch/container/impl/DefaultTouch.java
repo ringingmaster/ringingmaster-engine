@@ -69,7 +69,7 @@ public class DefaultTouch implements Touch {
 	private Stroke startStroke;
 	private Optional<NotationBody> startNotation;
 
-	private Integer terminationMaxRows;
+	private int terminationMaxRows;
 	private Optional<Integer> terminationMaxLeads;
 	private Optional<Integer> terminationMaxParts;
 	private Optional<Integer> terminationMaxCircularTouch;
@@ -491,11 +491,15 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setStartChange(MethodRow startChange) {
+	public Mutated setStartChange(MethodRow startChange) {
 		checkNotNull(startChange);
 		checkState(startChange.getNumberOfBells() == numberOfBells);
-		this.startChange = startChange;
-		log.debug("[{}] Set start change to [{}]", this.title, startChange);
+		if (!this.startChange.equals(startChange)) {
+			this.startChange = startChange;
+			log.debug("[{}] Set start change to [{}]", this.title, startChange);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 	@Override
@@ -536,7 +540,7 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setStartNotation(NotationBody startNotation) {
+	public Mutated setStartNotation(NotationBody startNotation) {
 		checkNotNull(startNotation);
 		checkState(startNotation.getNumberOfWorkingBells() == numberOfBells, "Start Notation number of bells must match touch number of bells");
 
@@ -544,15 +548,19 @@ public class DefaultTouch implements Touch {
 				!startNotation.getNotationDisplayString(false).equals(this.startNotation.get().getNotationDisplayString(false))) {
 			this.startNotation = Optional.of(startNotation);
 			log.debug("[{}] Set start notation to [{}]", this.title, this.startNotation.get().getNotationDisplayString(false));
+			return MUTATED;
 		}
+		return UNCHANGED;
 	}
 
 	@Override
-	public void removeStartNotation() {
+	public Mutated removeStartNotation() {
 		if (this.startNotation.isPresent()) {
 			this.startNotation = Optional.empty();
 			log.debug("[{}] Set start notation to [{}]", this.title, startNotation);
+			return MUTATED;
 		}
+		return UNCHANGED;
 	}
 
 	@Override
@@ -561,13 +569,15 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxRows(int terminationMaxRows) {
+	public Mutated setTerminationMaxRows(int terminationMaxRows) {
 		if (this.terminationMaxRows != terminationMaxRows) {
 			checkState(terminationMaxRows > 0, "Termination max rows must be greater than 0");
 			checkState(terminationMaxRows <= TERMINATION_MAX_ROWS_MAX, "Termination max rows must be less than or equal to %s", TERMINATION_MAX_ROWS_MAX);
 			this.terminationMaxRows = terminationMaxRows;
 			log.debug("[{}] Set termination max rows to [{}]", this.title, this.terminationMaxRows);
+			return MUTATED;
 		}
+		return UNCHANGED;
 	}
 
 	@Override
@@ -576,17 +586,27 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxLeads(int terminationMaxLeads) {
+	public Mutated setTerminationMaxLeads(int terminationMaxLeads) {
 		checkState(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
 		checkState(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
-		this.terminationMaxLeads = Optional.of(terminationMaxLeads);
-		log.debug("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
+
+		Optional<Integer> optionalTerminationMaxLeads = Optional.of(terminationMaxLeads);
+		if (!this.terminationMaxLeads.equals(optionalTerminationMaxLeads)) {
+			this.terminationMaxLeads = optionalTerminationMaxLeads;
+			log.debug("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 	@Override
-	public void removeTerminationMaxLeads() {
-		this.terminationMaxLeads = Optional.empty();
-		log.debug("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
+	public Mutated removeTerminationMaxLeads() {
+		if (this.terminationMaxLeads.equals(Optional.<Integer>empty())) {
+			this.terminationMaxLeads = Optional.empty();
+			log.debug("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 	
 	@Override
@@ -595,17 +615,27 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxParts(int terminationMaxParts) {
+	public Mutated setTerminationMaxParts(int terminationMaxParts) {
 		checkState(terminationMaxParts > 0, "Termination max parts must be greater than 0");
 		checkState(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
-		this.terminationMaxParts = Optional.of(terminationMaxParts);
-		log.debug("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
+
+		Optional<Integer> optionalTerminationMaxParts = Optional.of(terminationMaxParts);
+		if (!this.terminationMaxParts.equals(optionalTerminationMaxParts)) {
+			this.terminationMaxParts = Optional.of(terminationMaxParts);
+			log.debug("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 	@Override
-	public void removeTerminationMaxParts() {
-		this.terminationMaxParts = Optional.empty();
-		log.debug("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
+	public Mutated removeTerminationMaxParts() {
+		if (!this.terminationMaxParts.equals(Optional.<Integer>empty())) {
+			this.terminationMaxParts = Optional.empty();
+			log.debug("[{}] Set termination max parts to [{}]", this.title, this.terminationMaxParts);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 	@Override
@@ -614,17 +644,27 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxCircularTouch(int terminationMaxCircularTouch) {
-		checkState(terminationMaxCircularTouch > 0, "Termination max parts must be greater than 0");
-		checkState(terminationMaxCircularTouch <= TERMINATION_CIRCULAR_TOUCH_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_CIRCULAR_TOUCH_MAX);
-		this.terminationMaxCircularTouch = Optional.of(terminationMaxCircularTouch);
-		log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationMaxCircularTouch);
+	public Mutated setTerminationMaxCircularTouch(int terminationMaxCircularTouch) {
+		checkState(terminationMaxCircularTouch > 0, "Termination circular touch must be greater than 0");
+		checkState(terminationMaxCircularTouch <= TERMINATION_CIRCULAR_TOUCH_MAX, "Termination circular touch must be less than or equal to %s", TERMINATION_CIRCULAR_TOUCH_MAX);
+
+		Optional<Integer> optionalTerminationMaxCircularTouch = Optional.of(terminationMaxCircularTouch);
+		if (!this.terminationMaxCircularTouch.equals(optionalTerminationMaxCircularTouch)) {
+			this.terminationMaxCircularTouch = Optional.of(terminationMaxCircularTouch);
+			log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationMaxCircularTouch);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 	@Override
-	public void removeTerminationMaxCircularTouch() {
-		this.terminationMaxCircularTouch = Optional.empty();
-		log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationMaxCircularTouch);
+	public Mutated removeTerminationMaxCircularTouch() {
+		if (!this.terminationMaxCircularTouch.equals(Optional.<Integer>empty())) {
+			this.terminationMaxCircularTouch = Optional.empty();
+			log.debug("[{}] Set termination circular touch to [{}]", this.title, this.terminationMaxCircularTouch);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 	@Override
@@ -633,17 +673,26 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationChange(MethodRow terminationChange) {
+	public Mutated setTerminationChange(MethodRow terminationChange) {
 		checkNotNull(terminationChange, "terminationChange cant be null");
 		checkArgument(terminationChange.getNumberOfBells().equals(numberOfBells));
-		this.terminationChange = Optional.of(terminationChange);
-		log.debug("[{}] Set termination change to [{}]", this.title, this.terminationChange);
+		Optional<MethodRow> optionalTerminationChange = Optional.of(terminationChange);
+		if (!this.terminationChange.equals(optionalTerminationChange)) {
+			this.terminationChange = Optional.of(terminationChange);
+			log.debug("[{}] Set termination change to [{}]", this.title, this.terminationChange);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 	@Override
-	public void removeTerminationChange() {
-		terminationChange = Optional.empty();
-		log.debug("[{}] Set termination change to [{}]", this.title, this.terminationChange);
+	public Mutated removeTerminationChange() {
+		if (!terminationChange.equals(Optional.<MethodRow>empty())) {
+			terminationChange = Optional.empty();
+			log.debug("[{}] Set termination change to [{}]", this.title, this.terminationChange);
+			return MUTATED;
+		}
+		return UNCHANGED;
 	}
 
 

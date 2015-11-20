@@ -247,7 +247,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setStartChange(MethodRow startChange) {
+	public Mutated setStartChange(MethodRow startChange) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -272,12 +272,12 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setStartNotation(NotationBody startNotation) {
+	public Mutated setStartNotation(NotationBody startNotation) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void removeStartNotation() {
+	public Mutated removeStartNotation() {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -297,12 +297,12 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxLeads(int terminationMaxLeads) {
+	public Mutated setTerminationMaxLeads(int terminationMaxLeads) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void removeTerminationMaxLeads() {
+	public Mutated removeTerminationMaxLeads() {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -312,12 +312,12 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxParts(int terminationMaxParts) {
+	public Mutated setTerminationMaxParts(int terminationMaxParts) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void removeTerminationMaxParts() {
+	public Mutated removeTerminationMaxParts() {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -327,12 +327,12 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxCircularTouch(int terminationCircularTouch) {
+	public Mutated setTerminationMaxCircularTouch(int terminationCircularTouch) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void removeTerminationMaxCircularTouch() {
+	public Mutated removeTerminationMaxCircularTouch() {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -342,7 +342,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationMaxRows(int terminationMaxRows) {
+	public Mutated setTerminationMaxRows(int terminationMaxRows) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
@@ -352,12 +352,12 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public void setTerminationChange(MethodRow terminationChange) {
+	public Mutated setTerminationChange(MethodRow terminationChange) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 
 	@Override
-	public void removeTerminationChange() {
+	public Mutated removeTerminationChange() {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

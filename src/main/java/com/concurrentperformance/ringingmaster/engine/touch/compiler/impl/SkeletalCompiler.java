@@ -69,7 +69,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 	}
 
 	public Proof compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly) {
-		log.info("{}> Start compiling [{}]", logPreamble, touch.getTitle());
+		log.debug("{}> Start compiling [{}]", logPreamble, touch.getTitle());
 		long start = System.currentTimeMillis();
 
 		final Optional<String> invalidTouch = checkInvalidTouch(touch);
@@ -94,7 +94,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements co
 		}
 		long proofTime = System.currentTimeMillis() - start;
 		proof = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, analysis, proofTime);
-		log.info("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), proofTime);
+		log.debug("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), proofTime);
 		return proof;
 	}
 

@@ -19,13 +19,13 @@ import java.util.Set;
 @NotThreadSafe
 public interface Touch extends Cloneable {
 
-	int START_AT_ROW_MAX                         = 10000;
-	int TERMINATION_MAX_ROWS_INITIAL_VALUE       = 10000;
-	int TERMINATION_MAX_ROWS_MAX                 = 1000000;
-	int TERMINATION_MAX_LEADS_MAX                = 10000;
-	int TERMINATION_MAX_PARTS_MAX                = 10000;
+	int START_AT_ROW_MAX                         = 10_000;
+	int TERMINATION_MAX_ROWS_INITIAL_VALUE       = 10_000;
+	int TERMINATION_MAX_ROWS_MAX                 = 1_000_000;
+	int TERMINATION_MAX_LEADS_MAX                = 10_000;
+	int TERMINATION_MAX_PARTS_MAX                = 10_000;
 	int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE = 2;
-	int TERMINATION_CIRCULAR_TOUCH_MAX           = 100000;
+	int TERMINATION_CIRCULAR_TOUCH_MAX           = 100_000;
 
 	enum Mutated {
 		MUTATED,
@@ -72,7 +72,7 @@ public interface Touch extends Cloneable {
 	TouchDefinition findDefinitionByName(String name);
 
 	MethodRow getStartChange();
-	void setStartChange(MethodRow startChange);
+	Mutated setStartChange(MethodRow startChange);
 
 	int getStartAtRow();
 	Mutated setStartAtRow(int startAtRow);
@@ -81,27 +81,27 @@ public interface Touch extends Cloneable {
 	Mutated setStartStroke(Stroke startStroke);
 
 	Optional<NotationBody> getStartNotation();
-	void setStartNotation(NotationBody startNotation);
-	void removeStartNotation();
+	Mutated setStartNotation(NotationBody startNotation);
+	Mutated removeStartNotation();
 
 	int getTerminationMaxRows();
-	void setTerminationMaxRows(int terminationMaxRows);
+	Mutated setTerminationMaxRows(int terminationMaxRows);
 
 	Optional<Integer> getTerminationMaxLeads();
-	void setTerminationMaxLeads(int terminationMaxLeads);
-	void removeTerminationMaxLeads();
+	Mutated setTerminationMaxLeads(int terminationMaxLeads);
+	Mutated removeTerminationMaxLeads();
 
 	Optional<Integer> getTerminationMaxParts();
-	void setTerminationMaxParts(int terminationMaxParts);
-	void removeTerminationMaxParts();
+	Mutated setTerminationMaxParts(int terminationMaxParts);
+	Mutated removeTerminationMaxParts();
 
 	Optional<Integer> getTerminationMaxCircularTouch();
-	void setTerminationMaxCircularTouch(int terminationCircularTouch);
-	void removeTerminationMaxCircularTouch();
+	Mutated setTerminationMaxCircularTouch(int terminationCircularTouch);
+	Mutated removeTerminationMaxCircularTouch();
 
 	Optional<MethodRow> getTerminationChange();
-	void setTerminationChange(MethodRow terminationChange);
-	void removeTerminationChange();
+	Mutated setTerminationChange(MethodRow terminationChange);
+	Mutated removeTerminationChange();
 
 	TouchElement insertCharacter(int columnIndex, int rowIndex, int cellIndex, char character);
 	void addCharacters(int columnIndex, int rowIndex, String characters);
