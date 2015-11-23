@@ -601,7 +601,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public Mutated removeTerminationMaxLeads() {
-		if (this.terminationMaxLeads.equals(Optional.<Integer>empty())) {
+		if (!this.terminationMaxLeads.equals(Optional.<Integer>empty())) {
 			this.terminationMaxLeads = Optional.empty();
 			log.debug("[{}] Set termination max leads to [{}]", this.title, this.terminationMaxLeads);
 			return MUTATED;
