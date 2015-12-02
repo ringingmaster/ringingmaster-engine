@@ -52,7 +52,9 @@ public interface Touch extends Cloneable {
 	Mutated addNotation(NotationBody notationToAdd);
 	List<String> checkAddNotation(NotationBody notationToAdd);
 	Mutated removeNotation(NotationBody notationForRemoval);
-	Mutated exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation);
+	Mutated updateNotation(NotationBody originalNotation, NotationBody replacementNotation);
+	List<String> checkUpdateNotation(NotationBody originalNotation, NotationBody replacementNotation);
+
 	List<NotationBody> getAllNotations();
 	List<NotationBody> getValidNotations();
 	List<NotationBody> getNotationsInUse();

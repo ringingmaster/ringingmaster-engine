@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -295,24 +296,30 @@ public class DefaultTouch implements Touch {
 	}
 
 	public List<String> checkAddNotation(NotationBody notationToAdd) {
+		return checkPotentialNewNotation(notationToAdd, Collections.emptySet());
+	}
+
+	private List<String> checkPotentialNewNotation(NotationBody notationToCheck, Set<NotationBody> notationsToExclude) {
 		List<String> messages = new ArrayList<>();
+		Set<NotationBody> allNotationsWithExclusions = new HashSet<>(getAllNotations());
+		allNotationsWithExclusions.removeAll(notationsToExclude);
 
-		messages.addAll(getAllNotations().stream()
-				.filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells()) &&
-						(Objects.equal(existingNotation.getName(), notationToAdd.getName())))
-				.map(existngNotation -> "An existing method with notation '" + existngNotation.getNotationDisplayString(true) + "' has the same Name and Number Of Bells.")
+		messages.addAll(allNotationsWithExclusions.stream()
+				.filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToCheck.getNumberOfWorkingBells()) &&
+						(Objects.equal(existingNotation.getName(), notationToCheck.getName())))
+				.map(existingNotation -> "An existing method with notation '" + existingNotation.getNotationDisplayString(true) + "' has the same Name and Number Of Bells.")
 				.collect(Collectors.toList()));
 
-		messages.addAll(getAllNotations().stream()
-				.filter(existingNotation -> (!Strings.isNullOrEmpty(notationToAdd.getSpliceIdentifier()) &&
-						Objects.equal(existingNotation.getSpliceIdentifier(), notationToAdd.getSpliceIdentifier())))
-				.map(existngNotation -> "An existing method '" + existngNotation.getNameIncludingNumberOfBells()  + "' has the same Splice Identifier.")
+		messages.addAll(allNotationsWithExclusions.stream()
+				.filter(existingNotation -> (!Strings.isNullOrEmpty(notationToCheck.getSpliceIdentifier()) &&
+						Objects.equal(existingNotation.getSpliceIdentifier(), notationToCheck.getSpliceIdentifier())))
+				.map(existingNotation -> "An existing method '" + existingNotation.getNameIncludingNumberOfBells() + "' has the same Splice Identifier.")
 				.collect(Collectors.toList()));
 
-		messages.addAll(getAllNotations().stream()
-				.filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToAdd.getNumberOfWorkingBells()) &&
-						Objects.equal(existingNotation.getNotationDisplayString(true), notationToAdd.getNotationDisplayString(true)))
-				.map(existngNotation -> "An existing method '" + existngNotation.getNameIncludingNumberOfBells() + "' has the same Notation '" + notationToAdd.getNotationDisplayString(false) + "'.")
+		messages.addAll(allNotationsWithExclusions.stream()
+				.filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToCheck.getNumberOfWorkingBells()) &&
+						Objects.equal(existingNotation.getNotationDisplayString(true), notationToCheck.getNotationDisplayString(true)))
+				.map(existingNotation -> "An existing method '" + existingNotation.getNameIncludingNumberOfBells() + "' has the same Notation '" + notationToCheck.getNotationDisplayString(false) + "'.")
 				.collect(Collectors.toList()));
 		return messages;
 	}
@@ -345,12 +352,20 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public Mutated exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+	public Mutated updateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
 		checkNotNull(originalNotation, "originalNotation must not be null");
 		checkNotNull(replacementNotation, "replacementNotation must not be null");
 		checkState(notations.contains(originalNotation));
 
-		log.info("[{}] exchangeNotation notation [{}] with [{}]", this.title, originalNotation.getNameIncludingNumberOfBells(), replacementNotation.getNameIncludingNumberOfBells());
+
+		List<String> messages = checkUpdateNotation(originalNotation, replacementNotation);
+
+		if (messages.size() > 0) {
+			String message = messages.stream().collect(Collectors.joining(System.lineSeparator()));
+			throw new IllegalArgumentException("Can't update notation [" + replacementNotation + "]: " + System.lineSeparator() + message);
+		}
+		log.info("[{}] update notation [{}] with [{}]", this.title, originalNotation.getNameIncludingNumberOfBells(), replacementNotation.getNameIncludingNumberOfBells());
+
 
 		notations.remove(originalNotation);
 		notations.add(replacementNotation);
@@ -363,6 +378,11 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
+	public List<String> checkUpdateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+		return checkPotentialNewNotation(replacementNotation, Sets.<NotationBody>newHashSet(originalNotation));
+	}
+
+		@Override
 	public List<NotationBody> getAllNotations() {
 		return Collections.unmodifiableList(notations);
 	}
