@@ -357,7 +357,6 @@ public class DefaultTouch implements Touch {
 		checkNotNull(replacementNotation, "replacementNotation must not be null");
 		checkState(notations.contains(originalNotation));
 
-
 		List<String> messages = checkUpdateNotation(originalNotation, replacementNotation);
 
 		if (messages.size() > 0) {
