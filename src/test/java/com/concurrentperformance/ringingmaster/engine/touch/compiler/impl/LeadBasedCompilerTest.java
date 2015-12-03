@@ -165,8 +165,8 @@ public class LeadBasedCompilerTest {
 		checkAgainstFile(result.getCreatedMethod().get(), "PlainBobMinor.txt");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void compilingTouchWithNoNotationThrows() {
+	@Test
+	public void compilingTouchWithNoNotationTerminatesWithError() {
 		Touch touch = null;
 		try {
 			touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
@@ -175,7 +175,10 @@ public class LeadBasedCompilerTest {
 		} catch (Exception e) {
 			fail();
 		}
-		new LeadBasedCompiler(touch);
+		LeadBasedCompiler leadBasedCompiler = new LeadBasedCompiler(touch);
+		Proof compile = leadBasedCompiler.compile(false, () -> false);
+		Assert.assertEquals(ProofTerminationReason.INVALID_TOUCH, compile.getTerminationReason());
+		Assert.assertEquals("No active method", compile.getTerminateReasonDisplayString());
 	}
 
 	@Test

@@ -1,5 +1,6 @@
 package com.concurrentperformance.ringingmaster.engine.notation.persist;
 
+import com.concurrentperformance.ringingmaster.engine.NumberOfBells;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
 import com.concurrentperformance.ringingmaster.persist.generated.v1.LibraryNotationPersist;
@@ -15,6 +16,7 @@ public class PersistableNotationTransformerTest {
 		final NotationBuilder notationBuilder = NotationBuilder.getInstance();
 		notationBuilder.setName("Plain Bob");
 		notationBuilder.setFoldedPalindromeNotationShorthand("x18x18x18x18", "12");
+		notationBuilder.setNumberOfWorkingBells(NumberOfBells.BELLS_8);
 		final NotationBody originalNotationBody = notationBuilder.build();
 
 		checkRoundTrip(originalNotationBody);
@@ -24,6 +26,7 @@ public class PersistableNotationTransformerTest {
 	public void canConvertAndRecoverToSerializableNotation() throws IOException, ClassNotFoundException {
 		final NotationBuilder notationBuilder = NotationBuilder.getInstance();
 		notationBuilder.setName("Plain Bob");
+		notationBuilder.setNumberOfWorkingBells(NumberOfBells.BELLS_8);
 		notationBuilder.setUnfoldedNotationShorthand("x18x18x18x18");
 		final NotationBody originalNotationBody = notationBuilder.build();
 

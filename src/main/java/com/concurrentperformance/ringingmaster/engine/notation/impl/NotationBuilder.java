@@ -72,6 +72,7 @@ public class NotationBuilder {
 	public NotationBody build() {
 		checkState(!Strings.isNullOrEmpty(name), "Please enter a name");
 		checkState(notationShorthands.size() > 0, "Please enter a notation");
+		checkState(numberOfWorkingBells != null, "Please add number of bells");
 
 		final List<List<NotationRow>> notationElementsSets = new ArrayList<>();
 

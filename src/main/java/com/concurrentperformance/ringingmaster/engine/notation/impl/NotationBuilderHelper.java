@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * TODO
  * User: Stephen
@@ -19,6 +21,9 @@ import java.util.Set;
 public class NotationBuilderHelper {
 
 	public static List<NotationRow> getValidatedRowsFromShorthand(final String notationShorthand, final NumberOfBells numberOfBells) {
+		checkNotNull(notationShorthand);
+		checkNotNull(numberOfBells);
+
 		final List<String> shorthandRows = splitShorthandIntoRows(notationShorthand);
 		final List<NotationRow> validatedRows = getValidatedNotationRows(shorthandRows, numberOfBells);
 		return validatedRows;
