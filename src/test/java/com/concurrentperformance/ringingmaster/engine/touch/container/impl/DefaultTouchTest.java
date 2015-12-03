@@ -9,13 +9,13 @@ import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheck
 import com.concurrentperformance.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
 import com.google.common.collect.Iterators;
-import junit.framework.Assert;
+
 import org.junit.Test;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
@@ -406,7 +406,7 @@ public class DefaultTouchTest {
 
 		Touch clone = touch.clone();
 		String cloneToString = clone.toString();
-		Assert.assertEquals(touch.toString(), cloneToString);
+		assertEquals(touch.toString(), cloneToString);
 
 		/// check that changing the original does not change the clone.
 		touch.resetParseData();
