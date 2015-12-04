@@ -128,7 +128,7 @@ public class NotationBuilderHelper {
 		return (i % 2) == 0;
 	}
 
-	public static List<NotationBody> filterNotations(List<NotationBody> notations, NumberOfBells numberOfBells) {
+	public static List<NotationBody> filterNotationsUptoNumberOfBells(List<NotationBody> notations, NumberOfBells numberOfBells) {
 		List<NotationBody> filteredNotations = new ArrayList<>();
 		for (NotationBody notation : notations) {
 			if (notation.getNumberOfWorkingBells().getBellCount() <= numberOfBells.getBellCount()) {

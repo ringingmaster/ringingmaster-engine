@@ -5,6 +5,7 @@ import com.concurrentperformance.ringingmaster.engine.method.Bell;
 import com.concurrentperformance.ringingmaster.engine.method.MethodRow;
 import com.concurrentperformance.ringingmaster.engine.method.Stroke;
 import com.concurrentperformance.ringingmaster.engine.method.impl.MethodBuilder;
+import com.concurrentperformance.ringingmaster.engine.notation.Notation;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilderHelper;
@@ -17,6 +18,7 @@ import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefin
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchElement;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.jcip.annotations.NotThreadSafe;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +62,7 @@ public class DefaultTouch implements Touch {
 	private TouchCheckingType touchCheckingType;
 
 	private Bell callFromBell;
-	private final List<NotationBody> notations;
+	private final List<NotationBody> sortedNotations;
 	private NotationBody nonSplicedActiveNotation;
 	private boolean spliced; // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
 	private String plainLeadToken;
@@ -88,7 +91,7 @@ public class DefaultTouch implements Touch {
 		touchCheckingType = TouchCheckingType.COURSE_BASED;
 
 		callFromBell = numberOfBells.getTenor();
-		notations = new ArrayList<>();
+		sortedNotations = new ArrayList<>();
 		spliced = false;
 		plainLeadToken = "p";
 		definitions = new TreeMap<>();
@@ -118,7 +121,7 @@ public class DefaultTouch implements Touch {
 		touchClone.touchCheckingType = this.touchCheckingType;
 
 		touchClone.callFromBell = callFromBell;
-		touchClone.notations.addAll(this.notations);
+		touchClone.sortedNotations.addAll(this.sortedNotations);
 		touchClone.nonSplicedActiveNotation = this.nonSplicedActiveNotation;
 		touchClone.spliced = this.spliced;
 		touchClone.plainLeadToken = this.plainLeadToken;
@@ -209,14 +212,7 @@ public class DefaultTouch implements Touch {
 			if (!isSpliced() &&
 					nonSplicedActiveNotation != null &&
 					nonSplicedActiveNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
-				final List<NotationBody> filteredNotations = NotationBuilderHelper.filterNotations(notations, numberOfBells);
-				if (filteredNotations.size() > 0) {
-					nonSplicedActiveNotation = filteredNotations.get(0);
-					log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
-				} else {
-					nonSplicedActiveNotation = null;
-					log.debug("[{}] Set active notation [null]", this.title);
-				}
+				findNextBestNonSplicedActiveNotation(nonSplicedActiveNotation);
 			}
 
 			if (startNotation.isPresent()) {
@@ -285,8 +281,8 @@ public class DefaultTouch implements Touch {
 		}
 
 		log.debug("[{}] Add notation [{}]", this.title, notationToAdd.getNameIncludingNumberOfBells());
-		notations.add(notationToAdd);
-		Collections.sort(notations, NotationBody.BY_NAME);
+		sortedNotations.add(notationToAdd);
+		Collections.sort(sortedNotations, NotationBody.BY_NAME);
 //TODO what if the number of bella is wrong?
 		if (spliced == false && nonSplicedActiveNotation == null) {
 			nonSplicedActiveNotation = notationToAdd;
@@ -327,35 +323,72 @@ public class DefaultTouch implements Touch {
 	@Override
 	public Mutated removeNotation(NotationBody notationForRemoval) {
 		checkNotNull(notationForRemoval, "notationForRemoval must not be null");
-		checkState(notations.contains(notationForRemoval));
+		checkState(sortedNotations.contains(notationForRemoval));
 
-		notations.remove(notationForRemoval);
+		sortedNotations.remove(notationForRemoval);
 		log.info("[{}] Remove notation [{}]", this.title, notationForRemoval.getNameIncludingNumberOfBells());
 
 		// Sort out the next notation if it is the active notation
 		if (notationForRemoval.equals(nonSplicedActiveNotation)) {
-			nonSplicedActiveNotation = null;
-			final List<NotationBody> validNotations = getValidNotations();
-			for (NotationBody notation : validNotations) {
-				if (notation.getName().compareTo(notationForRemoval.getName()) > 0) {
-					nonSplicedActiveNotation = notation;
-					log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
-					break;
-				}
-			}
-			if (nonSplicedActiveNotation == null && validNotations.size() > 0) {
-				nonSplicedActiveNotation = validNotations.iterator().next();
-				log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
-			}
+			findNextBestNonSplicedActiveNotation(notationForRemoval);
 		}
 		return MUTATED;
+	}
+
+	private void findNextBestNonSplicedActiveNotation(NotationBody previousNotation) {
+		final List<NotationBody> validNotations = getValidNotations();
+		validNotations.remove(previousNotation);
+
+		Comparator<NumberOfBells> byDistanceFromPassedNumberOfBells = (o1, o2) -> ComparisonChain.start()
+				.compare(Math.abs(previousNotation.getNumberOfWorkingBells().getBellCount() - o1.getBellCount()),
+						 Math.abs(previousNotation.getNumberOfWorkingBells().getBellCount() - o2.getBellCount()))
+				.compare(o2.getBellCount(), o1.getBellCount()) // always take higher number of bells where distance is equal
+				.result();
+
+		// from the validNotations, find all number of bells in use, sorted by distance from passed number of bells.
+		Optional<NumberOfBells> bestNumberOfBells = validNotations.stream()
+				.map(Notation::getNumberOfWorkingBells)
+				.sorted(byDistanceFromPassedNumberOfBells)
+				.findFirst();
+
+		if (!bestNumberOfBells.isPresent()) {
+			nonSplicedActiveNotation = null;
+			log.debug("[{}] Set active notation [null]", this.title);
+		}
+
+		// Try notations that are lexicographically the same or higher
+		Optional<NotationBody> lexicographicallyHigher = validNotations.stream()
+				.filter(notation -> notation.getNumberOfWorkingBells() == bestNumberOfBells.get())
+				.filter(notation -> notation.getName().compareTo(previousNotation.getName()) >= 0)
+				.sorted(Notation.BY_NAME)
+				.findFirst();
+		if (lexicographicallyHigher.isPresent()) {
+			nonSplicedActiveNotation = lexicographicallyHigher.get();
+			log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
+			return;
+		}
+
+		// Try notations that are lexicographically the same or higher
+		Optional<NotationBody> lexicographicallyLower = validNotations.stream()
+				.filter(notation -> notation.getNumberOfWorkingBells() == bestNumberOfBells.get())
+				.filter(notation -> notation.getName().compareTo(previousNotation.getName()) < 0)
+				.sorted(Notation.BY_NAME.reversed())
+				.findFirst();
+
+		if (lexicographicallyLower.isPresent()) {
+			nonSplicedActiveNotation = lexicographicallyLower.get();
+			log.debug("[{}] Set active notation [{}]", this.title, nonSplicedActiveNotation.getNameIncludingNumberOfBells());
+			return;
+		}
+
 	}
 
 	@Override
 	public Mutated updateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
 		checkNotNull(originalNotation, "originalNotation must not be null");
 		checkNotNull(replacementNotation, "replacementNotation must not be null");
-		checkState(notations.contains(originalNotation));
+		checkState(sortedNotations.contains(originalNotation));
+		checkState(originalNotation != replacementNotation);
 
 		List<String> messages = checkUpdateNotation(originalNotation, replacementNotation);
 
@@ -366,13 +399,18 @@ public class DefaultTouch implements Touch {
 		log.info("[{}] update notation [{}] with [{}]", this.title, originalNotation.getNameIncludingNumberOfBells(), replacementNotation.getNameIncludingNumberOfBells());
 
 
-		notations.remove(originalNotation);
-		notations.add(replacementNotation);
-		Collections.sort(notations, NotationBody.BY_NAME);
+		sortedNotations.remove(originalNotation);
+		sortedNotations.add(replacementNotation);
+		Collections.sort(sortedNotations, NotationBody.BY_NAME);
 
 		if (nonSplicedActiveNotation == originalNotation) {
 			nonSplicedActiveNotation = replacementNotation;
+			if (!isSpliced() &&
+				nonSplicedActiveNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
+				findNextBestNonSplicedActiveNotation(nonSplicedActiveNotation);
+			}
 		}
+
 		return MUTATED;
 	}
 
@@ -383,12 +421,12 @@ public class DefaultTouch implements Touch {
 
 		@Override
 	public List<NotationBody> getAllNotations() {
-		return Collections.unmodifiableList(notations);
+		return Collections.unmodifiableList(sortedNotations);
 	}
 
 	@Override
 	public List<NotationBody> getValidNotations() {
-		return NotationBuilderHelper.filterNotations(notations, numberOfBells);
+		return NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells);
 	}
 
 	@Override
@@ -415,6 +453,7 @@ public class DefaultTouch implements Touch {
 	@Override
 	public Mutated setNonSplicedActiveNotation(NotationBody nonSplicedActiveNotation) {
 		checkNotNull(nonSplicedActiveNotation);
+		checkState(sortedNotations.contains(nonSplicedActiveNotation), "Can't set NonSplicedActiveNotation to notation not part of touch.");
 
 		if (this.nonSplicedActiveNotation != nonSplicedActiveNotation) {
 			this.nonSplicedActiveNotation = nonSplicedActiveNotation;
@@ -864,7 +903,7 @@ public class DefaultTouch implements Touch {
 				", numberOfBells='" + numberOfBells + '\'' +
 				", touchType=" + touchCheckingType +
 				", callFromBell='" + callFromBell + '\'' +
-				", notations=" + notations +
+				", sortedNotations=" + sortedNotations +
 				", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
 				", spliced=" + spliced +
 				", plainLeadToken='" + plainLeadToken + '\'' +

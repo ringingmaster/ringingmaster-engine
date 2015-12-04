@@ -6,18 +6,17 @@ import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
 import com.concurrentperformance.ringingmaster.engine.notation.impl.NotationBuilder;
 import com.concurrentperformance.ringingmaster.engine.touch.container.Touch;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchCheckingType;
-import com.concurrentperformance.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import com.concurrentperformance.ringingmaster.engine.touch.container.TouchDefinition;
+import com.concurrentperformance.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import com.google.common.collect.Iterators;
-
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
@@ -27,6 +26,18 @@ import static org.mockito.Mockito.when;
  * User: Stephen
  */
 public class DefaultTouchTest {
+
+	public static final NotationBody METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
+	public static final NotationBody METHOD_B_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD B", "14");
+	public static final NotationBody METHOD_C_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD C", "16");
+	public static final NotationBody METHOD_D_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD D", "34");
+
+	public static final NotationBody METHOD_A_7_BELL = buildNotation(NumberOfBells.BELLS_7, "METHOD A", "1");
+
+	public static final NotationBody METHOD_A_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD A", "12");
+	public static final NotationBody METHOD_B_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD B", "14");
+	public static final NotationBody METHOD_C_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD C", "16");
+	public static final NotationBody METHOD_D_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD D", "18");
 
 	@Test
 	public void canAddAndRemoveNotations() {
@@ -81,13 +92,21 @@ public class DefaultTouchTest {
 	public void addingFirstNotationToNonSplicedSetsDefaultNotation() {
 		DefaultTouch touch = new DefaultTouch();
 		touch.setSpliced(false);
+		touch.addNotation(METHOD_A_8_BELL);
 
-		NotationBody mockNotation = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
-		when(mockNotation.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		touch.addNotation(mockNotation);
-
-		assertEquals(mockNotation, touch.getNonSplicedActiveNotation());
+		assertEquals(METHOD_A_8_BELL, touch.getNonSplicedActiveNotation());
 		assertFalse(touch.isSpliced());
+	}
+
+	@Test
+	public void removingOnlyNotationRemovesActiveNotation() throws CloneNotSupportedException {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setNumberOfBells(NumberOfBells.BELLS_8);
+
+		touch.addNotation(METHOD_A_8_BELL);
+
+		touch.removeNotation(METHOD_A_8_BELL);
+		assertNull(touch.getNonSplicedActiveNotation());
 	}
 
 	@Test
@@ -95,34 +114,21 @@ public class DefaultTouchTest {
 		DefaultTouch touch = new DefaultTouch();
 		touch.setSpliced(false);
 
-		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
-		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
-		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
-		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationB.getNotationDisplayString(anyBoolean())).thenReturn("34,");
-		NotationBody mockNotationC = when(mock(NotationBody.class).getName()).thenReturn("C").getMock();
-		when(mockNotationC.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationC.getNotationDisplayString(anyBoolean())).thenReturn("56,");
-		NotationBody mockNotationD = when(mock(NotationBody.class).getName()).thenReturn("D").getMock();
-		when(mockNotationD.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationD.getNotationDisplayString(anyBoolean())).thenReturn("16,");
+		touch.addNotation(METHOD_A_6_BELL);
+		touch.addNotation(METHOD_B_6_BELL);
+		touch.addNotation(METHOD_C_6_BELL);
+		touch.addNotation(METHOD_D_6_BELL);
 
-		touch.addNotation(mockNotationA);
-		touch.addNotation(mockNotationB);
-		touch.addNotation(mockNotationC);
-		touch.addNotation(mockNotationD);
+		touch.setNonSplicedActiveNotation(METHOD_C_6_BELL);
+		assertEquals(METHOD_C_6_BELL, touch.getNonSplicedActiveNotation());
 
-		touch.setNonSplicedActiveNotation(mockNotationC);
-		assertEquals(mockNotationC, touch.getNonSplicedActiveNotation());
-
-		touch.removeNotation(mockNotationC);
-		assertEquals(mockNotationD, touch.getNonSplicedActiveNotation());
-		touch.removeNotation(mockNotationD);
-		assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
-		touch.removeNotation(mockNotationB);
-		assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
-		touch.removeNotation(mockNotationA);
+		touch.removeNotation(METHOD_C_6_BELL);
+		assertEquals(METHOD_D_6_BELL, touch.getNonSplicedActiveNotation());
+		touch.removeNotation(METHOD_D_6_BELL);
+		assertEquals(METHOD_B_6_BELL, touch.getNonSplicedActiveNotation());
+		touch.removeNotation(METHOD_A_6_BELL);
+		assertEquals(METHOD_B_6_BELL, touch.getNonSplicedActiveNotation());
+		touch.removeNotation(METHOD_B_6_BELL);
 		assertNull(touch.getNonSplicedActiveNotation());
 	}
 
@@ -132,31 +138,60 @@ public class DefaultTouchTest {
 		touch.setNumberOfBells(NumberOfBells.BELLS_6);
 		touch.setSpliced(false);
 
-		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
-		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
-		NotationBody mockNotationBInvalid = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
-		when(mockNotationBInvalid.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_7);
-		when(mockNotationBInvalid.getNotationDisplayString(anyBoolean())).thenReturn("34,");
-		NotationBody mockNotationC = when(mock(NotationBody.class).getName()).thenReturn("C").getMock();
-		when(mockNotationC.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationC.getNotationDisplayString(anyBoolean())).thenReturn("56,");
-		NotationBody mockNotationDInvalid = when(mock(NotationBody.class).getName()).thenReturn("D").getMock();
-		when(mockNotationDInvalid.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_7);
-		when(mockNotationDInvalid.getNotationDisplayString(anyBoolean())).thenReturn("16,");
+		touch.addNotation(METHOD_A_6_BELL);
+		touch.addNotation(METHOD_B_8_BELL);//Invalid number of bells
+		touch.addNotation(METHOD_C_6_BELL);
+		touch.addNotation(METHOD_D_8_BELL);//Invalid number of bells
 
-		touch.addNotation(mockNotationA);
-		touch.addNotation(mockNotationBInvalid);
-		touch.addNotation(mockNotationC);
-		touch.addNotation(mockNotationDInvalid);
+		touch.setNonSplicedActiveNotation(METHOD_C_6_BELL);
+		assertEquals(METHOD_C_6_BELL, touch.getNonSplicedActiveNotation());
 
-		touch.setNonSplicedActiveNotation(mockNotationC);
-		assertEquals(mockNotationC, touch.getNonSplicedActiveNotation());
-
-		touch.removeNotation(mockNotationC);
-		assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
-		touch.removeNotation(mockNotationA);
+		touch.removeNotation(METHOD_C_6_BELL);
+		assertEquals(METHOD_A_6_BELL, touch.getNonSplicedActiveNotation());
+		touch.removeNotation(METHOD_A_6_BELL);
 		assertNull(touch.getNonSplicedActiveNotation());
+	}
+
+//TODO can notation in touch be an unsorted set?
+
+	@Test
+	public void removingNotationSwitchesToLexicographicallyNextActiveNotationWithinClosestNumberOfBells() {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setNumberOfBells(NumberOfBells.BELLS_8);
+
+		touch.addNotation(METHOD_A_8_BELL);
+		touch.addNotation(METHOD_B_8_BELL);
+		touch.addNotation(METHOD_C_6_BELL);
+		assertEquals(METHOD_A_8_BELL, touch.getNonSplicedActiveNotation());
+
+		touch.setNonSplicedActiveNotation(METHOD_B_8_BELL);
+		assertEquals(METHOD_B_8_BELL, touch.getNonSplicedActiveNotation());
+
+		touch.removeNotation(METHOD_B_8_BELL);
+		assertEquals(METHOD_A_8_BELL, touch.getNonSplicedActiveNotation());
+
+		touch.removeNotation(METHOD_A_8_BELL);
+		assertEquals(METHOD_C_6_BELL, touch.getNonSplicedActiveNotation());
+	}
+
+	@Test
+	public void removingNotationSwitchesToClosestNumberOfBellsHighestFirst() {
+		DefaultTouch touch = new DefaultTouch();
+		touch.setNumberOfBells(NumberOfBells.BELLS_8);
+
+		touch.addNotation(METHOD_A_6_BELL);
+		touch.addNotation(METHOD_A_7_BELL);
+		touch.addNotation(METHOD_A_8_BELL);
+		assertEquals(METHOD_A_6_BELL, touch.getNonSplicedActiveNotation());
+
+		touch.setNonSplicedActiveNotation(METHOD_A_7_BELL);
+		assertEquals(METHOD_A_7_BELL, touch.getNonSplicedActiveNotation());
+
+		touch.removeNotation(METHOD_A_7_BELL);
+		assertEquals(METHOD_A_8_BELL, touch.getNonSplicedActiveNotation());
+
+		touch.removeNotation(METHOD_A_8_BELL);
+		assertEquals(METHOD_A_6_BELL, touch.getNonSplicedActiveNotation());
 	}
 
 	@Test
@@ -309,17 +344,17 @@ public class DefaultTouchTest {
 		touch.insertCharacter(0, 0, 0, 'F');
 		touch.insertCharacter(0, 0, 1, 'G');
 		touch.insertCharacter(0, 0, 1, 'H');
-		org.junit.Assert.assertEquals('F', touch.getElement(0, 0, 0).getCharacter());
-		org.junit.Assert.assertEquals('H', touch.getElement(0, 0, 1).getCharacter());
-		org.junit.Assert.assertEquals('G', touch.getElement(0, 0, 2).getCharacter());
+		assertEquals('F', touch.getElement(0, 0, 0).getCharacter());
+		assertEquals('H', touch.getElement(0, 0, 1).getCharacter());
+		assertEquals('G', touch.getElement(0, 0, 2).getCharacter());
 	}
 	
 	@Test
 	public void canSetCallingStyle() {
 		DefaultTouch touch = new DefaultTouch();
-		org.junit.Assert.assertEquals(TouchCheckingType.COURSE_BASED, touch.getTouchCheckingType());
+		assertEquals(TouchCheckingType.COURSE_BASED, touch.getTouchCheckingType());
 		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
-		org.junit.Assert.assertEquals(TouchCheckingType.LEAD_BASED, touch.getTouchCheckingType());
+		assertEquals(TouchCheckingType.LEAD_BASED, touch.getTouchCheckingType());
 	}
 
 	@Test
@@ -411,6 +446,14 @@ public class DefaultTouchTest {
 		/// check that changing the original does not change the clone.
 		touch.resetParseData();
 		assertEquals(cloneToString, clone.toString());
+	}
+
+	private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
+		return NotationBuilder.getInstance()
+						.setNumberOfWorkingBells(bells)
+						.setName(name)
+						.setUnfoldedNotationShorthand(notation1)
+						.build();
 	}
 
 	private NotationBody buildPlainBobMinor() {
