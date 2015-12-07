@@ -786,6 +786,9 @@ public class DefaultTouch implements Touch {
 		for (TouchCell cell : cells) {
 			cell.resetParseData();
 		}
+		for (TouchDefinition definition : definitions.values()) {
+			definition.resetParseData();
+		}
 	}
 
 	private void checkValidPosition(int columnIndex, int rowIndex, int elementIndex, boolean forInsert) {
