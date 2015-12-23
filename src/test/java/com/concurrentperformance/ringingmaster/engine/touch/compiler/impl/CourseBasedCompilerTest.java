@@ -38,7 +38,7 @@ public class CourseBasedCompilerTest {
 		touch.addCharacters(0, 0, "W");
 		touch.addCharacters(0, 1, "-");
 		Proof proof = parseProveAndCheckTouch(15
-				, "PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+				, "/PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class CourseBasedCompilerTest {
 		touch.addCharacters(0, 0, "W");
 		touch.addCharacters(0, 1, "-");
 		Proof proof = parseProveAndCheckTouch(15
-				, "PlainBobMinor W - From5.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+				, "/PlainBobMinor W - From5.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
 	}
 
 	private Touch buildPlainBobMinorTouchShell(int width, int height) {

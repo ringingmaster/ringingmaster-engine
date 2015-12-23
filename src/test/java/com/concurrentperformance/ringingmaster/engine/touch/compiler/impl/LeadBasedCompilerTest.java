@@ -183,32 +183,32 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void compileSingleCall() throws IOException {
-		checkSimple1CellPlainBobTouch("-", 3, "PlainBobMinor - .txt", true);
+		checkSimple1CellPlainBobTouch("-", 3, "/PlainBobMinor - .txt", true);
 	}
 
 	@Test
 	public void compileCallMultiplier() throws IOException {
-		checkSimple1CellPlainBobTouch("2-", 3, "PlainBobMinor - .txt", true);
+		checkSimple1CellPlainBobTouch("2-", 3, "/PlainBobMinor - .txt", true);
 	}
 
 	@Test
 	public void compileCallAndPlain() throws IOException {
-		checkSimple1CellPlainBobTouch("-p", 10, "PlainBobMinor -p .txt", true);
+		checkSimple1CellPlainBobTouch("-p", 10, "/PlainBobMinor -p .txt", true);
 	}
 
 	@Test
 	public void compileCallAndPlainMultiplier() throws IOException {
-		checkSimple1CellPlainBobTouch("-2p", 6, "PlainBobMinor -2p .txt", true);
+		checkSimple1CellPlainBobTouch("-2p", 6, "/PlainBobMinor -2p .txt", true);
 	}
 
 	@Test
 	public void compileGroup() throws IOException {
-		checkSimple1CellPlainBobTouch("2(-p)s", 30, "PlainBobMinor 2(-p)s .txt", false);
+		checkSimple1CellPlainBobTouch("2(-p)s", 30, "/PlainBobMinor 2(-p)s .txt", false);
 	}
 
 	@Test
 	public void compileEmbeddedGroup() throws IOException {
-		checkSimple1CellPlainBobTouch("2(2(-p)s)-", 22, "PlainBobMinor 2(2(-p)s) .txt", false);
+		checkSimple1CellPlainBobTouch("2(2(-p)s)-", 22, "/PlainBobMinor 2(2(-p)s) .txt", false);
 	}
 
 	@Test
@@ -220,7 +220,7 @@ public class LeadBasedCompilerTest {
 		touch.insertCharacter(0, 0, 2, 's');
 		touch.insertCharacter(0, 0, 3, ']');
 		parser.parseAndAnnotate(touch);
-		proveAndCheckTouch(6, "PlainBobMinor -[s] omit2.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+		proveAndCheckTouch(6, "/PlainBobMinor -[s] omit2.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
 	}
 
 	@Test
@@ -232,7 +232,7 @@ public class LeadBasedCompilerTest {
 		touch.insertCharacter(0, 0, 2, 's');
 		touch.insertCharacter(0, 0, 3, ']');
 		parser.parseAndAnnotate(touch);
-		proveAndCheckTouch(0, "PlainBobMinor [-s] omit1_2_3.txt", true, ProofTerminationReason.EMPTY_PARTS, touch);
+		proveAndCheckTouch(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, ProofTerminationReason.EMPTY_PARTS, touch);
 	}
 
 	@Test
@@ -241,7 +241,7 @@ public class LeadBasedCompilerTest {
 		touch.addCharacters(0, 0, "-def-");
 		touch.addDefinition("def", "2(s-)");
 		parser.parseAndAnnotate(touch);
-		proveAndCheckTouch(6, "PlainBobMinor -def-.txt", false, ProofTerminationReason.SPECIFIED_ROW, touch);
+		proveAndCheckTouch(6, "/PlainBobMinor -def-.txt", false, ProofTerminationReason.SPECIFIED_ROW, touch);
 	}
 
 	Proof checkSimple1CellPlainBobTouch(String touchString, int expectedLeadCount, String fileName, boolean trueTouch) throws IOException {
@@ -273,6 +273,7 @@ public class LeadBasedCompilerTest {
 	private void checkAgainstFile(Method method, String fileName) throws IOException {
 		String allChangesAsText = method.getAllChangesAsText();
 		String fileContent;
+
 		try (InputStream stream = getClass().getResourceAsStream(fileName)) {
 			fileContent = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
 		}
