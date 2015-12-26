@@ -162,7 +162,7 @@ public class LeadBasedCompilerTest {
 		assertEquals("Plain Course of Plain Bob Minor", result.getTouch().getTitle());
 		assertEquals(60, result.getCreatedMethod().get().getRowCount());
 		assertEquals(5, result.getCreatedMethod().get().getLeadCount());
-		checkAgainstFile(result.getCreatedMethod().get(), "PlainBobMinor.txt");
+		checkAgainstFile(result.getCreatedMethod().get(), "/PlainBobMinor.txt");
 	}
 
 	@Test
