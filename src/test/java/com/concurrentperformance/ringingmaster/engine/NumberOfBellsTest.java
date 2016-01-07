@@ -10,11 +10,11 @@ public class NumberOfBellsTest {
 	@Test
 	public void iteratorFunctions() {
 		int i=0;
-		for(final NotationPlace notationPlace : NumberOfBells.BELLS_12) {
+		for(final NotationPlace notationPlace : NumberOfBells.BELLS_30) {
 			assertEquals(notationPlace, NotationPlace.valueOf(i));
 			i++;
 		}
-		assertEquals(i, 12);
+		assertEquals(i, 30);
 	}
 
 }

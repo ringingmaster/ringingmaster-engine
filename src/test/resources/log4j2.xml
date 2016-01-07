@@ -8,7 +8,6 @@
 
 	<Loggers>
 
-		<logger name="com.concurrentperformance.ringingmaster.engine" level="warn"/>
 		<logger name="com.concurrentperformance.ringingmaster" level="info"/>
 
 		<Root level="info">
