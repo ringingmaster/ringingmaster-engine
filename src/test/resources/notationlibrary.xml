@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:notationLibrary xmlns:ns2="http://www.ringingmaster.org.uk/touch/v1" libraryUsage="CC_LIBRARY" notes="Central Council Collection of methods [Copyright Central Council of Church Bell Ringers, December 2015]">
+<ns2:notationLibrary xmlns:ns2="http://www.ringingmaster.org.uk/persist/v1" libraryUsage="CC_LIBRARY" notes="Collection Name [Central Council Collection of methods] Notes [[Copyright Central Council of Church Bell Ringers, December 2015]] Creation Date [2015-12-18] Decision Year [2014] ">
     <version version="1"/>
     <notation leadHead="a" leadLength="8" notation="-14-14" notation2="12" foldedPalindrome="true" name="Plain Bob" numberOfWorkingBells="4"/>
     <notation leadHead="f" leadLength="8" notation="-14-34" notation2="12" foldedPalindrome="true" name="Double Bob" numberOfWorkingBells="4"/>
