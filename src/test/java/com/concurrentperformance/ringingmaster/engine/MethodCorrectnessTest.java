@@ -8,6 +8,7 @@ import com.concurrentperformance.ringingmaster.engine.notation.impl.LeadHeadCalc
 import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ public class MethodCorrectnessTest {
 	public static final Path LIBRARY_PATH = Paths.get("./src/test/resources/notationlibrary.xml").toAbsolutePath().normalize();
 	public static final Path PROBLEM_NOTATION_PATH = Paths.get("./src/test/resources/checkLeadHeadCodeGenerationAgainstCCLibrary_ProblemNotations.txt").toAbsolutePath().normalize();
 
+	@Ignore
 	@Test
 	public void checkCalculatesLastRowInLeadCorrectlyAgainstCCLibrary() throws IOException {
 
@@ -57,6 +59,7 @@ public class MethodCorrectnessTest {
 		assertEquals(0, problemNotationCount);
 	}
 
+	@Ignore
 	@Test
 	public void checkLeadHeadCodeGenerationAgainstCCLibrary() throws IOException {
 
@@ -96,6 +99,7 @@ public class MethodCorrectnessTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void checkCalculatesMethodLengthAgainstCCLibrary() throws IOException {
 
