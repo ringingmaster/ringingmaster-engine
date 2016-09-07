@@ -1,6 +1,5 @@
 package com.concurrentperformance.ringingmaster.engine;
 
-
 import com.concurrentperformance.ringingmaster.engine.helper.PlainCourseHelper;
 import com.concurrentperformance.ringingmaster.engine.method.MethodLead;
 import com.concurrentperformance.ringingmaster.engine.notation.NotationBody;
@@ -8,6 +7,7 @@ import com.concurrentperformance.ringingmaster.engine.notation.impl.LeadHeadCalc
 import com.concurrentperformance.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import com.concurrentperformance.ringingmaster.engine.touch.proof.Proof;
 import com.concurrentperformance.ringingmaster.persist.DocumentPersist;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
 
 public class MethodCorrectnessTest {
 
@@ -54,7 +53,7 @@ public class MethodCorrectnessTest {
 				})
 				.count();
 
-		assertEquals(0, problemNotationCount);
+		Assert.assertEquals(0, problemNotationCount);
 	}
 
 	@Test
@@ -86,7 +85,7 @@ public class MethodCorrectnessTest {
 				})
 				.count();
 
-		assertEquals(0, problemNotationCount);
+		Assert.assertEquals(0, problemNotationCount);
 
 
 // If its ever needed again, this code is the start of writing out all the problem notations
@@ -120,7 +119,7 @@ public class MethodCorrectnessTest {
 				})
 				.count();
 
-		assertEquals(0, problemNotationCount);
+		Assert.assertEquals(0, problemNotationCount);
 	}
 
 }
