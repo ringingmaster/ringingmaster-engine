@@ -1,5 +1,5 @@
 sourceSets {
-    integrationTest {
+    longRunningTest {
         java.srcDir file('src/long-running-test/java')
         resources.srcDir file('src/long-running-test/resources')
     }
@@ -9,18 +9,18 @@ dependencies {
     compile project(':util')
     compile project(':ringingmaster-persist')
 
-    integrationTestCompile sourceSets.main.output
-    integrationTestCompile configurations.testCompile
-    integrationTestCompile sourceSets.test.output
-    integrationTestRuntime configurations.testRuntime
+    longRunningTestCompile sourceSets.main.output
+    longRunningTestCompile configurations.testCompile
+    longRunningTestCompile sourceSets.test.output
+    longRunningTestRuntime configurations.testRuntime
 }
 
-task integrationTest(type: Test, dependsOn: jar) {
+task longRunningTest(type: Test, dependsOn: jar) {
     group 'Verification'
-    description 'Runs the integration tests.'
-    testClassesDir = sourceSets.integrationTest.output.classesDir
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    description 'Runs the longRunning tests.'
+    testClassesDir = sourceSets.longRunningTest.output.classesDir
+    classpath = sourceSets.longRunningTest.runtimeClasspath
     systemProperties['jar.path'] = jar.archivePath
 }
 
-check.dependsOn integrationTest
+check.dependsOn longRunningTest
