@@ -1,3 +1,17 @@
+apply plugin: 'java'
+
+group 'com.concurrentperformance.ringingmaster'
+version '1.0.0'
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+repositories {
+    mavenCentral()
+}
+
 sourceSets {
     longRunningTest {
         java.srcDir file('src/long-running-test/java')
@@ -6,8 +20,8 @@ sourceSets {
 }
 
 dependencies {
-    compile project(':util')
-    compile project(':ringingmaster-persist')
+    compile 'com.concurrentperformance.ringingmaster:ringingmaster-util:1.0.0'
+    compile 'com.concurrentperformance.ringingmaster:ringingmaster-persist:1.0.0'
 
     longRunningTestCompile sourceSets.main.output
     longRunningTestCompile configurations.testCompile

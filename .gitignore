@@ -1,2 +1,11 @@
-/build/
+.gradle
+out
+build
+.idea
+gradlew*
+gradle
 *.iml
+
+
+/src/generated/
+/src/test/dump/
