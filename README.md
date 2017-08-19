@@ -1,5 +1,5 @@
 # ringingmaster-engine
 
-Common engine to drive change-ringing calculations.
+Common engine to perform change-ringing calculations.
 
 ##Use Gradle 4 or greater
