@@ -35,8 +35,8 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
