@@ -29,11 +29,7 @@ dependencies {
     longRunningTestRuntime configurations.testRuntime
 
     // General
-    compile 'com.google.guava:guava:19.0'
     compile 'net.jcip:jcip-annotations:1.0'
-
-    // Logging
-    compile 'org.slf4j:slf4j-api:1.7.21'
 
     // TEST: General
     testCompile 'junit:junit:4.12'
