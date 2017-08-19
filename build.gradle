@@ -47,7 +47,7 @@ dependencies {
 task longRunningTest(type: Test, dependsOn: jar) {
     group 'Verification'
     description 'Runs the longRunning tests.'
-    testClassesDir = sourceSets.longRunningTest.output.classesDir
+    testClassesDirs =  sourceSets.longRunningTest.output
     classpath = sourceSets.longRunningTest.runtimeClasspath
     systemProperties['jar.path'] = jar.archivePath
 }
