@@ -25,7 +25,7 @@ public class MethodCorrectnessTest {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	public static final Path LIBRARY_PATH = Paths.get("./src/test/resources/notationlibrary.xml").toAbsolutePath().normalize();
-	public static final Path PROBLEM_NOTATION_PATH = Paths.get("./src/test/resources/checkLeadHeadCodeGenerationAgainstCCLibrary_ProblemNotations.txt").toAbsolutePath().normalize();
+	public static final Path KNOWN_PROBLEM_NOTATION_PATH = Paths.get("./src/test/resources/checkLeadHeadCodeGenerationAgainstCCLibrary_KnownProblemNotations.txt").toAbsolutePath().normalize();
 
 	@Test
 	public void checkCalculatesLastRowInLeadCorrectlyAgainstCCLibrary() throws IOException {
@@ -59,7 +59,7 @@ public class MethodCorrectnessTest {
 	@Test
 	public void checkLeadHeadCodeGenerationAgainstCCLibrary() throws IOException {
 
-		List<String> problemNotations = Files.readAllLines(PROBLEM_NOTATION_PATH);
+		List<String> problemNotations = Files.readAllLines(KNOWN_PROBLEM_NOTATION_PATH);
 
 		long problemNotationCount = new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
