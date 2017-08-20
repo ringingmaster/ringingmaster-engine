@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-group 'com.concurrentperformance.ringingmaster'
+group 'org.ringingmaster'
 version '1.0.0'
 
 compileJava {
@@ -20,8 +20,8 @@ sourceSets {
 }
 
 dependencies {
-    compile 'com.concurrentperformance.ringingmaster:ringingmaster-util:1.0.0'
-    compile 'com.concurrentperformance.ringingmaster:ringingmaster-persist:1.0.0'
+    compile 'org.ringingmaster:ringingmaster-util:1.0.0'
+    compile 'org.ringingmaster:ringingmaster-persist:1.0.0'
 
     longRunningTestCompile sourceSets.main.output
     longRunningTestCompile configurations.testCompile
