@@ -14,8 +14,6 @@ repositories {
 
 sourceSets {
     longRunningTest {
-        java.srcDir file('src/long-running-test/java')
-        resources.srcDir file('src/long-running-test/resources')
     }
 }
 
