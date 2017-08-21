@@ -14,17 +14,21 @@ repositories {
 
 sourceSets {
     longRunningTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+        }
     }
+}
+
+configurations {
+    longRunningTestCompile.extendsFrom testCompile
+    longRunningTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
     compile 'org.ringingmaster:ringingmaster-util:1.0.0'
     compile 'org.ringingmaster:ringingmaster-persist:1.0.0'
-
-    longRunningTestCompile sourceSets.main.output
-    longRunningTestCompile configurations.testCompile
-    longRunningTestCompile sourceSets.test.output
-    longRunningTestRuntime configurations.testRuntime
 
     // General
     compile 'net.jcip:jcip-annotations:1.0'
