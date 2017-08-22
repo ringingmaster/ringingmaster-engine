@@ -9,4 +9,4 @@ addons:
     packages:
       - oracle-java8-installer
 
-script: gradle check -x longRunningTest
+script: gradle check -x testLongRunning

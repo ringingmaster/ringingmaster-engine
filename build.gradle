@@ -13,7 +13,7 @@ repositories {
 }
 
 sourceSets {
-    longRunningTest {
+    testLongRunning {
         java {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
@@ -22,8 +22,8 @@ sourceSets {
 }
 
 configurations {
-    longRunningTestCompile.extendsFrom testCompile
-    longRunningTestRuntime.extendsFrom testRuntime
+    testLongRunningCompile.extendsFrom testCompile
+    testLongRunningRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -42,12 +42,12 @@ dependencies {
     testRuntime 'org.apache.logging.log4j:log4j-slf4j-impl:2.8.2'
 }
 
-task longRunningTest(type: Test, dependsOn: jar) {
+task testLongRunning(type: Test, dependsOn: jar) {
     group 'Verification'
     description 'Runs the longRunning tests.'
-    testClassesDirs =  sourceSets.longRunningTest.output
-    classpath = sourceSets.longRunningTest.runtimeClasspath
+    testClassesDirs =  sourceSets.testLongRunning.output
+    classpath = sourceSets.testLongRunning.runtimeClasspath
     systemProperties['jar.path'] = jar.archivePath
 }
 
-check.dependsOn longRunningTest
+check.dependsOn testLongRunning
