@@ -1,7 +1,7 @@
-package org.ringingmaster.engine.touch.container.impl;
+package org.ringingmaster.engine.grid.impl;
 
-import org.ringingmaster.engine.touch.container.Grid;
-import org.ringingmaster.engine.touch.container.GridCellFactory;
+import org.ringingmaster.engine.grid.Grid;
+import org.ringingmaster.engine.grid.GridCellFactory;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

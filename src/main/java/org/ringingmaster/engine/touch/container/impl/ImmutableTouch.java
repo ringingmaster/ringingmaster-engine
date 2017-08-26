@@ -5,7 +5,7 @@ import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.touch.container.Grid;
+import org.ringingmaster.engine.grid.Grid;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;

@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
 import org.ringingmaster.engine.touch.parser.ParseType;
-import org.ringingmaster.engine.touch.container.Grid;
+import org.ringingmaster.engine.grid.Grid;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchDefinition;

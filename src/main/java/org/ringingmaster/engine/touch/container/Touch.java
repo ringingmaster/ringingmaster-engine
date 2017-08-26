@@ -6,6 +6,7 @@ import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import net.jcip.annotations.NotThreadSafe;
+import org.ringingmaster.engine.grid.Grid;
 
 import java.util.List;
 import java.util.Optional;

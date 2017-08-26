@@ -9,8 +9,8 @@ import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
-import org.ringingmaster.engine.touch.container.Grid;
-import org.ringingmaster.engine.touch.container.GridCellFactory;
+import org.ringingmaster.engine.grid.Grid;
+import org.ringingmaster.engine.grid.GridCellFactory;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
@@ -22,6 +22,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.jcip.annotations.NotThreadSafe;
+import org.ringingmaster.engine.grid.impl.DefaultGrid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class DefaultTouch implements Touch {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	//IMPORTANT NOTE: When adding items here, think about the clone method and immutability, and toString. Also toString
+	//IMPORTANT NOTE: When adding items here, think about the clone method, immutability, and toString.
 	private String title;
 	private String author;
 

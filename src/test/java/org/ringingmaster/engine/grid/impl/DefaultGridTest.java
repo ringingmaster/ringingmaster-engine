@@ -1,9 +1,8 @@
-package org.ringingmaster.engine.touch.container.impl;
+package org.ringingmaster.engine.grid.impl;
 
 import org.junit.Test;
-
-import org.ringingmaster.engine.touch.container.Grid;
-import org.ringingmaster.engine.touch.container.GridCellFactory;
+import org.ringingmaster.engine.grid.Grid;
+import org.ringingmaster.engine.grid.GridCellFactory;
 
 import static org.junit.Assert.assertEquals;
 
