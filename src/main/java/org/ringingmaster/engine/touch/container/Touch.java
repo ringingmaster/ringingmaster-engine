@@ -44,8 +44,8 @@ public interface Touch extends Cloneable {
 	TouchCheckingType getTouchCheckingType();
 	Mutated setTouchCheckingType(TouchCheckingType touchCheckingType);
 
-	Mutated setNumberOfBells(NumberOfBells numberOfBells);
 	NumberOfBells getNumberOfBells();
+	Mutated setNumberOfBells(NumberOfBells numberOfBells);
 
 	Bell getCallFromBell();
 	Mutated setCallFromBell(Bell callFromBell);
