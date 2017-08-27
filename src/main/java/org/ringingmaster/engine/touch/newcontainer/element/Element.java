@@ -1,7 +1,7 @@
-package org.ringingmaster.engine.touch.element;
+package org.ringingmaster.engine.touch.newcontainer.element;
 
 import net.jcip.annotations.Immutable;
-import org.ringingmaster.engine.touch.variance.Variance;
+import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 
 import java.util.Optional;
 
@@ -28,5 +28,13 @@ public class Element {
 
     public Optional<Variance> getVariance() {
         return variance;
+    }
+
+    @Override
+    public String toString() {
+        return "Element{" +
+                "character=" + character +
+                ", variance=" + variance +
+                '}';
     }
 }

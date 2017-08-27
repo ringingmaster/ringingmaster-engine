@@ -1,9 +1,9 @@
-package org.ringingmaster.engine.touch.variance.impl;
+package org.ringingmaster.engine.touch.newcontainer.variance.impl;
 
 import net.jcip.annotations.Immutable;
 
-import org.ringingmaster.engine.touch.variance.Variance;
-import org.ringingmaster.engine.touch.variance.VarianceLogicType;
+import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
+import org.ringingmaster.engine.touch.newcontainer.variance.VarianceLogicType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

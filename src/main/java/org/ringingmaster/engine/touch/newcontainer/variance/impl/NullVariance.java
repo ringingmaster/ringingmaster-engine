@@ -1,6 +1,6 @@
-package org.ringingmaster.engine.touch.variance.impl;
+package org.ringingmaster.engine.touch.newcontainer.variance.impl;
 
-import org.ringingmaster.engine.touch.variance.Variance;
+import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 import net.jcip.annotations.Immutable;
 
 /**
