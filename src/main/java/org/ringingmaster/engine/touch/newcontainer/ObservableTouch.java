@@ -3,6 +3,7 @@ package org.ringingmaster.engine.touch.newcontainer;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
@@ -39,10 +40,16 @@ public class ObservableTouch {
 
     private Touch currentTouch = new TouchBuilder().defaults().build();
     private final BehaviorSubject<Touch> subject = BehaviorSubject.create();
-    private final SmartCompare s = new SmartCompare("current", "new");
+    private final SmartCompare s = new SmartCompare("", "> ")
+            .comparePaths("numberOfBells")
+            .comparePaths("startChange");
 
     Observable<Touch> observable() {
         return subject;
+    }
+
+    Touch get() {
+        return currentTouch;
     }
 
     private void setCurrentTouch(Touch newTouch) {
@@ -188,7 +195,7 @@ public class ObservableTouch {
         sortedNotations.add(notationToAdd);
         //TODO why are they sorted? Should be a set. Sorting for UI
         Collections.sort(sortedNotations, NotationBody.BY_NAME);
-        touchBuilder.setSortedNotations(sortedNotations);
+        touchBuilder.setSortedNotations(ImmutableList.copyOf(sortedNotations));
 
 //TODO what if the number of bells is wrong?
         if (!currentTouch.isSpliced() && currentTouch.getNonSplicedActiveNotation() == null) {
@@ -230,7 +237,7 @@ public class ObservableTouch {
     public void removeNotation(NotationBody notationForRemoval) {
         checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 
-        List<NotationBody> sortedNotations = currentTouch.getAllNotations();
+        ImmutableList<NotationBody> sortedNotations = currentTouch.getAllNotations();
         checkState(sortedNotations.contains(notationForRemoval));
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);

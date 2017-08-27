@@ -13,12 +13,11 @@ import java.util.List;
  */
 @Immutable
 public class Cell {
+
     private final ImmutableList<Element> elements;
 
     public Cell(List<Element> elements) {
-        this.elements = ImmutableList.<Element>builder()
-                .addAll(elements)
-                .build();
+        this.elements = ImmutableList.copyOf(elements);
     }
 
     public Element getElement(int index) {

@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Bell;
@@ -12,11 +12,7 @@ import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
 import org.ringingmaster.engine.touch.container.TouchDefinition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,11 +31,11 @@ public class Touch {
     private final TouchCheckingType touchCheckingType;
 
     private final Bell callFromBell;
-    private final List<NotationBody> sortedNotations;
+    private final ImmutableList<NotationBody> sortedNotations;
     private final NotationBody nonSplicedActiveNotation;
     private final boolean spliced; // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
     private final String plainLeadToken;
-    private final Set<TouchDefinition> definitions;
+    private final ImmutableSet<TouchDefinition> definitions;
 
     private final MethodRow startChange;
     private final int startAtRow;
@@ -57,11 +53,11 @@ public class Touch {
                  NumberOfBells numberOfBells,
                  TouchCheckingType touchCheckingType,
                  Bell callFromBell,
-                 List<NotationBody> sortedNotations,
+                 ImmutableList<NotationBody> sortedNotations,
                  NotationBody nonSplicedActiveNotation,
                  boolean spliced,
                  String plainLeadToken,
-                 Set<TouchDefinition> definitions,
+                 ImmutableSet<TouchDefinition> definitions,
                  MethodRow startChange, int startAtRow,
                  Stroke startStroke, Optional<NotationBody> startNotation,
                  int terminationMaxRows, Optional<Integer> terminationMaxLeads,
@@ -75,7 +71,7 @@ public class Touch {
         this.touchCheckingType = touchCheckingType;
 
         this.callFromBell = callFromBell;
-        this.sortedNotations = new ArrayList<>(sortedNotations);
+        this.sortedNotations = sortedNotations;
         this.nonSplicedActiveNotation = nonSplicedActiveNotation;
         this.spliced = spliced;
         this.plainLeadToken = plainLeadToken;
@@ -114,26 +110,27 @@ public class Touch {
         return callFromBell;
     }
 
-    public List<NotationBody> getAllNotations() {
-        return Lists.newArrayList(sortedNotations);
+    public ImmutableList<NotationBody> getAllNotations() {
+        return sortedNotations;
     }
 
-    public List<NotationBody> getValidNotations() {
-        return NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells);
+    public ImmutableList<NotationBody> getValidNotations() {
+        return ImmutableList.copyOf(
+                //TODO should this return immutable version?
+                NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells));
     }
 
-    public List<NotationBody> getNotationsInUse() {
+    public ImmutableList<NotationBody> getNotationsInUse() {
         if (isSpliced()) {
             return getValidNotations();
         }
         else {
             // Not Spliced
             if (nonSplicedActiveNotation != null) {
-                return Lists.<NotationBody>newArrayList(nonSplicedActiveNotation);
+                return ImmutableList.of(nonSplicedActiveNotation);
             }
+            return ImmutableList.of();
         }
-
-        return Collections.emptyList();
     }
 
     public NotationBody getNonSplicedActiveNotation() {
@@ -148,8 +145,8 @@ public class Touch {
         return plainLeadToken;
     }
 
-    public Set<TouchDefinition> getDefinitions() {
-        return Sets.newHashSet(definitions);
+    public ImmutableSet<TouchDefinition> getDefinitions() {
+        return definitions;
     }
 
     public Optional<TouchDefinition> findDefinitionByShorthand(String name) {

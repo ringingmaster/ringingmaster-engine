@@ -1,5 +1,7 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
@@ -9,11 +11,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
 import org.ringingmaster.engine.touch.container.TouchDefinition;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.ringingmaster.engine.touch.container.Touch.TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE;
 import static org.ringingmaster.engine.touch.container.Touch.TERMINATION_MAX_ROWS_INITIAL_VALUE;
@@ -23,7 +21,7 @@ import static org.ringingmaster.engine.touch.container.Touch.TERMINATION_MAX_ROW
  *
  * @author Lake
  */
-public class TouchBuilder {
+class TouchBuilder {
 
     private Touch prototype;
 
@@ -34,11 +32,11 @@ public class TouchBuilder {
     private Optional<TouchCheckingType> touchCheckingType = Optional.empty();
 
     private Optional<Bell> callFromBell = Optional.empty();
-    private Optional<List<NotationBody>> sortedNotations = Optional.empty();
+    private Optional<ImmutableList<NotationBody>> sortedNotations = Optional.empty();
     private Optional<NotationBody> nonSplicedActiveNotation = Optional.empty();
     private Optional<Boolean> spliced = Optional.empty(); // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
     private Optional<String> plainLeadToken = Optional.empty();
-    private Optional<Set<TouchDefinition>> touchDefinitions = Optional.empty();
+    private Optional<ImmutableSet<TouchDefinition>> touchDefinitions = Optional.empty();
 
     private Optional<MethodRow> startChange = Optional.empty();
     private Optional<Integer> startAtRow = Optional.empty();
@@ -64,11 +62,11 @@ public class TouchBuilder {
         setTouchCheckingType(TouchCheckingType.COURSE_BASED);
 
         setCallFromBell(numberOfBells.get().getTenor());
-        setSortedNotations(new ArrayList<>());
+        setSortedNotations(ImmutableList.of());
 //TODO        setNonSplicedActiveNotation(null); //TODO - optional - replace spliced.
         setSpliced(false);
         setPlainLeadToken("p");
-        setTouchDefinitions(new HashSet<>());
+        setTouchDefinitions(ImmutableSet.of());
 
         setStartChange(MethodBuilder.buildRoundsRow(numberOfBells.get()));
         setStartAtRow(0);
@@ -114,7 +112,7 @@ public class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setSortedNotations(List sortedNotations) {
+    TouchBuilder setSortedNotations(ImmutableList<NotationBody> sortedNotations) {
         this.sortedNotations = Optional.of(sortedNotations);
         return this;
     }
@@ -134,7 +132,7 @@ public class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setTouchDefinitions(Set<TouchDefinition> touchDefinitions) {
+    TouchBuilder setTouchDefinitions(ImmutableSet<TouchDefinition> touchDefinitions) {
         this.touchDefinitions = Optional.of(touchDefinitions);
         return this;
     }
@@ -210,5 +208,31 @@ public class TouchBuilder {
                 terminationMaxCircularTouch.orElseGet(()->prototype.getTerminationMaxCircularTouch()),
                 terminationChange.orElseGet(()->prototype.getTerminationChange())
         );
+    }
+
+    @Override
+    public String toString() {
+        return "TouchBuilder{" +
+                "prototype=" + prototype +
+                ", title=" + title +
+                ", author=" + author +
+                ", numberOfBells=" + numberOfBells +
+                ", touchCheckingType=" + touchCheckingType +
+                ", callFromBell=" + callFromBell +
+                ", sortedNotations=" + sortedNotations +
+                ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
+                ", spliced=" + spliced +
+                ", plainLeadToken=" + plainLeadToken +
+                ", touchDefinitions=" + touchDefinitions +
+                ", startChange=" + startChange +
+                ", startAtRow=" + startAtRow +
+                ", startStroke=" + startStroke +
+                ", startNotation=" + startNotation +
+                ", terminationMaxRows=" + terminationMaxRows +
+                ", terminationMaxLeads=" + terminationMaxLeads +
+                ", terminationMaxParts=" + terminationMaxParts +
+                ", terminationMaxCircularTouch=" + terminationMaxCircularTouch +
+                ", terminationChange=" + terminationChange +
+                '}';
     }
 }

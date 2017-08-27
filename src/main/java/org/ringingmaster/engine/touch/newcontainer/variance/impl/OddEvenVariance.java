@@ -23,7 +23,7 @@ public class OddEvenVariance implements Variance {
 	private final OddEvenVarianceType oddEvenVarianceType;
 	private final VarianceLogicType varianceLogicType;
 
-	OddEvenVariance(VarianceLogicType varianceLogicType, OddEvenVarianceType oddEvenVarianceType) {
+	public OddEvenVariance(VarianceLogicType varianceLogicType, OddEvenVarianceType oddEvenVarianceType) {
 		this.oddEvenVarianceType = checkNotNull(oddEvenVarianceType, "oddEvenVarianceType must not be null");
 		this.varianceLogicType = checkNotNull(varianceLogicType, "varianceLogicType must not be null");
 	}
