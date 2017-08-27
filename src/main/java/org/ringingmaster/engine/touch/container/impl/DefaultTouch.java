@@ -420,7 +420,7 @@ public class DefaultTouch implements Touch {
 		return checkPotentialNewNotation(replacementNotation, Sets.<NotationBody>newHashSet(originalNotation));
 	}
 
-		@Override
+	@Override
 	public List<NotationBody> getAllNotations() {
 		return Collections.unmodifiableList(sortedNotations);
 	}
@@ -517,8 +517,8 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public TouchDefinition findDefinitionByName(String name) {
-		return definitions.get(name);
+	public TouchDefinition findDefinitionByShorthand(String shorthand) {
+		return definitions.get(shorthand);
 	}
 
 	@Override
