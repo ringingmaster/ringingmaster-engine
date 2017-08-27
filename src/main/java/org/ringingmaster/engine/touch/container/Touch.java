@@ -72,7 +72,7 @@ public interface Touch extends Cloneable {
 	TouchDefinition addDefinition(String shorthand, String characters);
 	Set<TouchDefinition> getDefinitions();
 	void removeDefinition(String name);
-	TouchDefinition findDefinitionByName(String name);
+	TouchDefinition findDefinitionByShorthand(String name);
 
 	MethodRow getStartChange();
 	Mutated setStartChange(MethodRow startChange);

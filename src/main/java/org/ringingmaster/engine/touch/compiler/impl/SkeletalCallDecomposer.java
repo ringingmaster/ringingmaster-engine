@@ -168,9 +168,9 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	private void insertDefinition(TouchWord word, int columnIndex) {
 		log.debug("Start definition [{}]", word);
 		String elementsAsString = word.getElementsAsString();
-		TouchDefinition definitionByName = touch.findDefinitionByName(elementsAsString);
-		if (definitionByName != null) {
-			generateCallInstancesForCell(definitionByName, columnIndex);
+		TouchDefinition definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
+		if (definitionByShorthand != null) {
+			generateCallInstancesForCell(definitionByShorthand, columnIndex);
 		}
 		log.debug("Finish definition [{}]",word);
 	}

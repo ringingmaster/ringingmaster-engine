@@ -152,8 +152,8 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public TouchDefinition findDefinitionByName(String name) {
-		return touch.findDefinitionByName(name);
+	public TouchDefinition findDefinitionByShorthand(String name) {
+		return touch.findDefinitionByShorthand(name);
 	}
 
 	@Override
