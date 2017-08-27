@@ -75,35 +75,33 @@ public class MethodBuilder {
 		checkNotNull(original);
 		checkNotNull(newNumberOfBells);
 
-		if (original.getNumberOfBells() == newNumberOfBells) {
-			return original;
-		}
-
 		if (original.getNumberOfBells().getBellCount() < newNumberOfBells.getBellCount()) {
 			Bell[] bells = new Bell[newNumberOfBells.getBellCount()];
-			for (int i=0;i<original.getNumberOfBells().getBellCount();i++) {
+			for (int i = 0; i < original.getNumberOfBells().getBellCount(); i++) {
 				bells[i] = original.getBellInPlace(i);
-			};
-			for (int i=original.getNumberOfBells().getBellCount();i<newNumberOfBells.getBellCount();i++) {
+			}
+			;
+			for (int i = original.getNumberOfBells().getBellCount(); i < newNumberOfBells.getBellCount(); i++) {
 				bells[i] = Bell.valueOf(i);
 			}
-			return new DefaultMethodRow(newNumberOfBells,bells,original.getRowNumber(), original.getStroke(), original.getRowCourseType());
+			return new DefaultMethodRow(newNumberOfBells, bells, original.getRowNumber(), original.getStroke(), original.getRowCourseType());
 		}
-
-		if (original.getNumberOfBells().getBellCount() > newNumberOfBells.getBellCount()) {
+		else if (original.getNumberOfBells().getBellCount() > newNumberOfBells.getBellCount()) {
 			Bell[] bells = new Bell[newNumberOfBells.getBellCount()];
 			int bellsPlaceIndex = 0;
-			for (int i=0;i<original.getNumberOfBells().getBellCount();i++) {
+			for (int i = 0; i < original.getNumberOfBells().getBellCount(); i++) {
 				final Bell bellInPlace = original.getBellInPlace(i);
 				if (bellInPlace.getZeroBasedBell() < newNumberOfBells.getBellCount()) {
 					bells[bellsPlaceIndex] = original.getBellInPlace(i);
 					bellsPlaceIndex++;
 				}
-			};
-			return new DefaultMethodRow(newNumberOfBells,bells,original.getRowNumber(), original.getStroke(), original.getRowCourseType());
+			}
+			;
+			return new DefaultMethodRow(newNumberOfBells, bells, original.getRowNumber(), original.getStroke(), original.getRowCourseType());
 		}
-
-		return null;
+		else {
+			return original;
+		}
 	}
 
 	/**
