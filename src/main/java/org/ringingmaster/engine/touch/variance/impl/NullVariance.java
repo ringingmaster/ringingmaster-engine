@@ -1,6 +1,6 @@
-package org.ringingmaster.engine.touch.container.impl;
+package org.ringingmaster.engine.touch.variance.impl;
 
-import org.ringingmaster.engine.touch.container.Variance;
+import org.ringingmaster.engine.touch.variance.Variance;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -12,7 +12,7 @@ public enum NullVariance implements Variance {
 	INSTANCE,
 	;
 
-	static Variance getInstance() {
+	public static Variance getInstance() {
 		return INSTANCE;
 	}
 

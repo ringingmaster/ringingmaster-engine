@@ -3,8 +3,9 @@ package org.ringingmaster.engine.touch.container.impl;
 import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchElement;
 import org.ringingmaster.engine.touch.container.TouchWord;
-import org.ringingmaster.engine.touch.container.Variance;
+import org.ringingmaster.engine.touch.variance.Variance;
 import org.ringingmaster.engine.touch.parser.ParseType;
+import org.ringingmaster.engine.touch.variance.impl.NullVariance;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

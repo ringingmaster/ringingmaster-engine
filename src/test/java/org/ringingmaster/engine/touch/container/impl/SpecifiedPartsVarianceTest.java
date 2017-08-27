@@ -3,7 +3,10 @@ package org.ringingmaster.engine.touch.container.impl;
 import com.google.common.collect.Sets;
 import org.junit.Test;
 
-import org.ringingmaster.engine.touch.container.Variance;
+import org.ringingmaster.engine.touch.variance.Variance;
+import org.ringingmaster.engine.touch.variance.VarianceLogicType;
+import org.ringingmaster.engine.touch.variance.impl.OddEvenVariance;
+import org.ringingmaster.engine.touch.variance.impl.SpecifiedPartsVariance;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

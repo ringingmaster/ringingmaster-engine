@@ -1,7 +1,8 @@
-package org.ringingmaster.engine.touch.container.impl;
+package org.ringingmaster.engine.touch.variance.impl;
 
-import org.ringingmaster.engine.touch.container.Variance;
+import org.ringingmaster.engine.touch.variance.Variance;
 import net.jcip.annotations.Immutable;
+import org.ringingmaster.engine.touch.variance.VarianceLogicType;
 
 import java.util.Collection;
 import java.util.Set;

@@ -4,7 +4,7 @@ import net.jcip.annotations.NotThreadSafe;
 
 import org.ringingmaster.engine.touch.parser.ParseType;
 import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.Variance;
+import org.ringingmaster.engine.touch.variance.Variance;
 
 /**
  * Take a touch, and decompose into a List of {@link LeadBasedDecomposedCall}'s

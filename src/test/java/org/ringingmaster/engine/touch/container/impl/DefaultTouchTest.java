@@ -11,6 +11,8 @@ import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import com.google.common.collect.Iterators;
 import org.junit.Assert;
 import org.junit.Test;
+import org.ringingmaster.engine.touch.variance.VarianceLogicType;
+import org.ringingmaster.engine.touch.variance.impl.OddEvenVariance;
 
 import java.util.List;
 

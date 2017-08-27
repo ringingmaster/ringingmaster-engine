@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.touch.container;
 
 import org.ringingmaster.engine.touch.parser.ParseType;
+import org.ringingmaster.engine.touch.variance.Variance;
 
 /**
  * Represents a single character in a touch grid.
