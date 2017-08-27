@@ -45,8 +45,6 @@ public class ObservableTouch {
         return subject;
     }
 
-    ;
-
     private void setCurrentTouch(Touch newTouch) {
         log.info("[{}] Touch diff [{}]", currentTouch.getTitle(), s.stringDifferences(currentTouch, newTouch));
         subject.onNext(newTouch);
