@@ -35,8 +35,8 @@ public class MethodBuilder {
 	public static MethodRow buildRoundsRow(final NumberOfBells numberOfBells) {
 		checkNotNull(numberOfBells, "numberOfBells can't be null");
 
-		final Bell[] bells = new Bell[numberOfBells.getBellCount()];
-		for (int i=0;i<numberOfBells.getBellCount();i++) {
+		final Bell[] bells = new Bell[numberOfBells.toInt()];
+		for (int i = 0; i<numberOfBells.toInt(); i++) {
 			final Bell bell = Bell.valueOf(i);
 			bells[i] = bell;
 		}
@@ -53,16 +53,16 @@ public class MethodBuilder {
 	public static MethodRow parse(final NumberOfBells numberOfBells, final String s, int rowNumber, Stroke stroke) {
 		checkNotNull(numberOfBells, "numberOfBells can't be null");
 		checkNotNull(s, "parse string can't be null");
-		checkState(numberOfBells.getBellCount() == s.length(), "You must enter a [%s] character sequence", numberOfBells.getBellCount());
+		checkState(numberOfBells.toInt() == s.length(), "You must enter a [%s] character sequence", numberOfBells.toInt());
 
-		final Bell[] bells = new Bell[numberOfBells.getBellCount()];
+		final Bell[] bells = new Bell[numberOfBells.toInt()];
 		final Set<Bell> duplicateCheck = new HashSet<>();
 
-		for (int i=0;i<numberOfBells.getBellCount();i++) {
+		for (int i = 0; i<numberOfBells.toInt(); i++) {
 			final String character = String.valueOf(s.charAt(i));
 			Bell bell = Bell.valueOfMnemonic(character);
 			checkState(bell != null, "Character [%s] is invalid.", character);
-			checkState(bell.getZeroBasedBell() < numberOfBells.getBellCount(), "Character [%s] is invalid for [%s] bell row.", character, numberOfBells.getBellCount());
+			checkState(bell.getZeroBasedBell() < numberOfBells.toInt(), "Character [%s] is invalid for [%s] bell row.", character, numberOfBells.toInt());
 			checkState(duplicateCheck.add(bell), "Character [%s] appears more than once.", character);
 			bells[i] = bell;
 		}
@@ -75,23 +75,23 @@ public class MethodBuilder {
 		checkNotNull(original);
 		checkNotNull(newNumberOfBells);
 
-		if (original.getNumberOfBells().getBellCount() < newNumberOfBells.getBellCount()) {
-			Bell[] bells = new Bell[newNumberOfBells.getBellCount()];
-			for (int i = 0; i < original.getNumberOfBells().getBellCount(); i++) {
+		if (original.getNumberOfBells().toInt() < newNumberOfBells.toInt()) {
+			Bell[] bells = new Bell[newNumberOfBells.toInt()];
+			for (int i = 0; i < original.getNumberOfBells().toInt(); i++) {
 				bells[i] = original.getBellInPlace(i);
 			}
 			;
-			for (int i = original.getNumberOfBells().getBellCount(); i < newNumberOfBells.getBellCount(); i++) {
+			for (int i = original.getNumberOfBells().toInt(); i < newNumberOfBells.toInt(); i++) {
 				bells[i] = Bell.valueOf(i);
 			}
 			return new DefaultMethodRow(newNumberOfBells, bells, original.getRowNumber(), original.getStroke(), original.getRowCourseType());
 		}
-		else if (original.getNumberOfBells().getBellCount() > newNumberOfBells.getBellCount()) {
-			Bell[] bells = new Bell[newNumberOfBells.getBellCount()];
+		else if (original.getNumberOfBells().toInt() > newNumberOfBells.toInt()) {
+			Bell[] bells = new Bell[newNumberOfBells.toInt()];
 			int bellsPlaceIndex = 0;
-			for (int i = 0; i < original.getNumberOfBells().getBellCount(); i++) {
+			for (int i = 0; i < original.getNumberOfBells().toInt(); i++) {
 				final Bell bellInPlace = original.getBellInPlace(i);
-				if (bellInPlace.getZeroBasedBell() < newNumberOfBells.getBellCount()) {
+				if (bellInPlace.getZeroBasedBell() < newNumberOfBells.toInt()) {
 					bells[bellsPlaceIndex] = original.getBellInPlace(i);
 					bellsPlaceIndex++;
 				}
@@ -115,8 +115,8 @@ public class MethodBuilder {
 	public static MethodRow buildAllChangeRow(final MethodRow previousRow) {
 		checkNotNull(previousRow, "previousRow cant be null");
 
-		final Bell[] bells = new Bell[previousRow.getNumberOfBells().getBellCount()];
-		for (int i=0;i<previousRow.getNumberOfBells().getBellCount();i+=2) {
+		final Bell[] bells = new Bell[previousRow.getNumberOfBells().toInt()];
+		for (int i = 0; i<previousRow.getNumberOfBells().toInt(); i+=2) {
 			bells[i]   = previousRow.getBellInPlace(i+1);
 			bells[i+1] = previousRow.getBellInPlace(i);
 		}
@@ -143,8 +143,8 @@ public class MethodBuilder {
 		checkNotNull(previousRow, "notationRow cant be null");
 		checkNotNull(notationRow, "notationRow cant be null");
 
-		final Bell[] bells = new Bell[previousRow.getNumberOfBells().getBellCount()];
-		for (int zeroBasedPlace=0;zeroBasedPlace<previousRow.getNumberOfBells().getBellCount();zeroBasedPlace++) {
+		final Bell[] bells = new Bell[previousRow.getNumberOfBells().toInt()];
+		for (int zeroBasedPlace = 0; zeroBasedPlace<previousRow.getNumberOfBells().toInt(); zeroBasedPlace++) {
 			NotationPlace notationPlace = NotationPlace.valueOf(zeroBasedPlace);
 			if (notationRow.makesPlace(notationPlace)) {
 				//Make the place

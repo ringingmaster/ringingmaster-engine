@@ -280,15 +280,15 @@ public class NotationBuilder {
 					notationCalls.add(
 							new NotationCallBuilder().setName("Bob")
 									.setNameShorthand("-")
-									.setUnfoldedNotationShorthand("1" + NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 2 - 1).toDisplayString())
+									.setUnfoldedNotationShorthand("1" + NotationPlace.valueOf(numberOfWorkingBells.toInt() - 2 - 1).toDisplayString())
 									.build(numberOfWorkingBells));
 					notationCalls.add(
 							new NotationCallBuilder().setName("Single")
 									.setNameShorthand("s")
 									.setUnfoldedNotationShorthand("1" +
-											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 2 - 1).toDisplayString() +
-											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 1 - 1).toDisplayString() +
-											NotationPlace.valueOf(numberOfWorkingBells.getBellCount() - 0 - 1).toDisplayString())
+											NotationPlace.valueOf(numberOfWorkingBells.toInt() - 2 - 1).toDisplayString() +
+											NotationPlace.valueOf(numberOfWorkingBells.toInt() - 1 - 1).toDisplayString() +
+											NotationPlace.valueOf(numberOfWorkingBells.toInt() - 0 - 1).toDisplayString())
 									.build(numberOfWorkingBells));
 				}
 			}

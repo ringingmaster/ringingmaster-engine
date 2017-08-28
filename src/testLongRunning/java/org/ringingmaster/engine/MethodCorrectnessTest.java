@@ -44,7 +44,7 @@ public class MethodCorrectnessTest {
 
 					if (!Objects.equals(leadHead, lead.getLastRow().getDisplayString(false))) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notationBody.getNumberOfWorkingBells().getBellCount(), notationBody.getNameIncludingNumberOfBells(),
+								notationBody.getNumberOfWorkingBells().toInt(), notationBody.getNameIncludingNumberOfBells(),
 								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notationBody.toString());
 						return true;
 					}
@@ -71,7 +71,7 @@ public class MethodCorrectnessTest {
 					String calculatedLeadHead = notationBody.getLeadHeadCode();
 					if (!Objects.equals(ccLeadHead, calculatedLeadHead)) {
 						String msg = String.format("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notationBody.getNumberOfWorkingBells().getBellCount(), notationBody.getNameIncludingNumberOfBells(),
+								notationBody.getNumberOfWorkingBells().toInt(), notationBody.getNameIncludingNumberOfBells(),
 								ccLeadHead, calculatedLeadHead, notationBody.toString());
 						if (problemNotations.contains(notationBody.getNameIncludingNumberOfBells())) {
 							log.info("Ignoring known issue for: [{}]", msg);
@@ -110,7 +110,7 @@ public class MethodCorrectnessTest {
 
 					if (persistableNotation.getLeadLength() != lead.getRowCount() - 1) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notationBody.getNumberOfWorkingBells().getBellCount(), notationBody.getNameIncludingNumberOfBells(),
+								notationBody.getNumberOfWorkingBells().toInt(), notationBody.getNameIncludingNumberOfBells(),
 								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notationBody.toString());
 						return true;
 					}

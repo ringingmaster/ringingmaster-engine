@@ -137,7 +137,7 @@ public class LeadHeadCalculator {
 
 			if (leadHeadNotationRow.makesPlace(NotationPlace.PLACE_3)) {
 				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.NEAR);
-			} else if (leadHeadNotationRow.makesPlace(NotationPlace.valueOf(numberOfBells.getBellCount() - 1))) {
+			} else if (leadHeadNotationRow.makesPlace(NotationPlace.valueOf(numberOfBells.toInt() - 1))) {
 				return lookupLeadHeadCode(leadHeadRow, LeadHeadType.EXTREME);
 			} else {
 				return leadHeadRow.getDisplayString(false);
@@ -183,7 +183,7 @@ public class LeadHeadCalculator {
 
 	private static boolean hasLeadEndGotInternalPlaces(NumberOfBells numberOfBells, NotationRow leadHeadNotationRow) {
 
-		for (int zeroBasedPlace=1;zeroBasedPlace<numberOfBells.getBellCount()-1;zeroBasedPlace++) {
+		for (int zeroBasedPlace = 1; zeroBasedPlace<numberOfBells.toInt()-1; zeroBasedPlace++) {
 			NotationPlace notationPlace = NotationPlace.valueOf(zeroBasedPlace);
 			if (leadHeadNotationRow.makesPlace(notationPlace)) {
 				return true;

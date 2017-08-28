@@ -212,7 +212,7 @@ public class DefaultTouch implements Touch {
 
 			if (!isSpliced() &&
 					nonSplicedActiveNotation != null &&
-					nonSplicedActiveNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
+					nonSplicedActiveNotation.getNumberOfWorkingBells().toInt() > numberOfBells.toInt()) {
 				findNextBestNonSplicedActiveNotation(nonSplicedActiveNotation);
 			}
 
@@ -262,7 +262,7 @@ public class DefaultTouch implements Touch {
 	public Mutated setCallFromBell(Bell callFromBell) {
 		if (this.callFromBell != callFromBell) {
 			checkNotNull(callFromBell);
-			checkState(callFromBell.getZeroBasedBell() < numberOfBells.getBellCount());
+			checkState(callFromBell.getZeroBasedBell() < numberOfBells.toInt());
 			this.callFromBell = callFromBell;
 			log.debug("[{}] Set call from bell to [{}]", this.title, this.callFromBell);
 			return MUTATED;
@@ -341,9 +341,9 @@ public class DefaultTouch implements Touch {
 		validNotations.remove(previousNotation);
 
 		Comparator<NumberOfBells> byDistanceFromPassedNumberOfBells = (o1, o2) -> ComparisonChain.start()
-				.compare(Math.abs(previousNotation.getNumberOfWorkingBells().getBellCount() - o1.getBellCount()),
-						 Math.abs(previousNotation.getNumberOfWorkingBells().getBellCount() - o2.getBellCount()))
-				.compare(o2.getBellCount(), o1.getBellCount()) // always take higher number of bells where distance is equal
+				.compare(Math.abs(previousNotation.getNumberOfWorkingBells().toInt() - o1.toInt()),
+						 Math.abs(previousNotation.getNumberOfWorkingBells().toInt() - o2.toInt()))
+				.compare(o2.toInt(), o1.toInt()) // always take higher number of bells where distance is equal
 				.result();
 
 		// from the validNotations, find all number of bells in use, sorted by distance from passed number of bells.
@@ -407,7 +407,7 @@ public class DefaultTouch implements Touch {
 		if (nonSplicedActiveNotation == originalNotation) {
 			nonSplicedActiveNotation = replacementNotation;
 			if (!isSpliced() &&
-				nonSplicedActiveNotation.getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
+				nonSplicedActiveNotation.getNumberOfWorkingBells().toInt() > numberOfBells.toInt()) {
 				findNextBestNonSplicedActiveNotation(nonSplicedActiveNotation);
 			}
 		}

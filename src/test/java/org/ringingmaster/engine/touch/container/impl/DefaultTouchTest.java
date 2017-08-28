@@ -27,26 +27,6 @@ import static org.mockito.Mockito.when;
  */
 public class DefaultTouchTest {
 
-	public static final NotationBody METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
-	public static final NotationBody METHOD_B_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD B", "14");
-	public static final NotationBody METHOD_C_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD C", "16");
-	public static final NotationBody METHOD_D_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD D", "34");
-
-	public static final NotationBody METHOD_A_7_BELL = buildNotation(NumberOfBells.BELLS_7, "METHOD A", "1");
-
-	public static final NotationBody METHOD_A_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD A", "12");
-	public static final NotationBody METHOD_B_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD B", "14");
-	public static final NotationBody METHOD_C_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD C", "16");
-	public static final NotationBody METHOD_D_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD D", "18");
-
-
-
-
-
-//TODO can notation in touch be an unsorted set?
-
-
-
 
 	@Test
 	public void settingSplicedClearsActiveNotation() {

@@ -38,7 +38,7 @@ public class DefaultMethodRow implements MethodRow {
 	DefaultMethodRow(final NumberOfBells numberOfBells, final Bell[] bells, final int rowNumber, final Stroke stroke, RowCourseType rowCourseType) {
 		this.numberOfBells = checkNotNull(numberOfBells, "numberOfBells can't be null");
 		this.bells = checkNotNull(bells, "bells can't be null"); //TODO should this be copied, or constructed using a List<>() ?
-		checkArgument(numberOfBells.getBellCount() == bells.length, "bells array needs to have [%s] elemnts, but has [%s]", numberOfBells.getBellCount(), bells.length);
+		checkArgument(numberOfBells.toInt() == bells.length, "bells array needs to have [%s] elemnts, but has [%s]", numberOfBells.toInt(), bells.length);
 		checkArgument(rowNumber >= 0, "rowNumber must be greater than or equal to 0. [%s]", rowNumber);
 		this.rowNumber = rowNumber;
 		this.stroke = checkNotNull(stroke, "stroke can't be null");
@@ -137,7 +137,7 @@ public class DefaultMethodRow implements MethodRow {
 
 	@Override
 	public boolean isRounds() {
-		for (int i=0;i<numberOfBells.getBellCount();i++) {
+		for (int i = 0; i<numberOfBells.toInt(); i++) {
 			if (bells[i].getZeroBasedBell() != i) {
 				return false;
 			}
@@ -181,7 +181,7 @@ public class DefaultMethodRow implements MethodRow {
 		int result = getNumberOfBells().compareTo(other.getNumberOfBells());
 		if (result != 0) return result;
 
-		for (int i=0;i<other.getNumberOfBells().getBellCount();i++) {
+		for (int i = 0; i<other.getNumberOfBells().toInt(); i++) {
 			result = getBellInPlace(i).compareTo(other.getBellInPlace(i));
 			if (result != 0) return result;
 		}
@@ -190,6 +190,6 @@ public class DefaultMethodRow implements MethodRow {
 
 	@Override
 	public String toString() {
-		return "[" + getDisplayString(false) + "(" + numberOfBells.getBellCount() + ")," + getRowNumber() + "]";
+		return "[" + getDisplayString(false) + "(" + numberOfBells.toInt() + ")," + getRowNumber() + "]";
 	}
 }
