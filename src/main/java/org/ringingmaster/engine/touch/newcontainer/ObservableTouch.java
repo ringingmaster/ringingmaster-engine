@@ -390,5 +390,20 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
+    public void setStartChange(MethodRow startChange) {
+        checkNotNull(startChange);
+        checkState(startChange.getNumberOfBells() == currentTouch.getNumberOfBells());
+
+        if (Objects.equals(currentTouch.getStartChange(), startChange)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setStartChange(startChange);
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+
 
 }

@@ -4,13 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
-import org.ringingmaster.engine.touch.newcontainer.variance.VarianceLogicType;
-import org.ringingmaster.engine.touch.newcontainer.variance.impl.OddEvenVariance;
-import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -19,7 +14,7 @@ import static org.junit.Assert.fail;
  * User: Stephen
  */
 public class DefaultTouchTest {
-	
+
 
 	@Test
 	public void widthAndHeightModified() {
@@ -141,48 +136,5 @@ public class DefaultTouchTest {
 		DefaultTouch touch = new DefaultTouch();
 		touch.setStartChange(null);
 	}
-
-	@Test
-	public void cloneTest() throws CloneNotSupportedException {
-		DefaultTouch touch = new DefaultTouch();
-		touch.setNumberOfBells(NumberOfBells.BELLS_8);
-		touch.setColumnCount(2);
-		touch.setRowCount(3);
-		touch.setTitle("title");
-		touch.setAuthor("author");
-		touch.addNotation(buildPlainBobMinor());
-		touch.addCharacters(0, 0, "-[s-");
-		touch.getCell_FOR_TEST_ONLY(0, 0).getElement(1).setVariance(new OddEvenVariance(VarianceLogicType.INCLUDE, OddEvenVariance.OddEvenVarianceType.ODD));
-		touch.addCharacters(1, 0, "p");
-		touch.addCharacters(1, 2, "--");
-		touch.addDefinition("a", "2p-");
-		touch.setPlainLeadToken("PL");
-		touch.setSpliced(true);
-		touch.setTerminationMaxLeads(10);
-		touch.setTerminationMaxRows(100);
-		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_8));
-		new DefaultParser().parseAndAnnotate(touch);
-
-		Touch clone = touch.clone();
-		String cloneToString = clone.toString();
-		assertEquals(touch.toString(), cloneToString);
-
-		/// check that changing the original does not change the clone.
-		touch.resetParseData();
-		assertEquals(cloneToString, clone.toString());
-	}
-
-	private NotationBody buildPlainBobMinor() {
-
-		return NotationBuilder.getInstance()
-				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
-				.setName("Plain Bob")
-				.setFoldedPalindromeNotationShorthand("x16x16x", "16")
-				.addCall("Bob", "-", "14", true)
-				.addCall("Single", "s", "1234", false)
-				.setSpliceIdentifier("p")
-				.build();
-	}
-
 
 }
