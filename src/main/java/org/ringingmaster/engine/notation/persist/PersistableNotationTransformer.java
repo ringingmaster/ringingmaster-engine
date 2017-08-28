@@ -32,7 +32,7 @@ public class PersistableNotationTransformer {
 
 		LibraryNotationPersist persistableNotation = new LibraryNotationPersist();
 		persistableNotation.setName(notationBody.getName());
-		persistableNotation.setNumberOfWorkingBells(notationBody.getNumberOfWorkingBells().getBellCount());
+		persistableNotation.setNumberOfWorkingBells(notationBody.getNumberOfWorkingBells().toInt());
 		persistableNotation.setFoldedPalindrome(notationBody.isFoldedPalindrome());
 		persistableNotation.setNotation(notationBody.getRawNotationDisplayString(0, true));
 		persistableNotation.setNotation2(notationBody.getRawNotationDisplayString(1, true));

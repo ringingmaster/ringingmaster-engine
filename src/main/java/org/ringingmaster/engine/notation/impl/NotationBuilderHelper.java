@@ -104,7 +104,7 @@ public class NotationBuilderHelper {
 		}
 		else {
 			// Places must have an even number of non places between them.
-			for (int i=0;i<numberOfBells.getBellCount();i++) {
+			for (int i = 0; i<numberOfBells.toInt(); i++) {
 				final NotationPlace placeElement = NotationPlace.valueOf(i);
 				if (unValidatedElementsForRow.contains(placeElement)) {
 					validatedElementsForRow.add(placeElement);
@@ -131,7 +131,7 @@ public class NotationBuilderHelper {
 	public static List<NotationBody> filterNotationsUptoNumberOfBells(List<NotationBody> notations, NumberOfBells numberOfBells) {
 		List<NotationBody> filteredNotations = new ArrayList<>();
 		for (NotationBody notation : notations) {
-			if (notation.getNumberOfWorkingBells().getBellCount() <= numberOfBells.getBellCount()) {
+			if (notation.getNumberOfWorkingBells().toInt() <= numberOfBells.toInt()) {
 				filteredNotations.add(notation);
 			}
 		}
