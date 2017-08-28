@@ -4,6 +4,7 @@ package org.ringingmaster.engine.touch.newcontainer;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.reactivex.Observable;
@@ -14,6 +15,9 @@ import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.element.Element;
+import org.ringingmaster.engine.touch.newcontainer.element.ElementBuilder;
 import org.ringingmaster.util.smartcompare.SmartCompare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -329,8 +333,10 @@ public class ObservableTouch {
             final List<NotationBody> validNotations = currentTouch.getValidNotations();
 
             if (validNotations.size() > 0) {
-                Collections.sort(validNotations, NotationBody.BY_NAME);
-                touchBuilder.setNonSplicedActiveNotation(Optional.of(validNotations.iterator().next()));
+                Optional<NotationBody> firstByName = validNotations.stream()
+                        .sorted(NotationBody.BY_NAME)
+                        .findFirst();
+                touchBuilder.setNonSplicedActiveNotation(firstByName);
             }
         }
 
@@ -349,5 +355,40 @@ public class ObservableTouch {
 
         setCurrentTouch(touchBuilder.build());
     }
+
+    void addDefinition(String shorthand, String characters) {
+        checkNotNull(shorthand, "shorthand must not be null");
+        checkNotNull(shorthand.length() > 0, "shorthand must contain some characters");
+
+        // Check duplicate name
+        if (currentTouch.findDefinitionByShorthand(shorthand).isPresent()) {
+            throw new IllegalArgumentException("Can't add definition [" + shorthand + "] as it has a duplicate shorthand to existing definition [" + currentTouch.findDefinitionByShorthand(shorthand) + "]");
+        }
+
+        ImmutableList<Element> elements = ElementBuilder.createElements(characters);
+        Definition definition = new Definition(shorthand, elements);
+
+        Set<Definition> definitions = Sets.newHashSet(currentTouch.getAllDefinitions());
+        definitions.add(definition);
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setDefinitions(ImmutableSet.copyOf(definitions));
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void removeDefinition(String shorthand) {
+        checkNotNull(shorthand, "shorthand must not be null");
+
+        ImmutableSet<Definition> definitions = currentTouch.getAllDefinitions().stream()
+                .filter(definition -> !definition.getShorthand().equals(shorthand))
+                .collect(Collectors.collectingAndThen(Collectors.toSet(), ImmutableSet::copyOf));
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setDefinitions(definitions);
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
 
 }

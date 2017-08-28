@@ -9,22 +9,22 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Lake
  */
-public class TitleMutationTest {
+public class PlainLeadTokenMutationTest {
 
     @Test
     public void hasCorrectDefault() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
 
-        assertEquals("", touch.get().getTitle());
+        assertEquals("p", touch.get().getPlainLeadToken());
     }
 
     @Test
     public void changeIsReflected() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
-        touch.setTitle("TEST");
+        touch.setPlainLeadToken("TEST");
 
-        assertEquals("TEST", touch.get().getTitle());
+        assertEquals("TEST", touch.get().getPlainLeadToken());
     }
 }

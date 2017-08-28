@@ -17,7 +17,12 @@ public class Element {
     private final Optional<Variance> variance;
 
 
-    Element(char character, Optional<Variance> variance) {
+    public Element(char character) {
+        this.character = character;
+        this.variance = Optional.empty();
+    }
+
+    public Element(char character, Optional<Variance> variance) {
         this.character = character;
         this.variance = variance;
     }

@@ -215,6 +215,39 @@ public class NotationMutationTest {
         Assert.assertEquals(Optional.of(METHOD_A_6_BELL), touch.get().getNonSplicedActiveNotation());
     }
 
+    @Test
+    public void addingNotationsWithDifferentNumberOfBellsFiltersInappropriateNotations() {
+        ObservableTouch touch = new ObservableTouch();
+
+        touch.setSpliced(false);
+        touch.addNotation(METHOD_A_6_BELL);
+        touch.addNotation(METHOD_B_6_BELL);
+        touch.addNotation(METHOD_A_8_BELL);
+
+        assertEquals(3, touch.get().getAllNotations().size());
+        assertEquals(1, touch.get().getNotationsInUse().size());
+        assertEquals(2, touch.get().getValidNotations().size());
+
+        touch.setSpliced(true);
+        assertEquals(3, touch.get().getAllNotations().size());
+        assertEquals(2, touch.get().getNotationsInUse().size());
+        assertEquals(2, touch.get().getValidNotations().size());
+    }
+
+    @Test
+    public void settingActiveNotationUnsetsSpliced() {
+        ObservableTouch touch = new ObservableTouch();
+
+        touch.addNotation(METHOD_A_6_BELL);
+        touch.addNotation(METHOD_B_6_BELL);
+
+        touch.setSpliced(true);
+        assertEquals(true, touch.get().isSpliced());
+
+        touch.setNonSplicedActiveNotation(METHOD_A_6_BELL);
+        assertEquals(false, touch.get().isSpliced());
+    }
+
     private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(bells)

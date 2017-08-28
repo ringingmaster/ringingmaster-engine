@@ -14,17 +14,17 @@ public class AuthorMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableTouch observableTouch = new ObservableTouch();
+        ObservableTouch touch = new ObservableTouch();
 
-        assertEquals("", observableTouch.get().getAuthor());
+        assertEquals("", touch.get().getAuthor());
     }
 
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableTouch observableTouch = new ObservableTouch();
-        observableTouch.setAuthor("TEST");
+        ObservableTouch touch = new ObservableTouch();
+        touch.setAuthor("TEST");
 
-        assertEquals("TEST", observableTouch.get().getAuthor());
+        assertEquals("TEST", touch.get().getAuthor());
     }
 }

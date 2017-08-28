@@ -10,7 +10,7 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
-import org.ringingmaster.engine.touch.container.TouchDefinition;
+import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class Touch {
     private final ImmutableList<NotationBody> sortedNotations;
     private final Optional<NotationBody> nonSplicedActiveNotation;
     private final String plainLeadToken;
-    private final ImmutableSet<TouchDefinition> definitions;
+    private final ImmutableSet<Definition> definitions;
 
     private final MethodRow startChange;
     private final int startAtRow;
@@ -56,7 +56,7 @@ public class Touch {
                  Optional<NotationBody> nonSplicedActiveNotation,
                  boolean spliced,
                  String plainLeadToken,
-                 ImmutableSet<TouchDefinition> definitions,
+                 ImmutableSet<Definition> definitions,
                  MethodRow startChange, int startAtRow,
                  Stroke startStroke,
                  Optional<NotationBody> startNotation,
@@ -115,12 +115,14 @@ public class Touch {
     }
 
     public ImmutableList<NotationBody> getValidNotations() {
+        //TODO precalculate
         return ImmutableList.copyOf(
                 //TODO should this return immutable version?
                 NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells));
     }
 
     public ImmutableList<NotationBody> getNotationsInUse() {
+        //TODO precalculate
         if (isSpliced()) {
             return getValidNotations();
         }
@@ -147,15 +149,15 @@ public class Touch {
         return plainLeadToken;
     }
 
-    public ImmutableSet<TouchDefinition> getDefinitions() {
+    public ImmutableSet<Definition> getAllDefinitions() {
         return definitions;
     }
 
-    public Optional<TouchDefinition> findDefinitionByShorthand(String name) {
-        checkNotNull(name);
+    public Optional<Definition> findDefinitionByShorthand(String shorthand) {
+        checkNotNull(shorthand);
 
         return definitions.stream()
-                .filter((definition) -> name.equals(definition.getShorthand()))
+                .filter((definition) -> shorthand.equals(definition.getShorthand()))
                 .findFirst();
     }
 

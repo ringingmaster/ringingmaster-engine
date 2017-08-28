@@ -12,16 +12,24 @@ import java.util.List;
  * @author Lake
  */
 @Immutable
-public class DefinitionCell extends Cell {
+public class Definition extends Cell {
 
     private final String shorthand;
 
-    public DefinitionCell(String shorthand, List<Element> elements) {
+    public Definition(String shorthand, List<Element> elements) {
         super(elements);
         this.shorthand = shorthand;
     }
 
     public String getShorthand() {
         return shorthand;
+    }
+
+    @Override
+    public String toString() {
+        return "Definition{" +
+                "shorthand='" + shorthand + '\'' + ", " +
+                "elements=" + getCharacters() +
+                '}';
     }
 }

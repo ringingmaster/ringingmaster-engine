@@ -1,6 +1,5 @@
 package org.ringingmaster.engine.touch.container.impl;
 
-import com.google.common.collect.Iterators;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
@@ -9,80 +8,18 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
-import org.ringingmaster.engine.touch.container.TouchDefinition;
 import org.ringingmaster.engine.touch.newcontainer.variance.VarianceLogicType;
 import org.ringingmaster.engine.touch.newcontainer.variance.impl.OddEvenVariance;
 import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * User: Stephen
  */
 public class DefaultTouchTest {
-
-
-	@Test
-	public void settingSplicedClearsActiveNotation() {
-		DefaultTouch touch = new DefaultTouch();
-		touch.setSpliced(false);
-
-		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
-		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
-		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
-		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationB.getNotationDisplayString(anyBoolean())).thenReturn("34,");
-
-		touch.addNotation(mockNotationA);
-		touch.addNotation(mockNotationB);
-
-		assertNotNull(touch.getNonSplicedActiveNotation());
-		touch.setSpliced(true);
-		assertNull(touch.getNonSplicedActiveNotation());
-	}
-
-	@Test
-	public void unsettingSplicedSetsFirstActiveNotation() {
-		DefaultTouch touch = new DefaultTouch();
-
-		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
-		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationA.getNotationDisplayString(anyBoolean())).thenReturn("12,");
-		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
-		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		when(mockNotationB.getNotationDisplayString(anyBoolean())).thenReturn("34,");
-		touch.addNotation(mockNotationA);
-		touch.addNotation(mockNotationB);
-
-		touch.setSpliced(true);
-		assertNull(touch.getNonSplicedActiveNotation());
-		touch.setSpliced(false);
-		Assert.assertEquals(mockNotationA, touch.getNonSplicedActiveNotation());
-	}
-
-	@Test
-	public void settingActiveNotationUnsetsSpliced() {
-		DefaultTouch touch = new DefaultTouch();
-
-		NotationBody mockNotationA = when(mock(NotationBody.class).getName()).thenReturn("A").getMock();
-		when(mockNotationA.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		NotationBody mockNotationB = when(mock(NotationBody.class).getName()).thenReturn("B").getMock();
-		when(mockNotationB.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
-		touch.addNotation(mockNotationA);
-
-		touch.setSpliced(true);
-		assertEquals(true, touch.isSpliced());
-
-		touch.setNonSplicedActiveNotation(mockNotationA);
-		assertEquals(false, touch.isSpliced());
-	}
+	
 
 	@Test
 	public void widthAndHeightModified() {
@@ -191,53 +128,6 @@ public class DefaultTouchTest {
 		Assert.assertEquals(TouchCheckingType.LEAD_BASED, touch.getTouchCheckingType());
 	}
 
-	@Test
-	public void canAddAndRemoveDefinitions() {
-		DefaultTouch touch = new DefaultTouch();
-		TouchDefinition a = touch.addDefinition("a", "p-p");
-		Assert.assertEquals("a", Iterators.getOnlyElement(touch.getDefinitions().iterator()).getShorthand());
-		touch.addDefinition("b", "-p-");
-		assertEquals(2, touch.getDefinitions().size());
-		touch.removeDefinition(a.getShorthand());
-		Assert.assertEquals("b", Iterators.getOnlyElement(touch.getDefinitions().iterator()).getShorthand());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void addingDuplicateDefinitionThrows() {
-		DefaultTouch touch = new DefaultTouch();
-		touch.addDefinition("a", "p-p");
-		touch.addDefinition("a", "sp-");
-	}
-
-	@Test
-	public void addingNotationsWithDifferentNumberOfBellsFiltersInappropriateNotations() {
-		DefaultTouch touch = new DefaultTouch();
-		touch.setSpliced(false);
-		touch.addNotation(buildPlainBobMinor());
-		touch.addNotation(buildLittleBobMinor());
-		touch.addNotation(buildPlainBobMMajor());
-
-		assertEquals(3, touch.getAllNotations().size());
-		assertEquals(1, touch.getNotationsInUse().size());
-
-		touch.setSpliced(true);
-		assertEquals(3, touch.getAllNotations().size());
-		assertEquals(2, touch.getNotationsInUse().size());
-	}
-
-	@Test
-	public void settingNumberOfBellsResetsActiveNotation() {
-		DefaultTouch touch = new DefaultTouch();
-		touch.setSpliced(false);
-		touch.setNumberOfBells(NumberOfBells.BELLS_8);
-		touch.addNotation(buildPlainBobMMajor());
-		touch.addNotation(buildPlainBobMinor());
-
-		Assert.assertEquals("Plain Bob Major", touch.getNonSplicedActiveNotation().getNameIncludingNumberOfBells());
-
-		touch.setNumberOfBells(NumberOfBells.BELLS_6);
-		Assert.assertEquals("Plain Bob Minor", touch.getNonSplicedActiveNotation().getNameIncludingNumberOfBells());
-	}
 
 	@Test(expected = IllegalStateException.class)
 	public void cantSetInitialRowOfWrongNumber() {
@@ -282,14 +172,6 @@ public class DefaultTouchTest {
 		assertEquals(cloneToString, clone.toString());
 	}
 
-	private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
-		return NotationBuilder.getInstance()
-						.setNumberOfWorkingBells(bells)
-						.setName(name)
-						.setUnfoldedNotationShorthand(notation1)
-						.build();
-	}
-
 	private NotationBody buildPlainBobMinor() {
 
 		return NotationBuilder.getInstance()
@@ -302,27 +184,5 @@ public class DefaultTouchTest {
 				.build();
 	}
 
-	private NotationBody buildLittleBobMinor() {
-
-		return NotationBuilder.getInstance()
-				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
-				.setName("Little Bob")
-				.setFoldedPalindromeNotationShorthand("x14", "12")
-				.addCall("Bob", "-", "14", true)
-				.addCall("Single", "s", "1234", false)
-				.setSpliceIdentifier("l")
-				.build();
-	}
-
-	private NotationBody buildPlainBobMMajor() {
-
-		return NotationBuilder.getInstance()
-				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
-				.setName("Plain Bob")
-				.setFoldedPalindromeNotationShorthand("x18x18x18x", "18")
-				.addCall("Bob", "-", "14", true)
-				.setSpliceIdentifier("pbm")
-				.build();
-	}
 
 }

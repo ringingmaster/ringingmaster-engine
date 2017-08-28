@@ -5,6 +5,7 @@ import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TODO Comments
@@ -28,10 +29,16 @@ public class Cell {
         return elements.size();
     }
 
+    public String getCharacters() {
+        return elements.stream()
+                .map(element -> Character.toString(element.getCharacter()))
+                .collect(Collectors.joining());
+    }
+
     @Override
     public String toString() {
         return "Cell{" +
-                "elements=" + elements +
+                "elements=" + getCharacters() +
                 '}';
     }
 }

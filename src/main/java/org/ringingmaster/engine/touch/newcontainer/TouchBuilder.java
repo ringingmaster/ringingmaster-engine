@@ -9,7 +9,7 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
-import org.ringingmaster.engine.touch.container.TouchDefinition;
+import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ class TouchBuilder {
     private Optional<Optional<NotationBody>> nonSplicedActiveNotation = Optional.empty();
     private Optional<Boolean> spliced = Optional.empty(); // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
     private Optional<String> plainLeadToken = Optional.empty();
-    private Optional<ImmutableSet<TouchDefinition>> touchDefinitions = Optional.empty();
+    private Optional<ImmutableSet<Definition>> definitions = Optional.empty();
 
     private Optional<MethodRow> startChange = Optional.empty();
     private Optional<Integer> startAtRow = Optional.empty();
@@ -66,7 +66,7 @@ class TouchBuilder {
         setNonSplicedActiveNotation(Optional.empty());
         setSpliced(false);
         setPlainLeadToken("p");
-        setTouchDefinitions(ImmutableSet.of());
+        setDefinitions(ImmutableSet.of());
 
         setStartChange(MethodBuilder.buildRoundsRow(numberOfBells.get()));
         setStartAtRow(0);
@@ -132,8 +132,8 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setTouchDefinitions(ImmutableSet<TouchDefinition> touchDefinitions) {
-        this.touchDefinitions = Optional.of(touchDefinitions);
+    TouchBuilder setDefinitions(ImmutableSet<Definition> touchDefinitions) {
+        this.definitions = Optional.of(touchDefinitions);
         return this;
     }
 
@@ -195,7 +195,7 @@ class TouchBuilder {
                 nonSplicedActiveNotation.orElseGet(()->prototype.getNonSplicedActiveNotation()),//TODO - optional - replace spliced.
                 spliced.orElseGet(()->prototype.isSpliced()),
                 plainLeadToken.orElseGet(()->prototype.getPlainLeadToken()),
-                touchDefinitions.orElseGet(()->prototype.getDefinitions()),
+                definitions.orElseGet(()->prototype.getAllDefinitions()),
 
                 startChange.orElseGet(()->prototype.getStartChange()),
                 startAtRow.orElseGet(()->prototype.getStartAtRow()),
@@ -223,7 +223,7 @@ class TouchBuilder {
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
                 ", spliced=" + spliced +
                 ", plainLeadToken=" + plainLeadToken +
-                ", touchDefinitions=" + touchDefinitions +
+                ", definitions=" + definitions +
                 ", startChange=" + startChange +
                 ", startAtRow=" + startAtRow +
                 ", startStroke=" + startStroke +
