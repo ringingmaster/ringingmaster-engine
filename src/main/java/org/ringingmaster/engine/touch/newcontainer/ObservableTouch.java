@@ -4,6 +4,7 @@ package org.ringingmaster.engine.touch.newcontainer;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
@@ -112,10 +113,10 @@ public class ObservableTouch {
         }
 
         if (!currentTouch.isSpliced() &&
-                currentTouch.getNonSplicedActiveNotation() != null &&
-                currentTouch.getNonSplicedActiveNotation().getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
-            Optional<NotationBody> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(currentTouch.getNonSplicedActiveNotation());
-            touchBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation.orElse(null));
+                currentTouch.getNonSplicedActiveNotation().isPresent() &&
+                currentTouch.getNonSplicedActiveNotation().get().getNumberOfWorkingBells().getBellCount() > numberOfBells.getBellCount()) {
+            Optional<NotationBody> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(currentTouch.getNonSplicedActiveNotation().get());
+            touchBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
         }
 
         if (currentTouch.getStartNotation().isPresent()) {
@@ -137,7 +138,7 @@ public class ObservableTouch {
     }
 
     private Optional<NotationBody> findNextBestNonSplicedActiveNotation(NotationBody previousNotation) {
-        final List<NotationBody> validNotations = currentTouch.getValidNotations();
+        final List<NotationBody> validNotations = Lists.newArrayList(currentTouch.getValidNotations());
         validNotations.remove(previousNotation);
 
         Comparator<NumberOfBells> byDistanceFromPassedNumberOfBells = (o1, o2) -> ComparisonChain.start()
@@ -191,15 +192,15 @@ public class ObservableTouch {
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
 
-        List<NotationBody> sortedNotations = currentTouch.getAllNotations();
+        List<NotationBody> sortedNotations = Lists.newArrayList(currentTouch.getAllNotations());
         sortedNotations.add(notationToAdd);
         //TODO why are they sorted? Should be a set. Sorting for UI
         Collections.sort(sortedNotations, NotationBody.BY_NAME);
         touchBuilder.setSortedNotations(ImmutableList.copyOf(sortedNotations));
 
 //TODO what if the number of bells is wrong?
-        if (!currentTouch.isSpliced() && currentTouch.getNonSplicedActiveNotation() == null) {
-            touchBuilder.setNonSplicedActiveNotation(notationToAdd);
+        if (!currentTouch.isSpliced() && !currentTouch.getNonSplicedActiveNotation().isPresent()) {
+            touchBuilder.setNonSplicedActiveNotation(Optional.of(notationToAdd));
         }
 
         setCurrentTouch(touchBuilder.build());
@@ -237,18 +238,19 @@ public class ObservableTouch {
     public void removeNotation(NotationBody notationForRemoval) {
         checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 
-        ImmutableList<NotationBody> sortedNotations = currentTouch.getAllNotations();
+        List<NotationBody> sortedNotations = Lists.newArrayList(currentTouch.getAllNotations());
         checkState(sortedNotations.contains(notationForRemoval));
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
 
         sortedNotations.remove(notationForRemoval);
-        touchBuilder.setSortedNotations(sortedNotations);
+        touchBuilder.setSortedNotations(ImmutableList.copyOf(sortedNotations));
 
         // Sort out the next notation if it is the active notation
-        if (notationForRemoval.equals(currentTouch.getNonSplicedActiveNotation())) {
+        if (currentTouch.getNonSplicedActiveNotation().isPresent() &&
+                notationForRemoval.equals(currentTouch.getNonSplicedActiveNotation().get())) {
             Optional<NotationBody> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(notationForRemoval);
-            touchBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation.orElse(null));
+            touchBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
         }
 
         setCurrentTouch(touchBuilder.build());
@@ -260,7 +262,7 @@ public class ObservableTouch {
         checkNotNull(replacementNotation, "replacementNotation must not be null");
         checkState(originalNotation != replacementNotation);
 
-        List<NotationBody> sortedNotations = currentTouch.getAllNotations();
+        List<NotationBody> sortedNotations = Lists.newArrayList(currentTouch.getAllNotations());
         checkState(sortedNotations.contains(originalNotation));
 
         List<String> messages = checkUpdateNotation(originalNotation, replacementNotation);
@@ -275,19 +277,21 @@ public class ObservableTouch {
         sortedNotations.remove(originalNotation);
         sortedNotations.add(replacementNotation);
         Collections.sort(sortedNotations, NotationBody.BY_NAME);
+        touchBuilder.setSortedNotations(ImmutableList.copyOf(sortedNotations));
 
-        if (currentTouch.getNonSplicedActiveNotation() == originalNotation) {
-            if (currentTouch.isSpliced() &&
-                    currentTouch.getNonSplicedActiveNotation().getNumberOfWorkingBells().getBellCount() > currentTouch.getNumberOfBells().getBellCount()) {
+        if (currentTouch.getNonSplicedActiveNotation().isPresent() &&
+                currentTouch.getNonSplicedActiveNotation().get() == originalNotation) {
+            if (replacementNotation.getNumberOfWorkingBells().getBellCount() > currentTouch.getNumberOfBells().getBellCount()) {
                 Optional<NotationBody> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(replacementNotation);
-                touchBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation.orElse(null));
+                touchBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
             } else {
-                touchBuilder.setNonSplicedActiveNotation(replacementNotation);
+                touchBuilder.setNonSplicedActiveNotation(Optional.of(replacementNotation));
             }
         }
         setCurrentTouch(touchBuilder.build());
     }
 
+    //TODO rename exchangeNotation
     public List<String> checkUpdateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
         return checkPotentialNewNotation(replacementNotation, Sets.<NotationBody>newHashSet(originalNotation));
     }
@@ -296,12 +300,13 @@ public class ObservableTouch {
         checkNotNull(nonSplicedActiveNotation);
         checkState(currentTouch.getAllNotations().contains(nonSplicedActiveNotation), "Can't set NonSplicedActiveNotation to notation not part of touch.");
 
-        if (Objects.equals(currentTouch.getNonSplicedActiveNotation(), nonSplicedActiveNotation)) {
+        if (currentTouch.getNonSplicedActiveNotation().isPresent() &&
+                Objects.equals(currentTouch.getNonSplicedActiveNotation().get(), nonSplicedActiveNotation)) {
             return;
         }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setNonSplicedActiveNotation(nonSplicedActiveNotation)
+                .setNonSplicedActiveNotation(Optional.of(nonSplicedActiveNotation))
                 .setSpliced(false);
 
         setCurrentTouch(touchBuilder.build());
@@ -318,14 +323,14 @@ public class ObservableTouch {
 
 
         if (spliced) {
-            touchBuilder.setNonSplicedActiveNotation(null);
+            touchBuilder.setNonSplicedActiveNotation(Optional.empty());
         }
         else {
             final List<NotationBody> validNotations = currentTouch.getValidNotations();
 
             if (validNotations.size() > 0) {
                 Collections.sort(validNotations, NotationBody.BY_NAME);
-                touchBuilder.setNonSplicedActiveNotation(validNotations.iterator().next());
+                touchBuilder.setNonSplicedActiveNotation(Optional.of(validNotations.iterator().next()));
             }
         }
 

@@ -33,7 +33,7 @@ class TouchBuilder {
 
     private Optional<Bell> callFromBell = Optional.empty();
     private Optional<ImmutableList<NotationBody>> sortedNotations = Optional.empty();
-    private Optional<NotationBody> nonSplicedActiveNotation = Optional.empty();
+    private Optional<Optional<NotationBody>> nonSplicedActiveNotation = Optional.empty();
     private Optional<Boolean> spliced = Optional.empty(); // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
     private Optional<String> plainLeadToken = Optional.empty();
     private Optional<ImmutableSet<TouchDefinition>> touchDefinitions = Optional.empty();
@@ -63,7 +63,7 @@ class TouchBuilder {
 
         setCallFromBell(numberOfBells.get().getTenor());
         setSortedNotations(ImmutableList.of());
-//TODO        setNonSplicedActiveNotation(null); //TODO - optional - replace spliced.
+        setNonSplicedActiveNotation(Optional.empty());
         setSpliced(false);
         setPlainLeadToken("p");
         setTouchDefinitions(ImmutableSet.of());
@@ -117,7 +117,7 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setNonSplicedActiveNotation(NotationBody nonSplicedActiveNotation) {
+    TouchBuilder setNonSplicedActiveNotation(Optional<NotationBody> nonSplicedActiveNotation) {
         this.nonSplicedActiveNotation = Optional.of(nonSplicedActiveNotation);
         return this;
     }
@@ -192,7 +192,7 @@ class TouchBuilder {
 
                 callFromBell.orElseGet(()->prototype.getCallFromBell()),
                 sortedNotations.orElseGet(()->prototype.getAllNotations()),
-                null,//TODO - optional - replace spliced.
+                nonSplicedActiveNotation.orElseGet(()->prototype.getNonSplicedActiveNotation()),//TODO - optional - replace spliced.
                 spliced.orElseGet(()->prototype.isSpliced()),
                 plainLeadToken.orElseGet(()->prototype.getPlainLeadToken()),
                 touchDefinitions.orElseGet(()->prototype.getDefinitions()),

@@ -32,8 +32,7 @@ public class Touch {
 
     private final Bell callFromBell;
     private final ImmutableList<NotationBody> sortedNotations;
-    private final NotationBody nonSplicedActiveNotation;
-    private final boolean spliced; // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
+    private final Optional<NotationBody> nonSplicedActiveNotation;
     private final String plainLeadToken;
     private final ImmutableSet<TouchDefinition> definitions;
 
@@ -54,13 +53,15 @@ public class Touch {
                  TouchCheckingType touchCheckingType,
                  Bell callFromBell,
                  ImmutableList<NotationBody> sortedNotations,
-                 NotationBody nonSplicedActiveNotation,
+                 Optional<NotationBody> nonSplicedActiveNotation,
                  boolean spliced,
                  String plainLeadToken,
                  ImmutableSet<TouchDefinition> definitions,
                  MethodRow startChange, int startAtRow,
-                 Stroke startStroke, Optional<NotationBody> startNotation,
-                 int terminationMaxRows, Optional<Integer> terminationMaxLeads,
+                 Stroke startStroke,
+                 Optional<NotationBody> startNotation,
+                 int terminationMaxRows,
+                 Optional<Integer> terminationMaxLeads,
                  Optional<Integer> terminationMaxParts,
                  Optional<Integer> terminationMaxCircularTouch,
                  Optional<MethodRow> terminationChange) {
@@ -73,7 +74,6 @@ public class Touch {
         this.callFromBell = callFromBell;
         this.sortedNotations = sortedNotations;
         this.nonSplicedActiveNotation = nonSplicedActiveNotation;
-        this.spliced = spliced;
         this.plainLeadToken = plainLeadToken;
         this.definitions = definitions;
 
@@ -126,19 +126,21 @@ public class Touch {
         }
         else {
             // Not Spliced
-            if (nonSplicedActiveNotation != null) {
-                return ImmutableList.of(nonSplicedActiveNotation);
+            if (nonSplicedActiveNotation.isPresent()) {
+                return ImmutableList.of(nonSplicedActiveNotation.get());
             }
-            return ImmutableList.of();
+            else {
+                return ImmutableList.of();
+            }
         }
     }
 
-    public NotationBody getNonSplicedActiveNotation() {
+    public Optional<NotationBody> getNonSplicedActiveNotation() {
         return nonSplicedActiveNotation;
     }
 
     public boolean isSpliced() {
-        return spliced;
+        return !sortedNotations.isEmpty() && !nonSplicedActiveNotation.isPresent();
     }
 
     public String getPlainLeadToken() {
@@ -203,7 +205,6 @@ public class Touch {
                 ", callFromBell='" + callFromBell + '\'' +
                 ", sortedNotations=" + sortedNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
-                ", spliced=" + spliced +
                 ", plainLeadToken='" + plainLeadToken + '\'' +
                 ", definitions=" + definitions +
                 ", startChange=" + startChange +
