@@ -37,6 +37,14 @@ public class NotationMutationTest {
     public static final NotationBody METHOD_C_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD C", "16");
     public static final NotationBody METHOD_D_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD D", "18");
 
+    private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
+        return NotationBuilder.getInstance()
+                .setNumberOfWorkingBells(bells)
+                .setName(name)
+                .setUnfoldedNotationShorthand(notation1)
+                .build();
+    }
+
 
     @Test
     public void hasCorrectDefault() throws Exception {
@@ -246,14 +254,6 @@ public class NotationMutationTest {
 
         touch.setNonSplicedActiveNotation(METHOD_A_6_BELL);
         assertEquals(false, touch.get().isSpliced());
-    }
-
-    private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
-        return NotationBuilder.getInstance()
-                .setNumberOfWorkingBells(bells)
-                .setName(name)
-                .setUnfoldedNotationShorthand(notation1)
-                .build();
     }
 
 }

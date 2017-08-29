@@ -19,6 +19,14 @@ public class NumberOfBellsMutationTest {
     public static final NotationBody METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
     public static final NotationBody METHOD_A_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD A", "12");
 
+    private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
+        return NotationBuilder.getInstance()
+                .setNumberOfWorkingBells(bells)
+                .setName(name)
+                .setUnfoldedNotationShorthand(notation1)
+                .build();
+    }
+
 
     @Test
     public void hasCorrectDefault() throws Exception {
@@ -70,14 +78,6 @@ public class NumberOfBellsMutationTest {
 
         touch.setNumberOfBells(NumberOfBells.BELLS_6);
         Assert.assertEquals("METHOD A Minor", touch.get().getNonSplicedActiveNotation().get().getNameIncludingNumberOfBells());
-    }
-
-    private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
-        return NotationBuilder.getInstance()
-                .setNumberOfWorkingBells(bells)
-                .setName(name)
-                .setUnfoldedNotationShorthand(notation1)
-                .build();
     }
 
 }
