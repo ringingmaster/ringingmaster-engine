@@ -2,15 +2,12 @@ package org.ringingmaster.engine.touch.newcontainer;
 
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.MethodRow;
+import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
@@ -22,14 +19,7 @@ import org.ringingmaster.util.smartcompare.SmartCompare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,6 +31,15 @@ import static com.google.common.base.Preconditions.checkState;
  * @author Lake
  */
 public class ObservableTouch {
+
+    public int START_AT_ROW_MAX                         =    10_000;
+    public int TERMINATION_MAX_ROWS_INITIAL_VALUE       =    10_000;
+    public int TERMINATION_MAX_ROWS_MAX                 = 1_000_000;
+    public int TERMINATION_MAX_LEADS_MAX                =    10_000;
+    public int TERMINATION_MAX_PARTS_MAX                =    10_000;
+    public int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE =         2;
+    public int TERMINATION_CIRCULAR_TOUCH_MAX           =   100_000;
+
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private Touch currentTouch = new TouchBuilder().defaults().build();
@@ -404,6 +403,74 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
+    public void setStartAtRow(int startAtRow) {
+        checkState(startAtRow >= 0, "Start at row must be 0 or greater.");
+        checkState(startAtRow <= START_AT_ROW_MAX, "Start at row must be less than or equal to %s", START_AT_ROW_MAX);
+
+
+        if (Objects.equals(currentTouch.getStartAtRow(), startAtRow)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setStartAtRow(startAtRow);
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void setStartStroke(Stroke startStroke) {
+        checkNotNull(startStroke);
+
+        if (Objects.equals(currentTouch.getStartStroke(), startStroke)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setStartStroke(startStroke);
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void setStartNotation(NotationBody startNotation) {
+        checkNotNull(startNotation);
+        checkState(startNotation.getNumberOfWorkingBells() == currentTouch.getNumberOfBells(), "Start Notation number of bells must match touch number of bells");
+
+        if (currentTouch.getStartNotation().isPresent() ||
+                currentTouch.getStartNotation().get().getNotationDisplayString(false).equals(startNotation.getNotationDisplayString(false))) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setStartNotation(Optional.of(startNotation));
+
+        setCurrentTouch(touchBuilder.build());
+
+    }
+
+    public void removeStartNotation() {
+        if (!currentTouch.getStartNotation().isPresent()) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setStartNotation(Optional.empty());
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void setTerminationMaxRows(int terminationMaxRows) {
+        checkState(terminationMaxRows > 0, "Termination max rows must be greater than 0");
+        checkState(terminationMaxRows <= TERMINATION_MAX_ROWS_MAX, "Termination max rows must be less than or equal to %s", TERMINATION_MAX_ROWS_MAX);
+
+        if (Objects.equals(currentTouch.getTerminationMaxRows(), terminationMaxRows)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationMaxRows(terminationMaxRows);
+
+        setCurrentTouch(touchBuilder.build());
+    }
 
 
 }
