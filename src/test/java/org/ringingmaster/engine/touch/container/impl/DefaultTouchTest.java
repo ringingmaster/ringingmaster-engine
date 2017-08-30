@@ -2,8 +2,6 @@ package org.ringingmaster.engine.touch.container.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCheckingType;
 
@@ -121,20 +119,6 @@ public class DefaultTouchTest {
 		Assert.assertEquals(TouchCheckingType.COURSE_BASED, touch.getTouchCheckingType());
 		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
 		Assert.assertEquals(TouchCheckingType.LEAD_BASED, touch.getTouchCheckingType());
-	}
-
-
-	@Test(expected = IllegalStateException.class)
-	public void cantSetInitialRowOfWrongNumber() {
-		DefaultTouch touch = new DefaultTouch();
-		touch.setNumberOfBells(NumberOfBells.BELLS_6);
-		touch.setStartChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_7));
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void cantSetNullInitialRow() {
-		DefaultTouch touch = new DefaultTouch();
-		touch.setStartChange(null);
 	}
 
 }

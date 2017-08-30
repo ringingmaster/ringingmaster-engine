@@ -44,7 +44,7 @@ public class Touch {
     private final int terminationMaxRows;
     private final Optional<Integer> terminationMaxLeads;
     private final Optional<Integer> terminationMaxParts;
-    private final Optional<Integer> terminationMaxCircularTouch;
+    private final int terminationMaxCircularity;
     private final Optional<MethodRow> terminationChange;
 
     public Touch(String title,
@@ -63,7 +63,7 @@ public class Touch {
                  int terminationMaxRows,
                  Optional<Integer> terminationMaxLeads,
                  Optional<Integer> terminationMaxParts,
-                 Optional<Integer> terminationMaxCircularTouch,
+                 int terminationMaxCircularity,
                  Optional<MethodRow> terminationChange) {
         this.title = title;
         this.author = author;
@@ -85,7 +85,7 @@ public class Touch {
         this.terminationMaxRows = terminationMaxRows;
         this.terminationMaxLeads = terminationMaxLeads;
         this.terminationMaxParts = terminationMaxParts;
-        this.terminationMaxCircularTouch = terminationMaxCircularTouch;
+        this.terminationMaxCircularity = terminationMaxCircularity;
         this.terminationChange = terminationChange;
     }
 
@@ -189,8 +189,8 @@ public class Touch {
         return terminationMaxParts;
     }
 
-    public Optional<Integer> getTerminationMaxCircularTouch() {
-        return terminationMaxCircularTouch;
+    public int getTerminationMaxCircularity() {
+        return terminationMaxCircularity;
     }
 
     public Optional<MethodRow> getTerminationChange() {
@@ -216,7 +216,7 @@ public class Touch {
                 ", terminationMaxRows=" + terminationMaxRows +
                 ", terminationMaxLeads=" + terminationMaxLeads +
                 ", terminationMaxParts=" + terminationMaxParts +
-                ", terminationMaxCircularTouch=" + terminationMaxCircularTouch +
+                ", terminationMaxCircularity=" + terminationMaxCircularity +
                 ", terminationChange=" + terminationChange +
             //TODO    ", cells=" + cells +
                 '}';

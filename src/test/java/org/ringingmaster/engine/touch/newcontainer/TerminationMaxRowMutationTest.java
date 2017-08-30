@@ -3,8 +3,8 @@ package org.ringingmaster.engine.touch.newcontainer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.touch.container.Touch.TERMINATION_MAX_ROWS_INITIAL_VALUE;
-import static org.ringingmaster.engine.touch.container.Touch.TERMINATION_MAX_ROWS_MAX;
+import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_ROWS_INITIAL_VALUE;
+import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_ROWS_MAX;
 
 /**
  * TODO Comments

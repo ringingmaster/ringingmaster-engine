@@ -13,8 +13,9 @@ import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
 import java.util.Optional;
 
-import static org.ringingmaster.engine.touch.container.Touch.TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE;
-import static org.ringingmaster.engine.touch.container.Touch.TERMINATION_MAX_ROWS_INITIAL_VALUE;
+import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE;
+import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_ROWS_INITIAL_VALUE;
+
 
 /**
  * TODO Comments
@@ -46,7 +47,7 @@ class TouchBuilder {
     private Optional<Integer> terminationMaxRows = Optional.empty();
     private Optional<Optional<Integer>> terminationMaxLeads = Optional.empty();
     private Optional<Optional<Integer>> terminationMaxParts = Optional.empty();
-    private Optional<Optional<Integer>> terminationMaxCircularTouch = Optional.empty();
+    private Optional<Integer> terminationMaxCircularity = Optional.empty();
     private Optional<Optional<MethodRow>> terminationChange = Optional.empty();
 
 
@@ -76,7 +77,7 @@ class TouchBuilder {
         setTerminationMaxRows(TERMINATION_MAX_ROWS_INITIAL_VALUE);
         setTerminationMaxLeads(Optional.empty());
         setTerminationMaxParts(Optional.empty());
-        setTerminationMaxCircularTouch(Optional.of(TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE));
+        setTerminationMaxCircularity(TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE);
         setTerminationChange(Optional.empty());
 
         return this;
@@ -172,8 +173,8 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setTerminationMaxCircularTouch(Optional<Integer> terminationMaxCircularTouch) {
-        this.terminationMaxCircularTouch = Optional.of(terminationMaxCircularTouch);
+    TouchBuilder setTerminationMaxCircularity(int terminationMaxCircularity) {
+        this.terminationMaxCircularity = Optional.of(terminationMaxCircularity);
         return this;
     }
 
@@ -205,7 +206,7 @@ class TouchBuilder {
                 terminationMaxRows.orElseGet(()->prototype.getTerminationMaxRows()),
                 terminationMaxLeads.orElseGet(()->prototype.getTerminationMaxLeads()),
                 terminationMaxParts.orElseGet(()->prototype.getTerminationMaxParts()),
-                terminationMaxCircularTouch.orElseGet(()->prototype.getTerminationMaxCircularTouch()),
+                terminationMaxCircularity.orElseGet(()->prototype.getTerminationMaxCircularity()),
                 terminationChange.orElseGet(()->prototype.getTerminationChange())
         );
     }
@@ -231,7 +232,7 @@ class TouchBuilder {
                 ", terminationMaxRows=" + terminationMaxRows +
                 ", terminationMaxLeads=" + terminationMaxLeads +
                 ", terminationMaxParts=" + terminationMaxParts +
-                ", terminationMaxCircularTouch=" + terminationMaxCircularTouch +
+                ", terminationMaxCircularity=" + terminationMaxCircularity +
                 ", terminationChange=" + terminationChange +
                 '}';
     }

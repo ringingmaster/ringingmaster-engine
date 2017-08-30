@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * TODO Comments
@@ -32,13 +31,13 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class ObservableTouch {
 
-    public int START_AT_ROW_MAX                         =    10_000;
-    public int TERMINATION_MAX_ROWS_INITIAL_VALUE       =    10_000;
-    public int TERMINATION_MAX_ROWS_MAX                 = 1_000_000;
-    public int TERMINATION_MAX_LEADS_MAX                =    10_000;
-    public int TERMINATION_MAX_PARTS_MAX                =    10_000;
-    public int TERMINATION_CIRCULAR_TOUCH_INITIAL_VALUE =         2;
-    public int TERMINATION_CIRCULAR_TOUCH_MAX           =   100_000;
+    public static final int START_AT_ROW_MAX                                =    10_000;
+    public static final int TERMINATION_MAX_ROWS_INITIAL_VALUE              =    10_000;
+    public static final int TERMINATION_MAX_ROWS_MAX                        =10_000_000;
+    public static final int TERMINATION_MAX_LEADS_MAX                       =   100_000;
+    public static final int TERMINATION_MAX_PARTS_MAX                       =    10_000;
+    public static final int TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE       =         2;
+    public static final int TERMINATION_MAX_CIRCULARITY_MAX                 =    10_000;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -435,7 +434,7 @@ public class ObservableTouch {
         checkNotNull(startNotation);
         checkState(startNotation.getNumberOfWorkingBells() == currentTouch.getNumberOfBells(), "Start Notation number of bells must match touch number of bells");
 
-        if (currentTouch.getStartNotation().isPresent() ||
+        if (currentTouch.getStartNotation().isPresent() &&
                 currentTouch.getStartNotation().get().getNotationDisplayString(false).equals(startNotation.getNotationDisplayString(false))) {
             return;
         }
@@ -472,5 +471,94 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
+    public void setTerminationMaxLeads(int terminationMaxLeads) {
+        checkState(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
+        checkState(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
+
+        if (Objects.equals(currentTouch.getTerminationMaxLeads(), terminationMaxLeads)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationMaxLeads(Optional.of(terminationMaxLeads));
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void removeTerminationMaxLeads() {
+        if (!currentTouch.getTerminationMaxLeads().isPresent()) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationMaxLeads(Optional.empty());
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void setTerminationMaxParts(int terminationMaxParts) {
+        checkState(terminationMaxParts > 0, "Termination max parts must be greater than 0");
+        checkState(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
+
+        if (Objects.equals(currentTouch.getTerminationMaxParts(), terminationMaxParts)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationMaxParts(Optional.of(terminationMaxParts));
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void removeTerminationMaxParts() {
+        if (!currentTouch.getTerminationMaxParts().isPresent()) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationMaxParts(Optional.empty());
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void setTerminationMaxCircularTouch(int terminationCircularTouch) {
+        checkState(terminationCircularTouch > 0, "Termination circular touch must be greater than 0");
+        checkState(terminationCircularTouch <= TERMINATION_MAX_CIRCULARITY_MAX, "Termination circular touch must be less than or equal to %s", TERMINATION_MAX_CIRCULARITY_MAX);
+
+        if (Objects.equals(currentTouch.getTerminationMaxCircularity(), terminationCircularTouch)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationMaxCircularity(terminationCircularTouch);
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void setTerminationChange(MethodRow terminationChange) {
+        checkNotNull(terminationChange, "terminationChange cant be null");
+        checkArgument(terminationChange.getNumberOfBells().equals(currentTouch.getNumberOfBells()));
+
+        if (currentTouch.getTerminationChange().isPresent() &&
+                currentTouch.getTerminationChange().get().equals(terminationChange)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationChange(Optional.of(terminationChange));
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void removeTerminationChange() {
+        if (!currentTouch.getTerminationChange().isPresent()) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setTerminationChange(Optional.empty());
+
+        setCurrentTouch(touchBuilder.build());
+    }
 
 }
