@@ -1,10 +1,10 @@
-package org.ringingmaster.engine.touch.container;
+package org.ringingmaster.engine.touch.newcontainer.checkingtype;
 
 /**
  * TODO comments???
  * User: Stephen
  */
-public enum TouchCheckingType {
+public enum CheckingType {
 
 	/** Uses calling positions. i.e. W B M H*/
 	COURSE_BASED("Course Based"),
@@ -14,7 +14,7 @@ public enum TouchCheckingType {
 
 	private final String name;
 
-	TouchCheckingType(String name) {
+	CheckingType(String name) {
 		this.name = name;
 	}
 

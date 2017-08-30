@@ -9,7 +9,7 @@ import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import org.ringingmaster.engine.touch.compiler.Compiler;
 import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import com.google.common.collect.ImmutableList;
 import net.jcip.annotations.ThreadSafe;
     import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 
 	CourseBasedCompiler(Touch touch, String logPreamble) {
 		super(touch, logPreamble);
-		checkArgument(touch.getTouchCheckingType() == TouchCheckingType.COURSE_BASED, "Course based compiler must use a COURSE_BASED touch. Is actually [" + touch.getTouchCheckingType() + "]");
+		checkArgument(touch.getCheckingType() == CheckingType.COURSE_BASED, "Course based compiler must use a COURSE_BASED touch. Is actually [" + touch.getCheckingType() + "]");
 		callFromBell = touch.getCallFromBell();
 	}
 

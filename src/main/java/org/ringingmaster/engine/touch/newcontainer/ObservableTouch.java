@@ -12,7 +12,7 @@ import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 import org.ringingmaster.engine.touch.newcontainer.element.ElementBuilder;
@@ -140,15 +140,15 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    void setTouchCheckingType(TouchCheckingType touchCheckingType) {
-        checkNotNull(touchCheckingType);
+    void setTouchCheckingType(CheckingType checkingType) {
+        checkNotNull(checkingType);
 
-        if (Objects.equals(currentTouch.getTouchCheckingType(), touchCheckingType)) {
+        if (Objects.equals(currentTouch.getCheckingType(), checkingType)) {
             return;
         }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setTouchCheckingType(touchCheckingType);
+                .setTouchCheckingType(checkingType);
 
         setCurrentTouch(touchBuilder.build());
     }

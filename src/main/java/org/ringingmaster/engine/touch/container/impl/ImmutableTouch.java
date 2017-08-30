@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.grid.Grid;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.container.TouchDefinition;
 import org.ringingmaster.engine.touch.container.TouchElement;
 import net.jcip.annotations.Immutable;
@@ -67,8 +67,8 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public TouchCheckingType getTouchCheckingType() {
-		return touch.getTouchCheckingType();
+	public CheckingType getCheckingType() {
+		return touch.getCheckingType();
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class ImmutableTouch implements Touch {
 	}
 
 	@Override
-	public Mutated setTouchCheckingType(TouchCheckingType touchCheckingType) {
+	public Mutated setTouchCheckingType(CheckingType checkingType) {
 		throw new UnsupportedOperationException("ImmutableTouch does not support this operation");
 	}
 

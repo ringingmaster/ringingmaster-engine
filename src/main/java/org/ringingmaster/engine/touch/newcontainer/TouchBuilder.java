@@ -8,7 +8,7 @@ import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
 import java.util.Optional;
@@ -30,7 +30,7 @@ class TouchBuilder {
     private Optional<String> author = Optional.empty();
 
     private Optional<NumberOfBells> numberOfBells = Optional.empty();
-    private Optional<TouchCheckingType> touchCheckingType = Optional.empty();
+    private Optional<CheckingType> touchCheckingType = Optional.empty();
 
     private Optional<Bell> callFromBell = Optional.empty();
     private Optional<ImmutableList<NotationBody>> sortedNotations = Optional.empty();
@@ -60,7 +60,7 @@ class TouchBuilder {
         setAuthor("");
 
         setNumberOfBells(NumberOfBells.BELLS_6);
-        setTouchCheckingType(TouchCheckingType.COURSE_BASED);
+        setTouchCheckingType(CheckingType.COURSE_BASED);
 
         setCallFromBell(numberOfBells.get().getTenor());
         setSortedNotations(ImmutableList.of());
@@ -103,8 +103,8 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setTouchCheckingType(TouchCheckingType touchCheckingType) {
-        this.touchCheckingType = Optional.of(touchCheckingType);
+    TouchBuilder setTouchCheckingType(CheckingType checkingType) {
+        this.touchCheckingType = Optional.of(checkingType);
         return this;
     }
 
@@ -189,7 +189,7 @@ class TouchBuilder {
                 author.orElseGet(()->prototype.getAuthor()),
 
                 numberOfBells.orElseGet(()->prototype.getNumberOfBells()),
-                touchCheckingType.orElseGet(()->prototype.getTouchCheckingType()),
+                touchCheckingType.orElseGet(()->prototype.getCheckingType()),
 
                 callFromBell.orElseGet(()->prototype.getCallFromBell()),
                 sortedNotations.orElseGet(()->prototype.getAllNotations()),

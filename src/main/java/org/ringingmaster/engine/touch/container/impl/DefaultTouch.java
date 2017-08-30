@@ -13,7 +13,7 @@ import org.ringingmaster.engine.grid.Grid;
 import org.ringingmaster.engine.grid.GridCellFactory;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.container.TouchDefinition;
 import org.ringingmaster.engine.touch.container.TouchElement;
 import com.google.common.base.Objects;
@@ -60,7 +60,7 @@ public class DefaultTouch implements Touch {
 	private String author;
 
 	private NumberOfBells numberOfBells;
-	private TouchCheckingType touchCheckingType;
+	private CheckingType checkingType;
 
 	private Bell callFromBell;
 	private final List<NotationBody> sortedNotations;
@@ -89,7 +89,7 @@ public class DefaultTouch implements Touch {
 		author = "";
 
 		numberOfBells = NumberOfBells.BELLS_6;
-		touchCheckingType = TouchCheckingType.COURSE_BASED;
+		checkingType = CheckingType.COURSE_BASED;
 
 		callFromBell = numberOfBells.getTenor();
 		sortedNotations = new ArrayList<>();
@@ -119,7 +119,7 @@ public class DefaultTouch implements Touch {
 		touchClone.author = this.author;
 
 		touchClone.numberOfBells = numberOfBells;
-		touchClone.touchCheckingType = this.touchCheckingType;
+		touchClone.checkingType = this.checkingType;
 
 		touchClone.callFromBell = callFromBell;
 		touchClone.sortedNotations.addAll(this.sortedNotations);
@@ -239,15 +239,15 @@ public class DefaultTouch implements Touch {
 	}
 
 	@Override
-	public TouchCheckingType getTouchCheckingType() {
-		return touchCheckingType;
+	public CheckingType getCheckingType() {
+		return checkingType;
 	}
 
 	@Override
-	public Mutated setTouchCheckingType(TouchCheckingType touchCheckingType) {
-		if (this.touchCheckingType != touchCheckingType) {
-			this.touchCheckingType = checkNotNull(touchCheckingType);
-			log.debug("[{}] Set touch type [{}]", this.title, this.touchCheckingType.getName());
+	public Mutated setTouchCheckingType(CheckingType checkingType) {
+		if (this.checkingType != checkingType) {
+			this.checkingType = checkNotNull(checkingType);
+			log.debug("[{}] Set touch type [{}]", this.title, this.checkingType.getName());
 			return MUTATED;
 		}
 		return UNCHANGED;
@@ -813,7 +813,7 @@ public class DefaultTouch implements Touch {
 				0,
 				(isSpliced() ? (cells.getColumnCount() - 1) : cells.getColumnCount()),
 				0,
-				(getTouchCheckingType() == TouchCheckingType.COURSE_BASED ? 1 : 0));
+				(getCheckingType() == CheckingType.COURSE_BASED ? 1 : 0));
 	}
 
 	@Override
@@ -821,7 +821,7 @@ public class DefaultTouch implements Touch {
 		return cells.unmodifiableSubGrid(
 				0,
 				(isSpliced() ? (cells.getColumnCount() - 1) : cells.getColumnCount()),
-				(getTouchCheckingType() == TouchCheckingType.COURSE_BASED ? 1 : 0),
+				(getCheckingType() == CheckingType.COURSE_BASED ? 1 : 0),
 				cells.getRowCount());
 	}
 
@@ -830,7 +830,7 @@ public class DefaultTouch implements Touch {
 		return cells.unmodifiableSubGrid(
 				(isSpliced() ? (cells.getColumnCount() - 1) : cells.getColumnCount()),
 				cells.getColumnCount(),
-				(getTouchCheckingType() == TouchCheckingType.COURSE_BASED ? 1 : 0),
+				(getCheckingType() == CheckingType.COURSE_BASED ? 1 : 0),
 				cells.getRowCount());
 	}
 
@@ -905,7 +905,7 @@ public class DefaultTouch implements Touch {
 				"title='" + title + '\'' +
 				", author=" + author +
 				", numberOfBells='" + numberOfBells + '\'' +
-				", touchType=" + touchCheckingType +
+				", touchType=" + checkingType +
 				", callFromBell='" + callFromBell + '\'' +
 				", sortedNotations=" + sortedNotations +
 				", nonSplicedActiveNotation=" + nonSplicedActiveNotation +

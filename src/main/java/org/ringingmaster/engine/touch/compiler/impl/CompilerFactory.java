@@ -15,7 +15,7 @@ public class CompilerFactory {
 	}
 
 	public static Compiler getInstance(Touch touch, String logPreamble) {
-		switch (touch.getTouchCheckingType()) {
+		switch (touch.getCheckingType()) {
 			case LEAD_BASED:
 				return new LeadBasedCompiler(touch, logPreamble);
 			case COURSE_BASED:

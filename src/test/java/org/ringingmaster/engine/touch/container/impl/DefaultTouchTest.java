@@ -3,7 +3,7 @@ package org.ringingmaster.engine.touch.container.impl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -116,9 +116,9 @@ public class DefaultTouchTest {
 	@Test
 	public void canSetCallingStyle() {
 		DefaultTouch touch = new DefaultTouch();
-		Assert.assertEquals(TouchCheckingType.COURSE_BASED, touch.getTouchCheckingType());
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
-		Assert.assertEquals(TouchCheckingType.LEAD_BASED, touch.getTouchCheckingType());
+		Assert.assertEquals(CheckingType.COURSE_BASED, touch.getCheckingType());
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+		Assert.assertEquals(CheckingType.LEAD_BASED, touch.getCheckingType());
 	}
 
 }

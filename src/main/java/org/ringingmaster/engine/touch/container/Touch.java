@@ -7,6 +7,7 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import net.jcip.annotations.NotThreadSafe;
 import org.ringingmaster.engine.grid.Grid;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,8 +42,8 @@ public interface Touch extends Cloneable {
 	String getAuthor();
 	Mutated setAuthor(String author);
 
-	TouchCheckingType getTouchCheckingType();
-	Mutated setTouchCheckingType(TouchCheckingType touchCheckingType);
+	CheckingType getCheckingType();
+	Mutated setTouchCheckingType(CheckingType checkingType);
 
 	NumberOfBells getNumberOfBells();
 	Mutated setNumberOfBells(NumberOfBells numberOfBells);

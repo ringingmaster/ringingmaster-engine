@@ -9,7 +9,7 @@ import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.touch.parser.ParseType;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.container.impl.DefaultTouch;
 import org.ringingmaster.engine.touch.container.impl.TouchBuilder;
 
@@ -41,7 +41,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyParsesSpliceToken() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.addCharacters(0, 0, "-p-");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setSpliced(true);
@@ -53,7 +53,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyParsesSimpleCallPosition() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.COURSE_BASED);
+		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
 		touch.addCharacters(0, 0, "W");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setSpliced(false);
@@ -65,7 +65,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void ignoreSecondCallingPositionInCell() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.COURSE_BASED);
+		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
 		touch.addCharacters(0, 0, "HW");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setSpliced(false);
@@ -78,7 +78,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void ignoreOtherStuffInCallingPositionCell() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.COURSE_BASED);
+		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
 		touch.addCharacters(0, 0, "bHd");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setSpliced(false);
@@ -95,7 +95,7 @@ public class DefaultTouchParserTest {
 		touch.addCharacters(0, 0, "-p-");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setSpliced(false);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		new DefaultParser().parseAndAnnotate(touch);
 
 		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.PLAIN_LEAD, ParseType.CALL);
@@ -104,7 +104,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyParsesDefinitionToken() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.addCharacters(0, 0, "-z-");
 		touch.addNotation(buildPlainBobMinor());
 		touch.addDefinition("z", "-s");
@@ -118,7 +118,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyAllocatedOverlappingParsings() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.addCharacters(0, 0, "Bob");
 		touch.setPlainLeadToken("b"); // the same as the last 'b' in Bob
 		touch.addNotation(buildPlainBobMinor());
@@ -132,7 +132,7 @@ public class DefaultTouchParserTest {
 		touch.addCharacters(0, 0, "Bobb");
 		touch.setPlainLeadToken("b"); // the same as the last 'b' in Bob
 		touch.addNotation(buildPlainBobMinor());
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		new DefaultParser().parseAndAnnotate(touch);
 		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.CALL, ParseType.CALL, ParseType.PLAIN_LEAD);
 	}
@@ -233,7 +233,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyParseDefinitionMultiplier() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.addCharacters(0, 0, "2z");
 		touch.addNotation(buildPlainBobMinor());
 		touch.addDefinition("z", "-s");
@@ -244,7 +244,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyParseMultiDefinitionMultiplier() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.addCharacters(0, 0, "92z");
 		touch.addNotation(buildPlainBobMinor());
 		touch.addDefinition("z", "-s");
@@ -255,7 +255,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyParseSpliceMultiplier() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.addCharacters(0, 0, "2p");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setSpliced(true);
@@ -267,7 +267,7 @@ public class DefaultTouchParserTest {
 	@Test
 	public void correctlyParseMultiSpliceMultiplier() {
 		DefaultTouch touch = (DefaultTouch) TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.addCharacters(0, 0, "392p");
 		touch.addNotation(buildPlainBobMinor());
 		touch.setSpliced(true);
@@ -280,7 +280,7 @@ public class DefaultTouchParserTest {
 		Touch touch = TouchBuilder.getInstance(notationBody.getNumberOfWorkingBells(), 1, 1);
 		touch.addCharacters(0, 0, characters);
 		touch.addNotation(notationBody);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		new DefaultParser().parseAndAnnotate(touch);
 		return (DefaultTouch) touch;
 	}

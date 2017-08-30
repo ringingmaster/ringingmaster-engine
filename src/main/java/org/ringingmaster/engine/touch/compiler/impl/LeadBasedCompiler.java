@@ -6,7 +6,7 @@ import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.touch.compiler.Compiler;
 import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +31,12 @@ public class LeadBasedCompiler extends SkeletalCompiler<LeadBasedDecomposedCall>
 
 	LeadBasedCompiler(Touch touch) {
 		super(touch, "");
-		checkArgument(touch.getTouchCheckingType() == TouchCheckingType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getTouchCheckingType() + "]");
+		checkArgument(touch.getCheckingType() == CheckingType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getCheckingType() + "]");
 	}
 
 	LeadBasedCompiler(Touch touch, String logPreamble) {
 		super(touch, logPreamble);
-		checkArgument(touch.getTouchCheckingType() == TouchCheckingType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getTouchCheckingType() + "]");
+		checkArgument(touch.getCheckingType() == CheckingType.LEAD_BASED, "Lead based compiler must use a LEAD_BASED touch. Is actually [" + touch.getCheckingType() + "]");
 	}
 
 	@Override

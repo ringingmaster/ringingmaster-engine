@@ -9,7 +9,7 @@ import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
 import java.util.Optional;
@@ -28,7 +28,7 @@ public class Touch {
     private final String author;
 
     private final NumberOfBells numberOfBells;
-    private final TouchCheckingType touchCheckingType;
+    private final CheckingType checkingType;
 
     private final Bell callFromBell;
     private final ImmutableList<NotationBody> sortedNotations;
@@ -50,7 +50,7 @@ public class Touch {
     public Touch(String title,
                  String author,
                  NumberOfBells numberOfBells,
-                 TouchCheckingType touchCheckingType,
+                 CheckingType checkingType,
                  Bell callFromBell,
                  ImmutableList<NotationBody> sortedNotations,
                  Optional<NotationBody> nonSplicedActiveNotation,
@@ -69,7 +69,7 @@ public class Touch {
         this.author = author;
 
         this.numberOfBells = numberOfBells;
-        this.touchCheckingType = touchCheckingType;
+        this.checkingType = checkingType;
 
         this.callFromBell = callFromBell;
         this.sortedNotations = sortedNotations;
@@ -102,8 +102,8 @@ public class Touch {
         return numberOfBells;
     }
 
-    public TouchCheckingType getTouchCheckingType() {
-        return touchCheckingType;
+    public CheckingType getCheckingType() {
+        return checkingType;
     }
 
     public Bell getCallFromBell() {
@@ -203,7 +203,7 @@ public class Touch {
                 "title='" + title + '\'' +
                 ", author=" + author +
                 ", numberOfBells='" + numberOfBells + '\'' +
-                ", touchType=" + touchCheckingType +
+                ", touchType=" + checkingType +
                 ", callFromBell='" + callFromBell + '\'' +
                 ", sortedNotations=" + sortedNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +

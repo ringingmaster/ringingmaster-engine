@@ -4,7 +4,7 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 
 /**
  * TODO comments???
@@ -39,7 +39,7 @@ public class TouchBuilder {
 		touch.setColumnCount(1);
 		touch.setRowCount(1);
 		touch.addNotation(notationBody);
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.setTerminationChange(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
 		touch.setTerminationMaxLeads(Touch.TERMINATION_MAX_LEADS_MAX);
 		touch.setTerminationMaxRows(Touch.TERMINATION_MAX_ROWS_MAX);

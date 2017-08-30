@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
 import org.junit.Test;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,22 +10,22 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Lake
  */
-public class TouchCheckingTypeMutationTest {
+public class CheckingTypeMutationTest {
 
     @Test
     public void hasCorrectDefault() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
 
-        assertEquals(TouchCheckingType.COURSE_BASED, touch.get().getTouchCheckingType());
+        assertEquals(CheckingType.COURSE_BASED, touch.get().getCheckingType());
     }
 
     @Test
     public void changeIsReflected() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
-        touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 
-        assertEquals(TouchCheckingType.LEAD_BASED, touch.get().getTouchCheckingType());
+        assertEquals(CheckingType.LEAD_BASED, touch.get().getCheckingType());
     }
 }

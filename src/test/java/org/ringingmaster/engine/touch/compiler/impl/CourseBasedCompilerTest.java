@@ -11,7 +11,7 @@ import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import org.ringingmaster.engine.touch.proof.Proof;
 import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.container.impl.TouchBuilder;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
@@ -55,7 +55,7 @@ public class CourseBasedCompilerTest {
 		Touch touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, width, height);
 		touch.setTitle("Test Touch");
 		touch.addNotation(buildPlainBobMinor());
-		touch.setTouchCheckingType(TouchCheckingType.COURSE_BASED);
+		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
 		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
 		return touch;
 	}

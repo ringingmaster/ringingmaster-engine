@@ -14,7 +14,7 @@ import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import org.ringingmaster.engine.touch.proof.Proof;
 import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.TouchCheckingType;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.variance.impl.SpecifiedPartsVariance;
 import org.ringingmaster.engine.touch.container.impl.TouchBuilder;
 import org.ringingmaster.engine.touch.newcontainer.variance.VarianceLogicType;
@@ -171,7 +171,7 @@ public class LeadBasedCompilerTest {
 		try {
 			touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
 			touch.setTerminationMaxRows(10);
-			touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+			touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		} catch (Exception e) {
 			fail();
 		}
@@ -254,7 +254,7 @@ public class LeadBasedCompilerTest {
 	private Touch buildPlainBobMinorTouchShell() {
 		Touch touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
 		touch.addNotation(buildPlainBobMinor());
-		touch.setTouchCheckingType(TouchCheckingType.LEAD_BASED);
+		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
 		touch.setPlainLeadToken("p");
 		return touch;
