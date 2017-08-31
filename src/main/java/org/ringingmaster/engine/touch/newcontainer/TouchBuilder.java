@@ -2,12 +2,14 @@ package org.ringingmaster.engine.touch.newcontainer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableTable;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
+import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
@@ -50,6 +52,8 @@ class TouchBuilder {
     private Optional<Integer> terminationMaxCircularity = Optional.empty();
     private Optional<Optional<MethodRow>> terminationChange = Optional.empty();
 
+    private Optional<ImmutableTable<Integer, Integer, Cell>> cells  = Optional.empty();
+
 
     /**
      * Sets the standard out the box defauts using the standard setters
@@ -79,6 +83,8 @@ class TouchBuilder {
         setTerminationMaxParts(Optional.empty());
         setTerminationMaxCircularity(TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE);
         setTerminationChange(Optional.empty());
+
+        setCells(ImmutableTable.of());
 
         return this;
     }
@@ -183,6 +189,12 @@ class TouchBuilder {
         return this;
     }
 
+    TouchBuilder setCells(ImmutableTable<Integer, Integer, Cell> cells) {
+        this.cells = Optional.of(cells);
+        return this;
+    }
+
+
     Touch build() {
         return new Touch(
                 title.orElseGet(()->prototype.getTitle()),
@@ -207,7 +219,9 @@ class TouchBuilder {
                 terminationMaxLeads.orElseGet(()->prototype.getTerminationMaxLeads()),
                 terminationMaxParts.orElseGet(()->prototype.getTerminationMaxParts()),
                 terminationMaxCircularity.orElseGet(()->prototype.getTerminationMaxCircularity()),
-                terminationChange.orElseGet(()->prototype.getTerminationChange())
+                terminationChange.orElseGet(()->prototype.getTerminationChange()),
+
+                cells.orElseGet(()->prototype.getCells())
         );
     }
 
@@ -234,6 +248,7 @@ class TouchBuilder {
                 ", terminationMaxParts=" + terminationMaxParts +
                 ", terminationMaxCircularity=" + terminationMaxCircularity +
                 ", terminationChange=" + terminationChange +
+                ", cells=" + cells +
                 '}';
     }
 }

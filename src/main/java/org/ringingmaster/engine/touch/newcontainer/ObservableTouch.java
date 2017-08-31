@@ -12,6 +12,7 @@ import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
@@ -573,6 +574,26 @@ public class ObservableTouch {
                 .setTerminationChange(Optional.empty());
 
         setCurrentTouch(touchBuilder.build());
+    }
+
+    public void addCharacters(int columnIndex, int rowIndex, String characters) {
+        checkState(currentTouch.getRowCount() >= rowIndex);
+        checkState(currentTouch.getColumnCount() >= columnIndex);
+        checkNotNull(characters);
+
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.getCells());
+        Cell cell = cells.get(rowIndex, columnIndex);
+
+        if (cell == null) {
+            // insert a new cell.
+//TODO              cells.put(rowIndex, columnIndex, new Cell());
+        }
+        else {
+
+        }
+
+//        TouchCell cell = cells.getCell(columnIndex, rowIndex);
+//        cell.add(characters);
     }
 
 }

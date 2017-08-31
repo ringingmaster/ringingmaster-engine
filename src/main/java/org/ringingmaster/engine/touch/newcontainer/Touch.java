@@ -2,6 +2,7 @@ package org.ringingmaster.engine.touch.newcontainer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableTable;
 import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Bell;
@@ -9,6 +10,7 @@ import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
+import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
@@ -47,6 +49,8 @@ public class Touch {
     private final int terminationMaxCircularity;
     private final Optional<MethodRow> terminationChange;
 
+    private final ImmutableTable<Integer, Integer, Cell> cells;
+
     public Touch(String title,
                  String author,
                  NumberOfBells numberOfBells,
@@ -64,7 +68,8 @@ public class Touch {
                  Optional<Integer> terminationMaxLeads,
                  Optional<Integer> terminationMaxParts,
                  int terminationMaxCircularity,
-                 Optional<MethodRow> terminationChange) {
+                 Optional<MethodRow> terminationChange,
+                 ImmutableTable<Integer, Integer, Cell> cells) {
         this.title = title;
         this.author = author;
 
@@ -87,6 +92,7 @@ public class Touch {
         this.terminationMaxParts = terminationMaxParts;
         this.terminationMaxCircularity = terminationMaxCircularity;
         this.terminationChange = terminationChange;
+        this.cells = cells;
     }
 
 
@@ -192,6 +198,21 @@ public class Touch {
         return terminationChange;
     }
 
+    /**
+     * Not for public use
+     */
+    ImmutableTable<Integer, Integer, Cell> getCells() {
+        return cells;
+    }
+
+    public int getColumnCount() {
+        return cells.columnKeySet().size();
+    }
+
+    public int getRowCount() {
+        return cells.rowKeySet().size();
+    }
+
     @Override
     public String toString() {
         return "Touch{" +
@@ -213,7 +234,7 @@ public class Touch {
                 ", terminationMaxParts=" + terminationMaxParts +
                 ", terminationMaxCircularity=" + terminationMaxCircularity +
                 ", terminationChange=" + terminationChange +
-            //TODO    ", cells=" + cells +
+                ", cells=" + cells +
                 '}';
     }
 }
