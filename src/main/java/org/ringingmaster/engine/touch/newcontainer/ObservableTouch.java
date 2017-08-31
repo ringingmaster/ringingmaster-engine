@@ -32,13 +32,13 @@ import static com.google.common.base.Preconditions.*;
  */
 public class ObservableTouch {
 
-    public static final int START_AT_ROW_MAX                                =    10_000;
-    public static final int TERMINATION_MAX_ROWS_INITIAL_VALUE              =    10_000;
-    public static final int TERMINATION_MAX_ROWS_MAX                        =10_000_000;
-    public static final int TERMINATION_MAX_LEADS_MAX                       =   100_000;
-    public static final int TERMINATION_MAX_PARTS_MAX                       =    10_000;
-    public static final int TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE       =         2;
-    public static final int TERMINATION_MAX_CIRCULARITY_MAX                 =    10_000;
+    public static final int START_AT_ROW_MAX                                =     10_000;
+    public static final int TERMINATION_MAX_ROWS_INITIAL_VALUE              =     10_000;
+    public static final int TERMINATION_MAX_ROWS_MAX                        = 10_000_000;
+    public static final int TERMINATION_MAX_LEADS_MAX                       =    100_000;
+    public static final int TERMINATION_MAX_PARTS_MAX                       =     10_000;
+    public static final int TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE       =          2;
+    public static final int TERMINATION_MAX_CIRCULARITY_MAX                 =     10_000;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -137,6 +137,8 @@ public class ObservableTouch {
 
         setCurrentTouch(touchBuilder.build());
     }
+
+    //TODO need a checkNumberOfBells to drive UI
 
     void setTouchCheckingType(CheckingType checkingType) {
         checkNotNull(checkingType);
