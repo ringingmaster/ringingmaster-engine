@@ -128,12 +128,7 @@ public class Touch {
         }
         else {
             // Not Spliced
-            if (nonSplicedActiveNotation.isPresent()) {
-                return ImmutableList.of(nonSplicedActiveNotation.get());
-            }
-            else {
-                return ImmutableList.of();
-            }
+            return nonSplicedActiveNotation.map(ImmutableList::of).orElseGet(ImmutableList::of);
         }
     }
 
