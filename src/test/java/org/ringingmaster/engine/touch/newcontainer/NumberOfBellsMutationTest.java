@@ -1,12 +1,13 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 /**
@@ -18,6 +19,7 @@ public class NumberOfBellsMutationTest {
 
     public static final NotationBody METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
     public static final NotationBody METHOD_A_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD A", "12");
+    public static final NotationBody METHOD_B_8_BELL = buildNotation(NumberOfBells.BELLS_8, "METHOD B", "78");
 
     private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
         return NotationBuilder.getInstance()
@@ -56,16 +58,46 @@ public class NumberOfBellsMutationTest {
     @Test
     public void whenTerminationChangeExistsChangeIsReflected() throws Exception {
 
-        //TODO
-        fail();
+        ObservableTouch touch = new ObservableTouch();
+        touch.setSpliced(false);
+        touch.setNumberOfBells(NumberOfBells.BELLS_8);
+
+        touch.setTerminationChange(MethodBuilder.parse(NumberOfBells.BELLS_8, "87654321"));
+        assertEquals("87654321", touch.get().getTerminationChange().get().getDisplayString(false));
+
+        touch.setNumberOfBells(NumberOfBells.BELLS_6);
+        assertEquals("654321", touch.get().getTerminationChange().get().getDisplayString(false));
     }
 
     @Test
-    public void whenStartNotationExistsChangeIsReflected() throws Exception {
+    public void whenStartNotationExistsAndConversionPossibleStartNotationChanged() throws Exception {
 
-        //TODO
-        fail();
+        ObservableTouch touch = new ObservableTouch();
+        touch.setSpliced(false);
+        touch.setNumberOfBells(NumberOfBells.BELLS_8);
+
+        touch.setStartNotation(METHOD_A_8_BELL);
+        assertEquals("12", touch.get().getStartNotation().get().getNotationDisplayString(false));
+
+        touch.setNumberOfBells(NumberOfBells.BELLS_6);
+        assertEquals("12", touch.get().getStartNotation().get().getNotationDisplayString(false));
+        assertEquals(NumberOfBells.BELLS_6, touch.get().getStartNotation().get().getNumberOfWorkingBells());
     }
+
+    @Test
+    public void whenStartNotationExistsAndConversionNotPossibleStartNotationRemoved() throws Exception {
+
+        ObservableTouch touch = new ObservableTouch();
+        touch.setSpliced(false);
+        touch.setNumberOfBells(NumberOfBells.BELLS_8);
+
+        touch.setStartNotation(METHOD_B_8_BELL);
+        assertEquals("78", touch.get().getStartNotation().get().getNotationDisplayString(false));
+
+        touch.setNumberOfBells(NumberOfBells.BELLS_6);
+        assertFalse(touch.get().getStartNotation().isPresent());
+    }
+
     @Test
     public void settingNumberOfBellsResetsActiveNotation() {
         ObservableTouch touch = new ObservableTouch();
@@ -74,10 +106,10 @@ public class NumberOfBellsMutationTest {
         touch.addNotation(METHOD_A_8_BELL);
         touch.addNotation(METHOD_A_6_BELL);
 
-        Assert.assertEquals("METHOD A Major", touch.get().getNonSplicedActiveNotation().get().getNameIncludingNumberOfBells());
+        assertEquals("METHOD A Major", touch.get().getNonSplicedActiveNotation().get().getNameIncludingNumberOfBells());
 
         touch.setNumberOfBells(NumberOfBells.BELLS_6);
-        Assert.assertEquals("METHOD A Minor", touch.get().getNonSplicedActiveNotation().get().getNameIncludingNumberOfBells());
+        assertEquals("METHOD A Minor", touch.get().getNonSplicedActiveNotation().get().getNameIncludingNumberOfBells());
     }
 
 }

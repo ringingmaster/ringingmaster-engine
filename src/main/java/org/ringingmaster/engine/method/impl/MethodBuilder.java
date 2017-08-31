@@ -46,20 +46,20 @@ public class MethodBuilder {
 		return row;
 	}
 
-	public static MethodRow parse(final NumberOfBells numberOfBells, final String s) {
-		return  parse(numberOfBells, s, 0, Stroke.HANDSTROKE);
+	public static MethodRow parse(final NumberOfBells numberOfBells, final String parseString) {
+		return  parse(numberOfBells, parseString, 0, Stroke.HANDSTROKE);
 	}
 
-	public static MethodRow parse(final NumberOfBells numberOfBells, final String s, int rowNumber, Stroke stroke) {
+	public static MethodRow parse(final NumberOfBells numberOfBells, final String parseString, int rowNumber, Stroke stroke) {
 		checkNotNull(numberOfBells, "numberOfBells can't be null");
-		checkNotNull(s, "parse string can't be null");
-		checkState(numberOfBells.toInt() == s.length(), "You must enter a [%s] character sequence", numberOfBells.toInt());
+		checkNotNull(parseString, "parse string can't be null");
+		checkState(numberOfBells.toInt() == parseString.length(), "You must enter a [%s] character sequence", numberOfBells.toInt());
 
 		final Bell[] bells = new Bell[numberOfBells.toInt()];
 		final Set<Bell> duplicateCheck = new HashSet<>();
 
 		for (int i = 0; i<numberOfBells.toInt(); i++) {
-			final String character = String.valueOf(s.charAt(i));
+			final String character = String.valueOf(parseString.charAt(i));
 			Bell bell = Bell.valueOfMnemonic(character);
 			checkState(bell != null, "Character [%s] is invalid.", character);
 			checkState(bell.getZeroBasedBell() < numberOfBells.toInt(), "Character [%s] is invalid for [%s] bell row.", character, numberOfBells.toInt());

@@ -128,12 +128,10 @@ public class ObservableTouch {
                     .setNumberOfWorkingBells(numberOfBells)
                     .setUnfoldedNotationShorthand(originalNotation)
                     .build();
-            if (!originalNotation.equals(builtNotation.getNotationDisplayString(false))) {
-                if (builtNotation.getRowCount() == 0) {
-                    touchBuilder.setStartNotation(Optional.empty());
-                } else {
-                    touchBuilder.setStartNotation(Optional.of(builtNotation));
-                }
+            if (builtNotation.getRowCount() == 0) {
+                touchBuilder.setStartNotation(Optional.empty());
+            } else {
+                touchBuilder.setStartNotation(Optional.of(builtNotation));
             }
         }
 
