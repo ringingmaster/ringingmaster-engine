@@ -24,7 +24,10 @@ public class CellMutationTest {
     public void addingCellChangesRowCount() {
         ObservableTouch touch = new ObservableTouch();
 
-        //TODO touch.
+        touch.addCharacters(0,0, "ABC");
+
+        assertEquals(1, touch.get().getColumnCount());
+        assertEquals(1, touch.get().getRowCount());
     }
 
 }

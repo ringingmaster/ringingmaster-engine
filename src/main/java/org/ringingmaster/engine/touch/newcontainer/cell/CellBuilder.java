@@ -1,8 +1,9 @@
 package org.ringingmaster.engine.touch.newcontainer.cell;
 
+import com.google.common.collect.Lists;
 import org.ringingmaster.engine.touch.newcontainer.element.ElementBuilder;
 
-import java.util.Optional;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -14,7 +15,7 @@ import static com.google.common.base.Preconditions.checkState;
 public class CellBuilder {
 
     private Cell prototype;
-    private List<> charactersToAdd;
+    private List<CharacterChange> characterChanges = Lists.newArrayList();
 
     public CellBuilder defaults() {
         add("");
@@ -26,18 +27,38 @@ public class CellBuilder {
         return this;
     }
 
-    public CellBuilder add(String charactersToAdd) {
-        this.charactersToAdd = Optional.of(charactersToAdd);
+    public CellBuilder add(String characters) {
+        this.characterChanges.add(new CharacterChange(0, characters));
         return this;
     }
 
-    public CellBuilder insert(int index, String charactersToAdd) {
+    public CellBuilder insert(int index, String characters) {
         checkState(index >= 0);
-        this.charactersToAdd = Optional.of(charactersToAdd);
+        this.characterChanges.add(new CharacterChange(index, characters));
         return this;
     }
 
-    Cell build() {
-        return new Cell(ElementBuilder.createElements(charactersToAdd.orElseGet(() -> prototype.getCharacters())));
+    public Cell build() {
+        StringBuffer buff = new StringBuffer();
+        if (prototype != null) {
+            buff.append(prototype.getCharacters());
+        }
+
+        for (CharacterChange characterChange : characterChanges) {
+            buff.insert(characterChange.index, characterChange.characters);
+        }
+
+        return new Cell(ElementBuilder.createElements(buff.toString()));
+    }
+
+    private class CharacterChange {
+
+        final int index;
+        final String characters;
+
+        private CharacterChange(int index, String characters) {
+            this.index = index;
+            this.characters = characters;
+        }
     }
 }

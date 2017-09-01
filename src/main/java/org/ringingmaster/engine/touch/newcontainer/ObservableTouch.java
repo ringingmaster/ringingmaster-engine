@@ -13,6 +13,7 @@ import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
@@ -582,18 +583,25 @@ public class ObservableTouch {
         checkNotNull(characters);
 
         Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.getCells());
-        Cell cell = cells.get(rowIndex, columnIndex);
+        Cell currentCell = cells.get(rowIndex, columnIndex);
 
-        if (cell == null) {
+        if (currentCell == null) {
             // insert a new cell.
-//TODO              cells.put(rowIndex, columnIndex, new Cell());
+            Cell cell = new CellBuilder()
+                    .defaults()
+                    .add(characters)
+                    .build();
+            cells.put(rowIndex, columnIndex, cell);
         }
         else {
 
         }
 
-//        TouchCell cell = cells.getCell(columnIndex, rowIndex);
-//        cell.add(characters);
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setCells(ImmutableTable.copyOf(cells));
+
+        setCurrentTouch(touchBuilder.build());
+
     }
 
 }
