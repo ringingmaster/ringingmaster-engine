@@ -39,7 +39,7 @@ public class CellBuilder {
     }
 
     public Cell build() {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         if (prototype != null) {
             buff.append(prototype.getCharacters());
         }
