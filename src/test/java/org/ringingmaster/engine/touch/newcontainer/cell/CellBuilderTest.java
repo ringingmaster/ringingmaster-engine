@@ -33,7 +33,7 @@ public class CellBuilderTest {
     }
 
     @Test
-    public void canBuildWithInsertedCharacters() {
+    public void canInsertCharacters() {
 
         Cell initialCell = new CellBuilder()
                 .defaults()
@@ -46,5 +46,21 @@ public class CellBuilderTest {
                 .build();
 
         assertEquals("A123BC", cell.getCharacters());
+    }
+
+    @Test
+    public void canDeleteCharacters() {
+
+        Cell initialCell = new CellBuilder()
+                .defaults()
+                .add("ABC")
+                .build();
+
+        Cell cell = new CellBuilder()
+                .prototypeOf(initialCell)
+                .delete(1)
+                .build();
+
+        assertEquals("AC", cell.getCharacters());
     }
 }
