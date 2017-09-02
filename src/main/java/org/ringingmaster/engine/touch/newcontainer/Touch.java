@@ -209,14 +209,14 @@ public class Touch {
 
     public int getColumnCount() {
         return cells.columnKeySet().stream()
-                .mapToInt(Integer::intValue)
+                .mapToInt(value -> value+1)
                 .max()
                 .orElse(0);
     }
 
     public int getRowCount() {
         return cells.rowKeySet().stream()
-                .mapToInt(Integer::intValue)
+                .mapToInt(value -> value+1)
                 .max()
                 .orElse(0);
     }
