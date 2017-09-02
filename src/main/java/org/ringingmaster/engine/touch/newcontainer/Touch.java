@@ -11,12 +11,14 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
  * Raw immutable POJO for a touch.
@@ -206,11 +208,30 @@ public class Touch {
     }
 
     public int getColumnCount() {
-        return cells.columnKeySet().size();
+        return cells.columnKeySet().stream()
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
     }
 
     public int getRowCount() {
-        return cells.rowKeySet().size();
+        return cells.rowKeySet().stream()
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
+    }
+
+    public Cell cell(int rowIndex, int columnIndex) {
+        checkPositionIndex(rowIndex, getRowCount());
+        checkPositionIndex(columnIndex, getColumnCount());
+
+        Cell cell = cells.get(rowIndex, columnIndex);
+        if (cell != null) {
+            return cell;
+        }
+        else {
+            return EmptyCell.INSTANCE;
+        }
     }
 
     @Override
