@@ -5,9 +5,11 @@ import org.ringingmaster.engine.touch.newcontainer.element.ElementBuilder;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkElementIndex;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder.CharacterChangeAction.INSERT;
 import static org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder.CharacterChangeAction.DELETE;
+import static org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder.CharacterChangeAction.INSERT;
 
 /**
  * TODO comments???
@@ -20,7 +22,7 @@ public class CellBuilder {
     private List<CharacterChange> characterChanges = Lists.newArrayList();
 
     public CellBuilder defaults() {
-        add("");
+        insert(0, "");
         return this;
     }
 
@@ -29,20 +31,18 @@ public class CellBuilder {
         return this;
     }
 
-    public CellBuilder add(String characters) {
-        this.characterChanges.add(new CharacterChange(INSERT, 0, characters));
-        return this;
-    }
-
     public CellBuilder insert(int index, String characters) {
         checkState(index >= 0);
+
         this.characterChanges.add(new CharacterChange(INSERT, index, characters));
         return this;
     }
 
-    public CellBuilder delete(int index) {
+    public CellBuilder delete(int index, int count) {
         checkState(index >= 0);
-        this.characterChanges.add(new CharacterChange(DELETE, index, ""));
+        checkState(count > 0);
+
+        this.characterChanges.add(new CharacterChange(DELETE, index, count));
         return this;
     }
 
@@ -53,15 +53,22 @@ public class CellBuilder {
         }
 
         for (CharacterChange characterChange : characterChanges) {
+
             if (characterChange.action.equals(INSERT)) {
+                checkPositionIndex(characterChange.index, buff.length(), characterChange.toString() + " for [" + buff.toString() + "]");
                 buff.insert(characterChange.index, characterChange.characters);
             }
             else if (characterChange.action.equals(DELETE)) {
-                buff.delete(characterChange.index, characterChange.index + 1);
+                checkElementIndex(characterChange.index, buff.length(), characterChange.toString() + " for [" + buff.toString() + "]");
+                buff.delete(characterChange.index, characterChange.index + characterChange.count);
             }
         }
 
-        return new Cell(ElementBuilder.createElements(buff.toString()));
+        if (buff.length() == 0) {
+
+        }
+
+        return new DefaultCell(ElementBuilder.createElements(buff.toString()));
     }
 
     enum CharacterChangeAction {
@@ -72,12 +79,31 @@ public class CellBuilder {
     private class CharacterChange {
         final CharacterChangeAction action;
         final int index;
+        final int count;
         final String characters;
 
         private CharacterChange(CharacterChangeAction action, int index, String characters) {
             this.action = action;
             this.index = index;
+            this.count = 0;
             this.characters = characters;
+        }
+
+        private CharacterChange(CharacterChangeAction action, int index, int count) {
+            this.action = action;
+            this.index = index;
+            this.count = count;
+            this.characters = null;
+        }
+
+        @Override
+        public String toString() {
+            return "CharacterChange{" +
+                    "action=" + action +
+                    ", index=" + index +
+                    ", count=" + count +
+                    ", characters='" + characters + '\'' +
+                    '}';
         }
     }
 }

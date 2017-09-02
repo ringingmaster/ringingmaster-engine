@@ -40,14 +40,14 @@ public class TerminationMaxPartsMutationTest {
         assertEquals(Optional.empty(), touch.get().getTerminationMaxParts());
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void setting0OrLowerThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
         touch.setTerminationMaxParts(0);
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();

@@ -38,14 +38,14 @@ public class TerminationMaxCircularityMutationTest {
 
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void setting0OrLowerThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
         touch.setTerminationMaxCircularTouch(0);
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();

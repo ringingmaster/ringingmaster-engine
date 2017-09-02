@@ -1,44 +1,17 @@
 package org.ringingmaster.engine.touch.newcontainer.cell;
 
-import com.google.common.collect.ImmutableList;
-import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
- * TODO Comments
+ * TODO comments???
  *
- * @author Lake
+ * @author stevelake
  */
-@Immutable
-public class Cell {
+public interface Cell {
 
-    private final ImmutableList<Element> elements;
+    Element getElement(int index);
 
-    public Cell(List<Element> elements) {
-        this.elements = ImmutableList.copyOf(elements);
-    }
+    int size();
 
-    public Element getElement(int index) {
-        return elements.get(index);
-    }
-
-    public int size() {
-        return elements.size();
-    }
-
-    public String getCharacters() {
-        return elements.stream()
-                .map(element -> Character.toString(element.getCharacter()))
-                .collect(Collectors.joining());
-    }
-
-    @Override
-    public String toString() {
-        return "Cell{" +
-                "elements=" + getCharacters() +
-                '}';
-    }
+    String getCharacters();
 }

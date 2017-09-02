@@ -26,7 +26,7 @@ public class CellBuilderTest {
     public void canBuildWithAddedCharacters() {
         Cell cell = new CellBuilder()
                 .defaults()
-                .add("ABC")
+                .insert(0, "ABC")
                 .build();
 
         assertEquals("ABC", cell.getCharacters());
@@ -37,7 +37,7 @@ public class CellBuilderTest {
 
         Cell initialCell = new CellBuilder()
                 .defaults()
-                .add("ABC")
+                .insert(0, "ABC")
                 .build();
 
         Cell cell = new CellBuilder()
@@ -53,14 +53,30 @@ public class CellBuilderTest {
 
         Cell initialCell = new CellBuilder()
                 .defaults()
-                .add("ABC")
+                .insert(0, "ABC")
                 .build();
 
         Cell cell = new CellBuilder()
                 .prototypeOf(initialCell)
-                .delete(1)
+                .delete(1, 1)
                 .build();
 
         assertEquals("AC", cell.getCharacters());
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void insertingOutOfRangeThrows() {
+        new CellBuilder()
+                .defaults()
+                .insert(1, "ABC")
+                .build();
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void deletingOutOfRangeThrows() {
+        new CellBuilder()
+                .defaults()
+                .delete(0, 1)
+                .build();
     }
 }

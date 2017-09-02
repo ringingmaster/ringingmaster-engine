@@ -37,7 +37,7 @@ public class TerminationChangeMutationTest {
 
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void addingStartChangeWithIncorrectNumberThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();

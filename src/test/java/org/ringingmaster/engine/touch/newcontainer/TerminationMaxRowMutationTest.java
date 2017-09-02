@@ -36,14 +36,14 @@ public class TerminationMaxRowMutationTest {
         assertEquals(1, touch.get().getTerminationMaxRows());
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void setting0OrLowerThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
         touch.setTerminationMaxRows(0);
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();

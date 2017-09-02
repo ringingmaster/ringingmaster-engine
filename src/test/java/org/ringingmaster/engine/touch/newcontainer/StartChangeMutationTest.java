@@ -30,7 +30,7 @@ public class StartChangeMutationTest {
         assertEquals("654123", touch.get().getStartChange().getDisplayString(false));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void addingStartChangeWithIncorrectNumberThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();

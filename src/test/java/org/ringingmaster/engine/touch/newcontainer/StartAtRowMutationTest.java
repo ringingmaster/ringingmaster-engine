@@ -35,14 +35,14 @@ public class StartAtRowMutationTest {
         assertEquals(0, touch.get().getStartAtRow());
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void settingMinusOneOrLowerThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
         touch.setStartAtRow(-1);
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
