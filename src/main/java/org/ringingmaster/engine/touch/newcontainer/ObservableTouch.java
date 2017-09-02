@@ -15,6 +15,7 @@ import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefaultDefinition;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 import org.ringingmaster.engine.touch.newcontainer.element.ElementBuilder;
@@ -278,7 +279,7 @@ public class ObservableTouch {
     public void updateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
         checkNotNull(originalNotation, "originalNotation must not be null");
         checkNotNull(replacementNotation, "replacementNotation must not be null");
-        checkState(originalNotation != replacementNotation);
+        checkArgument(originalNotation != replacementNotation);
 
         List<NotationBody> sortedNotations = Lists.newArrayList(currentTouch.getAllNotations());
         checkState(sortedNotations.contains(originalNotation));
@@ -380,7 +381,7 @@ public class ObservableTouch {
         }
 
         ImmutableList<Element> elements = ElementBuilder.createElements(characters);
-        Definition definition = new Definition(shorthand, elements);
+        Definition definition = new DefaultDefinition(shorthand, elements);
 
         Set<Definition> definitions = Sets.newHashSet(currentTouch.getAllDefinitions());
         definitions.add(definition);
@@ -406,7 +407,7 @@ public class ObservableTouch {
 
     public void setStartChange(MethodRow startChange) {
         checkNotNull(startChange);
-        checkState(startChange.getNumberOfBells() == currentTouch.getNumberOfBells());
+        checkArgument(startChange.getNumberOfBells() == currentTouch.getNumberOfBells());
 
         if (Objects.equals(currentTouch.getStartChange(), startChange)) {
             return;
@@ -419,8 +420,8 @@ public class ObservableTouch {
     }
 
     public void setStartAtRow(int startAtRow) {
-        checkState(startAtRow >= 0, "Start at row must be 0 or greater.");
-        checkState(startAtRow <= START_AT_ROW_MAX, "Start at row must be less than or equal to %s", START_AT_ROW_MAX);
+        checkArgument(startAtRow >= 0, "Start at row must be 0 or greater.");
+        checkArgument(startAtRow <= START_AT_ROW_MAX, "Start at row must be less than or equal to %s", START_AT_ROW_MAX);
 
 
         if (Objects.equals(currentTouch.getStartAtRow(), startAtRow)) {
@@ -474,8 +475,8 @@ public class ObservableTouch {
     }
 
     public void setTerminationMaxRows(int terminationMaxRows) {
-        checkState(terminationMaxRows > 0, "Termination max rows must be greater than 0");
-        checkState(terminationMaxRows <= TERMINATION_MAX_ROWS_MAX, "Termination max rows must be less than or equal to %s", TERMINATION_MAX_ROWS_MAX);
+        checkArgument(terminationMaxRows > 0, "Termination max rows must be greater than 0");
+        checkArgument(terminationMaxRows <= TERMINATION_MAX_ROWS_MAX, "Termination max rows must be less than or equal to %s", TERMINATION_MAX_ROWS_MAX);
 
         if (Objects.equals(currentTouch.getTerminationMaxRows(), terminationMaxRows)) {
             return;
@@ -488,8 +489,8 @@ public class ObservableTouch {
     }
 
     public void setTerminationMaxLeads(int terminationMaxLeads) {
-        checkState(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
-        checkState(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
+        checkArgument(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
+        checkArgument(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
 
         if (Objects.equals(currentTouch.getTerminationMaxLeads(), terminationMaxLeads)) {
             return;
@@ -513,8 +514,8 @@ public class ObservableTouch {
     }
 
     public void setTerminationMaxParts(int terminationMaxParts) {
-        checkState(terminationMaxParts > 0, "Termination max parts must be greater than 0");
-        checkState(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
+        checkArgument(terminationMaxParts > 0, "Termination max parts must be greater than 0");
+        checkArgument(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
 
         if (Objects.equals(currentTouch.getTerminationMaxParts(), terminationMaxParts)) {
             return;
@@ -538,8 +539,8 @@ public class ObservableTouch {
     }
 
     public void setTerminationMaxCircularTouch(int terminationCircularTouch) {
-        checkState(terminationCircularTouch > 0, "Termination circular touch must be greater than 0");
-        checkState(terminationCircularTouch <= TERMINATION_MAX_CIRCULARITY_MAX, "Termination circular touch must be less than or equal to %s", TERMINATION_MAX_CIRCULARITY_MAX);
+        checkArgument(terminationCircularTouch > 0, "Termination circular touch must be greater than 0");
+        checkArgument(terminationCircularTouch <= TERMINATION_MAX_CIRCULARITY_MAX, "Termination circular touch must be less than or equal to %s", TERMINATION_MAX_CIRCULARITY_MAX);
 
         if (Objects.equals(currentTouch.getTerminationMaxCircularity(), terminationCircularTouch)) {
             return;
@@ -577,10 +578,23 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    public void addCharacters(int columnIndex, int rowIndex, String characters) {
-        checkState(currentTouch.getRowCount() >= rowIndex);
-        checkState(currentTouch.getColumnCount() >= columnIndex);
+    public void addCharacters(int rowIndex, int columnIndex, String characters) {
+        checkPositionIndex(rowIndex, currentTouch.getRowCount(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.getColumnCount(), "columnIndex");
         checkNotNull(characters);
+        checkArgument(characters.length() > 0);
+
+        Cell cell = currentTouch.cell(rowIndex, columnIndex);
+        insertCharacters(rowIndex, columnIndex, (cell==null)?0:cell.size(), characters);
+    }
+
+    public void insertCharacters(int rowIndex, int columnIndex, int cellIndex, String characters) {
+
+        checkPositionIndex(rowIndex, currentTouch.getRowCount(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.getColumnCount(), "columnIndex");
+        checkArgument(cellIndex >= 0 );
+        checkNotNull(characters);
+        checkArgument(characters.length() > 0);
 
         Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.getCells());
         Cell currentCell = cells.get(rowIndex, columnIndex);
@@ -589,12 +603,16 @@ public class ObservableTouch {
             // insert a new cell.
             Cell cell = new CellBuilder()
                     .defaults()
-                    .add(characters)
+                    .insert(cellIndex, characters)
                     .build();
             cells.put(rowIndex, columnIndex, cell);
         }
         else {
-
+            Cell cell = new CellBuilder()
+                    .prototypeOf(currentCell)
+                    .insert(cellIndex, characters)
+                    .build();
+            cells.put(rowIndex, columnIndex, cell);
         }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
@@ -604,4 +622,48 @@ public class ObservableTouch {
 
     }
 
+    public void removeCharacters(int rowIndex, int columnIndex, int cellIndex, int count) {
+        checkPositionIndex(rowIndex, currentTouch.getRowCount(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.getColumnCount(), "columnIndex");
+        checkArgument(cellIndex >= 0 );
+
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.getCells());
+        Cell currentCell = cells.get(rowIndex, columnIndex);
+
+        checkNotNull(currentCell);
+
+        Cell cell = new CellBuilder()
+                .prototypeOf(currentCell)
+                .delete(cellIndex, count)
+                .build();
+
+        if (cell.size() == 0) {
+            cells.remove(rowIndex, columnIndex);
+            removeColumnIfEmpty(columnIndex, cells);
+            removeColumnIfEmpty(columnIndex, cells);
+        }
+        else {
+            cells.put(rowIndex, columnIndex, cell);
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setCells(ImmutableTable.copyOf(cells));
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    private void removeColumnIfEmpty(int columnIndexForRemoval, Table<Integer, Integer, Cell> cells) {
+        Map<Integer, Cell> columnItems = cells.column(columnIndexForRemoval);
+
+        if (columnItems.isEmpty()) {
+            int columnCount = currentTouch.getColumnCount();
+            int rowCount = currentTouch.getRowCount();
+            for (int columnIndex=columnIndexForRemoval;columnIndex<columnCount;columnIndex++) {
+                for (int rowIndex=0;rowIndex<rowCount;rowIndex++) {
+                    Cell cell = cells.get(rowIndex, columnIndex);
+                    cells.put(rowIndex, columnIndex-1, cell);
+                }
+            }
+        }
+    }
 }
