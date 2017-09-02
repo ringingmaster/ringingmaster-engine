@@ -139,4 +139,18 @@ public class CellMutationTest {
         assertEquals("", touch.get().cell(0,0).getCharacters());
         assertTrue(touch.get().cell(0,0) instanceof EmptyCell);
     }
+
+    @Test
+    public void removingAllItemsInColumnCausesColumnRemoval() {
+        ObservableTouch touch = new ObservableTouch();
+        touch.addCharacters(0,0, "0,0");
+        touch.addCharacters(0,1, "0,1");
+        touch.addCharacters(0,2, "0,2");
+        touch.addCharacters(1,2, "1,2");
+        assertEquals(3, touch.get().getColumnCount());
+
+        touch.removeCharacters(0, 1, 0,3);
+        assertEquals(2, touch.get().getColumnCount());
+    }
+
 }
