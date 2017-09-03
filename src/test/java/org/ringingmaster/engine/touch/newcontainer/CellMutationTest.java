@@ -153,4 +153,17 @@ public class CellMutationTest {
         assertEquals(2, touch.get().getColumnCount());
     }
 
+    @Test
+    public void removingAllItemsInRowCausesRowRemoval() {
+        ObservableTouch touch = new ObservableTouch();
+        touch.addCharacters(0,0, "0,0");
+        touch.addCharacters(1,0, "1,0");
+        touch.addCharacters(2,0, "2,0");
+        touch.addCharacters(2,1, "2,1");
+        assertEquals(3, touch.get().getRowCount());
+
+        touch.removeCharacters(1, 0, 0,3);
+        assertEquals(2, touch.get().getRowCount());
+    }
+
 }

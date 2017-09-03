@@ -639,7 +639,7 @@ public class ObservableTouch {
 
         if (cell.size() == 0) {
             cells.remove(rowIndex, columnIndex);
-            removeColumnIfEmpty(columnIndex, cells);
+            removeRowIfEmpty(rowIndex, cells);
             removeColumnIfEmpty(columnIndex, cells);
         }
         else {
@@ -658,10 +658,37 @@ public class ObservableTouch {
         if (columnItems.isEmpty()) {
             int columnCount = currentTouch.getColumnCount();
             int rowCount = currentTouch.getRowCount();
-            for (int columnIndex=columnIndexForRemoval;columnIndex<columnCount;columnIndex++) {
+            // We allow the column loop to go '1' past end to ensure the final column is removed.
+            for (int columnIndex=columnIndexForRemoval;columnIndex<columnCount+1;columnIndex++) {
                 for (int rowIndex=0;rowIndex<rowCount;rowIndex++) {
                     Cell cell = cells.get(rowIndex, columnIndex);
-                    cells.put(rowIndex, columnIndex-1, cell);
+                    if (cell != null) {
+                        cells.put(rowIndex, columnIndex - 1, cell);
+                    }
+                    else {
+                        cells.remove(rowIndex, columnIndex-1);
+                    }
+                }
+            }
+        }
+    }
+
+    private void removeRowIfEmpty(int rowIndexForRemoval, Table<Integer, Integer, Cell> cells) {
+        Map<Integer, Cell> rowItems = cells.row(rowIndexForRemoval);
+
+        if (rowItems.isEmpty()) {
+            int rowCount = currentTouch.getRowCount();
+            int columnCount = currentTouch.getColumnCount();
+            // We allow the row loop to go '1' past end to ensure the final row is removed.
+            for (int rowIndex=rowIndexForRemoval;rowIndex<rowCount+1;rowIndex++) {
+                for (int columnIndex=0;columnIndex<columnCount;columnIndex++) {
+                    Cell cell = cells.get(rowIndex, columnIndex);
+                    if (cell != null) {
+                        cells.put(rowIndex-1,columnIndex, cell);
+                    }
+                    else {
+                        cells.remove(rowIndex-1, columnIndex);
+                    }
                 }
             }
         }
