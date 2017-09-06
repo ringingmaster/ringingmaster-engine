@@ -1,6 +1,15 @@
 package org.ringingmaster.engine.touch.container.impl;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Strings;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import net.jcip.annotations.NotThreadSafe;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.grid.Grid;
+import org.ringingmaster.engine.grid.GridCellFactory;
+import org.ringingmaster.engine.grid.impl.DefaultGrid;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
@@ -8,41 +17,20 @@ import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
-import org.ringingmaster.engine.grid.Grid;
-import org.ringingmaster.engine.grid.GridCellFactory;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.container.TouchDefinition;
 import org.ringingmaster.engine.touch.container.TouchElement;
-import com.google.common.base.Objects;
-import com.google.common.base.Strings;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import net.jcip.annotations.NotThreadSafe;
-import org.ringingmaster.engine.grid.impl.DefaultGrid;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.*;
 import static org.ringingmaster.engine.touch.container.Touch.Mutated.MUTATED;
 import static org.ringingmaster.engine.touch.container.Touch.Mutated.UNCHANGED;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkElementIndex;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Default implementation of {@link Touch}
@@ -427,7 +415,7 @@ public class DefaultTouch implements Touch {
 
 	@Override
 	public List<NotationBody> getValidNotations() {
-		return NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells);
+		return null;//TODO NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells);
 	}
 
 	@Override

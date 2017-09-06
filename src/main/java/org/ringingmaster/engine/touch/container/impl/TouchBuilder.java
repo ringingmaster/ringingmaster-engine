@@ -4,6 +4,7 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 
 /**
@@ -18,12 +19,10 @@ public class TouchBuilder {
 	/**
 	 * Build a fully fledged touch
 	 */
-	public static Touch getInstance(NumberOfBells numberOfBells, int columnCount, int rowCount) {
-		final DefaultTouch defaultTouch = new DefaultTouch();
-		defaultTouch.setNumberOfBells(numberOfBells);
-		defaultTouch.setColumnCount(columnCount);
-		defaultTouch.setRowCount(rowCount);
-		return defaultTouch;
+	public static ObservableTouch newTouch(NumberOfBells numberOfBells) {
+		final ObservableTouch touch = new ObservableTouch();
+		touch.setNumberOfBells(numberOfBells);
+		return touch;
 	}
 
 	/**
@@ -32,12 +31,12 @@ public class TouchBuilder {
 	 * @param notationBody
 	 * @return
 	 */
-	public static Touch buildPlainCourseInstance(NotationBody notationBody) {
-		final Touch touch = new DefaultTouch();
+	public static ObservableTouch buildPlainCourseInstance(NotationBody notationBody) {
+		final ObservableTouch touch = new ObservableTouch();
 		touch.setTitle("Plain Course of " + notationBody.getNameIncludingNumberOfBells());
 		touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
-		touch.setColumnCount(1);
-		touch.setRowCount(1);
+//TODO		touch.setColumnCount(1);
+//		touch.setRowCount(1);
 		touch.addNotation(notationBody);
 		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
 		touch.setTerminationChange(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));

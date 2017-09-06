@@ -1,10 +1,9 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
 import net.jcip.annotations.NotThreadSafe;
-import org.ringingmaster.engine.grid.Grid;
-import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchWord;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 import org.ringingmaster.engine.touch.parser.ParseType;
 
@@ -12,7 +11,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * TODO comments???
@@ -29,15 +27,15 @@ public class CourseBasedCallDecomposer extends SkeletalCallDecomposer<CourseBase
 
 	@Override
 	protected void preGenerate(Touch touch) {
-		Grid<TouchCell> callPositionCells = touch.callPositionView();
-		checkState(callPositionCells.getRowCount() == 1);
-
-		callPositionNames = new String[callPositionCells.getColumnCount()];
-
-		for (int columnIndex=0;columnIndex<callPositionCells.getColumnCount();columnIndex++) {
-			TouchCell cell = callPositionCells.getCell(columnIndex, 0);
-			callPositionNames[columnIndex] = getCallPositionFromCell(cell);
-		}
+//TODO		Grid<TouchCell> callPositionCells = touch.callPositionView();
+//		checkState(callPositionCells.getRowCount() == 1);
+//
+//		callPositionNames = new String[callPositionCells.getColumnCount()];
+//
+//		for (int columnIndex=0;columnIndex<callPositionCells.getColumnCount();columnIndex++) {
+//			TouchCell cell = callPositionCells.getCell(columnIndex, 0);
+//			callPositionNames[columnIndex] = getCallPositionFromCell(cell);
+//		}
 	}
 
 	private String getCallPositionFromCell(TouchCell cell) {

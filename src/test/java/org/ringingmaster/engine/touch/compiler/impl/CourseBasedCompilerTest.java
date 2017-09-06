@@ -1,28 +1,26 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
-import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.method.Bell;
-import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.touch.parser.Parser;
-import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
-import org.ringingmaster.engine.touch.proof.Proof;
-import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
-import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.container.impl.TouchBuilder;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import org.junit.Assert;
 import org.junit.Test;
+import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.method.Bell;
+import org.ringingmaster.engine.method.Method;
+import org.ringingmaster.engine.notation.NotationBody;
+import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.parser.Parser;
+import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
+import org.ringingmaster.engine.touch.proof.Proof;
+import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * TODO comments???
@@ -52,12 +50,15 @@ public class CourseBasedCompilerTest {
 	}
 
 	private Touch buildPlainBobMinorTouchShell(int width, int height) {
-		Touch touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, width, height);
-		touch.setTitle("Test Touch");
-		touch.addNotation(buildPlainBobMinor());
-		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
-		return touch;
+		fail(); //TODO
+
+		return null;
+//		Touch touch = TouchBuilder.newTouch(NumberOfBells.BELLS_6, width, height);
+//		touch.setTitle("Test Touch");
+//		touch.addNotation(buildPlainBobMinor());
+//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+//		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+//		return touch;
 	}
 
 	private NotationBody buildPlainBobMinor() {

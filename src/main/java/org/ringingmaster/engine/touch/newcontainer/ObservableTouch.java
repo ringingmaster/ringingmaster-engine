@@ -6,6 +6,7 @@ import com.google.common.collect.*;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
@@ -51,11 +52,11 @@ public class ObservableTouch {
             .comparePaths("numberOfBells")
             .comparePaths("startChange");
 
-    Observable<Touch> observable() {
+    public Observable<Touch> observable() {
         return subject;
     }
 
-    Touch get() {
+    public Touch get() {
         return currentTouch;
     }
 
@@ -65,7 +66,7 @@ public class ObservableTouch {
         currentTouch = newTouch;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         checkNotNull(title);
 
         if (Objects.equals(currentTouch.getTitle(), title)) {
@@ -78,7 +79,7 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    void setAuthor(String author) {
+    public void setAuthor(String author) {
         checkNotNull(author);
 
         if (Objects.equals(currentTouch.getAuthor(), author)) {
@@ -93,7 +94,7 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    void setNumberOfBells(NumberOfBells numberOfBells) {
+    public void setNumberOfBells(NumberOfBells numberOfBells) {
         checkNotNull(numberOfBells);
 
         if (Objects.equals(currentTouch.getNumberOfBells(), numberOfBells)) {
@@ -143,7 +144,7 @@ public class ObservableTouch {
 
     //TODO need a checkNumberOfBells to drive UI
 
-    void setTouchCheckingType(CheckingType checkingType) {
+    public void setTouchCheckingType(CheckingType checkingType) {
         checkNotNull(checkingType);
 
         if (Objects.equals(currentTouch.getCheckingType(), checkingType)) {
@@ -152,6 +153,20 @@ public class ObservableTouch {
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
                 .setTouchCheckingType(checkingType);
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    public void setCallFromBell(Bell callFromBell) {
+        checkNotNull(callFromBell);
+        checkArgument(callFromBell.getZeroBasedBell() < currentTouch.getNumberOfBells().toInt());
+
+        if (Objects.equals(currentTouch.getCallFromBell(), callFromBell)) {
+            return;
+        }
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setCallFromBell(callFromBell);
 
         setCurrentTouch(touchBuilder.build());
     }
@@ -211,11 +226,9 @@ public class ObservableTouch {
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
 
-        List<NotationBody> sortedNotations = Lists.newArrayList(currentTouch.getAllNotations());
-        sortedNotations.add(notationToAdd);
-        //TODO why are they sorted? Should be a set. Sorting for UI
-        Collections.sort(sortedNotations, NotationBody.BY_NAME);
-        touchBuilder.setSortedNotations(ImmutableList.copyOf(sortedNotations));
+        Set<NotationBody> allNotations = Sets.newHashSet(currentTouch.getAllNotations());
+        allNotations.add(notationToAdd);
+        touchBuilder.setAllNotations(ImmutableSet.copyOf(allNotations));
 
 //TODO what if the number of bells is wrong?
         if (!currentTouch.isSpliced() && !currentTouch.getNonSplicedActiveNotation().isPresent()) {
@@ -230,6 +243,9 @@ public class ObservableTouch {
     }
 
     private List<String> checkPotentialNewNotation(NotationBody notationToCheck, Set<NotationBody> notationsToExclude) {
+        checkNotNull(notationToCheck);
+        checkNotNull(notationsToExclude);
+
         List<String> messages = new ArrayList<>();
         Set<NotationBody> allNotationsWithExclusions = new HashSet<>(currentTouch.getAllNotations());
         allNotationsWithExclusions.removeAll(notationsToExclude);
@@ -263,7 +279,7 @@ public class ObservableTouch {
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
 
         sortedNotations.remove(notationForRemoval);
-        touchBuilder.setSortedNotations(ImmutableList.copyOf(sortedNotations));
+        touchBuilder.setAllNotations(ImmutableSet.copyOf(sortedNotations));
 
         // Sort out the next notation if it is the active notation
         if (currentTouch.getNonSplicedActiveNotation().isPresent() &&
@@ -296,7 +312,7 @@ public class ObservableTouch {
         sortedNotations.remove(originalNotation);
         sortedNotations.add(replacementNotation);
         Collections.sort(sortedNotations, NotationBody.BY_NAME);
-        touchBuilder.setSortedNotations(ImmutableList.copyOf(sortedNotations));
+        touchBuilder.setAllNotations(ImmutableSet.copyOf(sortedNotations));
 
         if (currentTouch.getNonSplicedActiveNotation().isPresent() &&
                 currentTouch.getNonSplicedActiveNotation().get() == originalNotation) {
@@ -312,6 +328,9 @@ public class ObservableTouch {
 
     //TODO rename exchangeNotation
     public List<String> checkUpdateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+        checkNotNull(originalNotation);
+        checkNotNull(replacementNotation);
+
         return checkPotentialNewNotation(replacementNotation, Sets.<NotationBody>newHashSet(originalNotation));
     }
 
@@ -325,8 +344,7 @@ public class ObservableTouch {
         }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setNonSplicedActiveNotation(Optional.of(nonSplicedActiveNotation))
-                .setSpliced(false);
+                .setNonSplicedActiveNotation(Optional.of(nonSplicedActiveNotation));
 
         setCurrentTouch(touchBuilder.build());
     }
@@ -337,15 +355,14 @@ public class ObservableTouch {
             return;
         }
 
-        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setSpliced(spliced);
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
 
 
         if (spliced) {
             touchBuilder.setNonSplicedActiveNotation(Optional.empty());
         }
         else {
-            final List<NotationBody> validNotations = currentTouch.getValidNotations();
+            final Set<NotationBody> validNotations = currentTouch.getValidNotations();
 
             if (validNotations.size() > 0) {
                 Optional<NotationBody> firstByName = validNotations.stream()
@@ -358,7 +375,7 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    void setPlainLeadToken(String plainLeadToken) {
+    public void setPlainLeadToken(String plainLeadToken) {
         checkNotNull(plainLeadToken);
 
         if (Objects.equals(currentTouch.getPlainLeadToken(), plainLeadToken)) {
@@ -371,7 +388,7 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    void addDefinition(String shorthand, String characters) {
+    public void addDefinition(String shorthand, String characters) {
         checkNotNull(shorthand, "shorthand must not be null");
         checkNotNull(shorthand.length() > 0, "shorthand must contain some characters");
 

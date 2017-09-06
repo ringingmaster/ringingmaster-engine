@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.touch.parser;
 
-import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 
 /**
  * TODO comments???

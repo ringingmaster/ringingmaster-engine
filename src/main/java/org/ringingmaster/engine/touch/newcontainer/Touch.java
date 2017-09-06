@@ -1,6 +1,5 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import net.jcip.annotations.Immutable;
@@ -35,7 +34,7 @@ public class Touch {
     private final CheckingType checkingType;
 
     private final Bell callFromBell;
-    private final ImmutableList<NotationBody> sortedNotations;
+    private final ImmutableSet<NotationBody> sortedNotations;
     private final Optional<NotationBody> nonSplicedActiveNotation;
     private final String plainLeadToken;
     private final ImmutableSet<Definition> definitions;
@@ -58,9 +57,8 @@ public class Touch {
                  NumberOfBells numberOfBells,
                  CheckingType checkingType,
                  Bell callFromBell,
-                 ImmutableList<NotationBody> sortedNotations,
+                 ImmutableSet<NotationBody> sortedNotations,
                  Optional<NotationBody> nonSplicedActiveNotation,
-                 boolean spliced,
                  String plainLeadToken,
                  ImmutableSet<Definition> definitions,
                  MethodRow startChange, int startAtRow,
@@ -118,25 +116,25 @@ public class Touch {
         return callFromBell;
     }
 
-    public ImmutableList<NotationBody> getAllNotations() {
+    public ImmutableSet<NotationBody> getAllNotations() {
         return sortedNotations;
     }
 
-    public ImmutableList<NotationBody> getValidNotations() {
+    public ImmutableSet<NotationBody> getValidNotations() {
         //TODO precalculate
-        return ImmutableList.copyOf(
+        return ImmutableSet.copyOf(
                 //TODO should this return immutable version?
                 NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells));
     }
 
-    public ImmutableList<NotationBody> getNotationsInUse() {
+    public ImmutableSet<NotationBody> getNotationsInUse() {
         //TODO precalculate
         if (isSpliced()) {
             return getValidNotations();
         }
         else {
             // Not Spliced
-            return nonSplicedActiveNotation.map(ImmutableList::of).orElseGet(ImmutableList::of);
+            return nonSplicedActiveNotation.map(ImmutableSet::of).orElseGet(ImmutableSet::of);
         }
     }
 

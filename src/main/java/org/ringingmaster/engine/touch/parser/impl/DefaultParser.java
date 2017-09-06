@@ -3,7 +3,7 @@ package org.ringingmaster.engine.touch.parser.impl;
 
 import net.jcip.annotations.NotThreadSafe;
 
-import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.parser.Parser;
 
 /**
@@ -16,16 +16,16 @@ public class DefaultParser implements Parser {
 
 	@Override
 	public void parseAndAnnotate(Touch touch) {
-		touch.resetParseData();
-		new AssignParseTypeParser().parse(touch);
+//		touch.resetParseData();
+//		new AssignParseTypeParser().parse(touch);
 		//TODO think very care fully about what parts of each parser needs applying to definitions,
-		new MultipleCallPositionsInOneCell().parse(touch);
+//		new MultipleCallPositionsInOneCell().parse(touch);
 //TODO		parseSplicedCallsNotDefinedInEachMethod();
 //TODO		parseSplicedCallPosMethodNotDefinedInEachMethod();
 //TODO		parseSplicedCallPosAgregateNotDefinedInEachMethod();
 //TODO		parseSpliceCountDifferentInEachMethod();
 //TODO		parseVarianceLogic();
-		new GroupLogicParser().parse(touch);
+//		new GroupLogicParser().parse(touch);
 //TODO		parseGroupOnDifferentLines(); // TODOI dont think we need this one now as allowing groups on many lines. Might have to do extra parsing when a block definition in use though to make sure we have full groups in the block
 //TODO		parseVarianceGroupInteractionLogic();
 //TODO		parseSpaceOnlyInCell(); //TODO I dont think this is necessary, apart from where whole rows and columns are empty
@@ -34,7 +34,7 @@ public class DefaultParser implements Parser {
 //TODO		parseDefinitionsOnWrongSide();
 
 		//done last so that invalidity can be passed to the multipliers
-		new MultiplierParser().parse(touch);
+//		new MultiplierParser().parse(touch);
 	}
 
 

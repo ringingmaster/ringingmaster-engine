@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
 import org.ringingmaster.engine.notation.NotationCall;
-import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public class CallMapBuilder {
 		log.debug("{} > creating call map", logPreamble);
 		Map<String, NotationCall> callNameToCall = new HashMap<>();
 		if (touch.getNonSplicedActiveNotation() != null) {
-			for (NotationCall notationCall : touch.getNonSplicedActiveNotation().getCalls()) {
+			for (NotationCall notationCall : touch.getNonSplicedActiveNotation().get().getCalls()) {
 				callNameToCall.put(notationCall.getName(), notationCall);
 				callNameToCall.put(notationCall.getNameShorthand(), notationCall);
 			}

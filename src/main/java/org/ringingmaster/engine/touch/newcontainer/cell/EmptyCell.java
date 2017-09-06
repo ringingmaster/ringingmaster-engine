@@ -1,7 +1,6 @@
 package org.ringingmaster.engine.touch.newcontainer.cell;
 
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * TODO comments???
@@ -15,7 +14,7 @@ public class EmptyCell implements Cell{
 
     @Override
     public Element getElement(int index) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override

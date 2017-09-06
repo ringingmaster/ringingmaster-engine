@@ -1,6 +1,6 @@
-	package org.ringingmaster.engine.touch.compiler.impl;
+package org.ringingmaster.engine.touch.compiler.impl;
 
-	import org.ringingmaster.engine.helper.PlainCourseHelper;
+import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodRow;
@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import org.ringingmaster.engine.touch.compiler.Compiler;
-import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import com.google.common.collect.ImmutableList;
 import net.jcip.annotations.ThreadSafe;
@@ -57,7 +57,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 	private Map<NotationMethodCallingPosition, Integer> buildCallingPositionLookup(Touch touch) {
 		log.info("{} > Build calling bell positions",getLogPreamble());
 		// Build a plain course.
-		NotationBody activeNotation = touch.getNonSplicedActiveNotation();
+		NotationBody activeNotation = touch.getNonSplicedActiveNotation().get();
 		Method plainCourse = PlainCourseHelper.buildPlainCourse(activeNotation, getLogPreamble() +  "  | ",false).getCreatedMethod().get();
 
 		// build the map.

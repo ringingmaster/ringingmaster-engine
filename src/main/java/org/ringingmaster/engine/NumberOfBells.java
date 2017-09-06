@@ -51,7 +51,7 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 
 	static {
 		for(final NumberOfBells value : NumberOfBells.values()) {
-			entity.put(Integer.valueOf(value.bellCount), value);
+			entity.put(value.bellCount, value);
 		}
 	}
 

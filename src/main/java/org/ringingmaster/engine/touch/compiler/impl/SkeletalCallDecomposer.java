@@ -1,31 +1,22 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
-import org.ringingmaster.engine.touch.parser.ParseType;
-import org.ringingmaster.engine.grid.Grid;
-import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.TouchCell;
-import org.ringingmaster.engine.touch.container.TouchDefinition;
-import org.ringingmaster.engine.touch.container.TouchElement;
-import org.ringingmaster.engine.touch.container.TouchWord;
-import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
-import org.ringingmaster.engine.touch.newcontainer.variance.impl.NullVariance;
+import com.google.common.collect.Lists;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.NotThreadSafe;
+import org.ringingmaster.engine.touch.container.TouchElement;
+import org.ringingmaster.engine.touch.container.TouchWord;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
+import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
+import org.ringingmaster.engine.touch.newcontainer.variance.impl.NullVariance;
+import org.ringingmaster.engine.touch.parser.ParseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.touch.parser.ParseType.CALL;
-import static org.ringingmaster.engine.touch.parser.ParseType.CALL_MULTIPLIER;
-import static org.ringingmaster.engine.touch.parser.ParseType.PLAIN_LEAD;
-import static org.ringingmaster.engine.touch.parser.ParseType.PLAIN_LEAD_MULTIPLIER;
 
 /**
  * TODO comments???
@@ -46,57 +37,60 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	}
 
 	List<DC> createCallSequence() {
-		log.debug("{} > create call sequence", logPreamble);
-		callFIFO.clear();
-		callFIFO.addFirst(new CallGroup(1));
-
-		preGenerate(touch);
-
-		Grid<TouchCell> mainBodyCells = touch.mainBodyView();
-		for (int rowIndex=0;rowIndex<mainBodyCells.getRowCount();rowIndex++) {
-			for (int columnIndex=0;columnIndex<mainBodyCells.getColumnCount();columnIndex++) {
-				TouchCell cell = mainBodyCells.getCell(columnIndex, rowIndex);
-				generateCallInstancesForCell(cell, columnIndex);
-			}
-		}
-
-		checkState(callFIFO.size() == 1);
-		log.debug("{} < create call sequence {}", logPreamble, callFIFO.getFirst());
-		return Collections.unmodifiableList(callFIFO.removeFirst());
+		//TODO
+		return Lists.newArrayList();
+//		log.debug("{} > create call sequence", logPreamble);
+//		callFIFO.clear();
+//		callFIFO.addFirst(new CallGroup(1));
+//
+//		preGenerate(touch);
+//
+//		Grid<TouchCell> mainBodyCells = touch.mainBodyView();
+//		for (int rowIndex=0;rowIndex<mainBodyCells.getRowCount();rowIndex++) {
+//			for (int columnIndex=0;columnIndex<mainBodyCells.getColumnCount();columnIndex++) {
+//				TouchCell cell = mainBodyCells.getCell(columnIndex, rowIndex);
+//				generateCallInstancesForCell(cell, columnIndex);
+//			}
+//		}
+//
+//		checkState(callFIFO.size() == 1);
+//		log.debug("{} < create call sequence {}", logPreamble, callFIFO.getFirst());
+//		return Collections.unmodifiableList(callFIFO.removeFirst());
 	}
 
 	protected abstract void preGenerate(Touch touch);
 
-	private void generateCallInstancesForCell(TouchCell cell, int columnIndex) {
-		final List<TouchWord> words = cell.words();
-		for (TouchWord word : words) {
-			switch (word.getFirstParseType()) {
-				case CALL:
-				case CALL_MULTIPLIER:
-					decomposeWord(word, columnIndex, CALL, CALL_MULTIPLIER);
-					break;
-				case PLAIN_LEAD:
-				case PLAIN_LEAD_MULTIPLIER:
-					decomposeWord(word, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER);
-					break;
-				case GROUP_OPEN:
-				case GROUP_OPEN_MULTIPLIER:
-					openGroup(word);
-					break;
-				case GROUP_CLOSE:
-					closeGroup();
-					break;
-				case VARIANCE_OPEN:
-					openVariance(word);
-					break;
-				case VARIANCE_CLOSE:
-					closeVariance(word);
-					break;
-				case DEFINITION:
-					insertDefinition(word, columnIndex);
-					break;
-			}
-		}
+	private void generateCallInstancesForCell(Cell cell, int columnIndex) {
+		//TODO
+//		final List<TouchWord> words = cell.words();
+//		for (TouchWord word : words) {
+//			switch (word.getFirstParseType()) {
+//				case CALL:
+//				case CALL_MULTIPLIER:
+//					decomposeWord(word, columnIndex, CALL, CALL_MULTIPLIER);
+//					break;
+//				case PLAIN_LEAD:
+//				case PLAIN_LEAD_MULTIPLIER:
+//					decomposeWord(word, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER);
+//					break;
+//				case GROUP_OPEN:
+//				case GROUP_OPEN_MULTIPLIER:
+//					openGroup(word);
+//					break;
+//				case GROUP_CLOSE:
+//					closeGroup();
+//					break;
+//				case VARIANCE_OPEN:
+//					openVariance(word);
+//					break;
+//				case VARIANCE_CLOSE:
+//					closeVariance(word);
+//					break;
+//				case DEFINITION:
+//					insertDefinition(word, columnIndex);
+//					break;
+//			}
+//		}
 	}
 
 	private void decomposeWord(TouchWord word, int columnIndex,
@@ -168,9 +162,9 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	private void insertDefinition(TouchWord word, int columnIndex) {
 		log.debug("Start definition [{}]", word);
 		String elementsAsString = word.getElementsAsString();
-		TouchDefinition definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
-		if (definitionByShorthand != null) {
-			generateCallInstancesForCell(definitionByShorthand, columnIndex);
+		Optional<Definition> definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
+		if (definitionByShorthand.isPresent()) {
+			generateCallInstancesForCell(definitionByShorthand.get(), columnIndex);
 		}
 		log.debug("Finish definition [{}]",word);
 	}

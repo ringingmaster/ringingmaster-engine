@@ -1,5 +1,13 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.Sets;
+import com.google.common.io.CharStreams;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodRow;
@@ -9,23 +17,14 @@ import org.ringingmaster.engine.notation.NotationPlace;
 import org.ringingmaster.engine.notation.NotationRow;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.notation.impl.NotationRowHelper;
+import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.container.impl.TouchBuilder;
+import org.ringingmaster.engine.touch.newcontainer.variance.VarianceLogicType;
+import org.ringingmaster.engine.touch.newcontainer.variance.impl.SpecifiedPartsVariance;
 import org.ringingmaster.engine.touch.parser.Parser;
 import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
 import org.ringingmaster.engine.touch.proof.Proof;
 import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
-import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.variance.impl.SpecifiedPartsVariance;
-import org.ringingmaster.engine.touch.container.impl.TouchBuilder;
-import org.ringingmaster.engine.touch.newcontainer.variance.VarianceLogicType;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Sets;
-import com.google.common.io.CharStreams;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +34,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -167,18 +163,20 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void compilingTouchWithNoNotationTerminatesWithError() {
-		Touch touch = null;
-		try {
-			touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-			touch.setTerminationMaxRows(10);
-			touch.setTouchCheckingType(CheckingType.LEAD_BASED);
-		} catch (Exception e) {
-			fail();
-		}
-		LeadBasedCompiler leadBasedCompiler = new LeadBasedCompiler(touch);
-		Proof compile = leadBasedCompiler.compile(false, () -> false);
-		Assert.assertEquals(ProofTerminationReason.INVALID_TOUCH, compile.getTerminationReason());
-		Assert.assertEquals("No active method", compile.getTerminateReasonDisplayString());
+
+		fail(); //TODO
+//		Touch touch = null;
+//		try {
+//			touch = TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
+//			touch.setTerminationMaxRows(10);
+//			touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+//		} catch (Exception e) {
+//			fail();
+//		}
+//		LeadBasedCompiler leadBasedCompiler = new LeadBasedCompiler(touch);
+//		Proof compile = leadBasedCompiler.compile(false, () -> false);
+//		Assert.assertEquals(ProofTerminationReason.INVALID_TOUCH, compile.getTerminationReason());
+//		Assert.assertEquals("No active method", compile.getTerminateReasonDisplayString());
 	}
 
 	@Test
@@ -252,12 +250,15 @@ public class LeadBasedCompilerTest {
 	}
 
 	private Touch buildPlainBobMinorTouchShell() {
-		Touch touch = TouchBuilder.getInstance(NumberOfBells.BELLS_6, 1, 1);
-		touch.addNotation(buildPlainBobMinor());
-		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
-		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
-		touch.setPlainLeadToken("p");
-		return touch;
+		fail(); //TODO
+		return null;
+
+//		Touch touch = TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
+//		touch.addNotation(buildPlainBobMinor());
+//		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+//		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+//		touch.setPlainLeadToken("p");
+//		return touch;
 	}
 
 	private Proof proveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,

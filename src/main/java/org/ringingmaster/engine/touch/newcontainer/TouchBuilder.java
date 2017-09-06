@@ -1,6 +1,5 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import org.ringingmaster.engine.NumberOfBells;
@@ -35,9 +34,8 @@ class TouchBuilder {
     private Optional<CheckingType> touchCheckingType = Optional.empty();
 
     private Optional<Bell> callFromBell = Optional.empty();
-    private Optional<ImmutableList<NotationBody>> sortedNotations = Optional.empty();
+    private Optional<ImmutableSet<NotationBody>> allNotations = Optional.empty();
     private Optional<Optional<NotationBody>> nonSplicedActiveNotation = Optional.empty();
-    private Optional<Boolean> spliced = Optional.empty(); // we use separate spliced and active-notation, rather than an optional because otherwise, adding your first notation will always be spliced.
     private Optional<String> plainLeadToken = Optional.empty();
     private Optional<ImmutableSet<Definition>> definitions = Optional.empty();
 
@@ -67,9 +65,8 @@ class TouchBuilder {
         setTouchCheckingType(CheckingType.COURSE_BASED);
 
         setCallFromBell(numberOfBells.get().getTenor());
-        setSortedNotations(ImmutableList.of());
+        setAllNotations(ImmutableSet.of());
         setNonSplicedActiveNotation(Optional.empty());
-        setSpliced(false);
         setPlainLeadToken("p");
         setDefinitions(ImmutableSet.of());
 
@@ -119,18 +116,13 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setSortedNotations(ImmutableList<NotationBody> sortedNotations) {
-        this.sortedNotations = Optional.of(sortedNotations);
+    TouchBuilder setAllNotations(ImmutableSet<NotationBody> allNotations) {
+        this.allNotations = Optional.of(allNotations);
         return this;
     }
 
     TouchBuilder setNonSplicedActiveNotation(Optional<NotationBody> nonSplicedActiveNotation) {
         this.nonSplicedActiveNotation = Optional.of(nonSplicedActiveNotation);
-        return this;
-    }
-
-    TouchBuilder setSpliced(boolean spliced) {
-        this.spliced = Optional.of(spliced);
         return this;
     }
 
@@ -204,9 +196,8 @@ class TouchBuilder {
                 touchCheckingType.orElseGet(()->prototype.getCheckingType()),
 
                 callFromBell.orElseGet(()->prototype.getCallFromBell()),
-                sortedNotations.orElseGet(()->prototype.getAllNotations()),
-                nonSplicedActiveNotation.orElseGet(()->prototype.getNonSplicedActiveNotation()),//TODO - optional - replace spliced.
-                spliced.orElseGet(()->prototype.isSpliced()),
+                allNotations.orElseGet(()->prototype.getAllNotations()),
+                nonSplicedActiveNotation.orElseGet(()->prototype.getNonSplicedActiveNotation()),
                 plainLeadToken.orElseGet(()->prototype.getPlainLeadToken()),
                 definitions.orElseGet(()->prototype.getAllDefinitions()),
 
@@ -234,9 +225,8 @@ class TouchBuilder {
                 ", numberOfBells=" + numberOfBells +
                 ", touchCheckingType=" + touchCheckingType +
                 ", callFromBell=" + callFromBell +
-                ", sortedNotations=" + sortedNotations +
+                ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
-                ", spliced=" + spliced +
                 ", plainLeadToken=" + plainLeadToken +
                 ", definitions=" + definitions +
                 ", startChange=" + startChange +

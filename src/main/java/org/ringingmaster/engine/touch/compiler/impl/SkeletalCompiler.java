@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
+import net.jcip.annotations.ThreadSafe;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodLead;
 import org.ringingmaster.engine.method.MethodRow;
@@ -11,12 +12,10 @@ import org.ringingmaster.engine.notation.NotationRow;
 import org.ringingmaster.engine.touch.analysis.Analysis;
 import org.ringingmaster.engine.touch.analysis.impl.AnalysisBuilder;
 import org.ringingmaster.engine.touch.compiler.Compiler;
-import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.impl.ImmutableTouch;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.proof.Proof;
 import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 import org.ringingmaster.engine.touch.proof.impl.DefaultProof;
-import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -60,13 +60,8 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 
 
 	public SkeletalCompiler(Touch touch, String logPreamble) {
-		try {
-			this.touch = new ImmutableTouch(touch.clone());
-		} catch (CloneNotSupportedException e) {
-			log.error("", e);
-			throw new RuntimeException(e);
-		}
-		this.logPreamble = logPreamble;
+		this.touch = checkNotNull(touch);
+		this.logPreamble = checkNotNull(logPreamble);
 	}
 
 	public Proof compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly) {
@@ -140,7 +135,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 
 		MethodRow startChange = createStartChange();
 
-		MaskedNotation maskedNotation = new MaskedNotation(touch.getNonSplicedActiveNotation());
+		MaskedNotation maskedNotation = new MaskedNotation(touch.getNonSplicedActiveNotation().get());
 
 		final List<MethodLead> leads = new ArrayList<>();
 

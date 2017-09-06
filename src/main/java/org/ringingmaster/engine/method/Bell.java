@@ -63,6 +63,7 @@ public enum Bell {
 		return mnemonic;
 	}
 
+	//TODO change methodName to toInt()
 	public int getZeroBasedBell() {
 		return ordinal();
 	}

@@ -151,6 +151,44 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		return spliceIdentifier;
 	}
 
+	// TODO regenerate when immutable
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		DefaultNotationBody that = (DefaultNotationBody) o;
+
+		if (foldedPalindrome != that.foldedPalindrome) return false;
+		if (cannedCalls != that.cannedCalls) return false;
+		if (rawNotationRowsSets != null ? !rawNotationRowsSets.equals(that.rawNotationRowsSets) : that.rawNotationRowsSets != null)
+			return false;
+		if (leadHeadCode != null ? !leadHeadCode.equals(that.leadHeadCode) : that.leadHeadCode != null) return false;
+		if (notationCalls != null ? !notationCalls.equals(that.notationCalls) : that.notationCalls != null)
+			return false;
+		if (defaultCall != null ? !defaultCall.equals(that.defaultCall) : that.defaultCall != null) return false;
+		if (callInitiationRow != null ? !callInitiationRow.equals(that.callInitiationRow) : that.callInitiationRow != null)
+			return false;
+		if (methodBasedCallingPositions != null ? !methodBasedCallingPositions.equals(that.methodBasedCallingPositions) : that.methodBasedCallingPositions != null)
+			return false;
+		return spliceIdentifier != null ? spliceIdentifier.equals(that.spliceIdentifier) : that.spliceIdentifier == null;
+	}
+
+	// TODO regenerate when immutable
+	@Override
+	public int hashCode() {
+		int result = rawNotationRowsSets != null ? rawNotationRowsSets.hashCode() : 0;
+		result = 31 * result + (foldedPalindrome ? 1 : 0);
+		result = 31 * result + (leadHeadCode != null ? leadHeadCode.hashCode() : 0);
+		result = 31 * result + (cannedCalls ? 1 : 0);
+		result = 31 * result + (notationCalls != null ? notationCalls.hashCode() : 0);
+		result = 31 * result + (defaultCall != null ? defaultCall.hashCode() : 0);
+		result = 31 * result + (callInitiationRow != null ? callInitiationRow.hashCode() : 0);
+		result = 31 * result + (methodBasedCallingPositions != null ? methodBasedCallingPositions.hashCode() : 0);
+		result = 31 * result + (spliceIdentifier != null ? spliceIdentifier.hashCode() : 0);
+		return result;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder buf = new StringBuilder();
@@ -167,5 +205,4 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 		buf.append("]");
 		return buf.toString();
 	}
-
 }
