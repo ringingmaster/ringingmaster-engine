@@ -10,7 +10,7 @@ import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 import org.ringingmaster.engine.touch.newcontainer.variance.impl.NullVariance;
-import org.ringingmaster.engine.touch.parser.ParseType;
+import org.ringingmaster.engine.parser.ParseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

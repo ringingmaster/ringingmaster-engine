@@ -5,13 +5,12 @@ import com.google.common.io.CharStreams;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.parser.Parser;
-import org.ringingmaster.engine.touch.parser.impl.DefaultParser;
+import org.ringingmaster.engine.parser.Parser;
+import org.ringingmaster.engine.parser.impl.DefaultParser;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.proof.Proof;
 import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 
@@ -21,6 +20,7 @@ import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
 
 /**
  * TODO comments???
@@ -32,21 +32,25 @@ public class CourseBasedCompilerTest {
 
 	@Test
 	public void compileSingleCallCalledFromTenor() throws IOException {
-		Touch touch = buildPlainBobMinorTouchShell(1, 2);
-		touch.addCharacters(0, 0, "W");
-		touch.addCharacters(0, 1, "-");
-		Proof proof = parseProveAndCheckTouch(15
-				, "/PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+		fail(); //TODO
+
+//		Touch touch = buildPlainBobMinorTouchShell(1, 2);
+//		touch.addCharacters(0, 0, "W");
+//		touch.addCharacters(0, 1, "-");
+//		Proof proof = parseProveAndCheckTouch(15
+//				, "/PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
 	}
 
 	@Test
 	public void compileSingleCallCalledFrom5() throws IOException {
-		Touch touch = buildPlainBobMinorTouchShell(1, 2);
-		touch.setCallFromBell(Bell.BELL_5);
-		touch.addCharacters(0, 0, "W");
-		touch.addCharacters(0, 1, "-");
-		Proof proof = parseProveAndCheckTouch(15
-				, "/PlainBobMinor W - From5.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+		fail(); //TODO
+
+//		Touch touch = buildPlainBobMinorTouchShell(1, 2);
+//		touch.setCallFromBell(Bell.BELL_5);
+//		touch.addCharacters(0, 0, "W");
+//		touch.addCharacters(0, 1, "-");
+//		Proof proof = parseProveAndCheckTouch(15
+//				, "/PlainBobMinor W - From5.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
 	}
 
 	private Touch buildPlainBobMinorTouchShell(int width, int height) {

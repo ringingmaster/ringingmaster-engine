@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.touch.parser.impl;
+package org.ringingmaster.engine.parser.impl;
 
 import com.google.common.collect.Lists;
 

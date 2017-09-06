@@ -2,7 +2,7 @@ package org.ringingmaster.engine.touch.compiler.impl;
 
 import net.jcip.annotations.NotThreadSafe;
 
-import org.ringingmaster.engine.touch.parser.ParseType;
+import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 

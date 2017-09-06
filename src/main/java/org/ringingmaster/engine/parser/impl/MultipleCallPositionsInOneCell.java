@@ -1,8 +1,8 @@
-package org.ringingmaster.engine.touch.parser.impl;
+package org.ringingmaster.engine.parser.impl;
 
 import java.util.List;
 
-import org.ringingmaster.engine.touch.parser.ParseType;
+import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.grid.Grid;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;

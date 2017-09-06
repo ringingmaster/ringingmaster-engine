@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.touch.parser;
+package org.ringingmaster.engine.parser;
 
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 

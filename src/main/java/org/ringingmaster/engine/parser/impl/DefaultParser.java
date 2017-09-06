@@ -1,10 +1,10 @@
-package org.ringingmaster.engine.touch.parser.impl;
+package org.ringingmaster.engine.parser.impl;
 
 
 import net.jcip.annotations.NotThreadSafe;
 
 import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.parser.Parser;
+import org.ringingmaster.engine.parser.Parser;
 
 /**
  * Default implementation of the Parser interface

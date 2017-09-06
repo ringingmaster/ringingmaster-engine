@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.touch.parser;
+package org.ringingmaster.engine.parser;
 
 /**
  * The different types that elements can be parsed to.
