@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class NotationMutationTest {
 
         ObservableTouch observableTouch = new ObservableTouch();
 
-        assertEquals(ImmutableList.of(), observableTouch.get().getAllNotations());
+        assertEquals(ImmutableSet.of(), observableTouch.get().getAllNotations());
     }
 
     @Test

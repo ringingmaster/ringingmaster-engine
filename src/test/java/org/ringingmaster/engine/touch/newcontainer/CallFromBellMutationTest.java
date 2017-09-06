@@ -30,7 +30,7 @@ public class CallFromBellMutationTest {
         assertEquals(Bell.BELL_1, touch.get().getCallFromBell());
     }
 
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void settingHigherThanNumberOfBellsThrows() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
