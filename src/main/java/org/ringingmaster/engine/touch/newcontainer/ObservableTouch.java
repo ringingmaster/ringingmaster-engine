@@ -2,7 +2,14 @@ package org.ringingmaster.engine.touch.newcontainer;
 
 
 import com.google.common.base.Strings;
-import com.google.common.collect.*;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import org.ringingmaster.engine.NumberOfBells;
@@ -24,10 +31,22 @@ import org.ringingmaster.util.smartcompare.SmartCompare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
+import static com.google.common.base.Preconditions.checkState;
+
 
 /**
  * TODO Comments
