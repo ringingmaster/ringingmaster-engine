@@ -24,16 +24,13 @@ import static com.google.common.base.Preconditions.checkState;
 public class AssignParseTypeParser {
 
 
-	private static Comparator<String> SORT_SIZE_THEN_NAME = new Comparator<String>() {
-		@Override
-		public int compare(String o1, String o2) {
-			int result = (o2.length() - o1.length());
-			if (result != 0) {
-				return result;
-			}
-			return o1.compareTo(o2);
-		}
-	};
+	private static Comparator<String> SORT_SIZE_THEN_NAME = (o1, o2) -> {
+        int result = (o2.length() - o1.length());
+        if (result != 0) {
+            return result;
+        }
+        return o1.compareTo(o2);
+    };
 
 
 	public void parse(Touch touch) {
@@ -110,7 +107,7 @@ public class AssignParseTypeParser {
 
 			int currentIndex = 0;
 			String cellAsString = cell.getAsStringWithParsedElementsAsWhitespace();
-			while ((currentIndex = cellAsString.indexOf(token,currentIndex)) != -1) {
+			while ((currentIndex = cellAsString.indexOf(token,currentIndex)) != -1) { // indexOf is a find operation
 				if (cell.isAllOfType(currentIndex, token.length(), ParseType.UNPARSED)) {
 					cell.createWord(currentIndex, token.length(), parseType);
 					currentIndex+=token.length();

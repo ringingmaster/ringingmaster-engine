@@ -1,8 +1,10 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import com.google.common.collect.ImmutableSet;
+
 import com.google.common.collect.ImmutableTable;
 import net.jcip.annotations.Immutable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
@@ -34,10 +36,10 @@ public class Touch {
     private final CheckingType checkingType;
 
     private final Bell callFromBell;
-    private final ImmutableSet<NotationBody> sortedNotations;
+    private final PSet<NotationBody> allNotations;
     private final Optional<NotationBody> nonSplicedActiveNotation;
     private final String plainLeadToken;
-    private final ImmutableSet<Definition> definitions;
+    private final PSet<Definition> definitions;
 
     private final MethodRow startChange;
     private final int startAtRow;
@@ -57,10 +59,10 @@ public class Touch {
                  NumberOfBells numberOfBells,
                  CheckingType checkingType,
                  Bell callFromBell,
-                 ImmutableSet<NotationBody> sortedNotations,
+                 PSet<NotationBody> allNotations,
                  Optional<NotationBody> nonSplicedActiveNotation,
                  String plainLeadToken,
-                 ImmutableSet<Definition> definitions,
+                 PSet<Definition> definitions,
                  MethodRow startChange, int startAtRow,
                  Stroke startStroke,
                  Optional<NotationBody> startNotation,
@@ -77,7 +79,7 @@ public class Touch {
         this.checkingType = checkingType;
 
         this.callFromBell = callFromBell;
-        this.sortedNotations = sortedNotations;
+        this.allNotations = allNotations;
         this.nonSplicedActiveNotation = nonSplicedActiveNotation;
         this.plainLeadToken = plainLeadToken;
         this.definitions = definitions;
@@ -116,25 +118,23 @@ public class Touch {
         return callFromBell;
     }
 
-    public ImmutableSet<NotationBody> getAllNotations() {
-        return sortedNotations;
+    public PSet<NotationBody> getAllNotations() {
+        return allNotations;
     }
 
-    public ImmutableSet<NotationBody> getValidNotations() {
+    public PSet<NotationBody> getValidNotations() {
         //TODO precalculate
-        return ImmutableSet.copyOf(
-                //TODO should this return immutable version?
-                NotationBuilderHelper.filterNotationsUptoNumberOfBells(sortedNotations, numberOfBells));
+        return NotationBuilderHelper.filterNotationsUptoNumberOfBells(allNotations, numberOfBells);
     }
 
-    public ImmutableSet<NotationBody> getNotationsInUse() {
+    public PSet<NotationBody> getInUseNotations() {
         //TODO precalculate
         if (isSpliced()) {
             return getValidNotations();
         }
         else {
             // Not Spliced
-            return nonSplicedActiveNotation.map(ImmutableSet::of).orElseGet(ImmutableSet::of);
+            return nonSplicedActiveNotation.map(HashTreePSet::singleton).orElseGet(HashTreePSet::empty);
         }
     }
 
@@ -143,14 +143,14 @@ public class Touch {
     }
 
     public boolean isSpliced() {
-        return !sortedNotations.isEmpty() && !nonSplicedActiveNotation.isPresent();
+        return !allNotations.isEmpty() && !nonSplicedActiveNotation.isPresent();
     }
 
     public String getPlainLeadToken() {
         return plainLeadToken;
     }
 
-    public ImmutableSet<Definition> getAllDefinitions() {
+    public PSet<Definition> getAllDefinitions() {
         return definitions;
     }
 
@@ -240,7 +240,7 @@ public class Touch {
                 ", numberOfBells='" + numberOfBells + '\'' +
                 ", touchType=" + checkingType +
                 ", callFromBell='" + callFromBell + '\'' +
-                ", sortedNotations=" + sortedNotations +
+                ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
                 ", plainLeadToken='" + plainLeadToken + '\'' +
                 ", definitions=" + definitions +

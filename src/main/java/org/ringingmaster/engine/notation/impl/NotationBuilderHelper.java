@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.notation.impl;
 
+import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
@@ -128,15 +129,15 @@ public class NotationBuilderHelper {
 		return (i % 2) == 0;
 	}
 
-	public static Set<NotationBody> filterNotationsUptoNumberOfBells(Set<NotationBody> notations, NumberOfBells numberOfBells) {
+	public static PSet<NotationBody> filterNotationsUptoNumberOfBells(PSet<NotationBody> notations, NumberOfBells numberOfBells) {
 
-		Set<NotationBody> filteredNotations = new HashSet<>();
+		Set<NotationBody> notationsToBeRemoved = new HashSet<>();
 		for (NotationBody notation : notations) {
-			if (notation.getNumberOfWorkingBells().toInt() <= numberOfBells.toInt()) {
-				filteredNotations.add(notation);
+			if (notation.getNumberOfWorkingBells().toInt() > numberOfBells.toInt()) {
+				notationsToBeRemoved.add(notation);
 			}
 		}
-		return filteredNotations;
+		return notations.minusAll(notationsToBeRemoved);
 	}
 
 	public static String getAsDisplayString(final List<NotationRow> rows, final boolean concise) {

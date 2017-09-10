@@ -102,7 +102,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 
 	private Optional<String> checkInvalidTouch(Touch touch) {
 		if (touch.isSpliced()) {
-			if (touch.getNotationsInUse().size() == 0) {
+			if (touch.getInUseNotations().size() == 0) {
 				return Optional.of("Spliced touch has no valid methods");
 			}
 		}

@@ -3,9 +3,12 @@ package org.ringingmaster.engine.touch.newcontainer;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import org.junit.Test;
+import org.pcollections.PSet;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * TODO Comments
@@ -28,7 +31,7 @@ public class DefinitionMutationTest {
         ObservableTouch touch = new ObservableTouch();
         touch.addDefinition("A", "SL");
 
-        ImmutableSet<Definition> allDefinitions = touch.get().getAllDefinitions();
+        PSet<Definition> allDefinitions = touch.get().getAllDefinitions();
         assertEquals(1, allDefinitions.size());
 
         Definition definition = Iterators.getOnlyElement(allDefinitions.iterator());
@@ -51,7 +54,7 @@ public class DefinitionMutationTest {
         assertEquals(3, touch.get().getAllDefinitions().size());
         touch.removeDefinition("B");
 
-        ImmutableSet<Definition> allDefinitions = touch.get().getAllDefinitions();
+        PSet<Definition> allDefinitions = touch.get().getAllDefinitions();
         assertEquals(2, allDefinitions.size());
         assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
         assertFalse(touch.get().findDefinitionByShorthand("B").isPresent());

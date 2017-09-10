@@ -103,7 +103,7 @@ public class NotationMutationTest {
         touch.addNotation(METHOD_A_6_BELL);
         assertEquals(METHOD_A_6_BELL, Iterators.getOnlyElement(touch.get().getAllNotations().iterator()));
 
-        touch.updateNotation(METHOD_A_6_BELL, METHOD_B_6_BELL);
+        touch.exchangeNotation(METHOD_A_6_BELL, METHOD_B_6_BELL);
         assertEquals(METHOD_B_6_BELL, Iterators.getOnlyElement(touch.get().getAllNotations().iterator()));
     }
 
@@ -231,12 +231,12 @@ public class NotationMutationTest {
         touch.addNotation(METHOD_A_8_BELL);
 
         assertEquals(3, touch.get().getAllNotations().size());
-        assertEquals(1, touch.get().getNotationsInUse().size());
+        assertEquals(1, touch.get().getInUseNotations().size());
         assertEquals(2, touch.get().getValidNotations().size());
 
         touch.setSpliced(true);
         assertEquals(3, touch.get().getAllNotations().size());
-        assertEquals(2, touch.get().getNotationsInUse().size());
+        assertEquals(2, touch.get().getInUseNotations().size());
         assertEquals(2, touch.get().getValidNotations().size());
     }
 

@@ -1,7 +1,8 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
@@ -34,10 +35,10 @@ class TouchBuilder {
     private Optional<CheckingType> touchCheckingType = Optional.empty();
 
     private Optional<Bell> callFromBell = Optional.empty();
-    private Optional<ImmutableSet<NotationBody>> allNotations = Optional.empty();
+    private Optional<PSet<NotationBody>> allNotations = Optional.empty();
     private Optional<Optional<NotationBody>> nonSplicedActiveNotation = Optional.empty();
     private Optional<String> plainLeadToken = Optional.empty();
-    private Optional<ImmutableSet<Definition>> definitions = Optional.empty();
+    private Optional<PSet<Definition>> definitions = Optional.empty();
 
     private Optional<MethodRow> startChange = Optional.empty();
     private Optional<Integer> startAtRow = Optional.empty();
@@ -65,10 +66,10 @@ class TouchBuilder {
         setTouchCheckingType(CheckingType.COURSE_BASED);
 
         setCallFromBell(numberOfBells.get().getTenor());
-        setAllNotations(ImmutableSet.of());
+        setAllNotations(HashTreePSet.empty());
         setNonSplicedActiveNotation(Optional.empty());
         setPlainLeadToken("p");
-        setDefinitions(ImmutableSet.of());
+        setDefinitions(HashTreePSet.empty());
 
         setStartChange(MethodBuilder.buildRoundsRow(numberOfBells.get()));
         setStartAtRow(0);
@@ -116,7 +117,7 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setAllNotations(ImmutableSet<NotationBody> allNotations) {
+    TouchBuilder setAllNotations(PSet<NotationBody> allNotations) {
         this.allNotations = Optional.of(allNotations);
         return this;
     }
@@ -131,7 +132,7 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setDefinitions(ImmutableSet<Definition> touchDefinitions) {
+    TouchBuilder setDefinitions(PSet<Definition> touchDefinitions) {
         this.definitions = Optional.of(touchDefinitions);
         return this;
     }

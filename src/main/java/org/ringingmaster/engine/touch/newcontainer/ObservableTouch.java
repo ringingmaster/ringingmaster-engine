@@ -5,13 +5,13 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
+import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -245,9 +244,8 @@ public class ObservableTouch {
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
 
-        Set<NotationBody> allNotations = Sets.newHashSet(currentTouch.getAllNotations());
-        allNotations.add(notationToAdd);
-        touchBuilder.setAllNotations(ImmutableSet.copyOf(allNotations));
+        PSet<NotationBody> withAddedNotation = currentTouch.getAllNotations().plus(notationToAdd);
+        touchBuilder.setAllNotations(withAddedNotation);
 
 //TODO what if the number of bells is wrong?
         if (!currentTouch.isSpliced() && !currentTouch.getNonSplicedActiveNotation().isPresent()) {
@@ -266,8 +264,7 @@ public class ObservableTouch {
         checkNotNull(notationsToExclude);
 
         List<String> messages = new ArrayList<>();
-        Set<NotationBody> allNotationsWithExclusions = new HashSet<>(currentTouch.getAllNotations());
-        allNotationsWithExclusions.removeAll(notationsToExclude);
+        PSet<NotationBody> allNotationsWithExclusions = currentTouch.getAllNotations().minusAll(notationsToExclude);
 
         messages.addAll(allNotationsWithExclusions.stream()
                 .filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToCheck.getNumberOfWorkingBells()) &&
@@ -292,13 +289,12 @@ public class ObservableTouch {
     public void removeNotation(NotationBody notationForRemoval) {
         checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 
-        List<NotationBody> sortedNotations = Lists.newArrayList(currentTouch.getAllNotations());
-        checkState(sortedNotations.contains(notationForRemoval));
+        PSet<NotationBody> allNotations = currentTouch.getAllNotations();
+        checkState(allNotations.contains(notationForRemoval));
 
-        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
-
-        sortedNotations.remove(notationForRemoval);
-        touchBuilder.setAllNotations(ImmutableSet.copyOf(sortedNotations));
+        PSet<NotationBody> withRemovedNotation = allNotations.minus(notationForRemoval);
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setAllNotations(withRemovedNotation);
 
         // Sort out the next notation if it is the active notation
         if (currentTouch.getNonSplicedActiveNotation().isPresent() &&
@@ -310,14 +306,14 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    //TODO rename exchangeNotation
-    public void updateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+    public void exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation) {
         checkNotNull(originalNotation, "originalNotation must not be null");
         checkNotNull(replacementNotation, "replacementNotation must not be null");
         checkArgument(originalNotation != replacementNotation);
 
-        List<NotationBody> sortedNotations = Lists.newArrayList(currentTouch.getAllNotations());
-        checkState(sortedNotations.contains(originalNotation));
+
+        PSet<NotationBody> allNotations = currentTouch.getAllNotations();
+        checkState(allNotations.contains(originalNotation));
 
         List<String> messages = checkUpdateNotation(originalNotation, replacementNotation);
 
@@ -328,10 +324,9 @@ public class ObservableTouch {
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
 
-        sortedNotations.remove(originalNotation);
-        sortedNotations.add(replacementNotation);
-        Collections.sort(sortedNotations, NotationBody.BY_NAME);
-        touchBuilder.setAllNotations(ImmutableSet.copyOf(sortedNotations));
+        allNotations = allNotations.minus(originalNotation)
+                .plus(replacementNotation);
+        touchBuilder.setAllNotations(allNotations);
 
         if (currentTouch.getNonSplicedActiveNotation().isPresent() &&
                 currentTouch.getNonSplicedActiveNotation().get() == originalNotation) {
@@ -419,11 +414,11 @@ public class ObservableTouch {
         ImmutableList<Element> elements = ElementBuilder.createElements(characters);
         Definition definition = new DefaultDefinition(shorthand, elements);
 
-        Set<Definition> definitions = Sets.newHashSet(currentTouch.getAllDefinitions());
-        definitions.add(definition);
+        PSet<Definition> definitions = currentTouch.getAllDefinitions()
+                .plus(definition);
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setDefinitions(ImmutableSet.copyOf(definitions));
+                .setDefinitions(definitions);
 
         setCurrentTouch(touchBuilder.build());
     }
@@ -431,9 +426,11 @@ public class ObservableTouch {
     public void removeDefinition(String shorthand) {
         checkNotNull(shorthand, "shorthand must not be null");
 
-        ImmutableSet<Definition> definitions = currentTouch.getAllDefinitions().stream()
-                .filter(definition -> !definition.getShorthand().equals(shorthand))
-                .collect(Collectors.collectingAndThen(Collectors.toSet(), ImmutableSet::copyOf));
+        Set<Definition> definitionsForRemoval = currentTouch.getAllDefinitions().stream()
+                .filter(definition -> definition.getShorthand().equals(shorthand))
+                .collect(Collectors.toSet());
+
+        PSet<Definition> definitions = currentTouch.getAllDefinitions().minusAll(definitionsForRemoval);
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
                 .setDefinitions(definitions);
