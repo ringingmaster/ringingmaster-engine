@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface Proof {
 
 	/**
-	 * A **COPY** of the {@link Touch} as it was when the
+	 * An immutable {@link Touch} as it was when the
 	 * proof was requested.
 	 */
 	Touch getTouch();
