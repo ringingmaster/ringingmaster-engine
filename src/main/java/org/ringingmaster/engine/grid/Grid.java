@@ -6,6 +6,7 @@ import java.util.List;
  * TODO comments???
  * User: Stephen
  */
+@Deprecated
 public interface Grid<T> extends Iterable<T> { //TODO move elsewhere
 
 	int getColumnCount();
