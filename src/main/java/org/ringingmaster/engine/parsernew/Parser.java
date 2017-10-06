@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.newparser;
+package org.ringingmaster.engine.parsernew;
 
 import io.reactivex.functions.Function;
 import org.ringingmaster.engine.touch.newcontainer.Touch;

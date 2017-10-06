@@ -16,9 +16,13 @@ import java.util.stream.Collectors;
 public class DefaultCell implements Cell {
 
     private final ImmutableList<Element> elements;
+    private final String characters;
 
     public DefaultCell(List<Element> elements) {
         this.elements = ImmutableList.copyOf(elements);
+        this.characters = elements.stream()
+                .map(element -> Character.toString(element.getCharacter()))
+                .collect(Collectors.joining());
     }
 
     @Override
@@ -33,9 +37,7 @@ public class DefaultCell implements Cell {
 
     @Override
     public String getCharacters() {
-        return elements.stream()
-                .map(element -> Character.toString(element.getCharacter()))
-                .collect(Collectors.joining());
+        return characters;
     }
 
     @Override

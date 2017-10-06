@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.newparser;
+package org.ringingmaster.engine.parsernew;
 
 import io.reactivex.Observable;
 import org.junit.Test;
