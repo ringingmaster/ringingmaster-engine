@@ -3,7 +3,7 @@ package org.ringingmaster.engine.parsernew.assignparsetype;
 import org.ringingmaster.engine.parser.ParseType;
 
 /**
- * A Section represents a contiguous group of elements that have a n assigned ParseType
+ * A Section represents a contiguous sequence of elements that have a n assigned ParseType
  *
  * @author stevelake
  */

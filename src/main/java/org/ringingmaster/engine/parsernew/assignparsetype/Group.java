@@ -3,7 +3,7 @@ package org.ringingmaster.engine.parsernew.assignparsetype;
 import java.util.List;
 
 /**
- * A Group spans multiple sections.
+ * A Group spans multiple sections, where each section holds a ParseType.
  *
  * @author stevelake
  */
