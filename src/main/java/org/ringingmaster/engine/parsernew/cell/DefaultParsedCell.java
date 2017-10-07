@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parsernew.assignparsetype;
+package org.ringingmaster.engine.parsernew.cell;
 
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 
@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
  *
  * @author stevelake
  */
-public class DefaultParsedCell implements ParsedCell {
+class DefaultParsedCell implements ParsedCell {
 
     private final Cell parentCell;
     private final Section[] sectionByElement;

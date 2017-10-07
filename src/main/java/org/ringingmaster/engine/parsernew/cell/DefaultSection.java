@@ -1,7 +1,7 @@
-package org.ringingmaster.engine.parsernew.assignparsetype;
+package org.ringingmaster.engine.parsernew.cell;
 
-import com.google.common.collect.ImmutableList;
 import net.jcip.annotations.Immutable;
+import org.ringingmaster.engine.parser.ParseType;
 
 /**
  * TODO comments???
@@ -9,22 +9,16 @@ import net.jcip.annotations.Immutable;
  * @author stevelake
  */
 @Immutable
-public class DefaultGroup implements Group {
+class DefaultSection implements Section {
 
     private final int elementStartIndex;
     private final int elementLength;
-    private final ImmutableList<Section> sections;
+    private final ParseType parseType;
 
-
-    DefaultGroup(int elementStartIndex, int elementLength, Section section) {
+    DefaultSection(int elementStartIndex, int elementLength, ParseType parseType) {
         this.elementStartIndex = elementStartIndex;
         this.elementLength = elementLength;
-        this.sections = ImmutableList.of(section);
-    }
-
-    @Override
-    public ImmutableList<Section> getSections() {
-        return sections;
+        this.parseType = parseType;
     }
 
     @Override
@@ -38,6 +32,11 @@ public class DefaultGroup implements Group {
     }
 
     @Override
+    public ParseType getParseType() {
+        return parseType;
+    }
+
+    @Override
     public boolean fallsWithin(int elementIndex) {
         return elementIndex >= elementStartIndex &&
                 elementIndex < elementStartIndex + elementLength;
@@ -45,10 +44,10 @@ public class DefaultGroup implements Group {
 
     @Override
     public String toString() {
-        return "DefaultGroup{" +
+        return "DefaultSection{" +
                 "elementStartIndex=" + elementStartIndex +
                 ", elementLength=" + elementLength +
-                ", sections=" + sections +
+                ", parseType=" + parseType +
                 '}';
     }
 }

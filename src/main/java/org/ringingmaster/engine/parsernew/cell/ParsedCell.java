@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parsernew.assignparsetype;
+package org.ringingmaster.engine.parsernew.cell;
 
 import net.jcip.annotations.Immutable;
 

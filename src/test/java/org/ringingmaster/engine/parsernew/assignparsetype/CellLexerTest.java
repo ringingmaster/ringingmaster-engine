@@ -3,6 +3,9 @@ package org.ringingmaster.engine.parsernew.assignparsetype;
 import com.google.common.collect.Maps;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.cell.Group;
+import org.ringingmaster.engine.parsernew.cell.ParsedCell;
+import org.ringingmaster.engine.parsernew.cell.Section;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
 
