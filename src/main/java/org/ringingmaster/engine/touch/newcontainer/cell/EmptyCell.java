@@ -11,10 +11,9 @@ public class EmptyCell implements Cell{
 
     public static EmptyCell INSTANCE = new EmptyCell();
 
-
     @Override
     public Element getElement(int index) {
-        throw new UnsupportedOperationException();
+        throw new IndexOutOfBoundsException();
     }
 
     @Override

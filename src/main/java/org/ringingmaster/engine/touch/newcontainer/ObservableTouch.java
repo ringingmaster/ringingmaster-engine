@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
@@ -13,6 +12,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
@@ -22,6 +22,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
+import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.DefaultDefinition;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
@@ -612,24 +613,23 @@ public class ObservableTouch {
     }
 
     public void addCharacters(int rowIndex, int columnIndex, String characters) {
-        checkPositionIndex(rowIndex, currentTouch.getRowCount(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.getColumnCount(), "columnIndex");
+        checkPositionIndex(rowIndex, currentTouch.cells().getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.cells().getColumnSize(), "columnIndex");
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
 
-        Cell cell = currentTouch.cell(rowIndex, columnIndex);
+        Cell cell = currentTouch.cells().get(rowIndex, columnIndex);
         insertCharacters(rowIndex, columnIndex, (cell==null)?0:cell.size(), characters);
     }
 
     public void insertCharacters(int rowIndex, int columnIndex, int cellIndex, String characters) {
-
-        checkPositionIndex(rowIndex, currentTouch.getRowCount(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.getColumnCount(), "columnIndex");
+        checkPositionIndex(rowIndex, currentTouch.cells().getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.cells().getColumnSize(), "columnIndex");
         checkArgument(cellIndex >= 0 );
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
 
-        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.getCells());
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.cells().getBackingTable());
         Cell currentCell = cells.get(rowIndex, columnIndex);
 
         if (currentCell == null) {
@@ -649,18 +649,18 @@ public class ObservableTouch {
         }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setCells(ImmutableTable.copyOf(cells));
+                .setCells(new TableBackedImmutableArrayTable<Cell>(cells, EmptyCell::new));
 
         setCurrentTouch(touchBuilder.build());
 
     }
 
     public void removeCharacters(int rowIndex, int columnIndex, int cellIndex, int count) {
-        checkPositionIndex(rowIndex, currentTouch.getRowCount(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.getColumnCount(), "columnIndex");
+        checkPositionIndex(rowIndex, currentTouch.cells().getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.cells().getColumnSize(), "columnIndex");
         checkArgument(cellIndex >= 0 );
 
-        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.getCells());
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.cells().getBackingTable());
         Cell currentCell = cells.get(rowIndex, columnIndex);
 
         checkNotNull(currentCell);
@@ -680,7 +680,7 @@ public class ObservableTouch {
         }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setCells(ImmutableTable.copyOf(cells));
+                .setCells(new TableBackedImmutableArrayTable<Cell>(cells, EmptyCell::new));
 
         setCurrentTouch(touchBuilder.build());
     }
@@ -689,8 +689,8 @@ public class ObservableTouch {
         Map<Integer, Cell> columnItems = cells.column(columnIndexForRemoval);
 
         if (columnItems.isEmpty()) {
-            int columnCount = currentTouch.getColumnCount();
-            int rowCount = currentTouch.getRowCount();
+            int rowCount = currentTouch.cells().getRowSize();
+            int columnCount = currentTouch.cells().getColumnSize();
             // We allow the column loop to go '1' past end to ensure the final column is removed.
             for (int columnIndex=columnIndexForRemoval;columnIndex<columnCount+1;columnIndex++) {
                 for (int rowIndex=0;rowIndex<rowCount;rowIndex++) {
@@ -710,8 +710,8 @@ public class ObservableTouch {
         Map<Integer, Cell> rowItems = cells.row(rowIndexForRemoval);
 
         if (rowItems.isEmpty()) {
-            int rowCount = currentTouch.getRowCount();
-            int columnCount = currentTouch.getColumnCount();
+            int rowCount = currentTouch.cells().getRowSize();
+            int columnCount = currentTouch.cells().getColumnSize();
             // We allow the row loop to go '1' past end to ensure the final row is removed.
             for (int rowIndex=rowIndexForRemoval;rowIndex<rowCount+1;rowIndex++) {
                 for (int columnIndex=0;columnIndex<columnCount;columnIndex++) {

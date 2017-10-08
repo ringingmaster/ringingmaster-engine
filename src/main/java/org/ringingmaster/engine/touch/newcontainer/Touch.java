@@ -1,25 +1,23 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
 
-import com.google.common.collect.ImmutableTable;
 import net.jcip.annotations.Immutable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
  * Raw immutable POJO for a touch.
@@ -52,7 +50,7 @@ public class Touch {
     private final int terminationMaxCircularity;
     private final Optional<MethodRow> terminationChange;
 
-    private final ImmutableTable<Integer, Integer, Cell> cells;
+    private final ImmutableArrayTable<Cell> cells;
 
     public Touch(String title,
                  String author,
@@ -71,7 +69,7 @@ public class Touch {
                  Optional<Integer> terminationMaxParts,
                  int terminationMaxCircularity,
                  Optional<MethodRow> terminationChange,
-                 ImmutableTable<Integer, Integer, Cell> cells) {
+                 ImmutableArrayTable<Cell> cells) {
         this.title = title;
         this.author = author;
 
@@ -198,38 +196,8 @@ public class Touch {
         return terminationChange;
     }
 
-    /**
-     * Not for public use
-     */
-    ImmutableTable<Integer, Integer, Cell> getCells() {
+    public ImmutableArrayTable<Cell> cells() {
         return cells;
-    }
-
-    public int getColumnCount() {
-        return cells.columnKeySet().stream()
-                .mapToInt(value -> value+1)
-                .max()
-                .orElse(0);
-    }
-
-    public int getRowCount() {
-        return cells.rowKeySet().stream()
-                .mapToInt(value -> value+1)
-                .max()
-                .orElse(0);
-    }
-
-    public Cell cell(int rowIndex, int columnIndex) {
-        checkPositionIndex(rowIndex, getRowCount());
-        checkPositionIndex(columnIndex, getColumnCount());
-
-        Cell cell = cells.get(rowIndex, columnIndex);
-        if (cell != null) {
-            return cell;
-        }
-        else {
-            return EmptyCell.INSTANCE;
-        }
     }
 
     @Override

@@ -18,8 +18,8 @@ public class CellMutationTest {
 
         ObservableTouch touch = new ObservableTouch();
 
-        assertEquals(0, touch.get().getColumnCount());
-        assertEquals(0, touch.get().getRowCount());
+        assertEquals(0, touch.get().cells().getColumnSize());
+        assertEquals(0, touch.get().cells().getRowSize());
     }
 
     @Test
@@ -28,9 +28,9 @@ public class CellMutationTest {
 
         touch.addCharacters(0,0, "ABC");
 
-        assertEquals(1, touch.get().getColumnCount());
-        assertEquals(1, touch.get().getRowCount());
-        assertEquals("ABC", touch.get().cell(0,0).getCharacters());
+        assertEquals(1, touch.get().cells().getColumnSize());
+        assertEquals(1, touch.get().cells().getRowSize());
+        assertEquals("ABC", touch.get().cells().get(0,0).getCharacters());
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
@@ -51,7 +51,7 @@ public class CellMutationTest {
         touch.addCharacters(0,0, "ABC");
 
         touch.addCharacters(0,0, "123");
-        assertEquals("ABC123", touch.get().cell(0,0).getCharacters());
+        assertEquals("ABC123", touch.get().cells().get(0,0).getCharacters());
     }
 
 
@@ -61,9 +61,9 @@ public class CellMutationTest {
 
         touch.insertCharacters(0,0, 0,"ABC");
 
-        assertEquals(1, touch.get().getColumnCount());
-        assertEquals(1, touch.get().getRowCount());
-        assertEquals("ABC", touch.get().cell(0,0).getCharacters());
+        assertEquals(1, touch.get().cells().getColumnSize());
+        assertEquals(1, touch.get().cells().getRowSize());
+        assertEquals("ABC", touch.get().cells().get(0,0).getCharacters());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class CellMutationTest {
         touch.addCharacters(0,0, "ABC");
 
         touch.insertCharacters(0,0, 1, "123");
-        assertEquals("A123BC", touch.get().cell(0,0).getCharacters());
+        assertEquals("A123BC", touch.get().cells().get(0,0).getCharacters());
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
@@ -99,7 +99,7 @@ public class CellMutationTest {
         touch.addCharacters(0,0, "ABC");
 
         touch.removeCharacters(0, 0, 1,1);
-        assertEquals("AC", touch.get().cell(0,0).getCharacters());
+        assertEquals("AC", touch.get().cells().get(0,0).getCharacters());
     }
 
     @Test
@@ -108,7 +108,7 @@ public class CellMutationTest {
         touch.addCharacters(0,0, "ABCD");
 
         touch.removeCharacters(0, 0, 1,2);
-        assertEquals("AD", touch.get().cell(0,0).getCharacters());
+        assertEquals("AD", touch.get().cells().get(0,0).getCharacters());
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
@@ -136,8 +136,8 @@ public class CellMutationTest {
         touch.addCharacters(0,0, "ABC");
 
         touch.removeCharacters(0, 0, 0,3);
-        assertEquals("", touch.get().cell(0,0).getCharacters());
-        assertTrue(touch.get().cell(0,0) instanceof EmptyCell);
+        assertEquals("", touch.get().cells().get(0,0).getCharacters());
+        assertTrue(touch.get().cells().get(0,0) instanceof EmptyCell);
     }
 
     @Test
@@ -147,10 +147,10 @@ public class CellMutationTest {
         touch.addCharacters(0,1, "0,1");
         touch.addCharacters(0,2, "0,2");
         touch.addCharacters(1,2, "1,2");
-        assertEquals(3, touch.get().getColumnCount());
+        assertEquals(3, touch.get().cells().getColumnSize());
 
         touch.removeCharacters(0, 1, 0,3);
-        assertEquals(2, touch.get().getColumnCount());
+        assertEquals(2, touch.get().cells().getColumnSize());
     }
 
     @Test
@@ -160,10 +160,10 @@ public class CellMutationTest {
         touch.addCharacters(1,0, "1,0");
         touch.addCharacters(2,0, "2,0");
         touch.addCharacters(2,1, "2,1");
-        assertEquals(3, touch.get().getRowCount());
+        assertEquals(3, touch.get().cells().getRowSize());
 
         touch.removeCharacters(1, 0, 0,3);
-        assertEquals(2, touch.get().getRowCount());
+        assertEquals(2, touch.get().cells().getRowSize());
     }
 
 }
