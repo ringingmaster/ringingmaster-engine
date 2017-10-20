@@ -3,6 +3,7 @@ package org.ringingmaster.engine.arraytable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 
+import java.util.Iterator;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -12,19 +13,19 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 /**
  * @author stevelake
  */
-public class TableBackedImmutableArrayTable<V> implements ImmutableArrayTable<V> {
+public class TableBackedImmutableArrayTable<T> implements ImmutableArrayTable<T> {
 
-    private final ImmutableTable<Integer, Integer, V> backingTable;
+    private final ImmutableTable<Integer, Integer, T> backingTable;
     private final int columnSize;
     private final int rowSize;
-    private final Supplier<V> emptyCellSupplier;
+    private final Supplier<T> emptyCellSupplier;
 
 
-    public TableBackedImmutableArrayTable(Supplier<V> emptyCellSupplier) {
+    public TableBackedImmutableArrayTable(Supplier<T> emptyCellSupplier) {
         this(ImmutableTable.of(), emptyCellSupplier);
     }
 
-    public TableBackedImmutableArrayTable(Table<Integer, Integer, V> backingTable, Supplier<V> emptyCellSupplier) {
+    public TableBackedImmutableArrayTable(Table<Integer, Integer, T> backingTable, Supplier<T> emptyCellSupplier) {
         this.backingTable = ImmutableTable.copyOf(checkNotNull(backingTable));
 
         checkArgument(backingTable.columnKeySet().stream()
@@ -61,11 +62,11 @@ public class TableBackedImmutableArrayTable<V> implements ImmutableArrayTable<V>
     }
 
     @Override
-    public V get(int rowIndex, int columnIndex) {
+    public T get(int rowIndex, int columnIndex) {
         checkPositionIndex(rowIndex, rowSize);
         checkPositionIndex(columnIndex, columnSize);
 
-        V cell = backingTable.get(rowIndex, columnIndex);
+        T cell = backingTable.get(rowIndex, columnIndex);
         if (cell != null) {
             return cell;
         }
@@ -75,12 +76,32 @@ public class TableBackedImmutableArrayTable<V> implements ImmutableArrayTable<V>
     }
 
     @Override
-    public ImmutableArrayTable<V> subTable(int fromRow, int toRow, int fromColumn, int toColumn) {
-        return new SubImmutableArrayTable<V>(this, fromRow, toRow, fromColumn, toColumn);
+    public Iterator<BackingTableLocationAndValue<T>> iterator() {
+        return iterateByRowThenColumn();
     }
 
     @Override
-    public ImmutableTable<Integer, Integer, V> getBackingTable() {
+    public ImmutableArrayTable<T> subTable(int fromRow, int toRow, int fromColumn, int toColumn) {
+        return new SubImmutableArrayTable<T>(this, fromRow, toRow, fromColumn, toColumn);
+    }
+
+    @Override
+    public ImmutableTable<Integer, Integer, T> getBackingTable() {
         return backingTable;
+    }
+
+    @Override
+    public Iterator<BackingTableLocationAndValue<T>> iterateByRowThenColumn() {
+        return new ByRowThenColumnIterator<T>(this);
+    }
+
+    @Override
+    public int getBackingRowIndex(int rowIndex) {
+        return rowIndex;
+    }
+
+    @Override
+    public int getBackingColumnIndex(int columnIndex) {
+        return columnIndex;
     }
 }

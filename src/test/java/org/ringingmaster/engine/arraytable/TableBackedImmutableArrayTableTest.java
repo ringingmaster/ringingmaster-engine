@@ -4,7 +4,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * TODO comments???
@@ -85,5 +88,32 @@ public class TableBackedImmutableArrayTableTest {
         TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "DEFAULT");
 
         assertEquals((Table)backingTable, (Table)arrayTable.getBackingTable());
+    }
+
+    @Test
+    public void iteratorReturnsCellsInCorrectOrder() {
+        HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
+        backingTable.put(0,0,"0,0");
+        backingTable.put(0,1,"0,1");
+        backingTable.put(1,0,"1,0");
+        backingTable.put(1,1,"1,1");
+
+        TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "DEFAULT");
+
+        Iterator<BackingTableLocationAndValue<String>> locationAndValueIterator = arrayTable.iterateByRowThenColumn();
+
+        assertRowColVal(locationAndValueIterator.next(), 0, 0, "0,0");
+        assertRowColVal(locationAndValueIterator.next(), 0, 1, "0,1");
+        assertRowColVal(locationAndValueIterator.next(), 1, 0, "1,0");
+        assertRowColVal(locationAndValueIterator.next(), 1, 1, "1,1");
+
+        assertFalse(locationAndValueIterator.hasNext());
+    }
+
+    private <T> void assertRowColVal(BackingTableLocationAndValue<T> next, int row, int col, T val) {
+
+        assertEquals(row, next.getRow());
+        assertEquals(col, next.getCol());
+        assertEquals(val, next.getValue());
     }
 }

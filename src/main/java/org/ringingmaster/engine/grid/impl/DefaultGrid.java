@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkElementIndex;
  * Default implementation of the {@link Grid} interface.
  * User: Stephen
  */
+@Deprecated
 public class DefaultGrid<T> implements Grid<T> {
 
 	private final GridCellFactory<T> factory;
