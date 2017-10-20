@@ -37,7 +37,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell);
 
@@ -49,7 +49,7 @@ public class CellLexerTest {
         a.put("a", CALL);
         Cell cell = buildCell("zy");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell, unparsed(2));
     }
@@ -60,7 +60,7 @@ public class CellLexerTest {
         a.put("a", CALL);
         Cell cell = buildCell("a");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell, parsed(CALL));
     }
@@ -73,7 +73,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("ab");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell, parsed(CALL), parsed(SPLICE));
     }
@@ -86,7 +86,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("abcd");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell, unparsed(1), parsed(3, SPLICE));
     }
@@ -99,7 +99,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("abc");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell, parsed(3, SPLICE));
     }
@@ -112,7 +112,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("abc");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell, parsed(3, SPLICE));
     }
@@ -125,7 +125,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("xa b s");
 
-        ParsedCell parsedCell = cellLexer.parseCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
         assertParse(parsedCell, unparsed(1), parsed(3, CALL), parsed(WHITESPACE), unparsed(1));
 

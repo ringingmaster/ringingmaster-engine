@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.parsernew.assignparsetype;
 
+import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedCellFactory;
@@ -19,6 +20,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author stevelake
  */
+@Immutable
 class CellLexer {
 
     private static Comparator<String> SORT_SIZE_THEN_NAME = (o1, o2) -> {
@@ -29,8 +31,7 @@ class CellLexer {
         return o1.compareTo(o2);
     };
 
-    ParsedCell parseCell(Cell cell, Map<String, ParseType> parseMap) {
-
+    ParsedCell lexCell(Cell cell, Map<String, ParseType> parseMap) {
 
         final String cellAsString = cell.getCharacters();
         Set<Section> sections = new HashSet<>();

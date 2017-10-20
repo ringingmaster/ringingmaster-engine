@@ -196,8 +196,16 @@ public class Touch {
         return terminationChange;
     }
 
-    public ImmutableArrayTable<Cell> cells() {
+    public ImmutableArrayTable<Cell> allCells() {
         return cells;
+    }
+
+    public ImmutableArrayTable<Cell> callPositionCells() { //TODO pre-calculate???
+        return cells.subTable(
+                0,
+                (isSpliced() ? (cells.getColumnSize() - 1) : cells.getColumnSize()),
+                0,
+                (getCheckingType() == CheckingType.COURSE_BASED ? 1 : 0));
     }
 
     @Override

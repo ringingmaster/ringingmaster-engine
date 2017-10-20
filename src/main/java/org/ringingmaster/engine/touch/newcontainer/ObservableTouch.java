@@ -613,23 +613,23 @@ public class ObservableTouch {
     }
 
     public void addCharacters(int rowIndex, int columnIndex, String characters) {
-        checkPositionIndex(rowIndex, currentTouch.cells().getRowSize(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.cells().getColumnSize(), "columnIndex");
+        checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
 
-        Cell cell = currentTouch.cells().get(rowIndex, columnIndex);
+        Cell cell = currentTouch.allCells().get(rowIndex, columnIndex);
         insertCharacters(rowIndex, columnIndex, (cell==null)?0:cell.size(), characters);
     }
 
     public void insertCharacters(int rowIndex, int columnIndex, int cellIndex, String characters) {
-        checkPositionIndex(rowIndex, currentTouch.cells().getRowSize(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.cells().getColumnSize(), "columnIndex");
+        checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
         checkArgument(cellIndex >= 0 );
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
 
-        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.cells().getBackingTable());
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.allCells().getBackingTable());
         Cell currentCell = cells.get(rowIndex, columnIndex);
 
         if (currentCell == null) {
@@ -656,11 +656,11 @@ public class ObservableTouch {
     }
 
     public void removeCharacters(int rowIndex, int columnIndex, int cellIndex, int count) {
-        checkPositionIndex(rowIndex, currentTouch.cells().getRowSize(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.cells().getColumnSize(), "columnIndex");
+        checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
         checkArgument(cellIndex >= 0 );
 
-        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.cells().getBackingTable());
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.allCells().getBackingTable());
         Cell currentCell = cells.get(rowIndex, columnIndex);
 
         checkNotNull(currentCell);
@@ -689,8 +689,8 @@ public class ObservableTouch {
         Map<Integer, Cell> columnItems = cells.column(columnIndexForRemoval);
 
         if (columnItems.isEmpty()) {
-            int rowCount = currentTouch.cells().getRowSize();
-            int columnCount = currentTouch.cells().getColumnSize();
+            int rowCount = currentTouch.allCells().getRowSize();
+            int columnCount = currentTouch.allCells().getColumnSize();
             // We allow the column loop to go '1' past end to ensure the final column is removed.
             for (int columnIndex=columnIndexForRemoval;columnIndex<columnCount+1;columnIndex++) {
                 for (int rowIndex=0;rowIndex<rowCount;rowIndex++) {
@@ -710,8 +710,8 @@ public class ObservableTouch {
         Map<Integer, Cell> rowItems = cells.row(rowIndexForRemoval);
 
         if (rowItems.isEmpty()) {
-            int rowCount = currentTouch.cells().getRowSize();
-            int columnCount = currentTouch.cells().getColumnSize();
+            int rowCount = currentTouch.allCells().getRowSize();
+            int columnCount = currentTouch.allCells().getColumnSize();
             // We allow the row loop to go '1' past end to ensure the final row is removed.
             for (int rowIndex=rowIndexForRemoval;rowIndex<rowCount+1;rowIndex++) {
                 for (int columnIndex=0;columnIndex<columnCount;columnIndex++) {

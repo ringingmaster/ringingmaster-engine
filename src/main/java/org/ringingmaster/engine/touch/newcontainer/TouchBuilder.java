@@ -215,7 +215,7 @@ class TouchBuilder {
                 terminationMaxCircularity.orElseGet(()->prototype.getTerminationMaxCircularity()),
                 terminationChange.orElseGet(()->prototype.getTerminationChange()),
 
-                cells.orElseGet(()->prototype.cells())
+                cells.orElseGet(()->prototype.allCells())
         );
     }
 
