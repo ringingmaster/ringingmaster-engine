@@ -39,6 +39,14 @@ public class SubImmutableArrayTableTest {
     }
 
     @Test
+    public void subTableCanBeCreatedWithZeroDimensionsAgainstTheLimit() {
+        ImmutableArrayTable<String> subTable = this.arrayTable.subTable(10, 10, 10, 10);
+
+        assertEquals(0, subTable.getRowSize());
+        assertEquals(0, subTable.getColumnSize());
+    }
+
+    @Test
     public void subTableCanBeCreatedWithOriginalDimensions() {
         ImmutableArrayTable<String> subTable = this.arrayTable.subTable(0, 10, 0, 10);
 
@@ -48,7 +56,7 @@ public class SubImmutableArrayTableTest {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void limitCheckingAtMaxFromRowCorrect() {
-        this.arrayTable.subTable(10, 1, 1, 1);
+        this.arrayTable.subTable(11, 11, 1, 1);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -58,7 +66,7 @@ public class SubImmutableArrayTableTest {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void limitCheckingAtMaxFromColCorrect() {
-        this.arrayTable.subTable(1, 1, 10, 1);
+        this.arrayTable.subTable(1, 1, 11, 11);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)

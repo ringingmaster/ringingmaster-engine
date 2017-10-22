@@ -26,8 +26,8 @@ public class SubImmutableArrayTable<T> implements ImmutableArrayTable<T> {
     SubImmutableArrayTable(ImmutableArrayTable<T> delegate, int fromRow, int toRow, int fromColumn, int toColumn) {
         this.delegate = checkNotNull(delegate);
 
-        checkElementIndex(fromRow, delegate.getRowSize(), "FromRow");
-        checkElementIndex(fromColumn, delegate.getColumnSize(), "FromCol");
+        checkPositionIndex(fromRow, delegate.getRowSize(), "FromRow");
+        checkPositionIndex(fromColumn, delegate.getColumnSize(), "FromCol");
 
         checkPositionIndex(toRow, delegate.getRowSize(), "ToRow");
         checkPositionIndex(toColumn, delegate.getColumnSize(), "ToCol");
