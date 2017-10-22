@@ -17,7 +17,7 @@ public class EmptyCell implements Cell{
     }
 
     @Override
-    public int size() {
+    public int getElementSize() {
         return 0;
     }
 

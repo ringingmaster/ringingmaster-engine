@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.parsernew.cell;
 
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.element.Element;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -27,7 +28,17 @@ class DefaultParsedCell implements ParsedCell {
 
     @Override
     public int getElementSize() {
-        return parentCell.size();
+        return parentCell.getElementSize();
+    }
+
+    @Override
+    public Element getElement(int index) {
+        return parentCell.getElement(index);
+    }
+
+    @Override
+    public String getCharacters() {
+        return parentCell.getCharacters();
     }
 
     @Override

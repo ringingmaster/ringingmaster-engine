@@ -36,7 +36,7 @@ public class DefinitionMutationTest {
 
         Definition definition = Iterators.getOnlyElement(allDefinitions.iterator());
         assertEquals("A", definition.getShorthand());
-        assertEquals(2, definition.size());
+        assertEquals(2, definition.getElementSize());
         assertEquals('S', definition.getElement(0).getCharacter());
         assertFalse(definition.getElement(0).getVariance().isPresent());
         assertEquals('L', definition.getElement(1).getCharacter());

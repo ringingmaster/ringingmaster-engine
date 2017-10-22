@@ -11,7 +11,7 @@ public interface Cell {
 
     Element getElement(int index);
 
-    int size();
+    int getElementSize();
 
     String getCharacters();
 }

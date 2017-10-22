@@ -13,8 +13,8 @@ import java.util.Set;
 public class ParsedCellFactory {
 
     public static ParsedCell buildParsedCell(Cell cell, Set<Section> sections) {
-        Section[] sectionByElement = new Section[cell.size()];
-        Group[] groupByElement = new Group[cell.size()];
+        Section[] sectionByElement = new Section[cell.getElementSize()];
+        Group[] groupByElement = new Group[cell.getElementSize()];
         for (Section section : sections) {
             Group group = new DefaultGroup(section.getElementStartIndex(), section.getElementLength(), section) ;
             for (int index = section.getElementStartIndex(); index < section.getElementStartIndex()+section.getElementLength() ; index++) {

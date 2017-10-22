@@ -31,7 +31,7 @@ public class DefaultCell implements Cell {
     }
 
     @Override
-    public int size() {
+    public int getElementSize() {
         return elements.size();
     }
 

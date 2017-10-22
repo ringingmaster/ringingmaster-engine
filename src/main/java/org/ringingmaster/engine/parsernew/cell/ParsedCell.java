@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.parsernew.cell;
 
 import net.jcip.annotations.Immutable;
+import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 
 import java.util.Optional;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
  * @author stevelake
  */
 @Immutable
-public interface ParsedCell {
+public interface ParsedCell extends Cell {
 
     int getElementSize();
 

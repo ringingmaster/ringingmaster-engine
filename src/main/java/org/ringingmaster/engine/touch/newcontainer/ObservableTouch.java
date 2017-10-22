@@ -619,7 +619,7 @@ public class ObservableTouch {
         checkArgument(characters.length() > 0);
 
         Cell cell = currentTouch.allCells().get(rowIndex, columnIndex);
-        insertCharacters(rowIndex, columnIndex, (cell==null)?0:cell.size(), characters);
+        insertCharacters(rowIndex, columnIndex, (cell==null)?0:cell.getElementSize(), characters);
     }
 
     public void insertCharacters(int rowIndex, int columnIndex, int cellIndex, String characters) {
@@ -670,7 +670,7 @@ public class ObservableTouch {
                 .delete(cellIndex, count)
                 .build();
 
-        if (cell.size() == 0) {
+        if (cell.getElementSize() == 0) {
             cells.remove(rowIndex, columnIndex);
             removeRowIfEmpty(rowIndex, cells);
             removeColumnIfEmpty(columnIndex, cells);
