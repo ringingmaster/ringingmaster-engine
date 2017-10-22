@@ -56,6 +56,10 @@ class TouchBuilder {
     private Optional<ImmutableArrayTable<Cell>> cells  = Optional.empty();
 
 
+    // only useable in this package
+    TouchBuilder() {
+    }
+
     /**
      * Sets the standard out the box defauts using the standard setters
      * @return

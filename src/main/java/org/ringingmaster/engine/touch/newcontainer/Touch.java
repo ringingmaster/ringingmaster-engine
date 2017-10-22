@@ -200,13 +200,42 @@ public class Touch {
         return cells;
     }
 
+    public ImmutableArrayTable<Cell> mainBodyCells() { //TODO pre-calculate???
+        return cells.subTable(
+                ((getCheckingType() == CheckingType.COURSE_BASED && cells.getRowSize() > 1) ? 1 : 0),
+                cells.getRowSize(),
+                0,
+                ((isSpliced() && cells.getColumnSize() > 1) ? (cells.getColumnSize() - 1) : cells.getColumnSize()));
+    }
+
     public ImmutableArrayTable<Cell> callPositionCells() { //TODO pre-calculate???
+        if (getCheckingType() != CheckingType.COURSE_BASED) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+        if (cells.getRowSize() < 2) {
+            return cells.subTable(0, 0, 0, 0);
+        }
         return cells.subTable(
                 0,
-                (isSpliced() ? (cells.getColumnSize() - 1) : cells.getColumnSize()),
+                1,
                 0,
-                (getCheckingType() == CheckingType.COURSE_BASED ? 1 : 0));
+                cells.getColumnSize() - (isSpliced()? 1:0));
     }
+
+    public ImmutableArrayTable<Cell> splicedCells() { //TODO pre-calculate???
+        if (!isSpliced()) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+        if (cells.getColumnSize() < 2) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+        return cells.subTable(
+                (getCheckingType() == CheckingType.COURSE_BASED ? 1 : 0),
+                cells.getRowSize(),
+                cells.getColumnSize() - 1,
+                cells.getColumnSize());
+    }
+
 
     @Override
     public String toString() {

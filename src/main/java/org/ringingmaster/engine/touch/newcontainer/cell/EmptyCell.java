@@ -25,4 +25,9 @@ public class EmptyCell implements Cell{
     public String getCharacters() {
         return "";
     }
+
+    @Override
+    public String toString() {
+        return "EmptyCell";
+    }
 }
