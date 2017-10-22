@@ -13,12 +13,7 @@ public class DefaultTouchParserTest {
 		fail();
 		//TODO
 	}
-//	@Test
-//	public void correctlyParsesSimpleCalls() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-s");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.CALL);
-//	}
-//
+
 //	@Test
 //	public void correctlyParsesSimpleWhitespace() {
 //		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "- Bob");

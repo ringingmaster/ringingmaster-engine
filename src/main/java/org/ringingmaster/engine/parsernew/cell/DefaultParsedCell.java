@@ -2,6 +2,7 @@ package org.ringingmaster.engine.parsernew.cell;
 
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,4 +42,11 @@ class DefaultParsedCell implements ParsedCell {
         return Optional.ofNullable(groupByElement[elementIndex]);
     }
 
+    @Override
+    public String toString() {
+        return "DefaultParsedCell{" +
+                "sectionByElement=" + Arrays.toString(sectionByElement) +
+                ", groupByElement=" + Arrays.toString(groupByElement) +
+                '}';
+    }
 }
