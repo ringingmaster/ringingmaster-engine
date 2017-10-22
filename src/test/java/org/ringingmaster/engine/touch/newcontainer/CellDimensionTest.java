@@ -29,59 +29,62 @@ public class CellDimensionTest {
     @Parameters
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                //R, C, CheckingType,   spliced, main, splice, callPos
-                { 0, 0, LEAD_BASED,     true,    0,0,  0,0,    0,0 },   //0
-                { 0, 0, COURSE_BASED,   true,    0,0,  0,0,    0,0 },
-                { 0, 0, LEAD_BASED,     false,   0,0,  0,0,    0,0 },
-                { 0, 0, COURSE_BASED,   false,   0,0,  0,0,    0,0 },
 
-                { 1, 1, LEAD_BASED,     true,    1,1,  0,0,    0,0 },   //4
-                { 1, 1, COURSE_BASED,   true,    1,1,  0,0,    0,0 },
-                { 1, 1, LEAD_BASED,     false,   1,1,  0,0,    0,0 },
-                { 1, 1, COURSE_BASED,   false,   1,1,  0,0,    0,0 },
+                //R, C, CheckingType,   spliced,   main,    splice,  callPos, mainRoot,  spliceRoot,callPosRoot
+                { 0, 0, LEAD_BASED,     true,      0,0,     0,0,     0,0,     null,      null,      null},    //0
+                { 0, 0, COURSE_BASED,   true,      0,0,     0,0,     0,0,     null,      null,      null},
+                { 0, 0, LEAD_BASED,     false,     0,0,     0,0,     0,0,     null,      null,      null},
+                { 0, 0, COURSE_BASED,   false,     0,0,     0,0,     0,0,     null,      null,      null},
 
-                { 2, 2, LEAD_BASED,     true,    2,1,  2,1,    0,0 },   //8
-                { 2, 2, COURSE_BASED,   true,    1,1,  1,1,    1,1 },
-                { 2, 2, LEAD_BASED,     false,   2,2,  0,0,    0,0 },
-                { 2, 2, COURSE_BASED,   false,   1,2,  0,0,    1,2 },
+                { 1, 1, LEAD_BASED,     true,      1,1,     0,0,     0,0,     "0,0",     null,      null},   //4
+                { 1, 1, COURSE_BASED,   true,      1,1,     0,0,     0,0,     "0,0",     null,      null},
+                { 1, 1, LEAD_BASED,     false,     1,1,     0,0,     0,0,     "0,0",     null,      null},
+                { 1, 1, COURSE_BASED,   false,     1,1,     0,0,     0,0,     "0,0",     null,      null},
 
-                { 3, 3, LEAD_BASED,     true,    3,2,  3,1,    0,0 },   //12
-                { 3, 3, COURSE_BASED,   true,    2,2,  2,1,    1,2 },
-                { 3, 3, LEAD_BASED,     false,   3,3,  0,0,    0,0 },
-                { 3, 3, COURSE_BASED,   false,   2,3,  0,0,    1,3 },
+                { 2, 2, LEAD_BASED,     true,      2,1,     2,1,     0,0,     "0,0",     "0,1",     null},   //8
+                { 2, 2, COURSE_BASED,   true,      1,1,     1,1,     1,1,     "1,0",     "1,1",     "0,0"},
+                { 2, 2, LEAD_BASED,     false,     2,2,     0,0,     0,0,     "0,0",     null,      null},
+                { 2, 2, COURSE_BASED,   false,     1,2,     0,0,     1,2,     "1,0",     null,      "0,0"},
 
+                { 3, 3, LEAD_BASED,     true,      3,2,     3,1,     0,0,     "0,0",     "0,2",     null},   //12
+                { 3, 3, COURSE_BASED,   true,      2,2,     2,1,     1,2,     "1,0",     "1,2",     "0,0"},
+                { 3, 3, LEAD_BASED,     false,     3,3,     0,0,     0,0,     "0,0",     null,      null},
+                { 3, 3, COURSE_BASED,   false,     2,3,     0,0,     1,3,     "1,0",     null,      "0,0"}
         });
-    }
+        }
 
     @Parameter(0)
     public int rows;
-
     @Parameter(1)
     public int cols;
-
     @Parameter(2)
     public CheckingType checkingType;
-
     @Parameter(3)
     public boolean spliced;
 
+
     @Parameter(4)
     public int expectedMainBodyRows;
-
     @Parameter(5)
     public int expectedMainBodyColumns;
 
     @Parameter(6)
     public int expectedSplicedRows;
-
     @Parameter(7)
     public int expectedSplicedColumns;
 
     @Parameter(8)
     public int expectedCallPositionRows;
-
     @Parameter(9)
     public int expectedCallPositionColumns;
+
+    @Parameter(10)
+    public String expectedMainRoot;
+    @Parameter(11)
+    public String expectedSplicedRoot;
+    @Parameter(12)
+    public String expectedCallPositionRoot;
+
 
     public static final NotationBody METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
 
@@ -94,12 +97,17 @@ public class CellDimensionTest {
     }
 
     @Test
-    public void mainBodyTable() {
-
+    public void mainBodySize() {
         ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
-
         Touch touch = observableTouch.get();
         assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, touch.mainBodyCells());
+    }
+
+    @Test
+    public void mainBodyRoot() {
+        ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
+        Touch touch = observableTouch.get();
+        assertRoot(expectedMainRoot, touch.mainBodyCells());
     }
 
     @Test
@@ -110,14 +118,31 @@ public class CellDimensionTest {
     }
 
     @Test
+    public void splicedRoot() {
+        ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
+        Touch touch = observableTouch.get();
+        assertRoot(expectedSplicedRoot, touch.splicedCells());
+    }
+
+    @Test
     public void callPositionTable() {
         ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
         Touch touch = observableTouch.get();
         assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, touch.callPositionCells());
     }
 
-    private void assertDimensions(int row, int col, ImmutableArrayTable<Cell> cells) {
-        assertEquals(new Pair(row, col), new Pair(cells.getRowSize(), cells.getColumnSize()));
+    private void assertDimensions(int expectedRowSize, int expectedColumnSize, ImmutableArrayTable<Cell> cells) {
+        assertEquals(new Pair(expectedRowSize, expectedColumnSize), new Pair(cells.getRowSize(), cells.getColumnSize()));
+    }
+
+    private void assertRoot(String expected, ImmutableArrayTable<Cell> cells) {
+        if (expected == null) {
+            assertEquals(0, cells.getRowSize());
+            assertEquals(0, cells.getColumnSize());
+        }
+        else {
+            assertEquals(expected, cells.get(0,0).getCharacters());
+        }
     }
 
     private ObservableTouch buildCells(int rows, int cols, CheckingType checkingType, boolean spliced) {
