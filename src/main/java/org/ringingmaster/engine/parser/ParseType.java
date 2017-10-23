@@ -9,6 +9,7 @@ public enum ParseType {
 
 	/** null - set before other types set */
 	//TODO remove UPARSED
+	@Deprecated
 	UNPARSED,
 	/** space */
 	WHITESPACE,
