@@ -4,6 +4,8 @@ import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parsernew.cell.Group;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.Section;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -20,6 +22,8 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class AssertParse {
+
+    private final static Logger log = LoggerFactory.getLogger(AssertParse.class);
 
 
     public static void assertParse(ParsedCell parsedCell, SectionExpected... expecteds) {
@@ -43,7 +47,7 @@ public class AssertParse {
                 }
             }
             else {
-                assertTrue(sectionAtFirstElementIndex.isPresent());
+                assertTrue("Missing Section " + expected, sectionAtFirstElementIndex.isPresent());
                 assertEquals(expected.parseType, sectionAtFirstElementIndex.get().getParseType());
 
                 assertTrue(wordAtFirstElementIndex.isPresent());
@@ -57,6 +61,7 @@ public class AssertParse {
                     elementIndex++;
                 }
             }
+            log.info("Section [{}] OK", expected);
         }
     }
 
@@ -69,6 +74,14 @@ public class AssertParse {
             this.length = length;
             this.parseType = parseType;
         }
+
+        @Override
+        public String toString() {
+            return "{" +
+                    length +
+                    ", " + parseType +
+                    '}';
+        }
     }
 
     public static SectionExpected parsed(ParseType parseType) {
@@ -76,6 +89,7 @@ public class AssertParse {
     }
 
     public static SectionExpected parsed(int length, ParseType parseType) {
+        assertTrue(length > 0);
         return new SectionExpected(length, parseType);
     }
 
@@ -83,4 +97,7 @@ public class AssertParse {
         return parsed(length, null);
     }
 
+    public static SectionExpected unparsed() {
+        return parsed(1, null);
+    }
 }
