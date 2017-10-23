@@ -1,5 +1,7 @@
 package org.ringingmaster.engine.parsernew.cell;
 
+import org.ringingmaster.engine.touch.newcontainer.element.Element;
+
 import java.util.Optional;
 
 /**
@@ -15,8 +17,18 @@ public class EmptyParsedCell implements ParsedCell {
     }
 
     @Override
+    public Element getElement(int index) {
+        throw new IndexOutOfBoundsException();
+    }
+
+    @Override
     public int getElementSize() {
         return 0;
+    }
+
+    @Override
+    public String getCharacters() {
+        return "";
     }
 
     @Override

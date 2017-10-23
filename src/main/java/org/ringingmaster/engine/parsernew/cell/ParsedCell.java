@@ -13,8 +13,6 @@ import java.util.Optional;
 @Immutable
 public interface ParsedCell extends Cell {
 
-    int getElementSize();
-
     Optional<Section> getSectionAtElementIndex(int elementIndex);
 
     Optional<Group> getWordAtElementIndex(int elementIndex);
