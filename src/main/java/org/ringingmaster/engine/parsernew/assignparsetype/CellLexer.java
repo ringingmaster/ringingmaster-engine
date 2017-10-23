@@ -61,7 +61,7 @@ class CellLexer {
     private boolean isSectionAvailable(int start, int length, Set<Section> sections) {
         for (Section section : sections) {
             if (section.fallsWithin(start) ||
-                    section.fallsWithin(start+length)) {
+                    section.fallsWithin(start+length-1)) {
                 return false;
             }
         }

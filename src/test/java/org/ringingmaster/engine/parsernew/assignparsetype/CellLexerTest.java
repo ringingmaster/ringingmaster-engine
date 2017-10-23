@@ -126,6 +126,20 @@ public class CellLexerTest {
 
     }
 
+    @Test
+    public void backToBackParsingsDoNotResultInGaps() {
+        HashMap<String, ParseType> a = Maps.newHashMap();
+        a.put("-", CALL);
+        a.put(" ", WHITESPACE);
+
+        Cell cell = buildCell("- ");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+
+        assertParse(parsedCell, parsed(CALL), parsed(WHITESPACE));
+
+    }
+
 
 
 
