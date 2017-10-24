@@ -14,42 +14,7 @@ public class DefaultTouchParserTest {
 		//TODO
 	}
 
-//	@Test
-//	public void correctlyParsesSimpleWhitespace() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "- Bob");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.WHITESPACE, ParseType.CALL, ParseType.CALL, ParseType.CALL);
-//	}
-//
-//	@Test
-//	public void correctlyParsesPlainLeadToken() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-p-");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.PLAIN_LEAD, ParseType.CALL);
-//	}
-//
-//	@Test
-//	public void correctlyParsesSpliceToken() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
-//		touch.addCharacters(0, 0, "-p-");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setSpliced(true);
-//		new DefaultParser().parseAndAnnotate(touch);
-//
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.UNPARSED, ParseType.SPLICE, ParseType.UNPARSED);
-//	}
-//
-//	@Test
-//	public void correctlyParsesSimpleCallPosition() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-//		touch.addCharacters(0, 0, "W");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setSpliced(false);
-//		new DefaultParser().parseAndAnnotate(touch);
-//
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALLING_POSITION);
-//	}
-//
+
 //	@Test
 //	public void ignoreSecondCallingPositionInCell() {
 //		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
@@ -62,32 +27,7 @@ public class DefaultTouchParserTest {
 //		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALLING_POSITION, ParseType.CALLING_POSITION);
 //		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), true, false);
 //	}
-//
-//	@Test
-//	public void ignoreOtherStuffInCallingPositionCell() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-//		touch.addCharacters(0, 0, "bHd");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setSpliced(false);
-//		new DefaultParser().parseAndAnnotate(touch);
-//
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.UNPARSED, ParseType.CALLING_POSITION, ParseType.UNPARSED);
-//		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), false, true, false);
-//	}
-//
-//
-//	@Test
-//	public void correctlyIgnoresSpliceTokenWhenNotSpliced() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.addCharacters(0, 0, "-p-");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setSpliced(false);
-//		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
-//		new DefaultParser().parseAndAnnotate(touch);
-//
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.PLAIN_LEAD, ParseType.CALL);
-//	}
+
 //
 //	@Test
 //	public void correctlyParsesDefinitionToken() {

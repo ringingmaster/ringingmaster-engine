@@ -12,8 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.ringingmaster.engine.parser.ParseType.CALL;
+import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
+import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
+import static org.ringingmaster.engine.parser.ParseType.SPLICE;
+import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.parsed;
+import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.unparsed;
+import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType.COURSE_BASED;
 
 /**
  * TODO comments???
@@ -26,9 +32,60 @@ public class AssignParseTypeTest {
 
     @Test
     public void correctlyRetrievesAndParsesFromNotation() {
-        ImmutableArrayTable<ParsedCell> parsedCells = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-s");
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-s");
+        ImmutableArrayTable<ParsedCell> parsedCells = new AssignParseType().parse(touch.get());
         assertParse(parsedCells.get(0,0), parsed(CALL),  parsed(CALL));
     }
+
+    @Test
+	public void correctlyParsesSimpleWhitespace() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "- Bob");
+        ImmutableArrayTable<ParsedCell> parsedCells = new AssignParseType().parse(touch.get());
+        assertParse(parsedCells.get(0,0), parsed(CALL),  parsed(WHITESPACE), parsed(3, CALL));
+	}
+
+    @Test
+	public void correctlyParsesPlainLeadToken() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-p-");
+        ImmutableArrayTable<ParsedCell> parsedCells = new AssignParseType().parse(touch.get());
+        assertParse(parsedCells.get(0,0), parsed(CALL),  parsed(PLAIN_LEAD), parsed(CALL));
+	}
+
+    @Test
+	public void correctlyParsesSpliceToken() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "pp");
+        touch.addCharacters(0,1,"-p-");
+        touch.setSpliced(true);
+
+        ImmutableArrayTable<ParsedCell> parsedCells = new AssignParseType().parse(touch.get());
+        assertParse(parsedCells.get(0,1), unparsed(),  parsed(SPLICE), unparsed());
+    }
+
+	@Test
+	public void correctlyParsesSimpleCallPosition() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "W");
+        touch.addCharacters(1,0,"<Padding to allow enough rows to ensure we have a call position space>");
+        touch.setTouchCheckingType(COURSE_BASED);
+
+        ImmutableArrayTable<ParsedCell> parsedCells = new AssignParseType().parse(touch.get());
+        assertParse(parsedCells.get(0,0), parsed(CALLING_POSITION));
+	}
+
+
+	@Test
+	public void ignoreOtherStuffInCallingPositionCell() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "bHd");
+        touch.addCharacters(1,0,"<Padding to allow enough rows to ensure we have a call position space>");
+        touch.setTouchCheckingType(COURSE_BASED);
+
+        ImmutableArrayTable<ParsedCell> parsedCells = new AssignParseType().parse(touch.get());
+        assertParse(parsedCells.get(0,0), unparsed(),  parsed(CALLING_POSITION), unparsed());
+
+
+
+//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.UNPARSED, ParseType.CALLING_POSITION, ParseType.UNPARSED);
+//		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), false, true, false);
+	}
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
@@ -44,13 +101,14 @@ public class AssignParseTypeTest {
                 .build();
     }
 
-    private ImmutableArrayTable<ParsedCell> buildAndParseSingleCellTouch(NotationBody notationBody, String characters) {
+    private ObservableTouch buildAndParseSingleCellTouch(NotationBody notationBody, String characters) {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         touch.addCharacters(0, 0, characters);
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-        return new AssignParseType().parse(touch.get());
+        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setSpliced(false);
+        return touch;
     }
 
 
