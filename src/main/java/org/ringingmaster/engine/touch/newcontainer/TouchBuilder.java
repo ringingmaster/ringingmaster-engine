@@ -13,7 +13,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.Optional;
 
@@ -40,7 +40,7 @@ class TouchBuilder {
     private Optional<PSet<NotationBody>> allNotations = Optional.empty();
     private Optional<Optional<NotationBody>> nonSplicedActiveNotation = Optional.empty();
     private Optional<String> plainLeadToken = Optional.empty();
-    private Optional<PSet<Definition>> definitions = Optional.empty();
+    private Optional<PSet<DefinitionCell>> definitions = Optional.empty();
 
     private Optional<MethodRow> startChange = Optional.empty();
     private Optional<Integer> startAtRow = Optional.empty();
@@ -138,8 +138,8 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setDefinitions(PSet<Definition> touchDefinitions) {
-        this.definitions = Optional.of(touchDefinitions);
+    TouchBuilder setDefinitions(PSet<DefinitionCell> touchDefinitionCells) {
+        this.definitions = Optional.of(touchDefinitionCells);
         return this;
     }
 

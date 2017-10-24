@@ -7,7 +7,7 @@ import org.ringingmaster.engine.touch.container.TouchElement;
 import org.ringingmaster.engine.touch.container.TouchWord;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 import org.ringingmaster.engine.touch.newcontainer.variance.impl.NullVariance;
 import org.ringingmaster.engine.parser.ParseType;
@@ -162,7 +162,7 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	private void insertDefinition(TouchWord word, int columnIndex) {
 		log.debug("Start definition [{}]", word);
 		String elementsAsString = word.getElementsAsString();
-		Optional<Definition> definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
+		Optional<DefinitionCell> definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
 		if (definitionByShorthand.isPresent()) {
 			generateCallInstancesForCell(definitionByShorthand.get(), columnIndex);
 		}

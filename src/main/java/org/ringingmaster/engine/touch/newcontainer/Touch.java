@@ -13,7 +13,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.Optional;
 
@@ -37,7 +37,7 @@ public class Touch {
     private final PSet<NotationBody> allNotations;
     private final Optional<NotationBody> nonSplicedActiveNotation;
     private final String plainLeadToken;
-    private final PSet<Definition> definitions;
+    private final PSet<DefinitionCell> definitionCells;
 
     private final MethodRow startChange;
     private final int startAtRow;
@@ -60,7 +60,7 @@ public class Touch {
                  PSet<NotationBody> allNotations,
                  Optional<NotationBody> nonSplicedActiveNotation,
                  String plainLeadToken,
-                 PSet<Definition> definitions,
+                 PSet<DefinitionCell> definitionCells,
                  MethodRow startChange, int startAtRow,
                  Stroke startStroke,
                  Optional<NotationBody> startNotation,
@@ -80,7 +80,7 @@ public class Touch {
         this.allNotations = allNotations;
         this.nonSplicedActiveNotation = nonSplicedActiveNotation;
         this.plainLeadToken = plainLeadToken;
-        this.definitions = definitions;
+        this.definitionCells = definitionCells;
 
         this.startChange = startChange;
         this.startAtRow = startAtRow;
@@ -148,14 +148,14 @@ public class Touch {
         return plainLeadToken;
     }
 
-    public PSet<Definition> getAllDefinitions() {
-        return definitions;
+    public PSet<DefinitionCell> getAllDefinitions() {
+        return definitionCells;
     }
 
-    public Optional<Definition> findDefinitionByShorthand(String shorthand) {
+    public Optional<DefinitionCell> findDefinitionByShorthand(String shorthand) {
         checkNotNull(shorthand);
 
-        return definitions.stream()
+        return definitionCells.stream()
                 .filter((definition) -> shorthand.equals(definition.getShorthand()))
                 .findFirst();
     }
@@ -248,7 +248,7 @@ public class Touch {
                 ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
                 ", plainLeadToken='" + plainLeadToken + '\'' +
-                ", definitions=" + definitions +
+                ", definitions=" + definitionCells +
                 ", startChange=" + startChange +
                 ", startAtRow=" + startAtRow +
                 ", startStroke=" + startStroke +

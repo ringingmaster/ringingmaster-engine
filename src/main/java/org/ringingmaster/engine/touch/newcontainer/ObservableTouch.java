@@ -24,8 +24,8 @@ import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
 import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefaultDefinition;
-import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefaultDefinitionCell;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 import org.ringingmaster.engine.touch.newcontainer.element.ElementBuilder;
 import org.ringingmaster.util.smartcompare.SmartCompare;
@@ -413,13 +413,13 @@ public class ObservableTouch {
         }
 
         ImmutableList<Element> elements = ElementBuilder.createElements(characters);
-        Definition definition = new DefaultDefinition(shorthand, elements);
+        DefinitionCell definitionCell = new DefaultDefinitionCell(shorthand, elements);
 
-        PSet<Definition> definitions = currentTouch.getAllDefinitions()
-                .plus(definition);
+        PSet<DefinitionCell> definitionCells = currentTouch.getAllDefinitions()
+                .plus(definitionCell);
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setDefinitions(definitions);
+                .setDefinitions(definitionCells);
 
         setCurrentTouch(touchBuilder.build());
     }
@@ -427,14 +427,14 @@ public class ObservableTouch {
     public void removeDefinition(String shorthand) {
         checkNotNull(shorthand, "shorthand must not be null");
 
-        Set<Definition> definitionsForRemoval = currentTouch.getAllDefinitions().stream()
+        Set<DefinitionCell> definitionsForRemoval = currentTouch.getAllDefinitions().stream()
                 .filter(definition -> definition.getShorthand().equals(shorthand))
                 .collect(Collectors.toSet());
 
-        PSet<Definition> definitions = currentTouch.getAllDefinitions().minusAll(definitionsForRemoval);
+        PSet<DefinitionCell> definitionCells = currentTouch.getAllDefinitions().minusAll(definitionsForRemoval);
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setDefinitions(definitions);
+                .setDefinitions(definitionCells);
 
         setCurrentTouch(touchBuilder.build());
     }

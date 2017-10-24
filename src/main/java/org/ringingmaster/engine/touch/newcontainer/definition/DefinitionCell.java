@@ -7,7 +7,7 @@ import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
  *
  * @author stevelake
  */
-public interface Definition extends Cell {
+public interface DefinitionCell extends Cell {
 
     String getShorthand();
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import org.junit.Test;
 import org.pcollections.PSet;
-import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Lake
  */
-public class DefinitionMutationTest {
+public class DefinitionCellMutationTest {
 
     @Test
     public void hasCorrectDefault() throws Exception {
@@ -31,16 +31,16 @@ public class DefinitionMutationTest {
         ObservableTouch touch = new ObservableTouch();
         touch.addDefinition("A", "SL");
 
-        PSet<Definition> allDefinitions = touch.get().getAllDefinitions();
-        assertEquals(1, allDefinitions.size());
+        PSet<DefinitionCell> allDefinitionCells = touch.get().getAllDefinitions();
+        assertEquals(1, allDefinitionCells.size());
 
-        Definition definition = Iterators.getOnlyElement(allDefinitions.iterator());
-        assertEquals("A", definition.getShorthand());
-        assertEquals(2, definition.getElementSize());
-        assertEquals('S', definition.getElement(0).getCharacter());
-        assertFalse(definition.getElement(0).getVariance().isPresent());
-        assertEquals('L', definition.getElement(1).getCharacter());
-        assertFalse(definition.getElement(1).getVariance().isPresent());
+        DefinitionCell definitionCell = Iterators.getOnlyElement(allDefinitionCells.iterator());
+        assertEquals("A", definitionCell.getShorthand());
+        assertEquals(2, definitionCell.getElementSize());
+        assertEquals('S', definitionCell.getElement(0).getCharacter());
+        assertFalse(definitionCell.getElement(0).getVariance().isPresent());
+        assertEquals('L', definitionCell.getElement(1).getCharacter());
+        assertFalse(definitionCell.getElement(1).getVariance().isPresent());
     }
 
     @Test
@@ -54,8 +54,8 @@ public class DefinitionMutationTest {
         assertEquals(3, touch.get().getAllDefinitions().size());
         touch.removeDefinition("B");
 
-        PSet<Definition> allDefinitions = touch.get().getAllDefinitions();
-        assertEquals(2, allDefinitions.size());
+        PSet<DefinitionCell> allDefinitionCells = touch.get().getAllDefinitions();
+        assertEquals(2, allDefinitionCells.size());
         assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
         assertFalse(touch.get().findDefinitionByShorthand("B").isPresent());
         assertTrue(touch.get().findDefinitionByShorthand("C").isPresent());

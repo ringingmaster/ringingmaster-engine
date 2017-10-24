@@ -12,11 +12,11 @@ import java.util.List;
  * @author Lake
  */
 @Immutable
-public class DefaultDefinition extends DefaultCell implements Definition {
+public class DefaultDefinitionCell extends DefaultCell implements DefinitionCell {
 
     private final String shorthand;
 
-    public DefaultDefinition(String shorthand, List<Element> elements) {
+    public DefaultDefinitionCell(String shorthand, List<Element> elements) {
         super(elements);
         this.shorthand = shorthand;
     }
@@ -28,7 +28,7 @@ public class DefaultDefinition extends DefaultCell implements Definition {
 
     @Override
     public String toString() {
-        return "Definition{" +
+        return "DefinitionCell{" +
                 "shorthand='" + shorthand + '\'' + ", " +
                 "elements=" + getCharacters() +
                 '}';

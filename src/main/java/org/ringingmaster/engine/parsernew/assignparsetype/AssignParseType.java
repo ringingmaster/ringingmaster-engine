@@ -15,7 +15,7 @@ import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.Definition;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -125,8 +125,8 @@ public class AssignParseType {
     }
 
     private void addDefinitionTokens(Touch touch, Map<String, ParseType> parsings) {
-        for (Definition definition : touch.getAllDefinitions()) {
-            parsings.put(definition.getShorthand(), ParseType.DEFINITION);
+        for (DefinitionCell definitionCell : touch.getAllDefinitions()) {
+            parsings.put(definitionCell.getShorthand(), ParseType.DEFINITION);
         }
     }
 
