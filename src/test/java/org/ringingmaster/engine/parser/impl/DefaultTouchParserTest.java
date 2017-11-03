@@ -15,19 +15,6 @@ public class DefaultTouchParserTest {
 	}
 
 
-//	@Test
-//	public void ignoreSecondCallingPositionInCell() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-//		touch.addCharacters(0, 0, "HW");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setSpliced(false);
-//		new DefaultParser().parseAndAnnotate(touch);
-//
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALLING_POSITION, ParseType.CALLING_POSITION);
-//		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), true, false);
-//	}
-
 //
 //	@Test
 //	public void correctlyParsesDefinitionToken() {
