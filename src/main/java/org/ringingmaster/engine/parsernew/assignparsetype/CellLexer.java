@@ -4,8 +4,10 @@ import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedCellFactory;
+import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 import org.ringingmaster.engine.parsernew.cell.Section;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -31,8 +33,17 @@ class CellLexer {
         return o1.compareTo(o2);
     };
 
-    ParsedCell lexCell(Cell cell, Map<String, ParseType> parseMap) {
+    ParsedDefinitionCell lexCell(DefinitionCell cell, Map<String, ParseType> parseMap) {
+        Set<Section> sections = calculateSections(cell, parseMap);
+        return ParsedCellFactory.buildParsedCell(cell, sections);
+    }
 
+    ParsedCell lexCell(Cell cell, Map<String, ParseType> parseMap) {
+        Set<Section> sections = calculateSections(cell, parseMap);
+        return ParsedCellFactory.buildParsedCell(cell, sections);
+    }
+
+    private Set<Section> calculateSections(Cell cell, Map<String, ParseType> parseMap) {
         final String cellAsString = cell.getCharacters();
         Set<Section> sections = new HashSet<>();
 
@@ -54,8 +65,7 @@ class CellLexer {
             }
 
         });
-
-        return ParsedCellFactory.buildParsedCell(cell, sections);
+        return sections;
     }
 
     private boolean isSectionAvailable(int start, int length, Set<Section> sections) {

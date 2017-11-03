@@ -5,20 +5,23 @@ import com.google.common.collect.HashBasedTable;
 import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import org.ringingmaster.engine.parser.ParseType;
-import org.ringingmaster.engine.parsernew.cell.EmptyParsedCell;
+import org.ringingmaster.engine.parsernew.Parse;
+import org.ringingmaster.engine.parsernew.ParseBuilder;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
+import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * TODO comments
@@ -29,15 +32,20 @@ public class AssignParseType {
 
     private final CellLexer lexer = new CellLexer();
 
-    public ImmutableArrayTable<ParsedCell> parse(Touch touch) {
+    public Parse parse(Touch touch) {
         HashBasedTable<Integer, Integer, ParsedCell> parsedCells = HashBasedTable.create();
-        
         parseCallPositionArea(touch, parsedCells);
         parseMainBodyArea(touch, parsedCells);
         parseSpliceArea(touch, parsedCells);
-        //TODO parseDefinitions(touch, parsedCells);
 
-        return new TableBackedImmutableArrayTable<>(parsedCells, ()-> EmptyParsedCell.INSTANCE);
+        List<ParsedDefinitionCell> parsedDefinitionCells =
+                parseDefinitions(touch, parsedCells);
+
+        return new ParseBuilder()
+                .prototypeOf(touch)
+                .setParsedCells(parsedCells)
+                .setDefinitions(parsedDefinitionCells)
+                .build();
     }
 
     private void parseCallPositionArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
@@ -77,17 +85,26 @@ public class AssignParseType {
         parse(parsedCells, parseTokenMappings, touch.splicedCells());
     }
 
-//TODO    private void parseDefinitions(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-//        Map<String, ParseType> parseTokenMappings = new HashMap<>();
-//        addCallTokens(touch, parseTokenMappings);
-//        addPlainLeadToken(touch, parseTokenMappings);
-////TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parseTokenMappings);
-//        addGroupTokens(parseTokenMappings);
-////TODO should we allow embedded definitions in definitions?	probably, but will need some good tests. addDefinitionTokens(touch, parseTokenMappings);
-//        addWhitespaceTokens(parseTokenMappings);
-//
-//        parse(parsedCells, parseTokenMappings, touch.definitionCells());
-//    }
+    private List<ParsedDefinitionCell> parseDefinitions(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
+        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+        addCallTokens(touch, parseTokenMappings);
+        addPlainLeadToken(touch, parseTokenMappings);
+//TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parseTokenMappings);
+        addGroupTokens(parseTokenMappings);
+//TODO should we allow embedded definitions in definitions?	probably, but will need some good tests. addDefinitionTokens(touch, parseTokenMappings);
+        addWhitespaceTokens(parseTokenMappings);
+
+        return touch.getAllDefinitions().stream()
+                .map((definitionCell) -> lexer.lexCell(definitionCell, parseTokenMappings))
+                .collect(Collectors.toList());
+    }
+
+    private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Map<String, ParseType> parseTokenMappings, ImmutableArrayTable<Cell> cells) {
+        for (BackingTableLocationAndValue<Cell> cellAndLocation : cells) {
+            ParsedCell parsedCell = lexer.lexCell(cellAndLocation.getValue(), parseTokenMappings);
+            parsedCells.put(cellAndLocation.getRow(), cellAndLocation.getCol(), parsedCell);
+        }
+    }
 
 
     private void addCallingPositionTokens(Touch touch, Map<String, ParseType> parsings) {
@@ -144,11 +161,4 @@ public class AssignParseType {
         parsings.put(")", ParseType.GROUP_CLOSE);
     }
 
-
-    private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Map<String, ParseType> parseTokenMappings, ImmutableArrayTable<Cell> callPositionCells) {
-        for (BackingTableLocationAndValue<Cell> cellAndLocation : callPositionCells) {
-            ParsedCell parsedCell = lexer.lexCell(cellAndLocation.getValue(), parseTokenMappings);
-            parsedCells.put(cellAndLocation.getRow(), cellAndLocation.getCol(), parsedCell);
-        }
-    }
 }
