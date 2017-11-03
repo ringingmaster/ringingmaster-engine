@@ -5,6 +5,7 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
+import org.ringingmaster.engine.touch.newcontainer.Touch;
 
 /**
  * TODO comments???
@@ -14,13 +15,20 @@ import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 @Immutable
 public class DefaultParse implements Parse {
 
+    private final Touch touch;
     private final ImmutableArrayTable<ParsedCell> cells;
     private final ImmutableList<ParsedDefinitionCell> parsedDefinitions;
 
 
-    DefaultParse(ImmutableArrayTable<ParsedCell> cells, ImmutableList<ParsedDefinitionCell> parsedDefinitions) {
+    DefaultParse(Touch touch, ImmutableArrayTable<ParsedCell> cells, ImmutableList<ParsedDefinitionCell> parsedDefinitions) {
+        this.touch = touch;
         this.cells = cells;
         this.parsedDefinitions = parsedDefinitions;
+    }
+
+    @Override
+    public Touch getTouch() {
+        return touch;
     }
 
     @Override

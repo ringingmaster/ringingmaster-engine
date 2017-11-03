@@ -21,6 +21,15 @@ public class ParseBuilder {
     private HashBasedTable<Integer, Integer, ParsedCell> parsedCells;
     private List<ParsedDefinitionCell> parsedDefinitionCells;
 
+    public ParseBuilder prototypeOf(Touch touch) {
+        this.touch = touch;
+        return this;
+    }
+
+    public ParseBuilder prototypeOf(Parse parse) {
+        return this;
+    }
+
     public ParseBuilder setParsedCells(HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
         this.parsedCells = parsedCells;
         return this;
@@ -34,12 +43,8 @@ public class ParseBuilder {
 
     public Parse build() {
         return new DefaultParse(
-            new TableBackedImmutableArrayTable<>(parsedCells, () -> EmptyParsedCell.INSTANCE),
-            ImmutableList.copyOf(parsedDefinitionCells));
-    }
-
-    public ParseBuilder prototypeOf(Touch touch) {
-        this.touch = touch;
-        return this;
+                touch,
+                new TableBackedImmutableArrayTable<>(parsedCells, () -> EmptyParsedCell.INSTANCE),
+                ImmutableList.copyOf(parsedDefinitionCells));
     }
 }
