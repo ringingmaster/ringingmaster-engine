@@ -1,5 +1,7 @@
-package org.ringingmaster.engine.touch.newcontainer;
+package org.ringingmaster.engine.touch.newcontainer.cellmanipulation;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -7,9 +9,12 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
+import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
+import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 
 import java.util.Arrays;
@@ -24,14 +29,14 @@ import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingT
  * @author stevelake
  */
 @RunWith(Parameterized.class)
-public class CellDimensionTest {
+public class CellManipulationTest {
 
     @Parameters
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
 
                 //R, C, CheckingType,   spliced,   main,    splice,  callPos, mainRoot,  spliceRoot,callPosRoot
-                { 0, 0, LEAD_BASED,     true,      0,0,     0,0,     0,0,     null,      null,      null},    //0
+                { 0, 0, LEAD_BASED,     true,      0,0,     0,0,     0,0,     null,      null,      null},   //0
                 { 0, 0, COURSE_BASED,   true,      0,0,     0,0,     0,0,     null,      null,      null},
                 { 0, 0, LEAD_BASED,     false,     0,0,     0,0,     0,0,     null,      null,      null},
                 { 0, 0, COURSE_BASED,   false,     0,0,     0,0,     0,0,     null,      null,      null},
@@ -98,37 +103,32 @@ public class CellDimensionTest {
 
     @Test
     public void mainBodySize() {
-        ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
-        Touch touch = observableTouch.get();
-        assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, touch.mainBodyCells());
+        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
+        assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, cellManipulation.mainBodyCells());
     }
 
     @Test
     public void mainBodyRoot() {
-        ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
-        Touch touch = observableTouch.get();
-        assertRoot(expectedMainRoot, touch.mainBodyCells());
+        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
+        assertRoot(expectedMainRoot, cellManipulation.mainBodyCells());
     }
 
     @Test
-    public void splicedTable() {
-        ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
-        Touch touch = observableTouch.get();
-        assertDimensions(expectedSplicedRows, expectedSplicedColumns, touch.splicedCells());
+    public void spliceTable() {
+        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
+        assertDimensions(expectedSplicedRows, expectedSplicedColumns, cellManipulation.splicedCells());
     }
 
     @Test
-    public void splicedRoot() {
-        ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
-        Touch touch = observableTouch.get();
-        assertRoot(expectedSplicedRoot, touch.splicedCells());
+    public void spliceRoot() {
+        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
+        assertRoot(expectedSplicedRoot, cellManipulation.splicedCells());
     }
 
     @Test
     public void callPositionTable() {
-        ObservableTouch observableTouch = buildCells(rows, cols, checkingType, spliced);
-        Touch touch = observableTouch.get();
-        assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, touch.callPositionCells());
+        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
+        assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, cellManipulation.callPositionCells());
     }
 
     private void assertDimensions(int expectedRowSize, int expectedColumnSize, ImmutableArrayTable<Cell> cells) {
@@ -145,25 +145,28 @@ public class CellDimensionTest {
         }
     }
 
-    private ObservableTouch buildCells(int rows, int cols, CheckingType checkingType, boolean spliced) {
-        ObservableTouch observableTouch = new ObservableTouch();
-        observableTouch.setTouchCheckingType(checkingType);
-        observableTouch.addNotation(METHOD_A_6_BELL);
-        observableTouch.setSpliced(spliced);
+    private CellManipulation<Cell> buildCells1(int rows, int cols, CheckingType checkingType, boolean spliced) {
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create();
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                observableTouch.addCharacters(row, col, row + "," + col);
+                Cell cell = new CellBuilder()
+                        .defaults()
+                        .insert(0, row + "," + col)
+                        .build();
+
+                cells.put(row, col, cell);
             }
         }
-        return observableTouch;
+
+        return new CellManipulation<>(new TableBackedImmutableArrayTable<>(cells, EmptyCell::new), checkingType, spliced);
     }
 
     class Pair {
         final int one;
         final int two;
 
-        public Pair(int one, int two) {
+        Pair(int one, int two) {
             this.one = one;
             this.two = two;
         }

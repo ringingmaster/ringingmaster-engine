@@ -12,6 +12,7 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.cellmanipulation.CellManipulation;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
@@ -50,7 +51,7 @@ public class Touch {
     private final int terminationMaxCircularity;
     private final Optional<MethodRow> terminationChange;
 
-    private final ImmutableArrayTable<Cell> cells;
+    private final CellManipulation<Cell> cellManipulationDelegate;
 
     public Touch(String title,
                  String author,
@@ -92,7 +93,8 @@ public class Touch {
         this.terminationMaxParts = terminationMaxParts;
         this.terminationMaxCircularity = terminationMaxCircularity;
         this.terminationChange = terminationChange;
-        this.cells = cells;
+
+        cellManipulationDelegate = new CellManipulation<>(cells, checkingType, isSpliced());
     }
 
 
@@ -197,43 +199,19 @@ public class Touch {
     }
 
     public ImmutableArrayTable<Cell> allCells() {
-        return cells;
+        return cellManipulationDelegate.allCells();
     }
 
-    public ImmutableArrayTable<Cell> mainBodyCells() { //TODO pre-calculate???
-        return cells.subTable(
-                ((getCheckingType() == CheckingType.COURSE_BASED && cells.getRowSize() > 1) ? 1 : 0),
-                cells.getRowSize(),
-                0,
-                ((isSpliced() && cells.getColumnSize() > 1) ? (cells.getColumnSize() - 1) : cells.getColumnSize()));
+    public ImmutableArrayTable<Cell> mainBodyCells() {
+        return cellManipulationDelegate.mainBodyCells();
     }
 
-    public ImmutableArrayTable<Cell> callPositionCells() { //TODO pre-calculate???
-        if (getCheckingType() != CheckingType.COURSE_BASED) {
-            return cells.subTable(0, 0, 0, 0);
-        }
-        if (cells.getRowSize() < 2) {
-            return cells.subTable(0, 0, 0, 0);
-        }
-        return cells.subTable(
-                0,
-                1,
-                0,
-                cells.getColumnSize() - (isSpliced()? 1:0));
+    public ImmutableArrayTable<Cell> callPositionCells() {
+        return cellManipulationDelegate.callPositionCells();
     }
 
-    public ImmutableArrayTable<Cell> splicedCells() { //TODO pre-calculate???
-        if (!isSpliced()) {
-            return cells.subTable(0, 0, 0, 0);
-        }
-        if (cells.getColumnSize() < 2) {
-            return cells.subTable(0, 0, 0, 0);
-        }
-        return cells.subTable(
-                (getCheckingType() == CheckingType.COURSE_BASED ? 1 : 0),
-                cells.getRowSize(),
-                cells.getColumnSize() - 1,
-                cells.getColumnSize());
+    public ImmutableArrayTable<Cell> splicedCells() {
+        return cellManipulationDelegate.splicedCells();
     }
 
 
@@ -258,7 +236,7 @@ public class Touch {
                 ", terminationMaxParts=" + terminationMaxParts +
                 ", terminationMaxCircularity=" + terminationMaxCircularity +
                 ", terminationChange=" + terminationChange +
-                ", cells=" + cells +
+                ", cells=" + cellManipulationDelegate.allCells() +
                 '}';
     }
 }
