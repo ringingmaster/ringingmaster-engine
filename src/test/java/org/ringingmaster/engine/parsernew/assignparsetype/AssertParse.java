@@ -34,15 +34,15 @@ public class AssertParse {
         int elementIndex = 0;
         for (SectionExpected expected : expecteds) {
             Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
-            Optional<Group> wordAtFirstElementIndex = parsedCell.getWordAtElementIndex(elementIndex);
+            Optional<Group> groupAtFirstElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
 
             if (expected.parseType == null) {
                 assertFalse(sectionAtFirstElementIndex.isPresent());
-                assertFalse(wordAtFirstElementIndex.isPresent());
+                assertFalse(groupAtFirstElementIndex.isPresent());
 
                 for (int i=0;i<expected.length;i++) {
                     assertFalse(parsedCell.getSectionAtElementIndex(elementIndex).isPresent());
-                    assertFalse(parsedCell.getWordAtElementIndex(elementIndex).isPresent());
+                    assertFalse(parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
                     elementIndex++;
                 }
             }
@@ -50,13 +50,13 @@ public class AssertParse {
                 assertTrue("Missing Section " + expected, sectionAtFirstElementIndex.isPresent());
                 assertEquals(expected.parseType, sectionAtFirstElementIndex.get().getParseType());
 
-                assertTrue(wordAtFirstElementIndex.isPresent());
-                assertEquals(1, wordAtFirstElementIndex.get().getSections().size());
-                assertEquals(sectionAtFirstElementIndex.get(), wordAtFirstElementIndex.get().getSections().get(0));
+                assertTrue(groupAtFirstElementIndex.isPresent());
+                assertEquals(1, groupAtFirstElementIndex.get().getSections().size());
+                assertEquals(sectionAtFirstElementIndex.get(), groupAtFirstElementIndex.get().getSections().get(0));
 
                 for (int i = 0; i < expected.length; i++) {
                     assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getSectionAtElementIndex(elementIndex).get());
-                    assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getWordAtElementIndex(elementIndex).get().getSections().get(0));
+                    assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getGroupAtElementIndex(elementIndex).get().getSections().get(0));
 
                     elementIndex++;
                 }

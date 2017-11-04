@@ -15,7 +15,13 @@ public interface Parse {
 
     Touch getTouch();
 
-    ImmutableArrayTable<ParsedCell> getCells();
+    ImmutableArrayTable<ParsedCell> allCells();
+
+    ImmutableArrayTable<ParsedCell> mainBodyCells();
+
+    ImmutableArrayTable<ParsedCell> callPositionCells();
+
+    ImmutableArrayTable<ParsedCell> splicedCells();
 
     ImmutableList<ParsedDefinitionCell> getParsedDefinitions();
 }

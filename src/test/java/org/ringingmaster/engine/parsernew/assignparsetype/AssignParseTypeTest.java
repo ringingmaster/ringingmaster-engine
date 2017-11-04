@@ -33,21 +33,21 @@ public class AssignParseTypeTest {
     public void correctlyRetrievesAndParsesFromNotation() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-s");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.getCells().get(0,0), parsed(CALL),  parsed(CALL));
+        assertParse(parse.allCells().get(0,0), parsed(CALL),  parsed(CALL));
     }
 
     @Test
 	public void correctlyParsesSimpleWhitespace() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "- Bob");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.getCells().get(0,0), parsed(CALL),  parsed(WHITESPACE), parsed(3, CALL));
+        assertParse(parse.allCells().get(0,0), parsed(CALL),  parsed(WHITESPACE), parsed(3, CALL));
 	}
 
     @Test
 	public void correctlyParsesPlainLeadToken() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-p-");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.getCells().get(0,0), parsed(CALL),  parsed(PLAIN_LEAD), parsed(CALL));
+        assertParse(parse.allCells().get(0,0), parsed(CALL),  parsed(PLAIN_LEAD), parsed(CALL));
 	}
 
     @Test
@@ -57,7 +57,7 @@ public class AssignParseTypeTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.getCells().get(0,1), unparsed(),  parsed(SPLICE), unparsed());
+        assertParse(parse.allCells().get(0,1), unparsed(),  parsed(SPLICE), unparsed());
     }
 
 	@Test
@@ -67,7 +67,7 @@ public class AssignParseTypeTest {
         touch.setTouchCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.getCells().get(0,0), parsed(CALLING_POSITION));
+        assertParse(parse.allCells().get(0,0), parsed(CALLING_POSITION));
 	}
 
 
@@ -78,7 +78,7 @@ public class AssignParseTypeTest {
         touch.setTouchCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.getCells().get(0,0), unparsed(),  parsed(CALLING_POSITION), unparsed());
+        assertParse(parse.allCells().get(0,0), unparsed(),  parsed(CALLING_POSITION), unparsed());
 	}
 
 	@Test
@@ -88,9 +88,9 @@ public class AssignParseTypeTest {
         touch.setTouchCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.getCells().get(0,0), parsed(CALLING_POSITION), parsed(CALLING_POSITION));
+        assertParse(parse.allCells().get(0,0), parsed(CALLING_POSITION), parsed(CALLING_POSITION));
 
-??? need different parser for tghis test
+//TODO ??? need different parser for tghis test
 //
 //		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
 //		touch.setTouchCheckingType(CheckingType.COURSE_BASED);

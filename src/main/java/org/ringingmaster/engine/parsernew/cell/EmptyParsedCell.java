@@ -37,7 +37,7 @@ public class EmptyParsedCell implements ParsedCell {
     }
 
     @Override
-    public Optional<Group> getWordAtElementIndex(int elementIndex) {
+    public Optional<Group> getGroupAtElementIndex(int elementIndex) {
         throw new IndexOutOfBoundsException();
     }
 

@@ -48,7 +48,7 @@ class DefaultParsedCell implements ParsedCell {
     }
 
     @Override
-    public Optional<Group> getWordAtElementIndex(int elementIndex) {
+    public Optional<Group> getGroupAtElementIndex(int elementIndex) {
         checkPositionIndex(elementIndex, groupByElement.length);
         return Optional.ofNullable(groupByElement[elementIndex]);
     }

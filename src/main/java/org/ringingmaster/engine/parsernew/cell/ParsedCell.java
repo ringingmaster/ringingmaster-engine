@@ -15,6 +15,6 @@ public interface ParsedCell extends Cell {
 
     Optional<Section> getSectionAtElementIndex(int elementIndex);
 
-    Optional<Group> getWordAtElementIndex(int elementIndex);
+    Optional<Group> getGroupAtElementIndex(int elementIndex);
 
 }

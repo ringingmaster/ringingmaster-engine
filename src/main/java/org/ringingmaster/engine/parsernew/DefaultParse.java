@@ -6,6 +6,7 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
+import org.ringingmaster.engine.touch.newcontainer.cellmanipulation.CellManipulation;
 
 /**
  * TODO comments???
@@ -16,14 +17,15 @@ import org.ringingmaster.engine.touch.newcontainer.Touch;
 public class DefaultParse implements Parse {
 
     private final Touch touch;
-    private final ImmutableArrayTable<ParsedCell> cells;
     private final ImmutableList<ParsedDefinitionCell> parsedDefinitions;
+    private final CellManipulation<ParsedCell> cellManipulationDelegate;
+
 
 
     DefaultParse(Touch touch, ImmutableArrayTable<ParsedCell> cells, ImmutableList<ParsedDefinitionCell> parsedDefinitions) {
         this.touch = touch;
-        this.cells = cells;
         this.parsedDefinitions = parsedDefinitions;
+        this.cellManipulationDelegate = new CellManipulation<>(cells, touch.getCheckingType(), touch.isSpliced());
     }
 
     @Override
@@ -32,9 +34,25 @@ public class DefaultParse implements Parse {
     }
 
     @Override
-    public ImmutableArrayTable<ParsedCell> getCells() {
-        return cells;
+    public ImmutableArrayTable<ParsedCell> allCells() {
+        return cellManipulationDelegate.allCells();
     }
+
+    @Override
+    public ImmutableArrayTable<ParsedCell> mainBodyCells() {
+        return cellManipulationDelegate.mainBodyCells();
+    }
+
+    @Override
+    public ImmutableArrayTable<ParsedCell> callPositionCells() {
+        return cellManipulationDelegate.callPositionCells();
+    }
+
+    @Override
+    public ImmutableArrayTable<ParsedCell> splicedCells() {
+        return cellManipulationDelegate.splicedCells();
+    }
+
 
     @Override
     public ImmutableList<ParsedDefinitionCell> getParsedDefinitions() {
