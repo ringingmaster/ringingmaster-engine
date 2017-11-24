@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
  * @author stevelake
@@ -63,8 +63,8 @@ public class TableBackedImmutableArrayTable<T> implements ImmutableArrayTable<T>
 
     @Override
     public T get(int rowIndex, int columnIndex) {
-        checkPositionIndex(rowIndex, rowSize);
-        checkPositionIndex(columnIndex, columnSize);
+        checkElementIndex(rowIndex, rowSize);
+        checkElementIndex(columnIndex, columnSize);
 
         T cell = backingTable.get(rowIndex, columnIndex);
         if (cell != null) {
@@ -103,5 +103,14 @@ public class TableBackedImmutableArrayTable<T> implements ImmutableArrayTable<T>
     @Override
     public int getBackingColumnIndex(int columnIndex) {
         return columnIndex;
+    }
+
+    @Override
+    public String toString() {
+        return "TableBackedImmutableArrayTable{" +
+                "backingTable=" + backingTable +
+                ", columnSize=" + columnSize +
+                ", rowSize=" + rowSize +
+                '}';
     }
 }

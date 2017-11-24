@@ -70,8 +70,37 @@ public class TableBackedImmutableArrayTableTest {
         assertEquals("VALUE", arrayTable.get(1,1));
     }
 
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void gettingOutOfBoundsCellAt00Throws() {
+        HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
+
+        TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "");
+
+        arrayTable.get(0,0);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void gettingOutOfBoundsCellAt01Throws() {
+        HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
+        backingTable.put(0,0,"VALUE");
+
+        TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "");
+
+        arrayTable.get(0,1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void gettingOutOfBoundsCellAt10Throws() {
+        HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
+        backingTable.put(0,0,"VALUE");
+
+        TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "");
+
+        arrayTable.get(1,0);
+    }
+
     @Test
-    public void getDefaultForNonPopulatedCell() {
+    public void getDefaultForInBoundsNonPopulatedCell() {
         HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
         backingTable.put(1,1,"VALUE");
 

@@ -153,6 +153,48 @@ public class SubImmutableArrayTableTest {
         arrayTable.iterateByRowThenColumn().next();
     }
 
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void gettingOutOfBoundsCellAt00Throws() {
+        HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
+        backingTable.put(0,0,"0,0");
+        backingTable.put(0,1,"0,1");
+        backingTable.put(1,0,"1,0");
+        backingTable.put(1,1,"1,1");
+
+        TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "");
+        ImmutableArrayTable<String> subTable = arrayTable.subTable(1, 1, 1, 1);
+
+        subTable.get(0,0);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void gettingOutOfBoundsCellAt01Throws() {
+        HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
+        backingTable.put(0,0,"0,0");
+        backingTable.put(0,1,"0,1");
+        backingTable.put(1,0,"1,0");
+        backingTable.put(1,1,"1,1");
+
+        TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "");
+        ImmutableArrayTable<String> subTable = arrayTable.subTable(0, 2, 0, 2);
+
+        subTable.get(0,2);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void gettingOutOfBoundsCellAt10Throws() {
+        HashBasedTable<Integer, Integer, String> backingTable = HashBasedTable.create();
+        backingTable.put(0,0,"0,0");
+        backingTable.put(0,1,"0,1");
+        backingTable.put(1,0,"1,0");
+        backingTable.put(1,1,"1,1");
+
+        TableBackedImmutableArrayTable<String> arrayTable = new TableBackedImmutableArrayTable<>(backingTable, () -> "");
+        ImmutableArrayTable<String> subTable = arrayTable.subTable(0, 2, 0, 2);
+
+        subTable.get(2,1);
+    }
+
     private <T> void assertRowColVal(BackingTableLocationAndValue<T> next, int row, int col, T val) {
 
         assertEquals(row, next.getRow());
