@@ -37,9 +37,9 @@ public class DefinitionCellMutationTest {
         DefinitionCell definitionCell = Iterators.getOnlyElement(allDefinitionCells.iterator());
         assertEquals("A", definitionCell.getShorthand());
         assertEquals(2, definitionCell.getElementSize());
-        assertEquals('S', definitionCell.getElement(0).getCharacter());
+        assertEquals("S", definitionCell.getElement(0).getCharacter());
         assertFalse(definitionCell.getElement(0).getVariance().isPresent());
-        assertEquals('L', definitionCell.getElement(1).getCharacter());
+        assertEquals("L", definitionCell.getElement(1).getCharacter());
         assertFalse(definitionCell.getElement(1).getVariance().isPresent());
     }
 

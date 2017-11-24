@@ -44,10 +44,10 @@ class DefaultSection implements Section {
 
     @Override
     public String toString() {
-        return "DefaultSection{" +
-                "elementStartIndex=" + elementStartIndex +
-                ", elementLength=" + elementLength +
-                ", parseType=" + parseType +
+        return "Section{" +
+                "location=" + elementStartIndex +
+                "/" + elementLength +
+                "," + parseType +
                 '}';
     }
 }

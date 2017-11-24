@@ -612,20 +612,34 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
+    /**
+     * Because of the self collapsing nature of this grid, it is only possible to add characters to
+     * one index value larger that the current size for both rows and columns.
+     *
+     * @param rowIndex must be no more than one larger than current row size
+     * @param columnIndex must be no more than one larger than current column size
+     * @param characters non null and greater than 0 in length
+     */
     public void addCharacters(int rowIndex, int columnIndex, String characters) {
         checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
         checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
 
-        Cell cell = currentTouch.allCells().get(rowIndex, columnIndex);
-        insertCharacters(rowIndex, columnIndex, (cell==null)?0:cell.getElementSize(), characters);
+        int cellInsertIndex = 0;
+        if (rowIndex    < currentTouch.allCells().getRowSize() &&
+            columnIndex < currentTouch.allCells().getColumnSize()) {
+            Cell cell = currentTouch.allCells().get(rowIndex, columnIndex);
+            cellInsertIndex = (cell == null) ? 0 : cell.getElementSize();
+        }
+
+        insertCharacters(rowIndex, columnIndex, cellInsertIndex, characters);
     }
 
-    public void insertCharacters(int rowIndex, int columnIndex, int cellIndex, String characters) {
+    public void insertCharacters(int rowIndex, int columnIndex, int cellInsertIndex, String characters) {
         checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
         checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
-        checkArgument(cellIndex >= 0 );
+        checkArgument(cellInsertIndex >= 0 );
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
 
@@ -636,14 +650,14 @@ public class ObservableTouch {
             // insert a new cell.
             Cell cell = new CellBuilder()
                     .defaults()
-                    .insert(cellIndex, characters)
+                    .insert(cellInsertIndex, characters)
                     .build();
             cells.put(rowIndex, columnIndex, cell);
         }
         else {
             Cell cell = new CellBuilder()
                     .prototypeOf(currentCell)
-                    .insert(cellIndex, characters)
+                    .insert(cellInsertIndex, characters)
                     .build();
             cells.put(rowIndex, columnIndex, cell);
         }

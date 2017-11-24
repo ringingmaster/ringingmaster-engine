@@ -21,7 +21,7 @@ public class DefaultCell implements Cell {
     public DefaultCell(List<Element> elements) {
         this.elements = ImmutableList.copyOf(elements);
         this.characters = elements.stream()
-                .map(element -> Character.toString(element.getCharacter()))
+                .map(element -> element.getCharacter())
                 .collect(Collectors.joining());
     }
 

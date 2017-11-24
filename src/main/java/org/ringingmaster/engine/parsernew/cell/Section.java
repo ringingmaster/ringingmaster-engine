@@ -1,5 +1,7 @@
 package org.ringingmaster.engine.parsernew.cell;
 
+
+import com.google.errorprone.annotations.Immutable;
 import org.ringingmaster.engine.parser.ParseType;
 
 /**
@@ -7,12 +9,8 @@ import org.ringingmaster.engine.parser.ParseType;
  *
  * @author stevelake
  */
-public interface Section {
+@Immutable
+public interface Section extends ElementSequence {
 
     ParseType getParseType();
-
-    int getElementStartIndex();
-    int getElementLength();
-
-    boolean fallsWithin(int start);
 }

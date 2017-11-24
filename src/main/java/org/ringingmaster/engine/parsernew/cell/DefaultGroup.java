@@ -1,7 +1,12 @@
 package org.ringingmaster.engine.parsernew.cell;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import net.jcip.annotations.Immutable;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO comments???
@@ -13,13 +18,21 @@ class DefaultGroup implements Group {
 
     private final int elementStartIndex;
     private final int elementLength;
+    private final boolean valid;
+    private final Optional<String> message;
     private final ImmutableList<Section> sections;
 
 
-    DefaultGroup(int elementStartIndex, int elementLength, Section section) {
+    DefaultGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, Section section) {
+        this(elementStartIndex, elementLength, valid, message, Lists.newArrayList(section));
+    }
+
+    DefaultGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, List<Section> sections) {
         this.elementStartIndex = elementStartIndex;
         this.elementLength = elementLength;
-        this.sections = ImmutableList.of(section);
+        this.valid = valid;
+        this.message = message;
+        this.sections = ImmutableList.copyOf(sections);
     }
 
     @Override
@@ -44,10 +57,37 @@ class DefaultGroup implements Group {
     }
 
     @Override
+    public boolean isValid() {
+        return valid;
+    }
+
+    @Override
+    public Optional<String> getMessage() {
+        return message;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultGroup that = (DefaultGroup) o;
+        return getElementStartIndex() == that.getElementStartIndex() &&
+                getElementLength() == that.getElementLength();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getElementStartIndex(), getElementLength());
+    }
+
+    @Override
     public String toString() {
-        return "DefaultGroup{" +
-                "elementStartIndex=" + elementStartIndex +
-                ", elementLength=" + elementLength +
+
+        return "Group{" +
+                "location=" + elementStartIndex +
+                "/" + elementLength +
+                ", valid=" + valid +
+                ", message=" + message +
                 ", sections=" + sections +
                 '}';
     }

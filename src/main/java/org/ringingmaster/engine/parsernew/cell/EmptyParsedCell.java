@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.parsernew.cell;
 
+import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 
 import java.util.Optional;
@@ -32,6 +33,16 @@ public class EmptyParsedCell implements ParsedCell {
     }
 
     @Override
+    public ImmutableList<Section> allSections() {
+        return ImmutableList.of();
+    }
+
+    @Override
+    public ImmutableList<Group> allGroups() {
+        return ImmutableList.of();
+    }
+
+    @Override
     public Optional<Section> getSectionAtElementIndex(int elementIndex) {
         throw new IndexOutOfBoundsException();
     }
@@ -39,6 +50,11 @@ public class EmptyParsedCell implements ParsedCell {
     @Override
     public Optional<Group> getGroupAtElementIndex(int elementIndex) {
         throw new IndexOutOfBoundsException();
+    }
+
+    @Override
+    public Group getGroupForSection(Section section) {
+        throw new IllegalStateException();
     }
 
     @Override

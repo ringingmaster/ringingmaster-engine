@@ -5,6 +5,8 @@ import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * TODO Comments
  *
@@ -13,21 +15,20 @@ import java.util.Optional;
 @Immutable
 public class Element {
 
-    private final char character;
+    private final String character;
     private final Optional<Variance> variance;
 
 
     public Element(char character) {
-        this.character = character;
-        this.variance = Optional.empty();
+        this(character,Optional.empty());
     }
 
     public Element(char character, Optional<Variance> variance) {
-        this.character = character;
-        this.variance = variance;
+        this.character = Character.toString(character);
+        this.variance = checkNotNull(variance);
     }
 
-    public char getCharacter() {
+    public String getCharacter() {
         return character;
     }
 

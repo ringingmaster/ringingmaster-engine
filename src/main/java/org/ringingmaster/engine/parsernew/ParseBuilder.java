@@ -8,7 +8,12 @@ import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * TODO comments???
@@ -17,16 +22,38 @@ import java.util.List;
  */
 public class ParseBuilder {
 
-    private Touch touch;
+    private Optional<Touch> prototypeTouch = Optional.empty();
+    private Optional<Parse> prototypeParse = Optional.empty();
     private HashBasedTable<Integer, Integer, ParsedCell> parsedCells;
-    private List<ParsedDefinitionCell> parsedDefinitionCells;
+    private List<ParsedDefinitionCell> parsedDefinitionCells = Collections.emptyList();
 
-    public ParseBuilder prototypeOf(Touch touch) {
-        this.touch = touch;
+    public Parse build() {
+        if (prototypeTouch.isPresent()) {
+            return new DefaultParse(
+                    prototypeTouch.get(),
+                    new TableBackedImmutableArrayTable<>(parsedCells, () -> EmptyParsedCell.INSTANCE),
+                    ImmutableList.copyOf(parsedDefinitionCells));
+        }
+        else if (prototypeParse.isPresent()) {
+            return new DefaultParse(
+                    prototypeParse.get().getTouch(),
+                    new TableBackedImmutableArrayTable<>(parsedCells, () -> EmptyParsedCell.INSTANCE),
+                    ImmutableList.copyOf(parsedDefinitionCells));
+        }
+        else {
+            throw new IllegalStateException();
+        }
+    }
+
+    public ParseBuilder prototypeOf(Touch prototypeTouch) {
+        checkState(!prototypeParse.isPresent());
+        this.prototypeTouch = Optional.of(checkNotNull(prototypeTouch));
         return this;
     }
 
-    public ParseBuilder prototypeOf(Parse parse) {
+    public ParseBuilder prototypeOf(Parse prototypeParse) {
+        checkState(!prototypeTouch.isPresent());
+        this.prototypeParse = Optional.of(checkNotNull(prototypeParse));
         return this;
     }
 
@@ -41,10 +68,4 @@ public class ParseBuilder {
 
     }
 
-    public Parse build() {
-        return new DefaultParse(
-                touch,
-                new TableBackedImmutableArrayTable<>(parsedCells, () -> EmptyParsedCell.INSTANCE),
-                ImmutableList.copyOf(parsedDefinitionCells));
-    }
 }

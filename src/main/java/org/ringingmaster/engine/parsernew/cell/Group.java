@@ -1,19 +1,21 @@
 package org.ringingmaster.engine.parsernew.cell;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+
+import java.util.Optional;
 
 /**
  * A Group spans multiple sections, where each section holds a ParseType.
  *
  * @author stevelake
  */
-public interface Group {
+@Immutable
+public interface Group extends ElementSequence {
 
-    List<Section> getSections();
+    ImmutableList<Section> getSections();
 
-    int getElementStartIndex();
-    int getElementLength();
+    boolean isValid();
 
-    boolean fallsWithin(int start);
-
+    Optional<String> getMessage();
 }

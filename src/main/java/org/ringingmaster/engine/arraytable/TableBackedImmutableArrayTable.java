@@ -63,8 +63,8 @@ public class TableBackedImmutableArrayTable<T> implements ImmutableArrayTable<T>
 
     @Override
     public T get(int rowIndex, int columnIndex) {
-        checkElementIndex(rowIndex, rowSize);
-        checkElementIndex(columnIndex, columnSize);
+        checkElementIndex(rowIndex, rowSize, "Row");
+        checkElementIndex(columnIndex, columnSize, "Col");
 
         T cell = backingTable.get(rowIndex, columnIndex);
         if (cell != null) {

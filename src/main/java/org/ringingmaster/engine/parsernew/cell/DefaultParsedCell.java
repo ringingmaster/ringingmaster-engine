@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.parsernew.cell;
 
+import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 
@@ -17,13 +18,18 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 class DefaultParsedCell implements ParsedCell {
 
     private final Cell parentCell;
-    private final Section[] sectionByElement;
-    private final Group[] groupByElement;
+    private final Section[] sectionByElementIndex;
+    private final Group[] groupByElementIndex;
+    private final ImmutableList<Section> allSections;
+    private final ImmutableList<Group> allGroups;
 
-    DefaultParsedCell(Cell parentCell, Section[] sectionByElement, Group[] groupByElement) {
+    DefaultParsedCell(Cell parentCell, Section[] sectionByElementIndex, Group[] groupByElementIndex,
+                      ImmutableList<Section> allSections, ImmutableList<Group> allGroups) {
         this.parentCell = checkNotNull(parentCell);
-        this.sectionByElement = checkNotNull(sectionByElement);
-        this.groupByElement = checkNotNull(groupByElement);
+        this.sectionByElementIndex = checkNotNull(sectionByElementIndex);
+        this.groupByElementIndex = checkNotNull(groupByElementIndex);
+        this.allSections = checkNotNull(allSections);
+        this.allGroups = checkNotNull(allGroups);
     }
 
     @Override
@@ -42,22 +48,42 @@ class DefaultParsedCell implements ParsedCell {
     }
 
     @Override
+    public ImmutableList<Section> allSections() {
+        return allSections;
+    }
+
+    @Override
+    public ImmutableList<Group> allGroups() {
+        return allGroups;
+    }
+
+    @Override
     public Optional<Section> getSectionAtElementIndex(final int elementIndex) {
-        checkPositionIndex(elementIndex, sectionByElement.length);
-        return Optional.ofNullable(sectionByElement[elementIndex]);
+        checkPositionIndex(elementIndex, sectionByElementIndex.length);
+        return Optional.ofNullable(sectionByElementIndex[elementIndex]);
     }
 
     @Override
     public Optional<Group> getGroupAtElementIndex(int elementIndex) {
-        checkPositionIndex(elementIndex, groupByElement.length);
-        return Optional.ofNullable(groupByElement[elementIndex]);
+        checkPositionIndex(elementIndex, groupByElementIndex.length);
+        return Optional.ofNullable(groupByElementIndex[elementIndex]);
+    }
+
+    @Override
+    public Group getGroupForSection(Section section) {
+        return getGroupAtElementIndex(section.getElementStartIndex())
+                .orElseThrow(IllegalStateException::new);
     }
 
     @Override
     public String toString() {
         return "DefaultParsedCell{" +
-                "sectionByElement=" + Arrays.toString(sectionByElement) +
-                ", groupByElement=" + Arrays.toString(groupByElement) +
+                "sectionByElementIndex=" + Arrays.toString(sectionByElementIndex) +
+                ", groupByElementIndex=" + Arrays.toString(groupByElementIndex) +
                 '}';
+    }
+
+    Cell getParentCell() {
+        return parentCell;
     }
 }

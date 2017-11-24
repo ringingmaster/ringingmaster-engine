@@ -20,8 +20,6 @@ public class DefaultParse implements Parse {
     private final ImmutableList<ParsedDefinitionCell> parsedDefinitions;
     private final CellManipulation<ParsedCell> cellManipulationDelegate;
 
-
-
     DefaultParse(Touch touch, ImmutableArrayTable<ParsedCell> cells, ImmutableList<ParsedDefinitionCell> parsedDefinitions) {
         this.touch = touch;
         this.parsedDefinitions = parsedDefinitions;
@@ -57,5 +55,14 @@ public class DefaultParse implements Parse {
     @Override
     public ImmutableList<ParsedDefinitionCell> getParsedDefinitions() {
         return parsedDefinitions;
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultParse{" +
+                "touch=" + touch +
+                ", parsedDefinitions=" + parsedDefinitions +
+                ", cellManipulationDelegate=" + cellManipulationDelegate +
+                '}';
     }
 }
