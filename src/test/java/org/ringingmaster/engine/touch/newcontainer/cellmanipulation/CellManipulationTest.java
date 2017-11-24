@@ -35,26 +35,36 @@ public class CellManipulationTest {
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
 
-                //R, C, CheckingType,   spliced,   main,    splice,  callPos, mainRoot,  spliceRoot,callPosRoot
-                { 0, 0, LEAD_BASED,     true,      0,0,     0,0,     0,0,     null,      null,      null},   //0
-                { 0, 0, COURSE_BASED,   true,      0,0,     0,0,     0,0,     null,      null,      null},
-                { 0, 0, LEAD_BASED,     false,     0,0,     0,0,     0,0,     null,      null,      null},
-                { 0, 0, COURSE_BASED,   false,     0,0,     0,0,     0,0,     null,      null,      null},
+                //R, C, CheckingType,   spliced,   mainSize, spliceSize, callPosSize, mainRoot,  spliceRoot, callPosRoot
+                { 0, 0, LEAD_BASED,     true,      0,0,      0,0,        0,0,         null,      null,       null},   //0
+                { 0, 0, COURSE_BASED,   true,      0,0,      0,0,        0,0,         null,      null,       null},
+                { 0, 0, LEAD_BASED,     false,     0,0,      0,0,        0,0,         null,      null,       null},
+                { 0, 0, COURSE_BASED,   false,     0,0,      0,0,        0,0,         null,      null,       null},
 
-                { 1, 1, LEAD_BASED,     true,      1,1,     0,0,     0,0,     "0,0",     null,      null},   //4
-                { 1, 1, COURSE_BASED,   true,      1,1,     0,0,     0,0,     "0,0",     null,      null},
-                { 1, 1, LEAD_BASED,     false,     1,1,     0,0,     0,0,     "0,0",     null,      null},
-                { 1, 1, COURSE_BASED,   false,     1,1,     0,0,     0,0,     "0,0",     null,      null},
+                { 1, 1, LEAD_BASED,     true,      1,1,      0,0,        0,0,         "0,0",     null,       null},   //4
+                { 1, 1, COURSE_BASED,   true,      0,0,      0,0,        1,1,         null,      null,       "0,0"},
+                { 1, 1, LEAD_BASED,     false,     1,1,      0,0,        0,0,         "0,0",     null,       null},
+                { 1, 1, COURSE_BASED,   false,     0,0,      0,0,        1,1,         null,      null,       "0,0"},
 
-                { 2, 2, LEAD_BASED,     true,      2,1,     2,1,     0,0,     "0,0",     "0,1",     null},   //8
-                { 2, 2, COURSE_BASED,   true,      1,1,     1,1,     1,1,     "1,0",     "1,1",     "0,0"},
-                { 2, 2, LEAD_BASED,     false,     2,2,     0,0,     0,0,     "0,0",     null,      null},
-                { 2, 2, COURSE_BASED,   false,     1,2,     0,0,     1,2,     "1,0",     null,      "0,0"},
+                { 2, 1, LEAD_BASED,     true,      2,1,      0,0,        0,0,         "0,0",     null,       null},   //8
+                { 2, 1, COURSE_BASED,   true,      1,1,      0,0,        1,1,         "1,0",     null,       "0,0"},
+                { 2, 1, LEAD_BASED,     false,     2,1,      0,0,        0,0,         "0,0",     null,       null},
+                { 2, 1, COURSE_BASED,   false,     1,1,      0,0,        1,1,         "1,0",     null,       "0,0"},
 
-                { 3, 3, LEAD_BASED,     true,      3,2,     3,1,     0,0,     "0,0",     "0,2",     null},   //12
-                { 3, 3, COURSE_BASED,   true,      2,2,     2,1,     1,2,     "1,0",     "1,2",     "0,0"},
-                { 3, 3, LEAD_BASED,     false,     3,3,     0,0,     0,0,     "0,0",     null,      null},
-                { 3, 3, COURSE_BASED,   false,     2,3,     0,0,     1,3,     "1,0",     null,      "0,0"}
+                { 1, 2, LEAD_BASED,     true,      1,1,      1,1,        0,0,         "0,0",     "0,1",       null},   //12
+                { 1, 2, COURSE_BASED,   true,      0,0,      0,0,        1,1,         null,      null,       "0,0"},
+                { 1, 2, LEAD_BASED,     false,     1,2,      0,0,        0,0,         "0,0",     null,       null},
+                { 1, 2, COURSE_BASED,   false,     0,0,      0,0,        1,2,         null,      null,       "0,0"},
+
+                { 2, 2, LEAD_BASED,     true,      2,1,      2,1,        0,0,         "0,0",     "0,1",      null},   //16
+                { 2, 2, COURSE_BASED,   true,      1,1,      1,1,        1,1,         "1,0",     "1,1",      "0,0"},
+                { 2, 2, LEAD_BASED,     false,     2,2,      0,0,        0,0,         "0,0",     null,       null},
+                { 2, 2, COURSE_BASED,   false,     1,2,      0,0,        1,2,         "1,0",     null,       "0,0"},
+
+                { 3, 3, LEAD_BASED,     true,      3,2,      3,1,        0,0,         "0,0",     "0,2",      null},   //20
+                { 3, 3, COURSE_BASED,   true,      2,2,      2,1,        1,2,         "1,0",     "1,2",      "0,0"},
+                { 3, 3, LEAD_BASED,     false,     3,3,      0,0,        0,0,         "0,0",     null,       null},
+                { 3, 3, COURSE_BASED,   false,     2,3,      0,0,        1,3,         "1,0",     null,       "0,0"}
         });
         }
 
@@ -91,8 +101,6 @@ public class CellManipulationTest {
     public String expectedCallPositionRoot;
 
 
-    public static final NotationBody METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
-
     private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(bells)
@@ -102,7 +110,7 @@ public class CellManipulationTest {
     }
 
     @Test
-    public void mainBodySize() {
+    public void mainBodyTableDimensions() {
         CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
         assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, cellManipulation.mainBodyCells());
     }
@@ -114,7 +122,7 @@ public class CellManipulationTest {
     }
 
     @Test
-    public void spliceTable() {
+    public void spliceTableDimensions() {
         CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
         assertDimensions(expectedSplicedRows, expectedSplicedColumns, cellManipulation.splicedCells());
     }
@@ -126,9 +134,15 @@ public class CellManipulationTest {
     }
 
     @Test
-    public void callPositionTable() {
+    public void callPositionTableDimensions() {
         CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
         assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, cellManipulation.callPositionCells());
+    }
+
+    @Test
+    public void callPositionRoot() {
+        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
+        assertRoot(expectedCallPositionRoot, cellManipulation.callPositionCells());
     }
 
     private void assertDimensions(int expectedRowSize, int expectedColumnSize, ImmutableArrayTable<Cell> cells) {
@@ -137,8 +151,8 @@ public class CellManipulationTest {
 
     private void assertRoot(String expected, ImmutableArrayTable<Cell> cells) {
         if (expected == null) {
-            assertEquals(0, cells.getRowSize());
-            assertEquals(0, cells.getColumnSize());
+            assertEquals("Row Size",0, cells.getRowSize());
+            assertEquals("Col Size", 0, cells.getColumnSize());
         }
         else {
             assertEquals(expected, cells.get(0,0).getCharacters());
