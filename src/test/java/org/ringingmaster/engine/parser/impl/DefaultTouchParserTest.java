@@ -16,34 +16,6 @@ public class DefaultTouchParserTest {
 
 
 //	@Test
-//	public void correctlyAllocatedOverlappingParsings() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
-//		touch.addCharacters(0, 0, "Bob");
-//		touch.setPlainLeadToken("b"); // the same as the last 'b' in Bob
-//		touch.addNotation(buildPlainBobMinor());
-//		new DefaultParser().parseAndAnnotate(touch);
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.CALL, ParseType.CALL);
-//	}
-//
-//	@Test
-//	public void correctlyAllocatedAdjacentParsings() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.addCharacters(0, 0, "Bobb");
-//		touch.setPlainLeadToken("b"); // the same as the last 'b' in Bob
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
-//		new DefaultParser().parseAndAnnotate(touch);
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.CALL, ParseType.CALL, ParseType.PLAIN_LEAD);
-//	}
-//
-//	@Test
-//	public void correctlyIdentifiesGroup() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "(-)s");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.GROUP_OPEN, ParseType.CALL, ParseType.GROUP_CLOSE, ParseType.CALL);
-//	}
-//
-//	@Test
 //	public void correctlyIdentifiesEmbeddedGroup() {
 //		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "((-)s)");
 //		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.GROUP_OPEN, ParseType.GROUP_OPEN, ParseType.CALL, ParseType.GROUP_CLOSE, ParseType.CALL, ParseType.GROUP_CLOSE);

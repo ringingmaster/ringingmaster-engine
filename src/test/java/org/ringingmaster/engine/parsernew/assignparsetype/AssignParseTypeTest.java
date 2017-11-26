@@ -16,6 +16,8 @@ import static org.junit.Assert.assertFalse;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
 import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
+import static org.ringingmaster.engine.parser.ParseType.GROUP_CLOSE;
+import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN;
 import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
@@ -102,6 +104,31 @@ public class AssignParseTypeTest {
         assertParse(parse.allCells().get(0, 1), valid(SPLICE), valid(4, DEFINITION), valid(SPLICE));
     }
 
+    @Test
+    public void correctlyAllocatedOverlappingParsings() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "Bob");
+        touch.setPlainLeadToken("b");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.allCells().get(0, 0), valid(3, CALL));
+    }
+
+    @Test
+    public void correctlyAllocatedAdjacentParsings() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "Bobb");
+        touch.setPlainLeadToken("b");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.allCells().get(0, 0), valid(3, CALL), valid(PLAIN_LEAD));
+    }
+
+    @Test
+    public void correctlyIdentifiesGroup() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "(-)s");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.allCells().get(0, 0), valid(3, GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
+    }
 
     //TODO need lots of these type of tests for all the different combinations.
     @Test
