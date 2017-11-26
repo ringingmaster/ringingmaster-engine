@@ -82,18 +82,17 @@ public class AssertParse {
         @Override
         public String toString() {
             return "{" +
-                    length +
-                    ", " + parseType +
-                    ", " + (valid ? "valid":"invalid") +
+                    length + ", " +
+                    (parseType.map(parseType ->  parseType + (valid ? ", valid":", invalid")).orElse("unparsed")) +
                     '}';
         }
     }
 
-    public static SectionExpected parsed(ParseType parseType) {
-        return parsed(1, parseType);
+    public static SectionExpected valid(ParseType parseType) {
+        return valid(1, parseType);
     }
 
-    public static SectionExpected parsed(int length, ParseType parseType) {
+    public static SectionExpected valid(int length, ParseType parseType) {
         return new SectionExpected(length, parseType, true);
     }
 

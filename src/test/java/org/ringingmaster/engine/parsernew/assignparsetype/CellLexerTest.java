@@ -13,8 +13,8 @@ import static org.ringingmaster.engine.parser.ParseType.CALL;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
-import static org.ringingmaster.engine.parsernew.AssertParse.parsed;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.valid;
 
 /**
  * TODO comments???
@@ -57,7 +57,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
-        assertParse(parsedCell, parsed(CALL));
+        assertParse(parsedCell, valid(CALL));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
-        assertParse(parsedCell, parsed(CALL), parsed(SPLICE));
+        assertParse(parsedCell, valid(CALL), valid(SPLICE));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
-        assertParse(parsedCell, unparsed(1), parsed(3, SPLICE));
+        assertParse(parsedCell, unparsed(1), valid(3, SPLICE));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
-        assertParse(parsedCell, parsed(3, SPLICE));
+        assertParse(parsedCell, valid(3, SPLICE));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
-        assertParse(parsedCell, parsed(3, SPLICE));
+        assertParse(parsedCell, valid(3, SPLICE));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
-        assertParse(parsedCell, unparsed(1), parsed(3, CALL), parsed(WHITESPACE), unparsed(1));
+        assertParse(parsedCell, unparsed(1), valid(3, CALL), valid(WHITESPACE), unparsed(1));
 
     }
 
@@ -136,7 +136,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
 
-        assertParse(parsedCell, parsed(CALL), parsed(WHITESPACE));
+        assertParse(parsedCell, valid(CALL), valid(WHITESPACE));
 
     }
 

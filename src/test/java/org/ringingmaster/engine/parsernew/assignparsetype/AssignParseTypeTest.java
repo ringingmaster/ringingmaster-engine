@@ -19,8 +19,8 @@ import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
-import static org.ringingmaster.engine.parsernew.AssertParse.parsed;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.valid;
 import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType.COURSE_BASED;
 
 /**
@@ -36,21 +36,21 @@ public class AssignParseTypeTest {
     public void correctlyRetrievesAndParsesFromNotation() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-s");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), parsed(CALL),  parsed(CALL));
+        assertParse(parse.allCells().get(0,0), valid(CALL),  valid(CALL));
     }
 
     @Test
 	public void correctlyParsesSimpleWhitespace() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "- Bob");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), parsed(CALL),  parsed(WHITESPACE), parsed(3, CALL));
+        assertParse(parse.allCells().get(0,0), valid(CALL),  valid(WHITESPACE), valid(3, CALL));
 	}
 
     @Test
 	public void correctlyParsesPlainLeadToken() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-p-");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), parsed(CALL),  parsed(PLAIN_LEAD), parsed(CALL));
+        assertParse(parse.allCells().get(0,0), valid(CALL),  valid(PLAIN_LEAD), valid(CALL));
 	}
 
     @Test
@@ -60,7 +60,7 @@ public class AssignParseTypeTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,1), unparsed(),  parsed(SPLICE), unparsed());
+        assertParse(parse.allCells().get(0,1), unparsed(),  valid(SPLICE), unparsed());
     }
 
 	@Test
@@ -70,7 +70,7 @@ public class AssignParseTypeTest {
         touch.setTouchCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), parsed(CALLING_POSITION));
+        assertParse(parse.allCells().get(0,0), valid(CALLING_POSITION));
 	}
 
 
@@ -81,14 +81,14 @@ public class AssignParseTypeTest {
         touch.setTouchCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), unparsed(),  parsed(CALLING_POSITION), unparsed());
+        assertParse(parse.allCells().get(0,0), unparsed(),  valid(CALLING_POSITION), unparsed());
 	}
 
 
 
 
 
-	
+
     //TODO need lots of these ttype of tests for all the different combinations.
     @Test
     public void mainBodyWithCallingPOsitionIsIgnored() {
