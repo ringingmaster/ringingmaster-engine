@@ -24,7 +24,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * TODO comments
+ * Parses all cells and assigns a parse type where possible
+ *
  * @author stevelake
  */
 @Immutable

@@ -33,19 +33,20 @@ public class AssertParse {
 
         int elementIndex = 0;
         for (SectionExpected expected : expecteds) {
+            log.info("Checking Section [{}]", expected);
 
             if (expected.parseType.isPresent()) {
                 Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
                 Optional<Group> groupAtFirstElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
-                assertTrue("Missing Section " + expected, sectionAtFirstElementIndex.isPresent());
-                assertEquals(expected.parseType.get(), sectionAtFirstElementIndex.get().getParseType());
+                assertTrue("Missing Section: " + expected, sectionAtFirstElementIndex.isPresent());
+                assertEquals("Section: " + sectionAtFirstElementIndex.get().toString(), expected.parseType.get(), sectionAtFirstElementIndex.get().getParseType());
 
                 // Assert the group matches the section.
                 assertTrue(groupAtFirstElementIndex.isPresent());
                 assertEquals(1, groupAtFirstElementIndex.get().getSections().size());
                 assertEquals(sectionAtFirstElementIndex.get(), groupAtFirstElementIndex.get().getSections().get(0));
 
-                assertEquals(expected.valid, groupAtFirstElementIndex.get().isValid());
+                assertEquals("Section validity", expected.valid, groupAtFirstElementIndex.get().isValid());
 
                 // Assert all subsequent element points have the same Section
                 for (int i = 0; i < expected.length; i++) {
@@ -61,7 +62,6 @@ public class AssertParse {
                     elementIndex++;
                 }
             }
-            log.info("Section [{}] OK", expected);
         }
     }
 

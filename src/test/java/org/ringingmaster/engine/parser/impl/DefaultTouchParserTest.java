@@ -15,21 +15,6 @@ public class DefaultTouchParserTest {
 	}
 
 
-//
-//	@Test
-//	public void correctlyParsesDefinitionToken() {
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
-//		touch.addCharacters(0, 0, "-z-");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.addDefinition("z", "-s");
-//		new DefaultParser().parseAndAnnotate(touch);
-//
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALL, ParseType.DEFINITION, ParseType.CALL);
-//	}
-//
-//	// TODO make sure a definition is not in use in both spliced and main body.
-//
 //	@Test
 //	public void correctlyAllocatedOverlappingParsings() {
 //		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);

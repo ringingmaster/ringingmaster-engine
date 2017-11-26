@@ -26,7 +26,7 @@ public class DefaultParser implements Parser {
 //TODO		parseSpliceCountDifferentInEachMethod();
 //TODO		parseVarianceLogic();
 //		new GroupLogicParser().parse(touch);
-//TODO		parseGroupOnDifferentLines(); // TODOI dont think we need this one now as allowing groups on many lines. Might have to do extra parsing when a block definition in use though to make sure we have full groups in the block
+//TODO		parseGroupOnDifferentLines(); // TODO I dont think we need this one now as allowing groups on many lines. Might have to do extra parsing when a block definition in use though to make sure we have full groups in the block
 //TODO		parseVarianceGroupInteractionLogic();
 //TODO		parseSpaceOnlyInCell(); //TODO I dont think this is necessary, apart from where whole rows and columns are empty
 //TODO		parseCallsInColumnWithoutCallingPos();

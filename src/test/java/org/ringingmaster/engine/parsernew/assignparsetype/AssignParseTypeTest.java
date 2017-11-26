@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertFalse;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
 import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
+import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
@@ -36,64 +37,77 @@ public class AssignParseTypeTest {
     public void correctlyRetrievesAndParsesFromNotation() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-s");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), valid(CALL),  valid(CALL));
+        assertParse(parse.allCells().get(0, 0), valid(CALL), valid(CALL));
     }
 
     @Test
-	public void correctlyParsesSimpleWhitespace() {
+    public void correctlyParsesSimpleWhitespace() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "- Bob");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), valid(CALL),  valid(WHITESPACE), valid(3, CALL));
-	}
+        assertParse(parse.allCells().get(0, 0), valid(CALL), valid(WHITESPACE), valid(3, CALL));
+    }
 
     @Test
-	public void correctlyParsesPlainLeadToken() {
+    public void correctlyParsesPlainLeadToken() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-p-");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), valid(CALL),  valid(PLAIN_LEAD), valid(CALL));
-	}
+        assertParse(parse.allCells().get(0, 0), valid(CALL), valid(PLAIN_LEAD), valid(CALL));
+    }
 
     @Test
-	public void correctlyParsesSpliceToken() {
+    public void correctlyParsesSpliceToken() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "pp");
-        touch.addCharacters(0,1,"-p-");
+        touch.addCharacters(0, 1, "-p-");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,1), unparsed(),  valid(SPLICE), unparsed());
+        assertParse(parse.allCells().get(0, 1), unparsed(), valid(SPLICE), unparsed());
     }
 
-	@Test
-	public void correctlyParsesSimpleCallPosition() {
+    @Test
+    public void correctlyParsesSimpleCallPosition() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "W");
-        touch.addCharacters(1,0,"<Padding to allow enough rows to ensure we have a call position space>");
         touch.setTouchCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), valid(CALLING_POSITION));
-	}
+        assertParse(parse.allCells().get(0, 0), valid(CALLING_POSITION));
+    }
 
 
-	@Test
-	public void ignoreOtherCharactersInCallingPositionCell() {
+    @Test
+    public void ignoreOtherCharactersInCallingPositionCell() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "bHd");
-        touch.addCharacters(1,0,"<Padding to allow enough rows to ensure we have a call position space>");
         touch.setTouchCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), unparsed(),  valid(CALLING_POSITION), unparsed());
-	}
+        assertParse(parse.allCells().get(0, 0), unparsed(), valid(CALLING_POSITION), unparsed());
+    }
 
 
+    @Test
+    public void correctlyParsesDefinitionTokenInMainBody() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-def1-");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.allCells().get(0, 0), valid(CALL), valid(4, DEFINITION), valid(CALL));
+    }
+
+    @Test
+    public void correctlyParsesDefinitionTokenInSplice() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.setSpliced(true);
+        touch.addCharacters(0, 1, "pdef1p");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.allCells().get(0, 1), valid(SPLICE), valid(4, DEFINITION), valid(SPLICE));
+    }
 
 
-
-
-    //TODO need lots of these ttype of tests for all the different combinations.
+    //TODO need lots of these type of tests for all the different combinations.
     @Test
     public void mainBodyWithCallingPOsitionIsIgnored() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "A");
-        touch.addCharacters(1,0, "W");
+        touch.addCharacters(1, 0, "W");
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
@@ -123,6 +137,7 @@ public class AssignParseTypeTest {
         touch.addNotation(notationBody);
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
+        touch.addDefinition("def1", "-s");
         return touch;
     }
 

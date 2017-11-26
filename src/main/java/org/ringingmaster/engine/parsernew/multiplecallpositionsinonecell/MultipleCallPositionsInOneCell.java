@@ -13,7 +13,8 @@ import org.ringingmaster.engine.parsernew.cell.ParsedCellBuilder;
 import org.ringingmaster.engine.parsernew.cell.Section;
 
 /**
- * TODO comments???
+ * Enforces that only one call position is allowed in a cell.
+ * Works with CallPosition cells only.
  *
  * @author stevelake
  */
@@ -21,24 +22,25 @@ import org.ringingmaster.engine.parsernew.cell.Section;
 public class MultipleCallPositionsInOneCell {
 
     public Parse parse(Parse parse) {
-        HashBasedTable<Integer, Integer, ParsedCell> parsedCells = HashBasedTable.create();
+        HashBasedTable<Integer, Integer, ParsedCell> resultCells =
+                HashBasedTable.create(parse.allCells().getBackingTable());
 
-        parseCallPositionArea(parse, parsedCells);
+        parseCallPositionArea(parse, resultCells);
 
         return new ParseBuilder()
                 .prototypeOf(parse)
-                .setParsedCells(parsedCells)
+                .setParsedCells(resultCells)
                 .build();
     }
 
-    private void parseCallPositionArea(Parse originalParse, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        ImmutableArrayTable<ParsedCell> cells = originalParse.allCells();
+    private void parseCallPositionArea(Parse originalParse, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {
+        ImmutableArrayTable<ParsedCell> cells = originalParse.callPositionCells();
 
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : cells) {
 
             ParsedCell originalParsedCell = locationAndCell.getValue();
             ParsedCell parsedCell = transformCell(originalParsedCell);
-            parsedCells.put(locationAndCell.getRow(), locationAndCell.getCol(), parsedCell);
+            resultCells.put(locationAndCell.getRow(), locationAndCell.getCol(), parsedCell);
         }
     }
 

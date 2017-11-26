@@ -7,6 +7,7 @@ import org.ringingmaster.engine.touch.newcontainer.element.Element;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 
@@ -73,6 +74,18 @@ class DefaultParsedCell implements ParsedCell {
     public Group getGroupForSection(Section section) {
         return getGroupAtElementIndex(section.getElementStartIndex())
                 .orElseThrow(IllegalStateException::new);
+    }
+
+    @Override
+    public String getCharacters(ElementSequence elementSequence) {
+        checkNotNull(elementSequence);
+        checkArgument(elementSequence.getElementStartIndex() + elementSequence.getElementLength() <= getElementSize());
+
+        StringBuilder buff = new StringBuilder();
+        for (int index=elementSequence.getElementStartIndex();index<elementSequence.getElementStartIndex() + elementSequence.getElementLength();index++) {
+            buff.append(getElement(index).getCharacter());
+        }
+        return buff.toString();
     }
 
     @Override

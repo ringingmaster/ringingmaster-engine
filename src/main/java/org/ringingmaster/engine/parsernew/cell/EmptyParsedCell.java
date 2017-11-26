@@ -58,6 +58,11 @@ public class EmptyParsedCell implements ParsedCell {
     }
 
     @Override
+    public String getCharacters(ElementSequence elementSequence) {
+        return "";
+    }
+
+    @Override
     public String toString() {
         return "EmptyParsedCell";
     }

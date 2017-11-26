@@ -33,6 +33,25 @@ public class MultipleCallPositionsInOneCellTest {
     }
 
     @Test
+    public void parsingAllCellTypesReturnsOriginals() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
+        touch.setSpliced(true);
+
+        touch.addCharacters(0,0, "CALL_POSITION");
+        touch.addCharacters(1,0, "MAIN_BODY");
+        touch.addCharacters(1,1, "SPLICE");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        Parse result = new MultipleCallPositionsInOneCell().parse(parse);
+
+        assertEquals(2, result.allCells().getRowSize());
+        assertEquals(2, result.allCells().getColumnSize());
+        assertEquals("CALL_POSITION", result.allCells().get(0,0).getCharacters());
+        assertEquals("MAIN_BODY", result.allCells().get(1,0).getCharacters());
+        assertEquals("SPLICE", result.allCells().get(1,1).getCharacters());
+    }
+
+    @Test
     public void parsingGoodCallPositionTakesNoAction() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(0,0, "W");
@@ -55,10 +74,6 @@ public class MultipleCallPositionsInOneCellTest {
         assertParse(result.allCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));
         assertParse(result.allCells().get(0,1), unparsed() ,valid(CALLING_POSITION), invalid(CALLING_POSITION));
     }
-
-
-
-  //  TODO more tests - multi cell6
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()

@@ -23,4 +23,7 @@ public interface ParsedCell extends Cell {
     Optional<Group> getGroupAtElementIndex(int elementIndex);
 
     Group getGroupForSection(Section section); //TODO need to test
+
+    String getCharacters(ElementSequence elementSequence);
+
 }
