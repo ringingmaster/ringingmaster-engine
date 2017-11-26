@@ -5,19 +5,22 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parsernew.Parse;
+import org.ringingmaster.engine.parsernew.cell.ParsedCell;
+import org.ringingmaster.engine.parsernew.multiplecallpositionsinonecell.MultipleCallPositionsInOneCell;
 import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertFalse;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
 import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.assertParse;
-import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.parsed;
-import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.unparsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
+import static org.ringingmaster.engine.parsernew.AssertParse.parsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
 import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType.COURSE_BASED;
 
 /**
@@ -81,27 +84,23 @@ public class AssignParseTypeTest {
         assertParse(parse.allCells().get(0,0), unparsed(),  parsed(CALLING_POSITION), unparsed());
 	}
 
-	@Test
-	public void ignoreSecondCallingPositionInCell() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "HW");
-        touch.addCharacters(1,0,"<Padding to allow enough rows to ensure we have a call position space>");
-        touch.setTouchCheckingType(COURSE_BASED);
 
+
+
+
+	
+    //TODO need lots of these ttype of tests for all the different combinations.
+    @Test
+    public void mainBodyWithCallingPOsitionIsIgnored() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "A");
+        touch.addCharacters(1,0, "W");
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allCells().get(0,0), parsed(CALLING_POSITION), parsed(CALLING_POSITION));
+        Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-//TODO ??? need different parser for tghis test
-//
-//		DefaultTouch touch = (DefaultTouch) TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
-//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-//		touch.addCharacters(0, 0, "HW");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setSpliced(false);
-//		new DefaultParser().parseAndAnnotate(touch);
-//
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.CALLING_POSITION, ParseType.CALLING_POSITION);
-//		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), true, false);
-	}
+        ParsedCell parsedCell = result.allCells().get(1, 0);
+        assertFalse(parsedCell.getSectionAtElementIndex(0).isPresent());
+        assertFalse(parsedCell.getGroupAtElementIndex(1).isPresent());
+    }
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()

@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parsernew.assignparsetype;
+package org.ringingmaster.engine.parsernew;
 
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parsernew.cell.Group;
@@ -33,31 +33,31 @@ public class AssertParse {
 
         int elementIndex = 0;
         for (SectionExpected expected : expecteds) {
-            Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
-            Optional<Group> groupAtFirstElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
 
-            if (expected.parseType == null) {
-                assertFalse(sectionAtFirstElementIndex.isPresent());
-                assertFalse(groupAtFirstElementIndex.isPresent());
-
-                for (int i=0;i<expected.length;i++) {
-                    assertFalse(parsedCell.getSectionAtElementIndex(elementIndex).isPresent());
-                    assertFalse(parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
-                    elementIndex++;
-                }
-            }
-            else {
+            if (expected.parseType.isPresent()) {
+                Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
+                Optional<Group> groupAtFirstElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
                 assertTrue("Missing Section " + expected, sectionAtFirstElementIndex.isPresent());
-                assertEquals(expected.parseType, sectionAtFirstElementIndex.get().getParseType());
+                assertEquals(expected.parseType.get(), sectionAtFirstElementIndex.get().getParseType());
 
+                // Assert the group matches the section.
                 assertTrue(groupAtFirstElementIndex.isPresent());
                 assertEquals(1, groupAtFirstElementIndex.get().getSections().size());
                 assertEquals(sectionAtFirstElementIndex.get(), groupAtFirstElementIndex.get().getSections().get(0));
 
+                assertEquals(expected.valid, groupAtFirstElementIndex.get().isValid());
+
+                // Assert all subsequent element points have the same Section
                 for (int i = 0; i < expected.length; i++) {
                     assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getSectionAtElementIndex(elementIndex).get());
                     assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getGroupAtElementIndex(elementIndex).get().getSections().get(0));
-
+                    elementIndex++;
+                }
+            } else {
+                // Assert all sections and groups are empty.
+                for (int i=0;i<expected.length;i++) {
+                    assertFalse(parsedCell.getSectionAtElementIndex(elementIndex).isPresent());
+                    assertFalse(parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
                     elementIndex++;
                 }
             }
@@ -68,11 +68,15 @@ public class AssertParse {
 
     public static class SectionExpected {
         final int length;
-        final ParseType parseType;
+        final Optional<ParseType> parseType;
+        final boolean valid;
 
-        SectionExpected(int length, ParseType parseType) {
+        SectionExpected(int length, ParseType parseType, boolean valid) {
+            assertTrue(length > 0);
+
             this.length = length;
-            this.parseType = parseType;
+            this.parseType = Optional.ofNullable(parseType);
+            this.valid = valid;
         }
 
         @Override
@@ -80,6 +84,7 @@ public class AssertParse {
             return "{" +
                     length +
                     ", " + parseType +
+                    ", " + (valid ? "valid":"invalid") +
                     '}';
         }
     }
@@ -89,15 +94,24 @@ public class AssertParse {
     }
 
     public static SectionExpected parsed(int length, ParseType parseType) {
-        assertTrue(length > 0);
-        return new SectionExpected(length, parseType);
+        return new SectionExpected(length, parseType, true);
+    }
+
+
+    public static SectionExpected unparsed() {
+        return unparsed(1);
     }
 
     public static SectionExpected unparsed(int length) {
-        return parsed(length, null);
+        return new SectionExpected(length, null, false);
     }
 
-    public static SectionExpected unparsed() {
-        return parsed(1, null);
+    public static SectionExpected invalid(ParseType parseType) {
+        return invalid(1, parseType);
     }
+
+    public static SectionExpected invalid(int length, ParseType parseType) {
+        return new SectionExpected(length, parseType, false);
+    }
+
 }

@@ -12,9 +12,9 @@ import java.util.HashMap;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.assertParse;
-import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.parsed;
-import static org.ringingmaster.engine.parsernew.assignparsetype.AssertParse.unparsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
+import static org.ringingmaster.engine.parsernew.AssertParse.parsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
 
 /**
  * TODO comments???

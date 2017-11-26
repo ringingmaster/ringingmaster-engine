@@ -4,18 +4,18 @@ import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parsernew.Parse;
 import org.ringingmaster.engine.parsernew.assignparsetype.AssignParseType;
-import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
+import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
+import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
+import static org.ringingmaster.engine.parsernew.AssertParse.parsed;
 
 public class MultipleCallPositionsInOneCellTest {
 
@@ -27,7 +27,6 @@ public class MultipleCallPositionsInOneCellTest {
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-
         assertEquals(0, result.allCells().getRowSize());
         assertEquals(0, result.allCells().getColumnSize());
     }
@@ -36,36 +35,29 @@ public class MultipleCallPositionsInOneCellTest {
     public void parsingGoodCallPositionTakesNoAction() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(0,0, "W");
+        touch.addCharacters(0,1, "H");
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-
-        ParsedCell parsedCell = result.allCells().get(0, 0);
-        assertEquals(1, parsedCell.getElementSize());
-        assertEquals("W", parsedCell.getElement(0).getCharacter());
-        assertEquals(ParseType.CALLING_POSITION, parsedCell.getSectionAtElementIndex(0).get().getParseType());
-        assertTrue(parsedCell.getGroupAtElementIndex(0).get().isValid());
+        assertParse(result.allCells().get(0,0), parsed(CALLING_POSITION));
+        assertParse(result.allCells().get(0,0), parsed(CALLING_POSITION));
     }
 
     @Test
     public void parsingDuplicateMarksSeconsAsInvalid() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(0,0, "WH");
+        touch.addCharacters(0,1, "HW");
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-
-        ParsedCell parsedCell = result.allCells().get(0, 0);
-        assertEquals(2, parsedCell.getElementSize());
-        assertEquals("W", parsedCell.getElement(0).getCharacter());
-        assertEquals("H", parsedCell.getElement(1).getCharacter());
-        assertEquals(ParseType.CALLING_POSITION, parsedCell.getSectionAtElementIndex(0).get().getParseType());
-        assertEquals(ParseType.CALLING_POSITION, parsedCell.getSectionAtElementIndex(1).get().getParseType());
-        assertTrue(parsedCell.getGroupAtElementIndex(0).get().isValid());
-        assertFalse(parsedCell.getGroupAtElementIndex(1).get().isValid());
+        assertParse(result.allCells().get(0,0), parsed(CALLING_POSITION), invalid(CALLING_POSITION));
+        assertParse(result.allCells().get(0,0), parsed(CALLING_POSITION), invalid(CALLING_POSITION));
     }
 
-    //TODO more tests
+
+
+  //  TODO more tests - multi cell6
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
