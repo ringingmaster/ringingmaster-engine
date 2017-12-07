@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
  * TODO comments???
@@ -60,13 +60,13 @@ class DefaultParsedCell implements ParsedCell {
 
     @Override
     public Optional<Section> getSectionAtElementIndex(final int elementIndex) {
-        checkPositionIndex(elementIndex, sectionByElementIndex.length);
+        checkElementIndex(elementIndex, sectionByElementIndex.length);
         return Optional.ofNullable(sectionByElementIndex[elementIndex]);
     }
 
     @Override
     public Optional<Group> getGroupAtElementIndex(int elementIndex) {
-        checkPositionIndex(elementIndex, groupByElementIndex.length);
+        checkElementIndex(elementIndex, groupByElementIndex.length);
         return Optional.ofNullable(groupByElementIndex[elementIndex]);
     }
 
