@@ -47,6 +47,29 @@ public class ParsedCellBuilderTest {
     }
 
     @Test
+    public void settingMutipleGroupsInvalidCorrectlyRebuildsGroups() {
+
+        ParsedCell parsedCell = buildParsedCell();
+
+        ParsedCell builtCell = new ParsedCellBuilder()
+                .prototypeOf(parsedCell)
+                .setInvalid(parsedCell.getGroupAtElementIndex(3).get(), "MESSAGE3")
+                .setInvalid(parsedCell.getGroupAtElementIndex(2).get(), "MESSAGE2")
+                .setInvalid(parsedCell.getGroupAtElementIndex(0).get(), "MESSAGE1")
+                .setInvalid(parsedCell.getGroupAtElementIndex(6).get(), "MESSAGE1")
+                .build();
+
+        assertFalse(builtCell.getGroupAtElementIndex(0).get().isValid());
+        assertEquals("MESSAGE1", builtCell.getGroupAtElementIndex(0).get().getMessage().get());
+
+        assertFalse(builtCell.getGroupAtElementIndex(2).get().isValid());
+        assertEquals("MESSAGE2", builtCell.getGroupAtElementIndex(2).get().getMessage().get());
+
+        assertFalse(builtCell.getGroupAtElementIndex(3).get().isValid());
+        assertEquals("MESSAGE3", builtCell.getGroupAtElementIndex(3).get().getMessage().get());
+    }
+
+    @Test
     public void mergingGroupsCorrectlyCombinesLength() {
 
         ParsedCell parsedCell = buildParsedCell();

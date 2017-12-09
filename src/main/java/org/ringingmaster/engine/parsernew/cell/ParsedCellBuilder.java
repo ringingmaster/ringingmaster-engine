@@ -43,15 +43,6 @@ public class ParsedCellBuilder {
 
     }
 
-    private Set<Group> getPrototypeGroups() {
-        Set<Group> groups = Sets.newHashSet();
-        for(int elementIndex = 0;elementIndex<prototype.getElementSize();elementIndex++) {
-            prototype.getGroupAtElementIndex(elementIndex)
-                    .ifPresent(groups::add);
-        }
-        return groups;
-    }
-
     private Set<Section> getPrototypeSections() {
         Set<Section> sections = Sets.newHashSet();
         for(int elementIndex = 0;elementIndex<prototype.getElementSize();elementIndex++) {
@@ -59,6 +50,15 @@ public class ParsedCellBuilder {
                     .ifPresent(sections::add);
         }
         return sections;
+    }
+
+    private Set<Group> getPrototypeGroups() {
+        Set<Group> groups = Sets.newHashSet();
+        for(int elementIndex = 0;elementIndex<prototype.getElementSize();elementIndex++) {
+            prototype.getGroupAtElementIndex(elementIndex)
+                    .ifPresent(groups::add);
+        }
+        return groups;
     }
 
     /**

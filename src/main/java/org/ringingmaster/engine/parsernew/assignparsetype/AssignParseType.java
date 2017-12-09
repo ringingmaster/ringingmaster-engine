@@ -143,7 +143,7 @@ public class AssignParseType {
     }
 
     private void addDefinitionTokens(Touch touch, Map<String, ParseType> parsings) {
-        for (DefinitionCell definitionCell : touch.getAllDefinitions()) {
+        for ( DefinitionCell definitionCell : touch.getAllDefinitions()) {
             parsings.put(definitionCell.getShorthand(), ParseType.DEFINITION);
         }
     }

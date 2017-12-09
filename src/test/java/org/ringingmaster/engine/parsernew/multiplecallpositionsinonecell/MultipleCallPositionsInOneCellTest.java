@@ -24,7 +24,7 @@ public class MultipleCallPositionsInOneCellTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
@@ -34,7 +34,7 @@ public class MultipleCallPositionsInOneCellTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
 
         touch.addCharacters(0,0, "CALL_POSITION");
@@ -53,7 +53,7 @@ public class MultipleCallPositionsInOneCellTest {
 
     @Test
     public void parsingGoodCallPositionTakesNoAction() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(0,0, "W");
         touch.addCharacters(0,1, "H");
         Parse parse = new AssignParseType().parse(touch.get());
@@ -65,7 +65,7 @@ public class MultipleCallPositionsInOneCellTest {
 
     @Test
     public void parsingDuplicateMarksSeconsAsInvalid() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(0,0, "WH");
         touch.addCharacters(0,1, "-HW");
         Parse parse = new AssignParseType().parse(touch.get());
@@ -89,7 +89,7 @@ public class MultipleCallPositionsInOneCellTest {
                 .build();
     }
 
-    private ObservableTouch buildAndParseSingleCellTouch(NotationBody notationBody) {
+    private ObservableTouch buildSingleCellTouch(NotationBody notationBody) {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         touch.addNotation(notationBody);

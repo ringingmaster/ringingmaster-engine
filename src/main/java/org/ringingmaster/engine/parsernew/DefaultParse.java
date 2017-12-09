@@ -53,7 +53,7 @@ public class DefaultParse implements Parse {
 
 
     @Override
-    public ImmutableList<ParsedDefinitionCell> getParsedDefinitions() {
+    public ImmutableList<ParsedDefinitionCell> getDefinitions() {
         return parsedDefinitions;
     }
 

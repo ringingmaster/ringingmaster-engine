@@ -66,8 +66,8 @@ public class DefinitionInSplicedOrMain {
                 .collect(Collectors.toSet());
     }
 
-    private void markInvalid(ImmutableArrayTable<ParsedCell> locationAndCells, Set<String> invalidDefinitions, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {
-        for (BackingTableLocationAndValue<ParsedCell> locationAndCell : locationAndCells) {
+    private void markInvalid(ImmutableArrayTable<ParsedCell> originalCells, Set<String> invalidDefinitions, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {
+        for (BackingTableLocationAndValue<ParsedCell> locationAndCell : originalCells) {
             ParsedCell originalCell = locationAndCell.getValue();
             ParsedCellBuilder parsedCellBuilder = new ParsedCellBuilder().prototypeOf(originalCell);
 

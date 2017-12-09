@@ -21,7 +21,7 @@ public class DefinitionInSplicedOrMainTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new DefinitionInSplicedOrMain().parse(parse);
 
@@ -31,7 +31,7 @@ public class DefinitionInSplicedOrMainTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
 
         touch.addCharacters(0,0, "CALL_POSITION");
@@ -52,7 +52,7 @@ public class DefinitionInSplicedOrMainTest {
 
     @Test
     public void differentDefinitionsValidInMainAndSpliced() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
         touch.addCharacters(0,0, "abc");
         touch.addCharacters(0,1, "xyz");
         Parse parse = new AssignParseType().parse(touch.get());
@@ -64,7 +64,7 @@ public class DefinitionInSplicedOrMainTest {
 
     @Test
     public void usingSameDefinitionInMainAndSplicedSetsBothInvalid() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
         touch.addCharacters(0,0, "abc");
         touch.addCharacters(1,0, "xyz");
         touch.addCharacters(0,1, "abc");
@@ -78,7 +78,7 @@ public class DefinitionInSplicedOrMainTest {
 
     @Test
     public void usingSameDefinitionInEitherMainOrSplicedIsValid() {
-        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
         touch.addCharacters(0,0, "abc");
         touch.addCharacters(1,0, "abc");
         touch.addCharacters(0,1, "xyz");
@@ -121,7 +121,7 @@ public class DefinitionInSplicedOrMainTest {
                 .build();
     }
 
-    private ObservableTouch buildAndParseSingleCellTouch(NotationBody... notations) {
+    private ObservableTouch buildSingleCellTouch(NotationBody... notations) {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(touch::addNotation);

@@ -23,5 +23,5 @@ public interface Parse {
 
     ImmutableArrayTable<ParsedCell> splicedCells();
 
-    ImmutableList<ParsedDefinitionCell> getParsedDefinitions();
+    ImmutableList<ParsedDefinitionCell> getDefinitions();
 }
