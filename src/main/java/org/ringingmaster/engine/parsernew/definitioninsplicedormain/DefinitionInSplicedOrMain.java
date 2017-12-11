@@ -44,14 +44,14 @@ public class DefinitionInSplicedOrMain {
 
         // Second Pass to mark invalid
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                HashBasedTable.create(parse.allCells().getBackingTable());
+                HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
         markInvalid(parse.mainBodyCells(), invalidDefinitions, resultCells);
         markInvalid(parse.splicedCells(), invalidDefinitions, resultCells);
 
         return new ParseBuilder()
                 .prototypeOf(parse)
-                .setParsedCells(resultCells)
+                .setTouchTableCells(resultCells)
                 .build();
     }
 

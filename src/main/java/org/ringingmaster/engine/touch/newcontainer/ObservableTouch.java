@@ -4,7 +4,6 @@ package org.ringingmaster.engine.touch.newcontainer;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
@@ -12,6 +11,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
@@ -24,10 +24,6 @@ import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
 import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefaultDefinitionCell;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
-import org.ringingmaster.engine.touch.newcontainer.element.Element;
-import org.ringingmaster.engine.touch.newcontainer.element.ElementBuilder;
 import org.ringingmaster.util.smartcompare.SmartCompare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +42,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.base.Preconditions.checkState;
+import static org.ringingmaster.engine.touch.newcontainer.TableType.DEFINITION_TABLE;
+import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
 
 /**
@@ -405,36 +404,60 @@ public class ObservableTouch {
 
     public void addDefinition(String shorthand, String characters) {
         checkNotNull(shorthand, "shorthand must not be null");
-        checkNotNull(shorthand.length() > 0, "shorthand must contain some characters");
+        checkState(shorthand.length() > 0, "shorthand must contain some characters");
 
         // Check duplicate name
         if (currentTouch.findDefinitionByShorthand(shorthand).isPresent()) {
             throw new IllegalArgumentException("Can't add definition [" + shorthand + "] as it has a duplicate shorthand to existing definition [" + currentTouch.findDefinitionByShorthand(shorthand) + "]");
         }
 
-        ImmutableList<Element> elements = ElementBuilder.createElements(characters);
-        DefinitionCell definitionCell = new DefaultDefinitionCell(shorthand, elements);
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.allDefinitionCells().getBackingTable());
+        int insertionRow = currentTouch.allDefinitionCells().getRowSize();
 
-        PSet<DefinitionCell> definitionCells = currentTouch.getAllDefinitions()
-                .plus(definitionCell);
+        Cell shorthandCell = new CellBuilder()
+                .defaults()
+                .insert(0, shorthand)
+                .build();
+        cells.put(insertionRow, 0, shorthandCell);
+
+        Cell charactersCell = new CellBuilder()
+                .defaults()
+                .insert(0, characters)
+                .build();
+        cells.put(insertionRow, 1, charactersCell);
+
+        //TODO sort the definitions alpha numeric???
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setDefinitions(definitionCells);
+                .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(cells, EmptyCell::new));
 
         setCurrentTouch(touchBuilder.build());
     }
 
     public void removeDefinition(String shorthand) {
         checkNotNull(shorthand, "shorthand must not be null");
+        checkState(shorthand.length() > 0, "shorthand must contain some characters");
 
-        Set<DefinitionCell> definitionsForRemoval = currentTouch.getAllDefinitions().stream()
-                .filter(definition -> definition.getShorthand().equals(shorthand))
-                .collect(Collectors.toSet());
+        final ImmutableArrayTable<Cell> definitionCells = currentTouch.allDefinitionCells();
+        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(definitionCells.getBackingTable());
 
-        PSet<DefinitionCell> definitionCells = currentTouch.getAllDefinitions().minusAll(definitionsForRemoval);
+        for (int rowIndex=0;rowIndex<definitionCells.getRowSize();rowIndex++) {
+            final Cell shorthandCell = mutatedCells.get(rowIndex, SHORTHAND_COLUMN);
+            final Cell definitionCell = mutatedCells.get(rowIndex, DEFINITION_COLUMN);
+            if (shorthandCell != null) {
+                if (Objects.equals(shorthand, shorthandCell.getCharacters())){
+                    removeCharactersInternal(rowIndex, SHORTHAND_COLUMN, 0,shorthandCell.getElementSize(), mutatedCells, definitionCells);
+                    if (definitionCell != null) {
+                        removeCharactersInternal(rowIndex, DEFINITION_COLUMN, 0, definitionCell.getElementSize(), mutatedCells, definitionCells);
+                    }
+                    removeRowIfEmpty(rowIndex, mutatedCells, definitionCells);
+                    break;
+                }
+            }
+        }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setDefinitions(definitionCells);
+            .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
         setCurrentTouch(touchBuilder.build());
     }
@@ -613,38 +636,54 @@ public class ObservableTouch {
     }
 
     /**
-     * Because of the self collapsing nature of this grid, it is only possible to add characters to
+     * Because of the self collapsing nature of the grid, it is only possible to add characters to
      * one index value larger that the current size for both rows and columns.
      *
+     * @param tableType the section of the document we want to act upon
      * @param rowIndex must be no more than one larger than current row size
      * @param columnIndex must be no more than one larger than current column size
      * @param characters non null and greater than 0 in length
      */
-    public void addCharacters(int rowIndex, int columnIndex, String characters) {
-        checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
+    public void addCharacters(TableType tableType, int rowIndex, int columnIndex, String characters) {
+        checkNotNull(tableType);
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
 
+        if (tableType == DEFINITION_TABLE) {
+            checkArgument(rowIndex < 2);
+        }
+
+        ImmutableArrayTable<Cell> cells = getCells(tableType);
+        checkPositionIndex(rowIndex, cells.getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, cells.getColumnSize(), "columnIndex");
+
         int cellInsertIndex = 0;
-        if (rowIndex    < currentTouch.allCells().getRowSize() &&
-            columnIndex < currentTouch.allCells().getColumnSize()) {
-            Cell cell = currentTouch.allCells().get(rowIndex, columnIndex);
+        if (rowIndex    < cells.getRowSize() &&
+            columnIndex < cells.getColumnSize()) {
+            Cell cell = cells.get(rowIndex, columnIndex);
             cellInsertIndex = (cell == null) ? 0 : cell.getElementSize();
         }
 
-        insertCharacters(rowIndex, columnIndex, cellInsertIndex, characters);
+        insertCharacters(tableType, rowIndex, columnIndex, cellInsertIndex, characters);
     }
 
-    public void insertCharacters(int rowIndex, int columnIndex, int cellInsertIndex, String characters) {
-        checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
-        checkArgument(cellInsertIndex >= 0 );
+    public void insertCharacters(TableType tableType, int rowIndex, int columnIndex, int cellInsertIndex, String characters) {
+        checkNotNull(tableType);
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
+        checkArgument(cellInsertIndex >= 0 );
 
-        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.allCells().getBackingTable());
-        Cell currentCell = cells.get(rowIndex, columnIndex);
+
+        if (tableType == DEFINITION_TABLE) {
+            checkArgument(rowIndex < 2);
+        }
+
+        ImmutableArrayTable<Cell> cells = getCells(tableType);
+        checkPositionIndex(rowIndex, cells.getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, cells.getColumnSize(), "columnIndex");
+
+        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(cells.getBackingTable());
+        Cell currentCell = mutatedCells.get(rowIndex, columnIndex);
 
         if (currentCell == null) {
             // insert a new cell.
@@ -652,30 +691,42 @@ public class ObservableTouch {
                     .defaults()
                     .insert(cellInsertIndex, characters)
                     .build();
-            cells.put(rowIndex, columnIndex, cell);
+            mutatedCells.put(rowIndex, columnIndex, cell);
         }
         else {
             Cell cell = new CellBuilder()
                     .prototypeOf(currentCell)
                     .insert(cellInsertIndex, characters)
                     .build();
-            cells.put(rowIndex, columnIndex, cell);
+            mutatedCells.put(rowIndex, columnIndex, cell);
         }
 
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setCells(new TableBackedImmutableArrayTable<Cell>(cells, EmptyCell::new));
+                .setCells(tableType, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
         setCurrentTouch(touchBuilder.build());
 
     }
 
-    public void removeCharacters(int rowIndex, int columnIndex, int cellIndex, int count) {
-        checkPositionIndex(rowIndex, currentTouch.allCells().getRowSize(), "rowIndex");
-        checkPositionIndex(columnIndex, currentTouch.allCells().getColumnSize(), "columnIndex");
+    public void removeCharacters(TableType tableType, int rowIndex, int columnIndex, int cellIndex, int count) {
+        checkNotNull(tableType);
         checkArgument(cellIndex >= 0 );
 
-        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentTouch.allCells().getBackingTable());
-        Cell currentCell = cells.get(rowIndex, columnIndex);
+        ImmutableArrayTable<Cell> originalCells = getCells(tableType);
+        checkPositionIndex(rowIndex, originalCells.getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, originalCells.getColumnSize(), "columnIndex");
+
+        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(originalCells.getBackingTable());
+        removeCharactersInternal(rowIndex, columnIndex, cellIndex, count, mutatedCells, originalCells);
+
+        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
+                .setCells(tableType, new TableBackedImmutableArrayTable<Cell>(mutatedCells, EmptyCell::new));
+
+        setCurrentTouch(touchBuilder.build());
+    }
+
+    private void removeCharactersInternal(int rowIndex, int columnIndex, int cellIndex, int count, Table<Integer, Integer, Cell> mutatedCells, ImmutableArrayTable<Cell> originalCells) {
+        Cell currentCell = mutatedCells.get(rowIndex, columnIndex);
 
         checkNotNull(currentCell);
 
@@ -685,57 +736,64 @@ public class ObservableTouch {
                 .build();
 
         if (cell.getElementSize() == 0) {
-            cells.remove(rowIndex, columnIndex);
-            removeRowIfEmpty(rowIndex, cells);
-            removeColumnIfEmpty(columnIndex, cells);
+            mutatedCells.remove(rowIndex, columnIndex);
+            removeRowIfEmpty(rowIndex, mutatedCells, originalCells);
+            removeColumnIfEmpty(columnIndex, mutatedCells, originalCells);
         }
         else {
-            cells.put(rowIndex, columnIndex, cell);
+            mutatedCells.put(rowIndex, columnIndex, cell);
         }
-
-        TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch)
-                .setCells(new TableBackedImmutableArrayTable<Cell>(cells, EmptyCell::new));
-
-        setCurrentTouch(touchBuilder.build());
     }
 
-    private void removeColumnIfEmpty(int columnIndexForRemoval, Table<Integer, Integer, Cell> cells) {
+    private ImmutableArrayTable<Cell> getCells(TableType tableType) {
+        switch (tableType){
+
+            case TOUCH_TABLE:
+                return currentTouch.allTouchCells();
+            case DEFINITION_TABLE:
+                return currentTouch.allDefinitionCells();
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    private void removeColumnIfEmpty(int columnIndexForRemoval, Table<Integer, Integer, Cell> cells, ImmutableArrayTable<Cell> originalCells) {
         Map<Integer, Cell> columnItems = cells.column(columnIndexForRemoval);
 
-        if (columnItems.isEmpty()) {
-            int rowCount = currentTouch.allCells().getRowSize();
-            int columnCount = currentTouch.allCells().getColumnSize();
-            // We allow the column loop to go '1' past end to ensure the final column is removed.
-            for (int columnIndex=columnIndexForRemoval;columnIndex<columnCount+1;columnIndex++) {
-                for (int rowIndex=0;rowIndex<rowCount;rowIndex++) {
-                    Cell cell = cells.get(rowIndex, columnIndex);
-                    if (cell != null) {
-                        cells.put(rowIndex, columnIndex - 1, cell);
-                    }
-                    else {
-                        cells.remove(rowIndex, columnIndex-1);
-                    }
+        if (!columnItems.isEmpty()) {
+            return;
+        }
+
+        int rowCount = originalCells.getRowSize();
+        int columnCount = originalCells.getColumnSize();
+        // We allow the column loop to go '1' past end to ensure the final column is removed.
+        for (int columnIndex=columnIndexForRemoval;columnIndex<columnCount+1;columnIndex++) {
+            for (int rowIndex=0;rowIndex<rowCount;rowIndex++) {
+                Cell cell = cells.get(rowIndex, columnIndex);
+                if (cell != null) {
+                    cells.put(rowIndex, columnIndex - 1, cell);
+                    cells.remove(rowIndex, columnIndex);
                 }
             }
         }
     }
 
-    private void removeRowIfEmpty(int rowIndexForRemoval, Table<Integer, Integer, Cell> cells) {
-        Map<Integer, Cell> rowItems = cells.row(rowIndexForRemoval);
+    private void removeRowIfEmpty(int rowIndexForRemoval, Table<Integer, Integer, Cell> mutatedCells, ImmutableArrayTable<Cell> originalCells) {
+        Map<Integer, Cell> rowItems = mutatedCells.row(rowIndexForRemoval);
 
-        if (rowItems.isEmpty()) {
-            int rowCount = currentTouch.allCells().getRowSize();
-            int columnCount = currentTouch.allCells().getColumnSize();
-            // We allow the row loop to go '1' past end to ensure the final row is removed.
-            for (int rowIndex=rowIndexForRemoval;rowIndex<rowCount+1;rowIndex++) {
-                for (int columnIndex=0;columnIndex<columnCount;columnIndex++) {
-                    Cell cell = cells.get(rowIndex, columnIndex);
-                    if (cell != null) {
-                        cells.put(rowIndex-1,columnIndex, cell);
-                    }
-                    else {
-                        cells.remove(rowIndex-1, columnIndex);
-                    }
+        if (!rowItems.isEmpty()) {
+            return;
+        }
+
+        int rowCount = originalCells.getRowSize();
+        int columnCount = originalCells.getColumnSize();
+        // We allow the row loop to go '1' past end to ensure the final row is removed.
+        for (int rowIndex=rowIndexForRemoval;rowIndex<rowCount+1;rowIndex++) {
+            for (int columnIndex=0;columnIndex<columnCount;columnIndex++) {
+                Cell cell = mutatedCells.get(rowIndex, columnIndex);
+                if (cell != null) {
+                    mutatedCells.put(rowIndex-1,columnIndex, cell);
+                    mutatedCells.remove(rowIndex, columnIndex);
                 }
             }
         }

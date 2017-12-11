@@ -22,7 +22,7 @@ public class GroupLogic {
     public Parse parse(Parse parse) {
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                HashBasedTable.create(parse.allCells().getBackingTable());
+                HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
         parseCells(parse.mainBodyCells(), resultCells);
         parseCells(parse.splicedCells(), resultCells);
@@ -35,7 +35,7 @@ public class GroupLogic {
 
         return new ParseBuilder()
                 .prototypeOf(parse)
-                .setParsedCells(resultCells)
+                .setTouchTableCells(resultCells)
 //                .setDefinitions()
                 .build();
 

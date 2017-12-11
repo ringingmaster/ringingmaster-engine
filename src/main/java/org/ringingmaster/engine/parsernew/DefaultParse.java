@@ -1,12 +1,13 @@
 package org.ringingmaster.engine.parsernew;
 
-import com.google.common.collect.ImmutableList;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
-import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.newcontainer.cellmanipulation.CellManipulation;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultTouchTableAccess;
+
+import java.util.Optional;
 
 /**
  * TODO comments???
@@ -17,13 +18,13 @@ import org.ringingmaster.engine.touch.newcontainer.cellmanipulation.CellManipula
 public class DefaultParse implements Parse {
 
     private final Touch touch;
-    private final ImmutableList<ParsedDefinitionCell> parsedDefinitions;
-    private final CellManipulation<ParsedCell> cellManipulationDelegate;
+    private final DefaultTouchTableAccess<ParsedCell> touchTableAccessDelegate;
+    private final DefaultDefinitionTableAccess<ParsedCell> definitionTableAccessDelegate;
 
-    DefaultParse(Touch touch, ImmutableArrayTable<ParsedCell> cells, ImmutableList<ParsedDefinitionCell> parsedDefinitions) {
+    DefaultParse(Touch touch, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells) {
         this.touch = touch;
-        this.parsedDefinitions = parsedDefinitions;
-        this.cellManipulationDelegate = new CellManipulation<>(cells, touch.getCheckingType(), touch.isSpliced());
+        this.touchTableAccessDelegate = new DefaultTouchTableAccess<>(mainTableCells, touch.getCheckingType(), touch.isSpliced());
+        this.definitionTableAccessDelegate = new DefaultDefinitionTableAccess<>(definitionCells);
     }
 
     @Override
@@ -32,37 +33,47 @@ public class DefaultParse implements Parse {
     }
 
     @Override
-    public ImmutableArrayTable<ParsedCell> allCells() {
-        return cellManipulationDelegate.allCells();
+    public ImmutableArrayTable<ParsedCell> allTouchCells() {
+        return touchTableAccessDelegate.allTouchCells();
     }
 
     @Override
     public ImmutableArrayTable<ParsedCell> mainBodyCells() {
-        return cellManipulationDelegate.mainBodyCells();
+        return touchTableAccessDelegate.mainBodyCells();
     }
 
     @Override
     public ImmutableArrayTable<ParsedCell> callPositionCells() {
-        return cellManipulationDelegate.callPositionCells();
+        return touchTableAccessDelegate.callPositionCells();
     }
 
     @Override
     public ImmutableArrayTable<ParsedCell> splicedCells() {
-        return cellManipulationDelegate.splicedCells();
+        return touchTableAccessDelegate.splicedCells();
     }
 
 
     @Override
-    public ImmutableList<ParsedDefinitionCell> getDefinitions() {
-        return parsedDefinitions;
+    public ImmutableArrayTable<ParsedCell> allDefinitionCells() {
+        return definitionTableAccessDelegate.allDefinitionCells();
+    }
+
+    @Override
+    public ImmutableArrayTable<ParsedCell> allShorthands() {
+        return definitionTableAccessDelegate.allShorthands();
+    }
+
+    @Override
+    public Optional<ImmutableArrayTable<ParsedCell>> findDefinitionByShorthand(String shorthand) {
+        return definitionTableAccessDelegate.findDefinitionByShorthand(shorthand);
     }
 
     @Override
     public String toString() {
         return "DefaultParse{" +
                 "touch=" + touch +
-                ", parsedDefinitions=" + parsedDefinitions +
-                ", cellManipulationDelegate=" + cellManipulationDelegate +
+                ", touchTableAccess=" + touchTableAccessDelegate +
+                ", definitionTableAccess=" + definitionTableAccessDelegate +
                 '}';
     }
 }

@@ -1,14 +1,15 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
 import org.junit.Test;
-import org.pcollections.PSet;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
+import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
+import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.ringingmaster.engine.touch.newcontainer.TableType.DEFINITION_TABLE;
+import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
 /**
  * TODO Comments
@@ -18,24 +19,27 @@ import static org.junit.Assert.assertTrue;
 public class DefinitionCellMutationTest {
 
     @Test
-    public void hasCorrectDefault() throws Exception {
+    public void hasCorrectDefault()  {
 
         ObservableTouch touch = new ObservableTouch();
 
-        assertEquals(ImmutableSet.of(), touch.get().getAllDefinitions());
+        assertEquals(0, touch.get().allDefinitionCells().getColumnSize());
+        assertEquals(0, touch.get().allDefinitionCells().getRowSize());
     }
 
     @Test
-    public void canAddDefinition() throws Exception {
+    public void canAddDefinitionThroughAddMethod()  {
 
         ObservableTouch touch = new ObservableTouch();
         touch.addDefinition("A", "SL");
 
-        PSet<DefinitionCell> allDefinitionCells = touch.get().getAllDefinitions();
-        assertEquals(1, allDefinitionCells.size());
+        final ImmutableArrayTable<Cell> cells = touch.get().allDefinitionCells();
+        assertEquals(1, cells.getRowSize());
+        assertEquals(2, cells.getColumnSize());
 
-        DefinitionCell definitionCell = Iterators.getOnlyElement(allDefinitionCells.iterator());
-        assertEquals("A", definitionCell.getShorthand());
+        Cell shorthandCell = cells.get(0,0);
+        Cell definitionCell = cells.get(0,1);
+        assertEquals("A", shorthandCell.getCharacters());
         assertEquals(2, definitionCell.getElementSize());
         assertEquals("S", definitionCell.getElement(0).getCharacter());
         assertFalse(definitionCell.getElement(0).getVariance().isPresent());
@@ -44,18 +48,56 @@ public class DefinitionCellMutationTest {
     }
 
     @Test
-    public void canRemoveDefinition() throws Exception {
+    public void canAddDefinitionThroughCellEditing()  {
 
         ObservableTouch touch = new ObservableTouch();
-        touch.addDefinition("A", "2s");
-        touch.addDefinition("B", "-p");
-        touch.addDefinition("C", "pp");
+        touch.addCharacters(DEFINITION_TABLE,0, SHORTHAND_COLUMN,"A");
+        touch.addCharacters(DEFINITION_TABLE,0, DEFINITION_COLUMN,"SL");
 
-        assertEquals(3, touch.get().getAllDefinitions().size());
+        final ImmutableArrayTable<Cell> cells = touch.get().allDefinitionCells();
+        assertEquals(1, cells.getRowSize());
+        assertEquals(2, cells.getColumnSize());
+
+        Cell shorthandCell = cells.get(0,0);
+        Cell definitionCell = cells.get(0,1);
+        assertEquals("A", shorthandCell.getCharacters());
+        assertEquals(2, definitionCell.getElementSize());
+        assertEquals("S", definitionCell.getElement(0).getCharacter());
+        assertFalse(definitionCell.getElement(0).getVariance().isPresent());
+        assertEquals("L", definitionCell.getElement(1).getCharacter());
+        assertFalse(definitionCell.getElement(1).getVariance().isPresent());
+    }
+
+    @Test
+    public void canRemoveDefinitionThroughRemoveMethod()  {
+        ObservableTouch touch = new ObservableTouch();
+        touch.addDefinition("A", "aa");
+        touch.addDefinition("B", "bb");
+        touch.addDefinition("C", "cc");
+
+        assertEquals(3, touch.get().allDefinitionCells().getRowSize());
+        assertEquals(2, touch.get().allDefinitionCells().getColumnSize());
         touch.removeDefinition("B");
 
-        PSet<DefinitionCell> allDefinitionCells = touch.get().getAllDefinitions();
-        assertEquals(2, allDefinitionCells.size());
+        assertEquals(2, touch.get().allDefinitionCells().getRowSize());
+        assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
+        assertFalse(touch.get().findDefinitionByShorthand("B").isPresent());
+        assertTrue(touch.get().findDefinitionByShorthand("C").isPresent());
+    }
+
+    @Test
+    public void canRemoveDefinitionThroughCellEditing()  {
+        ObservableTouch touch = new ObservableTouch();
+        touch.addDefinition("A", "aa");
+        touch.addDefinition("B", "bb");
+        touch.addDefinition("C", "cc");
+
+        assertEquals(3, touch.get().allDefinitionCells().getRowSize());
+        assertEquals(2, touch.get().allDefinitionCells().getColumnSize());
+        touch.removeCharacters(DEFINITION_TABLE, 1, SHORTHAND_COLUMN,0,1);
+        touch.removeCharacters(DEFINITION_TABLE, 1, DEFINITION_COLUMN,0,2);
+
+        assertEquals(2, touch.get().allDefinitionCells().getRowSize());
         assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
         assertFalse(touch.get().findDefinitionByShorthand("B").isPresent());
         assertTrue(touch.get().findDefinitionByShorthand("C").isPresent());

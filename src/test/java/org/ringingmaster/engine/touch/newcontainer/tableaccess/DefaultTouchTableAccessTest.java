@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.touch.newcontainer.cellmanipulation;
+package org.ringingmaster.engine.touch.newcontainer.tableaccess;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -29,7 +29,7 @@ import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingT
  * @author stevelake
  */
 @RunWith(Parameterized.class)
-public class CellManipulationTest {
+public class DefaultTouchTableAccessTest {
 
     @Parameters
     public static Iterable<Object[]> data() {
@@ -111,38 +111,38 @@ public class CellManipulationTest {
 
     @Test
     public void mainBodyTableDimensions() {
-        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
-        assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, cellManipulation.mainBodyCells());
+        DefaultTouchTableAccess<Cell> defaultTouchTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, defaultTouchTableAccess.mainBodyCells());
     }
 
     @Test
     public void mainBodyRoot() {
-        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
-        assertRoot(expectedMainRoot, cellManipulation.mainBodyCells());
+        DefaultTouchTableAccess<Cell> defaultTouchTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        assertRoot(expectedMainRoot, defaultTouchTableAccess.mainBodyCells());
     }
 
     @Test
     public void spliceTableDimensions() {
-        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
-        assertDimensions(expectedSplicedRows, expectedSplicedColumns, cellManipulation.splicedCells());
+        DefaultTouchTableAccess<Cell> defaultTouchTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        assertDimensions(expectedSplicedRows, expectedSplicedColumns, defaultTouchTableAccess.splicedCells());
     }
 
     @Test
     public void spliceRoot() {
-        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
-        assertRoot(expectedSplicedRoot, cellManipulation.splicedCells());
+        DefaultTouchTableAccess<Cell> defaultTouchTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        assertRoot(expectedSplicedRoot, defaultTouchTableAccess.splicedCells());
     }
 
     @Test
     public void callPositionTableDimensions() {
-        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
-        assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, cellManipulation.callPositionCells());
+        DefaultTouchTableAccess<Cell> defaultTouchTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, defaultTouchTableAccess.callPositionCells());
     }
 
     @Test
     public void callPositionRoot() {
-        CellManipulation<Cell> cellManipulation = buildCells1(rows, cols, checkingType, spliced);
-        assertRoot(expectedCallPositionRoot, cellManipulation.callPositionCells());
+        DefaultTouchTableAccess<Cell> defaultTouchTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        assertRoot(expectedCallPositionRoot, defaultTouchTableAccess.callPositionCells());
     }
 
     private void assertDimensions(int expectedRowSize, int expectedColumnSize, ImmutableArrayTable<Cell> cells) {
@@ -159,7 +159,7 @@ public class CellManipulationTest {
         }
     }
 
-    private CellManipulation<Cell> buildCells1(int rows, int cols, CheckingType checkingType, boolean spliced) {
+    private DefaultTouchTableAccess<Cell> buildCells1(int rows, int cols, CheckingType checkingType, boolean spliced) {
         Table<Integer, Integer, Cell> cells = HashBasedTable.create();
 
         for (int row = 0; row < rows; row++) {
@@ -173,7 +173,7 @@ public class CellManipulationTest {
             }
         }
 
-        return new CellManipulation<>(new TableBackedImmutableArrayTable<>(cells, EmptyCell::new), checkingType, spliced);
+        return new DefaultTouchTableAccess<>(new TableBackedImmutableArrayTable<>(cells, EmptyCell::new), checkingType, spliced);
     }
 
     class Pair {

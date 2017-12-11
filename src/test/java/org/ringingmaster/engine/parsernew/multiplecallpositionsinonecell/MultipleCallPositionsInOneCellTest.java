@@ -17,6 +17,7 @@ import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
 import static org.ringingmaster.engine.parsernew.AssertParse.valid;
+import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
 
 public class MultipleCallPositionsInOneCellTest {
 
@@ -28,8 +29,8 @@ public class MultipleCallPositionsInOneCellTest {
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-        assertEquals(0, result.allCells().getRowSize());
-        assertEquals(0, result.allCells().getColumnSize());
+        assertEquals(0, result.allTouchCells().getRowSize());
+        assertEquals(0, result.allTouchCells().getColumnSize());
     }
 
     @Test
@@ -37,42 +38,42 @@ public class MultipleCallPositionsInOneCellTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
 
-        touch.addCharacters(0,0, "CALL_POSITION");
-        touch.addCharacters(1,0, "MAIN_BODY");
-        touch.addCharacters(1,1, "SPLICE");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
+        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-        assertEquals(2, result.allCells().getRowSize());
-        assertEquals(2, result.allCells().getColumnSize());
-        assertEquals("CALL_POSITION", result.allCells().get(0,0).getCharacters());
-        assertEquals("MAIN_BODY", result.allCells().get(1,0).getCharacters());
-        assertEquals("SPLICE", result.allCells().get(1,1).getCharacters());
+        assertEquals(2, result.allTouchCells().getRowSize());
+        assertEquals(2, result.allTouchCells().getColumnSize());
+        assertEquals("CALL_POSITION", result.allTouchCells().get(0,0).getCharacters());
+        assertEquals("MAIN_BODY", result.allTouchCells().get(1,0).getCharacters());
+        assertEquals("SPLICE", result.allTouchCells().get(1,1).getCharacters());
     }
 
     @Test
     public void parsingGoodCallPositionTakesNoAction() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, "W");
-        touch.addCharacters(0,1, "H");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "W");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "H");
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(CALLING_POSITION));
-        assertParse(result.allCells().get(0,0), valid(CALLING_POSITION));
+        assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
+        assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
     }
 
     @Test
     public void parsingDuplicateMarksSeconsAsInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, "WH");
-        touch.addCharacters(0,1, "-HW");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "WH");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "-HW");
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new MultipleCallPositionsInOneCell().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));
-        assertParse(result.allCells().get(0,1), unparsed() ,valid(CALLING_POSITION), invalid(CALLING_POSITION));
+        assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));
+        assertParse(result.allTouchCells().get(0,1), unparsed() ,valid(CALLING_POSITION), invalid(CALLING_POSITION));
     }
 
     private NotationBody buildPlainBobMinor() {

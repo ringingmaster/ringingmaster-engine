@@ -12,9 +12,11 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.cellmanipulation.CellManipulation;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultTouchTableAccess;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.TouchTableAccess;
 
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Lake
  */
 @Immutable
-public class Touch {
+public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell> {
 
     private final String title;
     private final String author;
@@ -38,7 +40,7 @@ public class Touch {
     private final PSet<NotationBody> allNotations;
     private final Optional<NotationBody> nonSplicedActiveNotation;
     private final String plainLeadToken;
-    private final PSet<DefinitionCell> definitionCells;
+    private final DefaultDefinitionTableAccess<Cell> definitionTableCellsDelegate;
 
     private final MethodRow startChange;
     private final int startAtRow;
@@ -51,7 +53,7 @@ public class Touch {
     private final int terminationMaxCircularity;
     private final Optional<MethodRow> terminationChange;
 
-    private final CellManipulation<Cell> cellManipulationDelegate;
+    private final DefaultTouchTableAccess<Cell> touchTableAccessDelegate;
 
     public Touch(String title,
                  String author,
@@ -61,7 +63,7 @@ public class Touch {
                  PSet<NotationBody> allNotations,
                  Optional<NotationBody> nonSplicedActiveNotation,
                  String plainLeadToken,
-                 PSet<DefinitionCell> definitionCells,
+                 ImmutableArrayTable<Cell> definitionCells,
                  MethodRow startChange, int startAtRow,
                  Stroke startStroke,
                  Optional<NotationBody> startNotation,
@@ -81,7 +83,7 @@ public class Touch {
         this.allNotations = allNotations;
         this.nonSplicedActiveNotation = nonSplicedActiveNotation;
         this.plainLeadToken = plainLeadToken;
-        this.definitionCells = definitionCells;
+        this.definitionTableCellsDelegate = new DefaultDefinitionTableAccess<>(definitionCells);
 
         this.startChange = startChange;
         this.startAtRow = startAtRow;
@@ -94,7 +96,7 @@ public class Touch {
         this.terminationMaxCircularity = terminationMaxCircularity;
         this.terminationChange = terminationChange;
 
-        cellManipulationDelegate = new CellManipulation<>(cells, checkingType, isSpliced());
+        touchTableAccessDelegate = new DefaultTouchTableAccess<>(cells, checkingType, isSpliced());
     }
 
 
@@ -150,16 +152,21 @@ public class Touch {
         return plainLeadToken;
     }
 
-    public PSet<DefinitionCell> getAllDefinitions() {
-        return definitionCells;
+    @Override
+    public ImmutableArrayTable<Cell> allDefinitionCells() {
+        return definitionTableCellsDelegate.allDefinitionCells();
     }
 
-    public Optional<DefinitionCell> findDefinitionByShorthand(String shorthand) {
+    @Override
+    public ImmutableArrayTable<Cell> allShorthands() {
+        return definitionTableCellsDelegate.allShorthands();
+    }
+
+    @Override
+    public Optional<ImmutableArrayTable<Cell>> findDefinitionByShorthand(String shorthand) {
         checkNotNull(shorthand);
 
-        return definitionCells.stream()
-                .filter((definition) -> shorthand.equals(definition.getShorthand()))
-                .findFirst();
+        return definitionTableCellsDelegate.findDefinitionByShorthand(shorthand);
     }
 
     public MethodRow getStartChange() {
@@ -198,20 +205,24 @@ public class Touch {
         return terminationChange;
     }
 
-    public ImmutableArrayTable<Cell> allCells() {
-        return cellManipulationDelegate.allCells();
+    @Override
+    public ImmutableArrayTable<Cell> allTouchCells() {
+        return touchTableAccessDelegate.allTouchCells();
     }
 
+    @Override
     public ImmutableArrayTable<Cell> mainBodyCells() {
-        return cellManipulationDelegate.mainBodyCells();
+        return touchTableAccessDelegate.mainBodyCells();
     }
 
+    @Override
     public ImmutableArrayTable<Cell> callPositionCells() {
-        return cellManipulationDelegate.callPositionCells();
+        return touchTableAccessDelegate.callPositionCells();
     }
 
+    @Override
     public ImmutableArrayTable<Cell> splicedCells() {
-        return cellManipulationDelegate.splicedCells();
+        return touchTableAccessDelegate.splicedCells();
     }
 
 
@@ -226,7 +237,7 @@ public class Touch {
                 ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
                 ", plainLeadToken='" + plainLeadToken + '\'' +
-                ", definitions=" + definitionCells +
+                ", definitions=" + definitionTableCellsDelegate.allDefinitionCells() +
                 ", startChange=" + startChange +
                 ", startAtRow=" + startAtRow +
                 ", startStroke=" + startStroke +
@@ -236,7 +247,7 @@ public class Touch {
                 ", terminationMaxParts=" + terminationMaxParts +
                 ", terminationMaxCircularity=" + terminationMaxCircularity +
                 ", terminationChange=" + terminationChange +
-                ", cells=" + cellManipulationDelegate.allCells() +
+                ", cells=" + touchTableAccessDelegate.allTouchCells() +
                 '}';
     }
 }

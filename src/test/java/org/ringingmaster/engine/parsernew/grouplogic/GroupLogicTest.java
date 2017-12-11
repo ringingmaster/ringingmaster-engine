@@ -19,6 +19,7 @@ import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
 import static org.ringingmaster.engine.parsernew.AssertParse.valid;
+import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
 
 public class GroupLogicTest {
 
@@ -28,8 +29,8 @@ public class GroupLogicTest {
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertEquals(0, result.allCells().getRowSize());
-        assertEquals(0, result.allCells().getColumnSize());
+        assertEquals(0, result.allTouchCells().getRowSize());
+        assertEquals(0, result.allTouchCells().getColumnSize());
     }
 
     @Test
@@ -37,107 +38,107 @@ public class GroupLogicTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
 
-        touch.addCharacters(0,0, "CALL_POSITION");
-        touch.addCharacters(1,0, "MAIN_BODY");
-        touch.addCharacters(1,1, "SPLICE");
-        touch.addCharacters(2,0, "abc");// To force the Parse to be replaced
-        touch.addCharacters(2,1, "abc");// To force the Parse to be replaced
+        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
+        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
+        touch.addCharacters(TOUCH_TABLE, 2,0, "abc");// To force the Parse to be replaced
+        touch.addCharacters(TOUCH_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertEquals(3, result.allCells().getRowSize());
-        assertEquals(2, result.allCells().getColumnSize());
-        assertEquals("CALL_POSITION", result.allCells().get(0,0).getCharacters());
-        assertEquals("MAIN_BODY", result.allCells().get(1,0).getCharacters());
-        assertEquals("SPLICE", result.allCells().get(1,1).getCharacters());
+        assertEquals(3, result.allTouchCells().getRowSize());
+        assertEquals(2, result.allTouchCells().getColumnSize());
+        assertEquals("CALL_POSITION", result.allTouchCells().get(0,0).getCharacters());
+        assertEquals("MAIN_BODY", result.allTouchCells().get(1,0).getCharacters());
+        assertEquals("SPLICE", result.allTouchCells().get(1,1).getCharacters());
     }
 
     @Test
     public void parsesNoContentPairOfGroupInSingleCell() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, "()");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "()");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE));
     }
 
     @Test
     public void groupInSingleCellInWrongOrderInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, ")(");
+        touch.addCharacters(TOUCH_TABLE, 0,0, ")(");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), invalid(1, GROUP_CLOSE), invalid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_CLOSE), invalid(1, GROUP_OPEN));
     }
 
     @Test
     public void groupOnMultiLineCellInWrongOrderInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, ")");
-        touch.addCharacters(1,0, "(");
+        touch.addCharacters(TOUCH_TABLE, 0,0, ")");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "(");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
-        assertParse(result.allCells().get(0,0), invalid(1, GROUP_CLOSE));
-        assertParse(result.allCells().get(1,0), invalid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(1,0), invalid(1, GROUP_OPEN));
     }
 
     @Test
     public void nestedGroupInSingleCellIsValid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, "(())");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "(())");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE));
     }
 
     @Test
     public void nestedGroupOnMultiLineIsValid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, "(");
-        touch.addCharacters(0,1, "(");
-        touch.addCharacters(1,0, "))");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "(");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "(");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "))");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(1, GROUP_OPEN));
-        assertParse(result.allCells().get(0,1), valid(1, GROUP_OPEN));
-        assertParse(result.allCells().get(1,0), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(0,1), valid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(1,0), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE));
     }
 
 
     @Test
     public void additionalOpeningGroupInSingleCellIsInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, "(()");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "(()");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), invalid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE));
     }
 
     @Test
     public void additionalOpeningGroupInMultiCellIsInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(0,0, "(");
-        touch.addCharacters(0,1, "(");
-        touch.addCharacters(1,0, ")");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "(");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "(");
+        touch.addCharacters(TOUCH_TABLE, 1,0, ")");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), invalid(1, GROUP_OPEN));
-        assertParse(result.allCells().get(0,1), valid(1, GROUP_OPEN));
-        assertParse(result.allCells().get(1,0), valid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(0,1), valid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(1,0), valid(1, GROUP_CLOSE));
     }
 
 
@@ -145,37 +146,37 @@ public class GroupLogicTest {
     public void nestedGroupWithSplicedAssignsInvaliditityToCorrect() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
-        touch.addCharacters(0,0, "(");
-        touch.addCharacters(0,1, "(");
-        touch.addCharacters(1,0, "-");
-        touch.addCharacters(1,1, ")");
-        touch.addCharacters(2,0, ")");
-        touch.addCharacters(2,1, ")");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "(");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "(");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "-");
+        touch.addCharacters(TOUCH_TABLE, 1,1, ")");
+        touch.addCharacters(TOUCH_TABLE, 2,0, ")");
+        touch.addCharacters(TOUCH_TABLE, 2,1, ")");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(1, GROUP_OPEN));
-        assertParse(result.allCells().get(0,1), valid(1, GROUP_OPEN));
-        assertParse(result.allCells().get(1,0), valid(1, CALL));
-        assertParse(result.allCells().get(1,1), valid(1, GROUP_CLOSE));
-        assertParse(result.allCells().get(2,0), valid(1, GROUP_CLOSE));
-        assertParse(result.allCells().get(2,1), invalid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(0,1), valid(1, GROUP_OPEN));
+        assertParse(result.allTouchCells().get(1,0), valid(1, CALL));
+        assertParse(result.allTouchCells().get(1,1), valid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(2,0), valid(1, GROUP_CLOSE));
+        assertParse(result.allTouchCells().get(2,1), invalid(1, GROUP_CLOSE));
     }
 
     @Test
     public void groupsWithinCourseBasedInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-        touch.addCharacters(0,0, "(");
-        touch.addCharacters(0,1, ")");
-        touch.addCharacters(1,0, "-");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "(");
+        touch.addCharacters(TOUCH_TABLE, 0,1, ")");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "-");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new GroupLogic().parse(parse);
 
-        assertParse(result.allCells().get(0,0), unparsed());
-        assertParse(result.allCells().get(0,1), unparsed());
+        assertParse(result.allTouchCells().get(0,0), unparsed());
+        assertParse(result.allTouchCells().get(0,1), unparsed());
     }
 
     private NotationBody buildPlainBobMinor() {

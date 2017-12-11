@@ -3,18 +3,20 @@ package org.ringingmaster.engine.touch.compiler.impl;
 import com.google.common.collect.Lists;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.NotThreadSafe;
+import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.container.TouchElement;
 import org.ringingmaster.engine.touch.container.TouchWord;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
 import org.ringingmaster.engine.touch.newcontainer.variance.impl.NullVariance;
-import org.ringingmaster.engine.parser.ParseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -159,15 +161,15 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 		currentVariance = NullVariance.INSTANCE;
 	}
 
-	private void insertDefinition(TouchWord word, int columnIndex) {
-		log.debug("Start definition [{}]", word);
-		String elementsAsString = word.getElementsAsString();
-		Optional<DefinitionCell> definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
-		if (definitionByShorthand.isPresent()) {
-			generateCallInstancesForCell(definitionByShorthand.get(), columnIndex);
-		}
-		log.debug("Finish definition [{}]",word);
-	}
+//	private void insertDefinition(TouchWord word, int columnIndex) {
+//		log.debug("Start definition [{}]", word);
+//		String elementsAsString = word.getElementsAsString();
+//		Optional<DefinitionCell> definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
+//		if (definitionByShorthand.isPresent()) {
+//			generateCallInstancesForCell(definitionByShorthand.get(), columnIndex);
+//		}
+//		log.debug("Finish definition [{}]",word);
+//	}
 
 
 	private class CallGroup extends ArrayList<DC> {

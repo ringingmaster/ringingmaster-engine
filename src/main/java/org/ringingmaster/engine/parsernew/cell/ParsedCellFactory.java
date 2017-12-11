@@ -3,7 +3,6 @@ package org.ringingmaster.engine.parsernew.cell;
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.Optional;
 import java.util.Set;
@@ -19,11 +18,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class ParsedCellFactory {
 
     public static ParsedCell buildParsedCell(Cell cell, Set<Section> sections) {
-        Set<Group> groups = createGroupsToMatchSections(sections);
-        return buildParsedCell(cell, sections, groups);
-    }
-
-    public static ParsedDefinitionCell buildParsedCell(DefinitionCell cell, Set<Section> sections) {
         Set<Group> groups = createGroupsToMatchSections(sections);
         return buildParsedCell(cell, sections, groups);
     }
@@ -47,18 +41,6 @@ public class ParsedCellFactory {
         return new DefaultParsedCell(parentCell, sectionByElementIndex, groupByElementIndex, allSections, allGroups);
     }
 
-    public static ParsedDefinitionCell buildParsedCell(DefinitionCell parentCell, Set<Section> sections, Set<Group> groups) {
-        Section[] sectionByElementIndex = new Section[parentCell.getElementSize()];
-        createSectionIndex(sections, sectionByElementIndex);
-
-        Group[] groupByElementIndex = new Group[parentCell.getElementSize()];
-        createGroupIndex(groups, groupByElementIndex);
-
-        ImmutableList<Section> allSections = ImmutableList.sortedCopyOf(Section.BY_START_POSITION, sections);
-        ImmutableList<Group> allGroups = ImmutableList.sortedCopyOf(Group.BY_START_POSITION, groups);
-
-        return new DefaultParsedDefinitionCell(parentCell, sectionByElementIndex, groupByElementIndex, allSections, allGroups);
-    }
 
     private static void createSectionIndex(Set<Section> sections, Section[] result) {
         for (Section section : sections) {

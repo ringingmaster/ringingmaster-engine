@@ -13,12 +13,13 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.EmptyCell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.Optional;
 
 import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE;
 import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_ROWS_INITIAL_VALUE;
+import static org.ringingmaster.engine.touch.newcontainer.TableType.DEFINITION_TABLE;
+import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
 
 
 /**
@@ -40,7 +41,7 @@ class TouchBuilder {
     private Optional<PSet<NotationBody>> allNotations = Optional.empty();
     private Optional<Optional<NotationBody>> nonSplicedActiveNotation = Optional.empty();
     private Optional<String> plainLeadToken = Optional.empty();
-    private Optional<PSet<DefinitionCell>> definitions = Optional.empty();
+    private Optional<ImmutableArrayTable<Cell>> definitionCells = Optional.empty();
 
     private Optional<MethodRow> startChange = Optional.empty();
     private Optional<Integer> startAtRow = Optional.empty();
@@ -53,7 +54,7 @@ class TouchBuilder {
     private Optional<Integer> terminationMaxCircularity = Optional.empty();
     private Optional<Optional<MethodRow>> terminationChange = Optional.empty();
 
-    private Optional<ImmutableArrayTable<Cell>> cells  = Optional.empty();
+    private Optional<ImmutableArrayTable<Cell>> touchCells = Optional.empty();
 
 
     // only useable in this package
@@ -75,7 +76,7 @@ class TouchBuilder {
         setAllNotations(HashTreePSet.empty());
         setNonSplicedActiveNotation(Optional.empty());
         setPlainLeadToken("p");
-        setDefinitions(HashTreePSet.empty());
+        setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(EmptyCell::new));
 
         setStartChange(MethodBuilder.buildRoundsRow(numberOfBells.get()));
         setStartAtRow(0);
@@ -88,7 +89,7 @@ class TouchBuilder {
         setTerminationMaxCircularity(TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE);
         setTerminationChange(Optional.empty());
 
-        setCells(new TableBackedImmutableArrayTable<>(EmptyCell::new));
+        setCells(TOUCH_TABLE, new TableBackedImmutableArrayTable<>(EmptyCell::new));
 
         return this;
     }
@@ -138,11 +139,6 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setDefinitions(PSet<DefinitionCell> touchDefinitionCells) {
-        this.definitions = Optional.of(touchDefinitionCells);
-        return this;
-    }
-
     TouchBuilder setStartChange(MethodRow startChange) {
         this.startChange = Optional.of(startChange);
         return this;
@@ -188,8 +184,17 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setCells(ImmutableArrayTable<Cell> cells) {
-        this.cells = Optional.of(cells);
+    TouchBuilder setCells(TableType tableType, ImmutableArrayTable<Cell> cells) {
+        switch (tableType) {
+
+            case TOUCH_TABLE:
+                this.touchCells = Optional.of(cells);
+                break;
+            case DEFINITION_TABLE:
+                this.definitionCells = Optional.of(cells);
+                break;
+        }
+
         return this;
     }
 
@@ -206,7 +211,7 @@ class TouchBuilder {
                 allNotations.orElseGet(()->prototype.getAllNotations()),
                 nonSplicedActiveNotation.orElseGet(()->prototype.getNonSplicedActiveNotation()),
                 plainLeadToken.orElseGet(()->prototype.getPlainLeadToken()),
-                definitions.orElseGet(()->prototype.getAllDefinitions()),
+                definitionCells.orElseGet(()->prototype.allDefinitionCells()),
 
                 startChange.orElseGet(()->prototype.getStartChange()),
                 startAtRow.orElseGet(()->prototype.getStartAtRow()),
@@ -219,7 +224,7 @@ class TouchBuilder {
                 terminationMaxCircularity.orElseGet(()->prototype.getTerminationMaxCircularity()),
                 terminationChange.orElseGet(()->prototype.getTerminationChange()),
 
-                cells.orElseGet(()->prototype.allCells())
+                touchCells.orElseGet(()->prototype.allTouchCells())
         );
     }
 
@@ -235,7 +240,7 @@ class TouchBuilder {
                 ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +
                 ", plainLeadToken=" + plainLeadToken +
-                ", definitions=" + definitions +
+                ", definitionCells=" + definitionCells +
                 ", startChange=" + startChange +
                 ", startAtRow=" + startAtRow +
                 ", startStroke=" + startStroke +
@@ -245,7 +250,7 @@ class TouchBuilder {
                 ", terminationMaxParts=" + terminationMaxParts +
                 ", terminationMaxCircularity=" + terminationMaxCircularity +
                 ", terminationChange=" + terminationChange +
-                ", cells=" + cells +
+                ", touchCells=" + touchCells +
                 '}';
     }
 }

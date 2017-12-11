@@ -4,10 +4,8 @@ import net.jcip.annotations.Immutable;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedCellFactory;
-import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 import org.ringingmaster.engine.parsernew.cell.Section;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -32,11 +30,6 @@ class CellLexer {
         }
         return o1.compareTo(o2);
     };
-
-    ParsedDefinitionCell lexCell(DefinitionCell cell, Map<String, ParseType> parseMap) {
-        Set<Section> sections = calculateSections(cell, parseMap);
-        return ParsedCellFactory.buildParsedCell(cell, sections);
-    }
 
     ParsedCell lexCell(Cell cell, Map<String, ParseType> parseMap) {
         Set<Section> sections = calculateSections(cell, parseMap);

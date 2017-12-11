@@ -16,6 +16,7 @@ import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
 import static org.ringingmaster.engine.parsernew.AssertParse.valid;
+import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
 
 public class DefinitionInSplicedOrMainTest {
 
@@ -25,8 +26,8 @@ public class DefinitionInSplicedOrMainTest {
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new DefinitionInSplicedOrMain().parse(parse);
 
-        assertEquals(0, result.allCells().getRowSize());
-        assertEquals(0, result.allCells().getColumnSize());
+        assertEquals(0, result.allTouchCells().getRowSize());
+        assertEquals(0, result.allTouchCells().getColumnSize());
     }
 
     @Test
@@ -34,63 +35,63 @@ public class DefinitionInSplicedOrMainTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
 
-        touch.addCharacters(0,0, "CALL_POSITION");
-        touch.addCharacters(1,0, "MAIN_BODY");
-        touch.addCharacters(1,1, "SPLICE");
-        touch.addCharacters(2,0, "abc");// To force the Parse to be replaced
-        touch.addCharacters(2,1, "abc");// To force the Parse to be replaced
+        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
+        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
+        touch.addCharacters(TOUCH_TABLE, 2,0, "abc");// To force the Parse to be replaced
+        touch.addCharacters(TOUCH_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new DefinitionInSplicedOrMain().parse(parse);
 
-        assertEquals(3, result.allCells().getRowSize());
-        assertEquals(2, result.allCells().getColumnSize());
-        assertEquals("CALL_POSITION", result.allCells().get(0,0).getCharacters());
-        assertEquals("MAIN_BODY", result.allCells().get(1,0).getCharacters());
-        assertEquals("SPLICE", result.allCells().get(1,1).getCharacters());
+        assertEquals(3, result.allTouchCells().getRowSize());
+        assertEquals(2, result.allTouchCells().getColumnSize());
+        assertEquals("CALL_POSITION", result.allTouchCells().get(0,0).getCharacters());
+        assertEquals("MAIN_BODY", result.allTouchCells().get(1,0).getCharacters());
+        assertEquals("SPLICE", result.allTouchCells().get(1,1).getCharacters());
     }
 
     @Test
     public void differentDefinitionsValidInMainAndSpliced() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(0,0, "abc");
-        touch.addCharacters(0,1, "xyz");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "abc");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "xyz");
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new DefinitionInSplicedOrMain().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(3, DEFINITION));
-        assertParse(result.allCells().get(0,1), valid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(0,0), valid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(0,1), valid(3, DEFINITION));
     }
 
     @Test
     public void usingSameDefinitionInMainAndSplicedSetsBothInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(0,0, "abc");
-        touch.addCharacters(1,0, "xyz");
-        touch.addCharacters(0,1, "abc");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "abc");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "xyz");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "abc");
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new DefinitionInSplicedOrMain().parse(parse);
 
-        assertParse(result.allCells().get(0,0), invalid(3, DEFINITION));
-        assertParse(result.allCells().get(0,1), invalid(3, DEFINITION));
-        assertParse(result.allCells().get(1,0), valid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(0,0), invalid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(0,1), invalid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(1,0), valid(3, DEFINITION));
     }
 
     @Test
     public void usingSameDefinitionInEitherMainOrSplicedIsValid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(0,0, "abc");
-        touch.addCharacters(1,0, "abc");
-        touch.addCharacters(0,1, "xyz");
-        touch.addCharacters(1,1, "xyz");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "abc");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "abc");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "xyz");
+        touch.addCharacters(TOUCH_TABLE, 1,1, "xyz");
 
         Parse parse = new AssignParseType().parse(touch.get());
         Parse result = new DefinitionInSplicedOrMain().parse(parse);
 
-        assertParse(result.allCells().get(0,0), valid(3, DEFINITION));
-        assertParse(result.allCells().get(0,1), valid(3, DEFINITION));
-        assertParse(result.allCells().get(1,0), valid(3, DEFINITION));
-        assertParse(result.allCells().get(1,1), valid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(0,0), valid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(0,1), valid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(1,0), valid(3, DEFINITION));
+        assertParse(result.allTouchCells().get(1,1), valid(3, DEFINITION));
     }
 
     private NotationBody buildPlainBobMinor() {

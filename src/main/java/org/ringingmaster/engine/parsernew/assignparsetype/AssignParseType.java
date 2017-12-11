@@ -12,16 +12,12 @@ import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parsernew.Parse;
 import org.ringingmaster.engine.parsernew.ParseBuilder;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
-import org.ringingmaster.engine.parsernew.cell.ParsedDefinitionCell;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
-import org.ringingmaster.engine.touch.newcontainer.definition.DefinitionCell;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Parses all cells and assigns a parse type where possible
@@ -34,18 +30,18 @@ public class AssignParseType {
     private final CellLexer lexer = new CellLexer();
 
     public Parse parse(Touch touch) {
-        HashBasedTable<Integer, Integer, ParsedCell> parsedCells = HashBasedTable.create();
-        parseCallPositionArea(touch, parsedCells);
-        parseMainBodyArea(touch, parsedCells);
-        parseSpliceArea(touch, parsedCells);
+        HashBasedTable<Integer, Integer, ParsedCell> parsedTouchCells = HashBasedTable.create();
+        parseCallPositionArea(touch, parsedTouchCells);
+        parseMainBodyArea(touch, parsedTouchCells);
+        parseSpliceArea(touch, parsedTouchCells);
 
-        List<ParsedDefinitionCell> parsedDefinitionCells =
-                parseDefinitions(touch, parsedCells);
+//        List<ParsedDefinitionCell> parsedDefinitionCells =
+//                parseDefinitions(touch, parsedCells);
 
         return new ParseBuilder()
                 .prototypeOf(touch)
-                .setParsedCells(parsedCells)
-                .setDefinitions(parsedDefinitionCells)
+                .setTouchTableCells(parsedTouchCells)
+                .setDefinitionTableCells(null)
                 .build();
     }
 
@@ -86,19 +82,19 @@ public class AssignParseType {
         parse(parsedCells, parseTokenMappings, touch.splicedCells());
     }
 
-    private List<ParsedDefinitionCell> parseDefinitions(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        Map<String, ParseType> parseTokenMappings = new HashMap<>();
-        addCallTokens(touch, parseTokenMappings);
-        addPlainLeadToken(touch, parseTokenMappings);
-//TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parseTokenMappings);
-        addGroupTokens(parseTokenMappings);
-//TODO should we allow embedded definitions in definitions?	probably, but will need some good tests. addDefinitionTokens(touch, parseTokenMappings);
-        addWhitespaceTokens(parseTokenMappings);
-
-        return touch.getAllDefinitions().stream()
-                .map((definitionCell) -> lexer.lexCell(definitionCell, parseTokenMappings))
-                .collect(Collectors.toList());
-    }
+//    private List<ParsedDefinitionCell> parseDefinitions(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
+//        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+//        addCallTokens(touch, parseTokenMappings);
+//        addPlainLeadToken(touch, parseTokenMappings);
+////TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parseTokenMappings);
+//        addGroupTokens(parseTokenMappings);
+////TODO should we allow embedded definitions in definitions?	probably, but will need some good tests. addDefinitionTokens(touch, parseTokenMappings);
+//        addWhitespaceTokens(parseTokenMappings);
+//
+//        return touch.allDefinitions().stream()
+//                .map((definitionCell) -> lexer.lexCell(definitionCell, parseTokenMappings))
+//                .collect(Collectors.toList());
+//    }
 
     private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Map<String, ParseType> parseTokenMappings, ImmutableArrayTable<Cell> cells) {
         for (BackingTableLocationAndValue<Cell> cellAndLocation : cells) {
@@ -143,8 +139,9 @@ public class AssignParseType {
     }
 
     private void addDefinitionTokens(Touch touch, Map<String, ParseType> parsings) {
-        for ( DefinitionCell definitionCell : touch.getAllDefinitions()) {
-            parsings.put(definitionCell.getShorthand(), ParseType.DEFINITION);
+        for (BackingTableLocationAndValue<Cell> cellBackingTableLocationAndValue : touch.allDefinitionCells()) {
+            final Cell cell = cellBackingTableLocationAndValue.getValue();
+            parsings.put(cell.getCharacters(), ParseType.DEFINITION);
         }
     }
 

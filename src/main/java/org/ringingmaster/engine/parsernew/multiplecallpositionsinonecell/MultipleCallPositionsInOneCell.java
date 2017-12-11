@@ -23,13 +23,13 @@ public class MultipleCallPositionsInOneCell {
 
     public Parse parse(Parse parse) {
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                HashBasedTable.create(parse.allCells().getBackingTable());
+                HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
         parseCallPositionArea(parse, resultCells);
 
         return new ParseBuilder()
                 .prototypeOf(parse)
-                .setParsedCells(resultCells)
+                .setTouchTableCells(resultCells)
                 .build();
     }
 

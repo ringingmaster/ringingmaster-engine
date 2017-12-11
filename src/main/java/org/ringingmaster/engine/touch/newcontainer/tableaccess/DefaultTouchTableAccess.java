@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.touch.newcontainer.cellmanipulation;
+package org.ringingmaster.engine.touch.newcontainer.tableaccess;
 
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
@@ -14,25 +14,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author stevelake
  */
 @Immutable
-public class CellManipulation<T extends Cell> {
+public class DefaultTouchTableAccess<T extends Cell> implements TouchTableAccess<T> {
 
     private final ImmutableArrayTable<T> cells;
     private final CheckingType checkingType;
     private final boolean isSpliced;
 
-    public CellManipulation(ImmutableArrayTable<T> cells, CheckingType checkingType, boolean isSpliced) {
+    public DefaultTouchTableAccess(ImmutableArrayTable<T> cells, CheckingType checkingType, boolean isSpliced) {
         this.cells = checkNotNull(cells);
         this.checkingType = checkNotNull(checkingType);
         this.isSpliced = isSpliced;
     }
 
-    public ImmutableArrayTable<T> allCells() {
+    @Override
+    public ImmutableArrayTable<T> allTouchCells() {
         return cells;
     }
 
     // Rule1 : Call position takes precedence over main body when not enough rows.
     // Rule2 : Main Body takes precedence over splice when not enough columns.
 
+    @Override
     public ImmutableArrayTable<T> mainBodyCells() { //TODO pre-calculate???
         if (cells.getColumnSize() == 0 || cells.getRowSize() == 0 ) {
             return cells.subTable(0, 0, 0, 0);
@@ -54,6 +56,7 @@ public class CellManipulation<T extends Cell> {
                 cells.getColumnSize() - (isSpliced ? 1:0));
     }
 
+    @Override
     public ImmutableArrayTable<T> callPositionCells() { //TODO pre-calculate???
         if (checkingType != CheckingType.COURSE_BASED) {
             return cells.subTable(0, 0, 0, 0);
@@ -67,6 +70,7 @@ public class CellManipulation<T extends Cell> {
         return cells.subTable(0, 1, 0, cells.getColumnSize() - (isSpliced ? 1:0));
     }
 
+    @Override
     public ImmutableArrayTable<T> splicedCells() { //TODO pre-calculate???
         if (!isSpliced) {
             return cells.subTable(0, 0, 0, 0);
@@ -86,7 +90,7 @@ public class CellManipulation<T extends Cell> {
 
     @Override
     public String toString() {
-        return "CellManipulation{" +
+        return "DefaultTouchTableAccess{" +
                 "cells=" + cells +
                 ", checkingType=" + checkingType +
                 ", isSpliced=" + isSpliced +
