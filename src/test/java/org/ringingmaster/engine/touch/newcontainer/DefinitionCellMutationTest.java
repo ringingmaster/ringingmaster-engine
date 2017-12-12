@@ -103,6 +103,14 @@ public class DefinitionCellMutationTest {
         assertTrue(touch.get().findDefinitionByShorthand("C").isPresent());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void addingCharactersBeyondTwoColumnsThrows()  {
+        ObservableTouch touch = new ObservableTouch();
+        touch.addCharacters(DEFINITION_TABLE, 0,0,"A");
+        touch.addCharacters(DEFINITION_TABLE, 0,1,"B");
+        touch.addCharacters(DEFINITION_TABLE, 0,2,"C");
+    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void addingDuplicateDefinitionThrows() {

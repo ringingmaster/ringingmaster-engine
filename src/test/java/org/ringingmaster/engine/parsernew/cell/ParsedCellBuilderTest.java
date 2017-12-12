@@ -56,7 +56,6 @@ public class ParsedCellBuilderTest {
                 .setInvalid(parsedCell.getGroupAtElementIndex(3).get(), "MESSAGE3")
                 .setInvalid(parsedCell.getGroupAtElementIndex(2).get(), "MESSAGE2")
                 .setInvalid(parsedCell.getGroupAtElementIndex(0).get(), "MESSAGE1")
-                .setInvalid(parsedCell.getGroupAtElementIndex(6).get(), "MESSAGE1")
                 .build();
 
         assertFalse(builtCell.getGroupAtElementIndex(0).get().isValid());

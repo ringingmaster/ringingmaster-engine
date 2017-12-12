@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.parsernew;
 
 import com.google.common.collect.HashBasedTable;
+import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.parsernew.cell.EmptyParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
@@ -20,24 +21,27 @@ public class ParseBuilder {
 
     private Optional<Touch> prototypeTouch = Optional.empty();
     private Optional<Parse> prototypeParse = Optional.empty();
-    private HashBasedTable<Integer, Integer, ParsedCell> touchCells;
-    private HashBasedTable<Integer, Integer, ParsedCell> definitionCells;
+    private Optional<HashBasedTable<Integer, Integer, ParsedCell>> touchCells = Optional.empty();;
+    private Optional<HashBasedTable<Integer, Integer, ParsedCell>> definitionCells = Optional.empty();;
 
     public Parse build() {
-        checkNotNull(touchCells);
-        checkNotNull(definitionCells);
 
         if (prototypeTouch.isPresent()) {
+            checkState(touchCells.isPresent());
+            checkState(definitionCells.isPresent());
+
             return new DefaultParse(
                     prototypeTouch.get(),
-                    new TableBackedImmutableArrayTable<>(touchCells, () -> EmptyParsedCell.INSTANCE),
-                    new TableBackedImmutableArrayTable<>(definitionCells, () -> EmptyParsedCell.INSTANCE));
+                    new TableBackedImmutableArrayTable<>(touchCells.get(), () -> EmptyParsedCell.INSTANCE),
+                    new TableBackedImmutableArrayTable<>(definitionCells.get(), () -> EmptyParsedCell.INSTANCE));
         }
         else if (prototypeParse.isPresent()) {
             return new DefaultParse(
                     prototypeParse.get().getTouch(),
-                    new TableBackedImmutableArrayTable<>(touchCells, () -> EmptyParsedCell.INSTANCE),
-                    new TableBackedImmutableArrayTable<>(definitionCells, () -> EmptyParsedCell.INSTANCE));
+                    touchCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
+                            .orElse(prototypeParse.get().allTouchCells()),
+                    definitionCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
+                            .orElse(prototypeParse.get().allDefinitionCells()));
         }
         else {
             throw new IllegalStateException();
@@ -57,12 +61,12 @@ public class ParseBuilder {
     }
 
     public ParseBuilder setTouchTableCells(HashBasedTable<Integer, Integer, ParsedCell> touchCells) {
-        this.touchCells = touchCells;
+        this.touchCells = Optional.of(checkNotNull(touchCells));
         return this;
     }
 
     public ParseBuilder setDefinitionTableCells(HashBasedTable<Integer, Integer, ParsedCell> definitionCells) {
-        this.definitionCells = definitionCells;
+        this.definitionCells = Optional.of(checkNotNull(definitionCells));
         return this;
     }
 

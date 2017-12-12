@@ -25,9 +25,7 @@ public class DefaultDefinitionTableAccess<T extends Cell> implements DefinitionT
 
     public DefaultDefinitionTableAccess(ImmutableArrayTable<T> cells) {
         this.cells = checkNotNull(cells);
-        if (cells.getRowSize() > 0) {
-            checkState(cells.getColumnSize() <= 2);
-        }
+        checkState(cells.getColumnSize() <= 2, "Maximum two columns are allowed in definition table.");
 
         final Map<String, ImmutableArrayTable<T>> byShorthand = new HashMap<>();
         for (int rowIndex=0;rowIndex<cells.getRowSize();rowIndex++) {
@@ -45,7 +43,11 @@ public class DefaultDefinitionTableAccess<T extends Cell> implements DefinitionT
 
     @Override
     public ImmutableArrayTable<T> allShorthands() {
-        return cells.subTable(0, cells.getColumnSize(), SHORTHAND_COLUMN, SHORTHAND_COLUMN);
+        if (cells.getColumnSize() == 0 || cells.getRowSize() == 0 ) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+
+        return cells.subTable(0, cells.getRowSize(), SHORTHAND_COLUMN, SHORTHAND_COLUMN + 1);
     }
 
     @Override

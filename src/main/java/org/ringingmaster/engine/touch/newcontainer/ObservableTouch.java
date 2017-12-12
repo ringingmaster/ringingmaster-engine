@@ -648,9 +648,8 @@ public class ObservableTouch {
         checkNotNull(tableType);
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
-
         if (tableType == DEFINITION_TABLE) {
-            checkArgument(rowIndex < 2);
+            checkArgument(columnIndex < 2, "Maximum of two columns allowed in definition table.");
         }
 
         ImmutableArrayTable<Cell> cells = getCells(tableType);
@@ -672,10 +671,8 @@ public class ObservableTouch {
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
         checkArgument(cellInsertIndex >= 0 );
-
-
         if (tableType == DEFINITION_TABLE) {
-            checkArgument(rowIndex < 2);
+            checkArgument(columnIndex < 2, "Maximum of two columns allowed in definition table.");
         }
 
         ImmutableArrayTable<Cell> cells = getCells(tableType);

@@ -13,8 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertFalse;
-import static org.ringingmaster.engine.parser.ParseType.*;
-import static org.ringingmaster.engine.parsernew.AssertParse.*;
+import static org.ringingmaster.engine.parser.ParseType.CALL;
+import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
+import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
+import static org.ringingmaster.engine.parser.ParseType.GROUP_CLOSE;
+import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN;
+import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
+import static org.ringingmaster.engine.parser.ParseType.SPLICE;
+import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
+import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
+import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.valid;
 import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType.COURSE_BASED;
 
@@ -115,16 +124,16 @@ public class AssignParseTypeTest {
     }
 
     @Test
-    public void correctlyIdentifiesGroup() {
+    public void correctlyIdentifiesGroupOpenAndClose() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "(-)s");
 
         Parse parse = new AssignParseType().parse(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(3, GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
+        assertParse(parse.allTouchCells().get(0, 0), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
     }
 
     //TODO need lots of these type of tests for all the different combinations.
     @Test
-    public void mainBodyWithCallingPOsitionIsIgnored() {
+    public void mainBodyWithCallingPositionIsIgnored() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "A");
         touch.addCharacters(TOUCH_TABLE, 1, 0, "W");
         Parse parse = new AssignParseType().parse(touch.get());
@@ -132,7 +141,7 @@ public class AssignParseTypeTest {
 
         ParsedCell parsedCell = result.allTouchCells().get(1, 0);
         assertFalse(parsedCell.getSectionAtElementIndex(0).isPresent());
-        assertFalse(parsedCell.getGroupAtElementIndex(1).isPresent());
+        assertFalse(parsedCell.getGroupAtElementIndex(0).isPresent());
     }
 
     private NotationBody buildPlainBobMinor() {

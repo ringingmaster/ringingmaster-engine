@@ -35,13 +35,15 @@ public class AssignParseType {
         parseMainBodyArea(touch, parsedTouchCells);
         parseSpliceArea(touch, parsedTouchCells);
 
+        HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells = HashBasedTable.create();
+
 //        List<ParsedDefinitionCell> parsedDefinitionCells =
 //                parseDefinitions(touch, parsedCells);
 
         return new ParseBuilder()
                 .prototypeOf(touch)
                 .setTouchTableCells(parsedTouchCells)
-                .setDefinitionTableCells(null)
+                .setDefinitionTableCells(parsedDefinitionCells)
                 .build();
     }
 
@@ -139,7 +141,7 @@ public class AssignParseType {
     }
 
     private void addDefinitionTokens(Touch touch, Map<String, ParseType> parsings) {
-        for (BackingTableLocationAndValue<Cell> cellBackingTableLocationAndValue : touch.allDefinitionCells()) {
+        for (BackingTableLocationAndValue<Cell> cellBackingTableLocationAndValue : touch.allShorthands()) {
             final Cell cell = cellBackingTableLocationAndValue.getValue();
             parsings.put(cell.getCharacters(), ParseType.DEFINITION);
         }
