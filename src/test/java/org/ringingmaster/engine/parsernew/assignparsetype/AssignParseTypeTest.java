@@ -26,6 +26,8 @@ import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
 import static org.ringingmaster.engine.parsernew.AssertParse.valid;
 import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
 /**
  * TODO comments???
@@ -60,7 +62,7 @@ public class AssignParseTypeTest {
     @Test
     public void correctlyParsesSpliceToken() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "pp");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "-p-");
+        touch.addCharacters(TOUCH_TABLE, 0, 1, "-P-");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().parse(touch.get());
@@ -99,7 +101,7 @@ public class AssignParseTypeTest {
     public void correctlyParsesDefinitionTokenInSplice() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-");
         touch.setSpliced(true);
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "pdef1p");
+        touch.addCharacters(TOUCH_TABLE, 0, 1, "Pdef1P");
 
         Parse parse = new AssignParseType().parse(touch.get());
         assertParse(parse.allTouchCells().get(0, 1), valid(SPLICE), valid(4, DEFINITION), valid(SPLICE));
@@ -131,6 +133,65 @@ public class AssignParseTypeTest {
         assertParse(parse.allTouchCells().get(0, 0), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
     }
 
+    @Test
+    public void definitionShorthandsParsedAsDefinitions() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), null);
+        touch.addDefinition("def2","s");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, SHORTHAND_COLUMN), valid(4, DEFINITION));
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0, SHORTHAND_COLUMN), valid(4, DEFINITION));
+    }
+
+    @Test
+    public void unusedDefinitionParsedAsMainBody() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), null);
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
+    }
+
+    @Test
+    public void definitionUsedInMainBodyAreaParsedAsMainBody() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "def1 def2");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
+    }
+
+    @Test
+    public void definitionUsedInSpiceAreaParsedAsSpice() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "s");
+        touch.addCharacters(TOUCH_TABLE, 0,1,"def1 def2");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), valid(SPLICE));
+    }
+
+    @Test
+    public void definitionUsedInMainAndSpiceAreaParsedAsMainBody() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "def1");
+        touch.addCharacters(TOUCH_TABLE, 0,1,"def1");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
+    }
+
+    @Test
+    public void embeddedDefinitionBothInMainBodyIsDefinition() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "def1");
+        touch.addDefinition("def2", "-def3p");
+        touch.addDefinition("def3", "def2");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(4, DEFINITION), valid(PLAIN_LEAD));
+        assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
+    }
+
+    //need a parser to check for embedded definitions being of same type
+
     //TODO need lots of these type of tests for all the different combinations.
     @Test
     public void mainBodyWithCallingPositionIsIgnored() {
@@ -154,18 +215,20 @@ public class AssignParseTypeTest {
                 .addCallInitiationRow(7)
                 .addMethodCallingPosition("W", 7, 1)
                 .addMethodCallingPosition("H", 7, 2)
-                .setSpliceIdentifier("p")
+                .setSpliceIdentifier("P")
                 .build();
     }
 
     private ObservableTouch buildAndParseSingleCellTouch(NotationBody notationBody, String characters) {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
-        touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
+        if (characters != null) {
+            touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
+        }
         touch.addNotation(notationBody);
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
-        touch.addDefinition("def1", "-s");
+        touch.addDefinition("def1", "-P");
         return touch;
     }
 

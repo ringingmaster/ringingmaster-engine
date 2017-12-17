@@ -29,7 +29,7 @@ public class AssertParse {
     public static void assertParse(ParsedCell parsedCell, SectionExpected... expecteds) {
         assertNotNull(parsedCell);
 
-        assertEquals(Arrays.stream(expecteds).mapToInt(e -> e.length).sum(), parsedCell.getElementSize());
+        assertEquals("checking length", Arrays.stream(expecteds).mapToInt(e -> e.length).sum(), parsedCell.getElementSize());
 
         int elementIndex = 0;
         for (SectionExpected expected : expecteds) {

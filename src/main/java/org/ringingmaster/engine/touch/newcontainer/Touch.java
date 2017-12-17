@@ -1,10 +1,12 @@
 package org.ringingmaster.engine.touch.newcontainer;
 
 
+import com.google.common.collect.ImmutableSet;
 import net.jcip.annotations.Immutable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
@@ -12,13 +14,15 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
+import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultDefinitionTableAccess;
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultTouchTableAccess;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess;
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.TouchTableAccess;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -40,7 +44,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
     private final PSet<NotationBody> allNotations;
     private final Optional<NotationBody> nonSplicedActiveNotation;
     private final String plainLeadToken;
-    private final DefaultDefinitionTableAccess<Cell> definitionTableCellsDelegate;
+    private final DefinitionTableAccess<Cell> definitionTableCellsDelegate;
 
     private final MethodRow startChange;
     private final int startAtRow;
@@ -53,7 +57,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
     private final int terminationMaxCircularity;
     private final Optional<MethodRow> terminationChange;
 
-    private final DefaultTouchTableAccess<Cell> touchTableAccessDelegate;
+    private final TouchTableAccess<Cell> touchTableAccessDelegate;
 
     public Touch(String title,
                  String author,
@@ -158,8 +162,8 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
     }
 
     @Override
-    public ImmutableArrayTable<Cell> allShorthands() {
-        return definitionTableCellsDelegate.allShorthands();
+    public ImmutableArrayTable<Cell> definitionShorthandCells() {
+        return definitionTableCellsDelegate.definitionShorthandCells();
     }
 
     @Override
@@ -167,6 +171,22 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
         checkNotNull(shorthand);
 
         return definitionTableCellsDelegate.findDefinitionByShorthand(shorthand);
+    }
+
+    @Override
+    public ImmutableArrayTable<Cell> definitionDefinitionCells() {
+        return definitionTableCellsDelegate.definitionShorthandCells();
+    }
+
+
+    public ImmutableSet<String> getAllDefinitionShorthands()  {
+
+        Set<String> shorthands = new HashSet<>();
+        for (BackingTableLocationAndValue<Cell> cell : definitionShorthandCells()) {
+            shorthands.add(cell.getValue().getCharacters().trim());
+        }
+
+        return ImmutableSet.copyOf(shorthands);
     }
 
     public MethodRow getStartChange() {

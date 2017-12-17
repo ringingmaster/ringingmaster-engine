@@ -6,6 +6,8 @@ import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultDefinitionTableAccess;
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultTouchTableAccess;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.touch.newcontainer.tableaccess.TouchTableAccess;
 
 import java.util.Optional;
 
@@ -18,8 +20,8 @@ import java.util.Optional;
 public class DefaultParse implements Parse {
 
     private final Touch touch;
-    private final DefaultTouchTableAccess<ParsedCell> touchTableAccessDelegate;
-    private final DefaultDefinitionTableAccess<ParsedCell> definitionTableAccessDelegate;
+    private final TouchTableAccess<ParsedCell> touchTableAccessDelegate;
+    private final DefinitionTableAccess<ParsedCell> definitionTableAccessDelegate;
 
     DefaultParse(Touch touch, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells) {
         this.touch = touch;
@@ -59,8 +61,13 @@ public class DefaultParse implements Parse {
     }
 
     @Override
-    public ImmutableArrayTable<ParsedCell> allShorthands() {
-        return definitionTableAccessDelegate.allShorthands();
+    public ImmutableArrayTable<ParsedCell> definitionShorthandCells() {
+        return definitionTableAccessDelegate.definitionShorthandCells();
+    }
+
+    @Override
+    public ImmutableArrayTable<ParsedCell> definitionDefinitionCells() {
+        return definitionTableAccessDelegate.definitionDefinitionCells();
     }
 
     @Override

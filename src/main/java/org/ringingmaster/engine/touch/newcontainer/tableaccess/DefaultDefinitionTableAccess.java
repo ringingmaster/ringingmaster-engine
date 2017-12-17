@@ -30,7 +30,7 @@ public class DefaultDefinitionTableAccess<T extends Cell> implements DefinitionT
         final Map<String, ImmutableArrayTable<T>> byShorthand = new HashMap<>();
         for (int rowIndex=0;rowIndex<cells.getRowSize();rowIndex++) {
             final ImmutableArrayTable<T> singleRow = cells.subTable(rowIndex, rowIndex + 1, 0, Math.min(cells.getColumnSize(),2));
-            final String shorthand = singleRow.get(0, SHORTHAND_COLUMN).getCharacters();
+            final String shorthand = singleRow.get(0, SHORTHAND_COLUMN).getCharacters().trim();
             byShorthand.put(shorthand, singleRow);
         }
         this.byShorthand = ImmutableMap.copyOf(byShorthand);
@@ -42,12 +42,21 @@ public class DefaultDefinitionTableAccess<T extends Cell> implements DefinitionT
     }
 
     @Override
-    public ImmutableArrayTable<T> allShorthands() {
-        if (cells.getColumnSize() == 0 || cells.getRowSize() == 0 ) {
+    public ImmutableArrayTable<T> definitionShorthandCells() {
+        if (cells.getColumnSize() < 1 || cells.getRowSize() == 0 ) {
             return cells.subTable(0, 0, 0, 0);
         }
 
         return cells.subTable(0, cells.getRowSize(), SHORTHAND_COLUMN, SHORTHAND_COLUMN + 1);
+    }
+
+    @Override
+    public ImmutableArrayTable<T> definitionDefinitionCells() {
+        if (cells.getColumnSize() < 2 || cells.getRowSize() == 0 ) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+
+        return cells.subTable(0, cells.getRowSize(), DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
     }
 
     @Override

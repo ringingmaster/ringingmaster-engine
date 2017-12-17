@@ -16,6 +16,20 @@ public interface DefinitionTableAccess<T extends Cell> {
     int DEFINITION_COLUMN = 1;
 
     ImmutableArrayTable<T> allDefinitionCells();
-    ImmutableArrayTable<T> allShorthands();
+
+    /**
+     * @return Single column of cells.
+     */
+    ImmutableArrayTable<T> definitionShorthandCells();
+
+    /**
+     * @return Single column of cells.
+     */
+    ImmutableArrayTable<T> definitionDefinitionCells();
+
+    /**
+     * @return whole row. i.e. up to two cells.
+     */
     Optional<ImmutableArrayTable<T>> findDefinitionByShorthand(String shorthand);
+
 }
