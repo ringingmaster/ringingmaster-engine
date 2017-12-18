@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parsernew.definitioninsplicedormain;
+package org.ringingmaster.engine.parsernew.definition;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Sets;

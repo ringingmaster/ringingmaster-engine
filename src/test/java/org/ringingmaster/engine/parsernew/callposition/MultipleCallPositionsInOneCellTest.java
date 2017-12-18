@@ -1,11 +1,11 @@
-package org.ringingmaster.engine.parsernew.multiplecallpositionsinonecell;
+package org.ringingmaster.engine.parsernew.callposition;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parsernew.Parse;
-import org.ringingmaster.engine.parsernew.assignparsetype.AssignParseType;
+import org.ringingmaster.engine.parsernew.assignparse.AssignParseType;
 import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.slf4j.Logger;

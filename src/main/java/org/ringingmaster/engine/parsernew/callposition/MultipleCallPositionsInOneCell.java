@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parsernew.multiplecallpositionsinonecell;
+package org.ringingmaster.engine.parsernew.callposition;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;

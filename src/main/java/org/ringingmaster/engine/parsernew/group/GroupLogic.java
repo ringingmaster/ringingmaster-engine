@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parsernew.grouplogic;
+package org.ringingmaster.engine.parsernew.group;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;

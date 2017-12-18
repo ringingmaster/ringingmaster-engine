@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parsernew.assignparsetype;
+package org.ringingmaster.engine.parsernew.assignparse;
 
 import com.google.common.collect.Maps;
 import org.junit.Test;
