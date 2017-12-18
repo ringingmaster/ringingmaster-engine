@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * Enforces that only one call position is allowed in a cell.
- * Works with CallPosition cells only.
+ * Enforces that a definition is only useable in spliced or main area. When used in both,
+ * both are illegal.
  *
  * @author stevelake
  */
@@ -32,7 +32,7 @@ public class DefinitionInSplicedOrMain {
 
     public Parse parse(Parse parse) {
 
-        // First Pass to find usage of definition
+        // First Pass to find usage of definition shorthands
         Set<String> mainBodyDefinitions = findDefinitionsInUse(parse.mainBodyCells());
         Set<String> splicedDefinitions = findDefinitionsInUse(parse.splicedCells());
 
@@ -48,6 +48,7 @@ public class DefinitionInSplicedOrMain {
 
         markInvalid(parse.mainBodyCells(), invalidDefinitions, resultCells);
         markInvalid(parse.splicedCells(), invalidDefinitions, resultCells);
+        markInvalid(parse.definitionDefinitionCells(), invalidDefinitions, resultCells);
 
         return new ParseBuilder()
                 .prototypeOf(parse)
