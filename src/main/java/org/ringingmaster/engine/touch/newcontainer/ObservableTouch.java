@@ -407,6 +407,7 @@ public class ObservableTouch {
         checkState(shorthand.length() > 0, "shorthand must contain some characters");
 
         // Check duplicate name
+        shorthand = shorthand.trim();
         if (currentTouch.findDefinitionByShorthand(shorthand).isPresent()) {
             throw new IllegalArgumentException("Can't add definition [" + shorthand + "] as it has a duplicate shorthand to existing definition [" + currentTouch.findDefinitionByShorthand(shorthand) + "]");
         }
