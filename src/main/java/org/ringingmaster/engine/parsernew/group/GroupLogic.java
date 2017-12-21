@@ -29,14 +29,18 @@ public class GroupLogic {
 
         // We parse definitions individually. This is so that any grouping in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
-//        TODO for (ParsedDefinitionCell definition : parse.getDefinitions()) {
-//            parseCells(Lists.<ParsedDefinitionCell>newArrayList(definition));
-//        }
+        HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
+                HashBasedTable.create(parse.definitionDefinitionCells().getBackingTable());
+        final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = parse.definitionDefinitionCells();
+        for(int rowIndex = 0; rowIndex < definitionDefinitionCells.getRowSize();rowIndex++) {
+            final ImmutableArrayTable<ParsedCell> cell = definitionDefinitionCells.subTable(rowIndex, rowIndex + 1, 0, 1);
+            parseCells(cell,  definitionTableResult);
+        }
 
         return new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(resultCells)
-//                .setDefinitions()
+                .setDefinitionTableCells(definitionTableResult)
                 .build();
 
     }

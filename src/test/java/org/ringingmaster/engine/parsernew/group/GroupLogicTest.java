@@ -20,6 +20,7 @@ import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
 import static org.ringingmaster.engine.parsernew.AssertParse.valid;
 import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 public class GroupLogicTest {
 
@@ -177,6 +178,16 @@ public class GroupLogicTest {
 
         assertParse(result.allTouchCells().get(0,0), unparsed());
         assertParse(result.allTouchCells().get(0,1), unparsed());
+    }
+
+    @Test
+    public void groupsWithinDefinitionValid() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
+        touch.addDefinition("DEF1", "(-)");
+        Parse parse = new AssignParseType().parse(touch.get());
+        Parse result = new GroupLogic().parse(parse);
+
+        assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE));
     }
 
     private NotationBody buildPlainBobMinor() {
