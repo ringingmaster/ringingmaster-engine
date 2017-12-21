@@ -1,8 +1,9 @@
 package org.ringingmaster.engine.parsernew.definition;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.Immutable;
+import org.pcollections.ConsPStack;
+import org.pcollections.PStack;
 import org.ringingmaster.engine.parsernew.Parse;
 import org.ringingmaster.engine.parsernew.ParseBuilder;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
@@ -15,39 +16,31 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * Marks as invlalid any definitions that are used in both spliced or main area.
- * A dependency is considered part of splice or main when it is directly used, or used transitively.
+ * Marks any participants in a circular dependency as invalid.
  *
  * @author stevelake
  */
 @Immutable
-public class DefinitionInSplicedOrMain {
+public class CircularDefinition {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
 
     // TODO can we get the dependency chain in the error message?
-    private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] should be used in the main body or the splice area, but not both";
-
+    private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] forms part of a circular dependency";
 
     public Parse parse(Parse parse) {
 
         // Step 1: Map out the internal dependencies in the definitions
         Map<String, Set<String>> adjacency = definitionFunctions.buildDefinitionsAdjacencyList(parse);
 
-        // Step 2: Find usage of definition shorthands in both main and spliced and
-        final Set<String> mainBodyDefinitions = new HashSet<>();
-        followDefinitions(mainBodyDefinitions, definitionFunctions.findDefinitionsInUse(parse.mainBodyCells()), adjacency);
-        final Set<String> splicedDefinitions = new HashSet<>();
-        followDefinitions(splicedDefinitions, definitionFunctions.findDefinitionsInUse(parse.splicedCells()), adjacency);
+        final Set<String> definitionsInUse = definitionFunctions.findDefinitionsInUse(parse.mainBodyCells());
 
-        //Step 3: find the problematic definitions
-        Set<String> invalidDefinitions = Sets.intersection(mainBodyDefinitions, splicedDefinitions);
-        if (invalidDefinitions.size() == 0) {
-            return parse;
+        Set<String> invalidDefinitions = new HashSet<>();
+        for (String shorthand : definitionsInUse) {
+            discoverCircularity(invalidDefinitions, adjacency, ConsPStack.singleton(shorthand));
         }
 
-        // Step 4: Mark invalid
         HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
         definitionFunctions.markInvalid(parse.mainBodyCells(), invalidDefinitions, touchTableResult, createErrorMessage);
@@ -57,6 +50,7 @@ public class DefinitionInSplicedOrMain {
                 HashBasedTable.create(parse.definitionDefinitionCells().getBackingTable());
         definitionFunctions.markInvalid(parse.definitionDefinitionCells(), invalidDefinitions, definitionTableResult, createErrorMessage);
 
+
         return new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(touchTableResult)
@@ -64,12 +58,16 @@ public class DefinitionInSplicedOrMain {
                 .build();
     }
 
-    private void followDefinitions(Set<String> results, Set<String> definitionsToFollow, Map<String, Set<String>> adjacency) {
-        for (String definition : definitionsToFollow) {
-            if (!results.contains(definition)) {
-                results.add(definition);
-                final Set<String> dependentDefinition = adjacency.get(definition);
-                followDefinitions(results, dependentDefinition, adjacency);
+    private void discoverCircularity(Set<String> results, Map<String, Set<String>> adjacency, PStack<String> path) {
+        String shorthand = path.get(0);
+        final Set<String> dependencies = adjacency.get(shorthand);
+
+        for (String dependency : dependencies) {
+            if (path.contains(dependency)) {
+                // we are declaring circularity at this point, and delve no further
+                results.addAll(path);
+            } else {
+                discoverCircularity(results, adjacency, path.plus(dependency));
             }
         }
     }

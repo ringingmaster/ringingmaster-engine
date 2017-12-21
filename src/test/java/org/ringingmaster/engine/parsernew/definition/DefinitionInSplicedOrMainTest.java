@@ -110,7 +110,56 @@ public class DefinitionInSplicedOrMainTest {
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
         assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
         assertParse(result.findDefinitionByShorthand("IN_MAIN").get().get(0, DEFINITION_COLUMN), invalid(6, DEFINITION));
+    }
 
+    @Test
+    public void embeddedDefinitionInMainTransitivelyUsedInSplicedInvalid() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        touch.addDefinition("IN_MAIN_1", "IN_MAIN_2");
+        touch.addDefinition("IN_MAIN_2", "SPLICE");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN_1");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        Parse result = new DefinitionInSplicedOrMain().parse(parse);
+
+        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
+        assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("IN_MAIN_2").get().get(0, DEFINITION_COLUMN), invalid(6, DEFINITION));
+    }
+
+    @Test
+    public void embeddedDefinitionInSplicedUsedInMainInvalid() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        touch.addDefinition("IN_SPICE", "CALL");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
+        touch.addCharacters(TOUCH_TABLE, 1,1, "IN_SPICE");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        Parse result = new DefinitionInSplicedOrMain().parse(parse);
+
+        assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
+        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("IN_SPICE").get().get(0, DEFINITION_COLUMN), invalid(4, DEFINITION));
+    }
+
+    @Test
+    public void embeddedDefinitionInSplicedTransitivelyUsedInMainInvalid() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        touch.addDefinition("IN_SPICE_1", "IN_SPICE_2");
+        touch.addDefinition("IN_SPICE_2", "CALL");
+        touch.addCharacters(TOUCH_TABLE, 0, 0, "CALL");
+        touch.addCharacters(TOUCH_TABLE, 0, 1, "SPLICE");
+        touch.addCharacters(TOUCH_TABLE, 1, 1, "IN_SPICE_1");
+
+        Parse parse = new AssignParseType().parse(touch.get());
+        Parse result = new DefinitionInSplicedOrMain().parse(parse);
+
+        assertParse(result.allTouchCells().get(0, 0), invalid(4, DEFINITION));
+        assertParse(result.allTouchCells().get(0, 1), valid(6, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("IN_SPICE_2").get().get(0, DEFINITION_COLUMN), invalid(4, DEFINITION));
     }
 
     private NotationBody buildPlainBobMinor() {
