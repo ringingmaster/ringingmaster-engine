@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.element.Element;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -91,8 +90,9 @@ class DefaultParsedCell implements ParsedCell {
     @Override
     public String toString() {
         return "DefaultParsedCell{" +
-                "sectionByElementIndex=" + Arrays.toString(sectionByElementIndex) +
-                ", groupByElementIndex=" + Arrays.toString(groupByElementIndex) +
+                "cell=" + parentCell +
+                ", allSections=" + allSections +
+                ", allGroups=" + allGroups +
                 '}';
     }
 

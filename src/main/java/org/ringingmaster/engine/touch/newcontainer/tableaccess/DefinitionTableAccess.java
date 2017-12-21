@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.touch.newcontainer.tableaccess;
 
+import com.google.common.collect.ImmutableSet;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 
@@ -31,5 +32,8 @@ public interface DefinitionTableAccess<T extends Cell> {
      * @return whole row. i.e. up to two cells.
      */
     Optional<ImmutableArrayTable<T>> findDefinitionByShorthand(String shorthand);
+
+
+    public ImmutableSet<String> getAllDefinitionShorthands();
 
 }

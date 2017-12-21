@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.parsernew;
 
+import com.google.common.collect.ImmutableSet;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
@@ -73,6 +74,11 @@ public class DefaultParse implements Parse {
     @Override
     public Optional<ImmutableArrayTable<ParsedCell>> findDefinitionByShorthand(String shorthand) {
         return definitionTableAccessDelegate.findDefinitionByShorthand(shorthand);
+    }
+
+    @Override
+    public ImmutableSet<String> getAllDefinitionShorthands() {
+        return definitionTableAccessDelegate.getAllDefinitionShorthands();
     }
 
     @Override

@@ -108,7 +108,7 @@ public class DefinitionInSplicedOrMainTest {
         Parse result = new DefinitionInSplicedOrMain().parse(parse);
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
+        assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
         assertParse(result.findDefinitionByShorthand("IN_MAIN").get().get(0, DEFINITION_COLUMN), invalid(6, DEFINITION));
 
     }

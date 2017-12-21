@@ -6,7 +6,6 @@ import net.jcip.annotations.Immutable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.MethodRow;
@@ -20,9 +19,7 @@ import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultTouchTable
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess;
 import org.ringingmaster.engine.touch.newcontainer.tableaccess.TouchTableAccess;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -180,13 +177,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
 
 
     public ImmutableSet<String> getAllDefinitionShorthands()  {
-
-        Set<String> shorthands = new HashSet<>();
-        for (BackingTableLocationAndValue<Cell> cell : definitionShorthandCells()) {
-            shorthands.add(cell.getValue().getCharacters().trim());
-        }
-
-        return ImmutableSet.copyOf(shorthands);
+        return definitionTableCellsDelegate.getAllDefinitionShorthands();
     }
 
     public MethodRow getStartChange() {

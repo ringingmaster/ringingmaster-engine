@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.touch.newcontainer.tableaccess;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 
@@ -63,6 +64,10 @@ public class DefaultDefinitionTableAccess<T extends Cell> implements DefinitionT
     public Optional<ImmutableArrayTable<T>> findDefinitionByShorthand(String shorthand) {
         checkNotNull(shorthand);
         return Optional.ofNullable(byShorthand.get(shorthand));
+    }
+
+    public ImmutableSet<String> getAllDefinitionShorthands() {
+        return byShorthand.keySet();
     }
 
     @Override
