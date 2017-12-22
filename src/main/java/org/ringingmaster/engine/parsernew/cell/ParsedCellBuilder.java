@@ -65,12 +65,16 @@ public class ParsedCellBuilder {
      * Re-create the Group objects that have been marked as Invalid with the invalid state
      */
     private Set<Group> applyInvalid(Set<Group> allGroups) {
-        return allGroups.stream().map((group -> {
-            if (invalidGroupCandidates.containsKey(group)) {
-                return new DefaultGroup(group.getElementStartIndex(), group.getElementLength(),
-                        false, Optional.of(invalidGroupCandidates.get(group)), group.getSections());
+        return allGroups.stream().map((originalGroup -> {
+            if (invalidGroupCandidates.containsKey(originalGroup)) {
+                final String message = originalGroup.getMessage()
+                        .map((originalMessage) -> originalMessage + ", " + invalidGroupCandidates.get(originalGroup))
+                        .orElse(invalidGroupCandidates.get(originalGroup));
+
+                return new DefaultGroup(originalGroup.getElementStartIndex(), originalGroup.getElementLength(),
+                        false, Optional.of(message), originalGroup.getSections());
             }
-            return group;
+            return originalGroup;
         })).collect(Collectors.toSet());
     }
 

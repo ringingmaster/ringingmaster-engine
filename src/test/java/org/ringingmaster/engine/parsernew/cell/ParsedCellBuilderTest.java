@@ -43,7 +43,25 @@ public class ParsedCellBuilderTest {
 
         assertFalse(builtCell.getGroupAtElementIndex(0).get().isValid());
         assertEquals("MESSAGE", builtCell.getGroupAtElementIndex(0).get().getMessage().get());
+    }
 
+    @Test
+    public void settingInvalidInTwoRunsConcatanatesTheMessage() {
+
+        ParsedCell parsedCell = buildParsedCell();
+
+        ParsedCell builtCell1 = new ParsedCellBuilder()
+                .prototypeOf(parsedCell)
+                .setInvalid(parsedCell.getGroupAtElementIndex(0).get(), "MESSAGE")
+                .build();
+
+        ParsedCell builtCell2 = new ParsedCellBuilder()
+                .prototypeOf(builtCell1)
+                .setInvalid(builtCell1.getGroupAtElementIndex(0).get(), "ADDITIONAL")
+                .build();
+
+        assertFalse(builtCell2.getGroupAtElementIndex(0).get().isValid());
+        assertEquals("MESSAGE, ADDITIONAL", builtCell2.getGroupAtElementIndex(0).get().getMessage().get());
     }
 
     @Test
