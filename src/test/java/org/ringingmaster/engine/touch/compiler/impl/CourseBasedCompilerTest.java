@@ -8,17 +8,12 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.parser.Parser;
-import org.ringingmaster.engine.parser.impl.DefaultParser;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.proof.Proof;
-import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 
@@ -28,7 +23,7 @@ import static org.junit.Assert.fail;
  */
 public class CourseBasedCompilerTest {
 
-	private final Parser parser = new DefaultParser();
+//	private final Parser parser = new DefaultParser();
 
 	@Test
 	public void compileSingleCallCalledFromTenor() throws IOException {
@@ -77,16 +72,16 @@ public class CourseBasedCompilerTest {
 				.build();
 	}
 
-	private Proof parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
-	                                      ProofTerminationReason terminationReason, Touch touch) throws IOException {
-		parser.parseAndAnnotate(touch);
-		Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);
-		assertEquals(terminationReason, proof.getTerminationReason());
-		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
-		checkAgainstFile(proof.getCreatedMethod().get(), fileName);
-		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
-		return proof;
-	}
+//	private Proof parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
+//	                                      ProofTerminationReason terminationReason, Touch touch) throws IOException {
+//		parser.parseAndAnnotate(touch);
+//		Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);
+//		assertEquals(terminationReason, proof.getTerminationReason());
+//		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
+//		checkAgainstFile(proof.getCreatedMethod().get(), fileName);
+//		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
+//		return proof;
+//	}
 
 	private void checkAgainstFile(Method method, String fileName) throws IOException {
 		String allChangesAsText = method.getAllChangesAsText();

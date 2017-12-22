@@ -1,8 +1,6 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
 import org.junit.Test;
-import org.ringingmaster.engine.parser.Parser;
-import org.ringingmaster.engine.parser.impl.DefaultParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +11,7 @@ public class LeadBasedCompilerTest {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private final Parser parser = new DefaultParser();
+//	private final Parser parser = new DefaultParser();
 
 	@Test
 	public void fail() {
