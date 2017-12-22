@@ -1,10 +1,7 @@
-package org.ringingmaster.engine.touch.container.impl;
+package org.ringingmaster.engine.touch.newcontainer.variance;
 
 import com.google.common.collect.Sets;
 import org.junit.Test;
-
-import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
-import org.ringingmaster.engine.touch.newcontainer.variance.VarianceLogicType;
 import org.ringingmaster.engine.touch.newcontainer.variance.impl.OddEvenVariance;
 import org.ringingmaster.engine.touch.newcontainer.variance.impl.SpecifiedPartsVariance;
 

@@ -1,13 +1,9 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
 import net.jcip.annotations.NotThreadSafe;
-import org.ringingmaster.engine.touch.container.TouchCell;
-import org.ringingmaster.engine.touch.container.TouchWord;
+import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
-import org.ringingmaster.engine.parser.ParseType;
-
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
@@ -38,18 +34,18 @@ public class CourseBasedCallDecomposer extends SkeletalCallDecomposer<CourseBase
 //		}
 	}
 
-	private String getCallPositionFromCell(TouchCell cell) {
-		final List<TouchWord> words = cell.words();
-		for (TouchWord word : words) {
-			switch (word.getFirstParseType()) {
-				case CALLING_POSITION:
-					if (word.isValid()) {
-						return word.getElementsAsString();
-					}
-			}
-		}
-		return null;
-	}
+//	private String getCallPositionFromCell(TouchCell cell) {
+//		final List<TouchWord> words = cell.words();
+//		for (TouchWord word : words) {
+//			switch (word.getFirstParseType()) {
+//				case CALLING_POSITION:
+//					if (word.isValid()) {
+//						return word.getElementsAsString();
+//					}
+//			}
+//		}
+//		return null;
+//	}
 
 	protected CourseBasedDecomposedCall buildDecomposedCall(String callName, Variance variance, int columnIndex, ParseType parseType) {
 		checkPositionIndex(columnIndex, callPositionNames.length, "column index out of bounds");
