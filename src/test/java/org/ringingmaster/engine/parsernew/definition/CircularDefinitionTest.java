@@ -88,6 +88,42 @@ public class CircularDefinitionTest {
         assertParse(result.findDefinitionByShorthand("DEF_3").get().get(0, DEFINITION_COLUMN), valid(CALL));
     }
 
+    @Test
+    public void circularDependencyInsideSingleDefInvalid() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        touch.addDefinition("DEF_1", "DEF_1");
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new CircularDefinition().parse(parse);
+
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
+    }
+
+    @Test
+    public void circularDependencyInsideSingleDefWhenUsedInMainInvalid() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        touch.addCharacters(TOUCH_TABLE, 0,0, "-");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "DEF_1");
+        touch.addDefinition("DEF_1", "DEF_1");
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new CircularDefinition().parse(parse);
+
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
+    }
+
+    @Test
+    public void circularDependencyInsideSingleDefWhenUsedInSpliceInvalid() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
+        touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
+        touch.addDefinition("DEF_1", "DEF_1");
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new CircularDefinition().parse(parse);
+
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
+    }
+
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_6)

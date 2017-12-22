@@ -192,8 +192,6 @@ public class AssignParseTypeTest {
         assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
     }
 
-    //TODO need a parser to check for embedded definitions being of same type
-
 	@Test
 	public void correctlyIdentifiesVariance() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "[-]s");

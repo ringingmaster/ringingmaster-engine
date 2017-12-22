@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.parsernew.definition;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.Immutable;
 import org.pcollections.ConsPStack;
 import org.pcollections.PStack;
@@ -26,7 +27,7 @@ public class CircularDefinition {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
 
-    // TODO can we get the dependency chain in the error message?
+    // TODO can we get the dependency chain in the error message? If so the addition of all shorthands for definitions in use will have to change.
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] forms part of a circular dependency";
 
     public Parse parse(Parse parse) {
@@ -34,7 +35,9 @@ public class CircularDefinition {
         // Step 1: Map out the internal dependencies in the definitions
         Map<String, Set<String>> adjacency = definitionFunctions.buildDefinitionsAdjacencyList(parse);
 
-        final Set<String> definitionsInUse = definitionFunctions.findDefinitionsInUse(parse.mainBodyCells());
+        final Sets.SetView<String> definitionsInUse = Sets.union(definitionFunctions.findDefinitionsInUse(parse.mainBodyCells()),
+                                                      Sets.union(definitionFunctions.findDefinitionsInUse(parse.splicedCells()),
+                                                                 parse.getAllDefinitionShorthands()));
 
         Set<String> invalidDefinitions = new HashSet<>();
         for (String shorthand : definitionsInUse) {
