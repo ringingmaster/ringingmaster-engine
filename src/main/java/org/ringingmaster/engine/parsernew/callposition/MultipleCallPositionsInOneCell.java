@@ -12,6 +12,8 @@ import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedCellBuilder;
 import org.ringingmaster.engine.parsernew.cell.Section;
 
+import java.util.function.Function;
+
 /**
  * Enforces that only one call position is allowed in a cell.
  * Works with CallPosition cells only.
@@ -19,9 +21,9 @@ import org.ringingmaster.engine.parsernew.cell.Section;
  * @author stevelake
  */
 @Immutable
-public class MultipleCallPositionsInOneCell {
+public class MultipleCallPositionsInOneCell implements Function<Parse, Parse> {
 
-    public Parse parse(Parse parse) {
+    public Parse apply(Parse parse) {
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
 

@@ -26,8 +26,8 @@ public class MultipleCallPositionsInOneCellTest {
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
 
         assertEquals(0, result.allTouchCells().getRowSize());
         assertEquals(0, result.allTouchCells().getColumnSize());
@@ -42,8 +42,8 @@ public class MultipleCallPositionsInOneCellTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
         touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
 
         assertEquals(2, result.allTouchCells().getRowSize());
         assertEquals(2, result.allTouchCells().getColumnSize());
@@ -57,8 +57,8 @@ public class MultipleCallPositionsInOneCellTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "W");
         touch.addCharacters(TOUCH_TABLE, 0,1, "H");
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
@@ -69,8 +69,8 @@ public class MultipleCallPositionsInOneCellTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "WH");
         touch.addCharacters(TOUCH_TABLE, 0,1, "-HW");
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));
         assertParse(result.allTouchCells().get(0,1), unparsed() ,valid(CALLING_POSITION), invalid(CALLING_POSITION));

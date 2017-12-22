@@ -1,14 +1,13 @@
 package org.ringingmaster.engine.parser.impl;
 
 import com.google.common.collect.Lists;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchDefinition;
 import org.ringingmaster.engine.touch.container.TouchElement;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * TODO comments???

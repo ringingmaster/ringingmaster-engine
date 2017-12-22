@@ -41,21 +41,21 @@ public class AssignParseTypeTest {
     @Test
     public void correctlyRetrievesAndParsesFromNotation() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-s");
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(CALL));
     }
 
     @Test
     public void correctlyParsesSimpleWhitespace() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "- Bob");
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(WHITESPACE), valid(3, CALL));
     }
 
     @Test
     public void correctlyParsesPlainLeadToken() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-p-");
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(PLAIN_LEAD), valid(CALL));
     }
 
@@ -65,7 +65,7 @@ public class AssignParseTypeTest {
         touch.addCharacters(TOUCH_TABLE, 0, 1, "-P-");
         touch.setSpliced(true);
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 1), unparsed(), valid(SPLICE), unparsed());
     }
 
@@ -74,7 +74,7 @@ public class AssignParseTypeTest {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "W");
         touch.setTouchCheckingType(COURSE_BASED);
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(CALLING_POSITION));
     }
 
@@ -84,7 +84,7 @@ public class AssignParseTypeTest {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "bHd");
         touch.setTouchCheckingType(COURSE_BASED);
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), unparsed(), valid(CALLING_POSITION), unparsed());
     }
 
@@ -93,7 +93,7 @@ public class AssignParseTypeTest {
     public void correctlyParsesDefinitionTokenInMainBody() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "-def1-");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(4, DEFINITION), valid(CALL));
     }
 
@@ -103,7 +103,7 @@ public class AssignParseTypeTest {
         touch.setSpliced(true);
         touch.addCharacters(TOUCH_TABLE, 0, 1, "Pdef1P");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 1), valid(SPLICE), valid(4, DEFINITION), valid(SPLICE));
     }
 
@@ -112,7 +112,7 @@ public class AssignParseTypeTest {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "Bob");
         touch.setPlainLeadToken("b");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(3, CALL));
     }
 
@@ -121,7 +121,7 @@ public class AssignParseTypeTest {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "Bobb");
         touch.setPlainLeadToken("b");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(3, CALL), valid(PLAIN_LEAD));
     }
 
@@ -129,7 +129,7 @@ public class AssignParseTypeTest {
     public void correctlyIdentifiesGroupOpenAndClose() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "(-)s");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
     }
 
@@ -138,7 +138,7 @@ public class AssignParseTypeTest {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), null);
         touch.addDefinition("def2","s");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, SHORTHAND_COLUMN), valid(4, DEFINITION));
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0, SHORTHAND_COLUMN), valid(4, DEFINITION));
     }
@@ -147,7 +147,7 @@ public class AssignParseTypeTest {
     public void unusedDefinitionParsedAsMainBody() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), null);
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
     }
 
@@ -155,7 +155,7 @@ public class AssignParseTypeTest {
     public void definitionUsedInMainBodyAreaParsedAsMainBody() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "def1 def2");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
     }
 
@@ -165,7 +165,7 @@ public class AssignParseTypeTest {
         touch.addCharacters(TOUCH_TABLE, 0,1,"def1 def2");
         touch.setSpliced(true);
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), valid(SPLICE));
     }
 
@@ -175,7 +175,7 @@ public class AssignParseTypeTest {
         touch.addCharacters(TOUCH_TABLE, 0,1,"def1");
         touch.setSpliced(true);
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
     }
 
@@ -185,7 +185,7 @@ public class AssignParseTypeTest {
         touch.addDefinition("def2", "-def3p");
         touch.addDefinition("def3", "def2");
 
-        Parse parse = new AssignParseType().parse(touch.get());
+        Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(4, DEFINITION), valid(PLAIN_LEAD));
         assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
     }
@@ -197,8 +197,8 @@ public class AssignParseTypeTest {
     public void mainBodyWithCallingPositionIsIgnored() {
         ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "A");
         touch.addCharacters(TOUCH_TABLE, 1, 0, "W");
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
 
         ParsedCell parsedCell = result.allTouchCells().get(1, 0);
         assertFalse(parsedCell.getSectionAtElementIndex(0).isPresent());

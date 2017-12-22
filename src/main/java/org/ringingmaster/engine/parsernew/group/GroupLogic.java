@@ -14,12 +14,13 @@ import org.ringingmaster.engine.parsernew.cell.Section;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class GroupLogic {
+public class GroupLogic implements Function<Parse, Parse> {
 
-    public Parse parse(Parse parse) {
+    public Parse apply(Parse parse) {
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());

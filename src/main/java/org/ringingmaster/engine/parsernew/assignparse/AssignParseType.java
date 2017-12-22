@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
@@ -31,11 +32,11 @@ import static org.ringingmaster.engine.touch.newcontainer.tableaccess.Definition
  * @author stevelake
  */
 @Immutable
-public class AssignParseType {
+public class AssignParseType implements Function<Touch, Parse> {
 
     private final CellLexer lexer = new CellLexer();
 
-    public Parse parse(Touch touch) {
+    public Parse apply(Touch touch) {
 
         final HashBasedTable<Integer, Integer, ParsedCell> parsedTouchCells = HashBasedTable.create();
         parseCallPositionArea(touch, parsedTouchCells);

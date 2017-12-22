@@ -27,8 +27,8 @@ public class GroupLogicTest {
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertEquals(0, result.allTouchCells().getRowSize());
         assertEquals(0, result.allTouchCells().getColumnSize());
@@ -45,8 +45,8 @@ public class GroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 2,0, "abc");// To force the Parse to be replaced
         touch.addCharacters(TOUCH_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertEquals(3, result.allTouchCells().getRowSize());
         assertEquals(2, result.allTouchCells().getColumnSize());
@@ -60,8 +60,8 @@ public class GroupLogicTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "()");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE));
     }
@@ -71,8 +71,8 @@ public class GroupLogicTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, ")(");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_CLOSE), invalid(1, GROUP_OPEN));
     }
@@ -83,8 +83,8 @@ public class GroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, ")");
         touch.addCharacters(TOUCH_TABLE, 1,0, "(");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
         assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_CLOSE));
         assertParse(result.allTouchCells().get(1,0), invalid(1, GROUP_OPEN));
     }
@@ -94,8 +94,8 @@ public class GroupLogicTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "(())");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE));
     }
@@ -107,8 +107,8 @@ public class GroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "(");
         touch.addCharacters(TOUCH_TABLE, 1,0, "))");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN));
         assertParse(result.allTouchCells().get(0,1), valid(1, GROUP_OPEN));
@@ -121,8 +121,8 @@ public class GroupLogicTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "(()");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_CLOSE));
     }
@@ -134,8 +134,8 @@ public class GroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "(");
         touch.addCharacters(TOUCH_TABLE, 1,0, ")");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, GROUP_OPEN));
         assertParse(result.allTouchCells().get(0,1), valid(1, GROUP_OPEN));
@@ -154,8 +154,8 @@ public class GroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 2,0, ")");
         touch.addCharacters(TOUCH_TABLE, 2,1, ")");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), valid(1, GROUP_OPEN));
         assertParse(result.allTouchCells().get(0,1), valid(1, GROUP_OPEN));
@@ -173,8 +173,8 @@ public class GroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, ")");
         touch.addCharacters(TOUCH_TABLE, 1,0, "-");
 
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.allTouchCells().get(0,0), unparsed());
         assertParse(result.allTouchCells().get(0,1), unparsed());
@@ -184,8 +184,8 @@ public class GroupLogicTest {
     public void groupsWithinDefinitionValid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addDefinition("DEF1", "(-)");
-        Parse parse = new AssignParseType().parse(touch.get());
-        Parse result = new GroupLogic().parse(parse);
+        Parse parse = new AssignParseType().apply(touch.get());
+        Parse result = new GroupLogic().apply(parse);
 
         assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE));
     }
