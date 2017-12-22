@@ -11,6 +11,7 @@ import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
  * TODO comments???
  * User: Stephen
  */
+@Deprecated
 public class TouchBuilder {
 
 	private TouchBuilder() {

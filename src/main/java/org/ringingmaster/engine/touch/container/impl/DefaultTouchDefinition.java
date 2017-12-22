@@ -6,6 +6,7 @@ import org.ringingmaster.engine.touch.container.TouchDefinition;
  * TODO comments???
  * User: Stephen
  */
+@Deprecated
 public class DefaultTouchDefinition extends DefaultTouchCell implements TouchDefinition {
 
 	private final String shorthand;

@@ -23,6 +23,7 @@ import java.util.Set;
  * User: Stephen
  */
 @Immutable
+@Deprecated
 public class ImmutableTouch implements Touch {
 
 	private final Touch touch;

@@ -8,6 +8,7 @@ import java.util.List;
  * TODO comments???
  * User: Stephen
  */
+@Deprecated
 public interface TouchCell extends Iterable<TouchElement> , Cloneable {
 
 	TouchCell clone() throws CloneNotSupportedException;

@@ -7,6 +7,7 @@ import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
  * Represents a single character in a touch grid.
  * User: Stephen
  */
+@Deprecated
 public interface TouchElement {
 
 	public TouchElement clone(TouchCell parentCell, TouchWord wordClone) throws CloneNotSupportedException;

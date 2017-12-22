@@ -15,6 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * TODO comments???
  * User: Stephen
  */
+@Deprecated
 public class DefaultTouchWord implements TouchWord {
 
 	private boolean valid;

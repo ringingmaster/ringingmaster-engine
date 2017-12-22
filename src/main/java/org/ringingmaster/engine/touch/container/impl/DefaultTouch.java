@@ -38,6 +38,7 @@ import static org.ringingmaster.engine.touch.container.Touch.Mutated.UNCHANGED;
  * User: Stephen
  */
 @NotThreadSafe
+@Deprecated
 public class DefaultTouch implements Touch {
 
 

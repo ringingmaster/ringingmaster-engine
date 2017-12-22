@@ -19,6 +19,7 @@ import java.util.Set;
  * @user Stephen
  */
 @NotThreadSafe
+@Deprecated
 public interface Touch extends Cloneable {
 
 	int START_AT_ROW_MAX                         = 10_000;

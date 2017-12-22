@@ -16,6 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Stephen
  */
+@Deprecated
 public class DefaultTouchElement implements TouchElement {
 
 	private final TouchCell parentCell;

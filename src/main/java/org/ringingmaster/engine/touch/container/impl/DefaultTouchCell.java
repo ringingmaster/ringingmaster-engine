@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkPositionIndexes;
  * TODO
  * User: Stephen
  */
+@Deprecated
 public class DefaultTouchCell implements TouchCell {
 
 	private List<TouchElement> elements = new ArrayList<>();

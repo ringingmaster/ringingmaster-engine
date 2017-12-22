@@ -9,6 +9,7 @@ import java.util.Comparator;
  * of the touch by referring to its shorthand.
  * User: Stephen
  */
+@Deprecated
 public interface TouchDefinition extends TouchCell {
 
 	Comparator<TouchDefinition> BY_SHORTHAND = (o1, o2) -> ComparisonChain.start()
