@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.touch.container;
 
-import org.ringingmaster.engine.parsernew.ParseType;
+import org.ringingmaster.engine.parser.ParseType;
 
 import java.util.List;
 

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.ringingmaster.engine.parsernew.ParseType.PLAIN_LEAD;
+import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
 
 /**
  * Takes a parsed touch, and converts it into a compiled proof. A proof consists of an expanded Method and

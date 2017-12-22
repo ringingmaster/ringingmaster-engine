@@ -2,7 +2,7 @@ package org.ringingmaster.engine.touch.container.impl;
 
 import org.ringingmaster.engine.touch.container.TouchElement;
 import org.ringingmaster.engine.touch.container.TouchWord;
-import org.ringingmaster.engine.parsernew.ParseType;
+import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.container.TouchCell;
 
 import java.util.ArrayList;
