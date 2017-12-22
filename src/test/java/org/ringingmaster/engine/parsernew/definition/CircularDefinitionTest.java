@@ -27,7 +27,7 @@ public class CircularDefinitionTest {
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+        Parse result = new CircularDefinition().apply(parse);
 
         assertEquals(0, result.allTouchCells().getRowSize());
         assertEquals(0, result.allTouchCells().getColumnSize());

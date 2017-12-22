@@ -648,7 +648,7 @@ public class ObservableTouch {
     public void addCharacters(TableType tableType, int rowIndex, int columnIndex, String characters) {
         checkNotNull(tableType);
         checkNotNull(characters);
-        checkArgument(characters.length() > 0);
+        checkArgument(!characters.isEmpty(), "Empty characters");
         if (tableType == DEFINITION_TABLE) {
             checkArgument(columnIndex < 2, "Maximum of two columns allowed in definition table.");
         }

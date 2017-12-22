@@ -5,6 +5,7 @@ import org.ringingmaster.engine.parsernew.callposition.MultipleCallPositionsInOn
 import org.ringingmaster.engine.parsernew.definition.CircularDefinition;
 import org.ringingmaster.engine.parsernew.definition.DefinitionInSplicedOrMain;
 import org.ringingmaster.engine.parsernew.group.GroupLogic;
+import org.ringingmaster.engine.parsernew.assignparse.AssignMultiplier;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ public class Parser implements Function<Touch, Parse> {
     private final GroupLogic groupLogic = new GroupLogic();
     private final DefinitionInSplicedOrMain definitionInSplicedOrMain = new DefinitionInSplicedOrMain();
     private final CircularDefinition circularDefinition = new CircularDefinition();
+    private final AssignMultiplier assignMultiplier = new AssignMultiplier();
 
 
     @Override
@@ -35,6 +37,7 @@ public class Parser implements Function<Touch, Parse> {
 
         return assignParseType
                 .andThen(multipleCallPositionsInOneCell)
+                .andThen(assignMultiplier)
         //TODO think very care fully about what parts of each parser needs applying to definitions,
 //TODO		parseSplicedCallsNotDefinedInEachMethod();
 //TODO		parseSplicedCallPosMethodNotDefinedInEachMethod();
@@ -49,9 +52,6 @@ public class Parser implements Function<Touch, Parse> {
 //TODO		parseSplicedNotBlocks();
                 .andThen(definitionInSplicedOrMain)
                 .andThen(circularDefinition)
-
-        //done last so that invalidity can be passed to the multipliers -  probablyu not true anymore.
-//		new MultiplierParser().parse(touch);
                 .apply(touch);
 
     }
