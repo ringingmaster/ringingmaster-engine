@@ -15,26 +15,7 @@ public class DefaultTouchParserTest {
 	}
 
 
-//	@Test
-//	public void correctlyIdentifiesEmbeddedGroup() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "((-)s)");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.GROUP_OPEN, ParseType.GROUP_OPEN, ParseType.CALL, ParseType.GROUP_CLOSE, ParseType.CALL, ParseType.GROUP_CLOSE);
-//		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), true, true, true, true, true, true);
-//	}
-//
-//	@Test
-//	public void invalidatesStartBraceIfNoEndBrace() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "(-");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.GROUP_OPEN, ParseType.CALL);
-//		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), false, true);
-//	}
-//
-//	@Test
-//	public void invalidatesStartBraceIfNoEndBraceAndEmbeddedGroup() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "(s2(-)");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.GROUP_OPEN, ParseType.CALL, ParseType.GROUP_OPEN_MULTIPLIER, ParseType.GROUP_OPEN, ParseType.CALL, ParseType.GROUP_CLOSE);
-//		assertValid(touch.getCell_FOR_TEST_ONLY(0, 0), false, true, true, true, true, true);
-//	}
+
 //
 //	@Test
 //	public void correctlyIdentifiesVariance() {
