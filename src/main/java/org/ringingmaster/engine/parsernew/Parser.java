@@ -2,6 +2,8 @@ package org.ringingmaster.engine.parsernew;
 
 import org.ringingmaster.engine.parsernew.assignparse.AssignParseType;
 import org.ringingmaster.engine.parsernew.callposition.MultipleCallPositionsInOneCell;
+import org.ringingmaster.engine.parsernew.definition.CircularDefinition;
+import org.ringingmaster.engine.parsernew.definition.DefinitionInSplicedOrMain;
 import org.ringingmaster.engine.parsernew.group.GroupLogic;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.slf4j.Logger;
@@ -22,6 +24,8 @@ public class Parser implements Function<Touch, Parse> {
     private final AssignParseType assignParseType = new AssignParseType();
     final MultipleCallPositionsInOneCell multipleCallPositionsInOneCell = new MultipleCallPositionsInOneCell();
     private final GroupLogic groupLogic = new GroupLogic();
+    private final DefinitionInSplicedOrMain definitionInSplicedOrMain = new DefinitionInSplicedOrMain();
+    private final CircularDefinition circularDefinition = new CircularDefinition();
 
 
     @Override
@@ -43,7 +47,8 @@ public class Parser implements Function<Touch, Parse> {
 //TODO		parseSpaceOnlyInCell(); //TODO I dont think this is necessary, apart from where whole rows and columns are empty
 //TODO		parseCallsInColumnWithoutCallingPos();
 //TODO		parseSplicedNotBlocks();
-//TODO		parseDefinitionsOnWrongSide();
+                .andThen(definitionInSplicedOrMain)
+                .andThen(circularDefinition)
 
         //done last so that invalidity can be passed to the multipliers -  probablyu not true anymore.
 //		new MultiplierParser().parse(touch);

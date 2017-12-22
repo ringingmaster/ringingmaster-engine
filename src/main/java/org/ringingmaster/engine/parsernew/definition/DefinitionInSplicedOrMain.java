@@ -15,13 +15,13 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * Marks as invlalid any definitions that are used in both spliced or main area.
+ * Marks as invalid any definitions that are used in both spliced or main area.
  * A dependency is considered part of splice or main when it is directly used, or used transitively.
  *
  * @author stevelake
  */
 @Immutable
-public class DefinitionInSplicedOrMain {
+public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
@@ -30,7 +30,7 @@ public class DefinitionInSplicedOrMain {
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] should be used in the main body or the splice area, but not both";
 
 
-    public Parse parse(Parse parse) {
+    public Parse apply(Parse parse) {
 
         // Step 1: Map out the internal dependencies in the definitions
         Map<String, Set<String>> adjacency = definitionFunctions.buildDefinitionsAdjacencyList(parse);

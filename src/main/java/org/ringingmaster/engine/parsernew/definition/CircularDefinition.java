@@ -22,7 +22,7 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class CircularDefinition {
+public class CircularDefinition implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
@@ -30,7 +30,7 @@ public class CircularDefinition {
     // TODO can we get the dependency chain in the error message? If so the addition of all shorthands for definitions in use will have to change.
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] forms part of a circular dependency";
 
-    public Parse parse(Parse parse) {
+    public Parse apply(Parse parse) {
 
         // Step 1: Map out the internal dependencies in the definitions
         Map<String, Set<String>> adjacency = definitionFunctions.buildDefinitionsAdjacencyList(parse);
