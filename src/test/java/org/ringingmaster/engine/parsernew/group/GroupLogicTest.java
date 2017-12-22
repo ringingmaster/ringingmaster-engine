@@ -144,7 +144,7 @@ public class GroupLogicTest {
 
 
     @Test
-    public void nestedGroupWithSplicedAssignsInvaliditityToCorrect() {
+    public void nestedGroupWithSplicedAssignsInvalidityToCorrect() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
         touch.addCharacters(TOUCH_TABLE, 0,0, "(");
@@ -187,7 +187,7 @@ public class GroupLogicTest {
         Parse parse = new AssignParseType().apply(touch.get());
         Parse result = new GroupLogic().apply(parse);
 
-        assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE));
+        assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(CALL ), valid(GROUP_CLOSE));
     }
 
     private NotationBody buildPlainBobMinor() {
