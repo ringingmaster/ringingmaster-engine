@@ -12,9 +12,9 @@ import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.GROUP_CLOSE;
-import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN;
+import static org.ringingmaster.engine.parsernew.ParseType.CALL;
+import static org.ringingmaster.engine.parsernew.ParseType.GROUP_CLOSE;
+import static org.ringingmaster.engine.parsernew.ParseType.GROUP_OPEN;
 import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;

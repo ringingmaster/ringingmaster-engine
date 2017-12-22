@@ -2,16 +2,16 @@ package org.ringingmaster.engine.parsernew.assignparse;
 
 import com.google.common.collect.Maps;
 import org.junit.Test;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 import org.ringingmaster.engine.touch.newcontainer.cell.CellBuilder;
 
 import java.util.HashMap;
 
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.SPLICE;
-import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
+import static org.ringingmaster.engine.parsernew.ParseType.CALL;
+import static org.ringingmaster.engine.parsernew.ParseType.SPLICE;
+import static org.ringingmaster.engine.parsernew.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
 import static org.ringingmaster.engine.parsernew.AssertParse.valid;

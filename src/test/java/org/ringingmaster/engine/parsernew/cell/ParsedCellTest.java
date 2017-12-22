@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parsernew.cell;
 
 import com.google.common.collect.Sets;
 import org.junit.Test;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
 
 import java.util.HashSet;

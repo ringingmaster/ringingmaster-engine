@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 import org.ringingmaster.engine.parsernew.Parse;
 import org.ringingmaster.engine.parsernew.ParseBuilder;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;

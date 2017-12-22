@@ -5,7 +5,7 @@ import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchWord;
 import org.ringingmaster.engine.touch.newcontainer.Touch;
 import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 
 import java.util.List;
 

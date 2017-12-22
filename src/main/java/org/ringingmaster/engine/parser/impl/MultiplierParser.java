@@ -6,15 +6,15 @@ import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchDefinition;
 import org.ringingmaster.engine.touch.container.TouchElement;
 import org.ringingmaster.engine.touch.container.TouchWord;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 
-import static org.ringingmaster.engine.parser.ParseType.CALL_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.DEFAULT_CALL_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.SPLICE_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.UNPARSED;
+import static org.ringingmaster.engine.parsernew.ParseType.CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parsernew.ParseType.DEFAULT_CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parsernew.ParseType.DEFINITION_MULTIPLIER;
+import static org.ringingmaster.engine.parsernew.ParseType.GROUP_OPEN_MULTIPLIER;
+import static org.ringingmaster.engine.parsernew.ParseType.PLAIN_LEAD_MULTIPLIER;
+import static org.ringingmaster.engine.parsernew.ParseType.SPLICE_MULTIPLIER;
+import static org.ringingmaster.engine.parsernew.ParseType.UNPARSED;
 
 
 /**

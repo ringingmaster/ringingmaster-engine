@@ -3,7 +3,7 @@ package org.ringingmaster.engine.touch.compiler.impl;
 import com.google.common.collect.Lists;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.NotThreadSafe;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 import org.ringingmaster.engine.touch.container.TouchElement;
 import org.ringingmaster.engine.touch.container.TouchWord;
 import org.ringingmaster.engine.touch.newcontainer.Touch;

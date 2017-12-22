@@ -8,7 +8,7 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 import org.ringingmaster.engine.parsernew.Parse;
 import org.ringingmaster.engine.parsernew.ParseBuilder;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;

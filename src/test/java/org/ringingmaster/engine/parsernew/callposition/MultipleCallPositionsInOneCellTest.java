@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
+import static org.ringingmaster.engine.parsernew.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
 import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;

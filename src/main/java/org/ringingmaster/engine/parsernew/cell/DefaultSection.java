@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parsernew.cell;
 
 import net.jcip.annotations.Immutable;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 
 /**
  * TODO comments???

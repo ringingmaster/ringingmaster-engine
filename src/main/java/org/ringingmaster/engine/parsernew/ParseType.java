@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser;
+package org.ringingmaster.engine.parsernew;
 
 /**
  * The different types that elements can be parsed to.
@@ -45,8 +45,8 @@ public enum ParseType {
 	VARIANCE_CLOSE,
 	/** a normal bracket for grouping - open '(' - needs a multiplier */
 	GROUP_OPEN,
-	/** multiplier for a normal bracket for grouping '(' */
-	GROUP_OPEN_MULTIPLIER,
 	/** a normal bracket for grouping - close ')' - needs a multiplier */
 	GROUP_CLOSE,
+	/** multiplier for a normal bracket for grouping '(' */
+	GROUP_OPEN_MULTIPLIER,
 }

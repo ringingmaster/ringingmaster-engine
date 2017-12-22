@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parsernew.assignparse;
 
 import net.jcip.annotations.Immutable;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.cell.ParsedCellFactory;
 import org.ringingmaster.engine.parsernew.cell.Section;

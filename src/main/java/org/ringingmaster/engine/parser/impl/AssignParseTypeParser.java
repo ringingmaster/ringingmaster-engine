@@ -3,7 +3,7 @@ package org.ringingmaster.engine.parser.impl;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.container.TouchCell;
 import org.ringingmaster.engine.touch.container.TouchDefinition;

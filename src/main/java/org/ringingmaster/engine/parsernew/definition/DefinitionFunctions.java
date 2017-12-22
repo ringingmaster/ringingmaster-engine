@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
+import static org.ringingmaster.engine.parsernew.ParseType.DEFINITION;
 
 public class DefinitionFunctions {
 

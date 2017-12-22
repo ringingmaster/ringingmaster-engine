@@ -2,7 +2,7 @@ package org.ringingmaster.engine.touch.container;
 
 import java.util.List;
 
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parsernew.ParseType;
 
 /**
  * TODO comments???

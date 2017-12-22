@@ -12,8 +12,8 @@ import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
+import static org.ringingmaster.engine.parsernew.ParseType.CALL;
+import static org.ringingmaster.engine.parsernew.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
 import static org.ringingmaster.engine.parsernew.AssertParse.invalid;
 import static org.ringingmaster.engine.parsernew.AssertParse.valid;
