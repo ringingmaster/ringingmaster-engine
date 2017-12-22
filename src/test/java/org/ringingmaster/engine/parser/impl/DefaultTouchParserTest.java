@@ -16,12 +16,7 @@ public class DefaultTouchParserTest {
 
 
 
-//
-//	@Test
-//	public void correctlyIdentifiesVariance() {
-//		DefaultTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "[-]s");
-//		assertParseType(touch.getCell_FOR_TEST_ONLY(0, 0), ParseType.VARIANCE_OPEN, ParseType.CALL, ParseType.VARIANCE_CLOSE, ParseType.CALL);
-//	}
+
 //
 //	@Test
 //	public void correctlyParseSingleDefaultCallMultiplier() {

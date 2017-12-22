@@ -5,14 +5,17 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parsernew.Parse;
-import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.parsernew.callposition.MultipleCallPositionsInOneCell;
+import org.ringingmaster.engine.parsernew.cell.ParsedCell;
 import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
 import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertFalse;
+import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
+import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
+import static org.ringingmaster.engine.parsernew.AssertParse.valid;
 import static org.ringingmaster.engine.parsernew.ParseType.CALL;
 import static org.ringingmaster.engine.parsernew.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parsernew.ParseType.DEFINITION;
@@ -20,10 +23,9 @@ import static org.ringingmaster.engine.parsernew.ParseType.GROUP_CLOSE;
 import static org.ringingmaster.engine.parsernew.ParseType.GROUP_OPEN;
 import static org.ringingmaster.engine.parsernew.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parsernew.ParseType.SPLICE;
+import static org.ringingmaster.engine.parsernew.ParseType.VARIANCE_CLOSE;
+import static org.ringingmaster.engine.parsernew.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.parsernew.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.parsernew.AssertParse.assertParse;
-import static org.ringingmaster.engine.parsernew.AssertParse.unparsed;
-import static org.ringingmaster.engine.parsernew.AssertParse.valid;
 import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -190,7 +192,15 @@ public class AssignParseTypeTest {
         assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
     }
 
-    //need a parser to check for embedded definitions being of same type
+    //TODO need a parser to check for embedded definitions being of same type
+
+	@Test
+	public void correctlyIdentifiesVariance() {
+        ObservableTouch touch = buildAndParseSingleCellTouch(buildPlainBobMinor(), "[-]s");
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0,0), valid(VARIANCE_OPEN), valid(CALL), valid(VARIANCE_CLOSE), valid(CALL));
+	}
+
 
     //TODO need lots of these type of tests for all the different combinations.
     @Test
