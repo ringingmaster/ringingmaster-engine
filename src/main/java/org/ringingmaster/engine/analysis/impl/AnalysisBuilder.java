@@ -1,0 +1,19 @@
+package org.ringingmaster.engine.analysis.impl;
+
+import org.ringingmaster.engine.analysis.Analysis;
+import org.ringingmaster.engine.method.Method;
+
+/**
+ * TODO comments???
+ * User: Stephen
+ */
+public class AnalysisBuilder {
+
+	public static Analysis buildAnalysisStructure() {
+		return new DefaultAnalysis();
+	}
+
+	public static void falseRowAnalysis(Method method, Analysis analysis) {
+		new FalseRowAnalysis().analise(method, analysis);
+	}
+}

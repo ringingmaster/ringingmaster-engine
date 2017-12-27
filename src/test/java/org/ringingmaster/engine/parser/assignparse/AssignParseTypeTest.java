@@ -7,8 +7,8 @@ import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.callposition.MultipleCallPositionsInOneCell;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.container.ObservableTouch;
-import org.ringingmaster.engine.touch.container.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.ObservableTouch;
+import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +26,10 @@ import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.touch.container.TableType.TOUCH_TABLE;
-import static org.ringingmaster.engine.touch.container.checkingtype.CheckingType.COURSE_BASED;
-import static org.ringingmaster.engine.touch.container.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
-import static org.ringingmaster.engine.touch.container.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
+import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
 /**
  * TODO comments???

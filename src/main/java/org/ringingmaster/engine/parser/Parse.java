@@ -1,9 +1,9 @@
 package org.ringingmaster.engine.parser;
 
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.container.Touch;
-import org.ringingmaster.engine.touch.container.tableaccess.DefinitionTableAccess;
-import org.ringingmaster.engine.touch.container.tableaccess.TouchTableAccess;
+import org.ringingmaster.engine.touch.Touch;
+import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.touch.tableaccess.TouchTableAccess;
 
 /**
  * TODO comments???

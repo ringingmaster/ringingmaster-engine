@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.container.cell.Cell;
-import org.ringingmaster.engine.touch.container.cell.CellBuilder;
+import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.touch.cell.CellBuilder;
 
 import java.util.HashMap;
 

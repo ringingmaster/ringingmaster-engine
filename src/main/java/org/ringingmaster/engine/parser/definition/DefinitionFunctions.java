@@ -7,7 +7,7 @@ import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellBuilder;
 import org.ringingmaster.engine.parser.cell.Section;
-import org.ringingmaster.engine.touch.container.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
 
 import java.util.Map;
 import java.util.Optional;

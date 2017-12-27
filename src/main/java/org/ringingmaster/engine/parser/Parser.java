@@ -6,7 +6,7 @@ import org.ringingmaster.engine.parser.definition.CircularDefinition;
 import org.ringingmaster.engine.parser.definition.DefinitionInSplicedOrMain;
 import org.ringingmaster.engine.parser.group.GroupLogic;
 import org.ringingmaster.engine.parser.assignparse.AssignMultiplier;
-import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -6,8 +6,8 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.assignparse.AssignParseType;
-import org.ringingmaster.engine.touch.container.ObservableTouch;
-import org.ringingmaster.engine.touch.container.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.ObservableTouch;
+import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.touch.container.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
 public class MultipleCallPositionsInOneCellTest {
 
