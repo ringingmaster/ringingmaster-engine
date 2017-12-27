@@ -1,11 +1,14 @@
 package org.ringingmaster.engine.notation;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Contains the verified notation elements for the different types of
  * Call.
  *
  * User: Stephen
  */
+@Immutable
 public interface NotationCall extends Notation {
 
 	/**

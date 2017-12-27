@@ -1,12 +1,10 @@
 package org.ringingmaster.engine.notation.impl;
 
+import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.notation.NotationPlace;
 import org.ringingmaster.engine.notation.NotationRow;
 
 import javax.annotation.concurrent.Immutable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,16 +16,10 @@ import java.util.Set;
 @Immutable
 public class DefaultNotationRow implements NotationRow {
 
-	private final List<NotationPlace> sortedElements;
+	private final ImmutableList<NotationPlace> sortedElements;
 
 	DefaultNotationRow(final Set<NotationPlace> elements) {
-		sortedElements = getSortedElements(elements);
-	}
-
-	private List<NotationPlace> getSortedElements(final Set<NotationPlace> elements) {
-		final List<NotationPlace> sortedElements = new ArrayList<>(elements);
-		Collections.sort(sortedElements);
-		return Collections.unmodifiableList(sortedElements);
+		sortedElements = ImmutableList.sortedCopyOf(elements);
 	}
 
 	@Override

@@ -4,12 +4,14 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationRow;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.List;
 
 /**
  * Representation of a single call.
  * User: Stephen
  */
+@Immutable
 public class DefaultNotationCall extends DefaultNotation implements NotationCall {
 
 	private final String nameShorthand;

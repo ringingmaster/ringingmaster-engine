@@ -3,6 +3,7 @@ package org.ringingmaster.engine.notation;
 import org.ringingmaster.engine.NumberOfBells;
 import com.google.common.collect.ComparisonChain;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Comparator;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Comparator;
  *
  * User: Stephen
  */
+@Immutable
 public interface Notation extends Iterable<NotationRow> {
 
 	String ROW_SEPARATOR = ".";

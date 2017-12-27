@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.notation.impl;
 
-import javax.annotation.concurrent.Immutable;
-
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * TODO comments???
@@ -15,7 +15,7 @@ public class DefaultNotationMethodCallingPosition implements NotationMethodCalli
 	private final int leadOfTenor;
 	private final String name;
 
-	public DefaultNotationMethodCallingPosition(int callInitiationRow, int leadOfTenor, String name) {
+	DefaultNotationMethodCallingPosition(int callInitiationRow, int leadOfTenor, String name) {
 		this.callInitiationRow = callInitiationRow;
 		this.leadOfTenor = leadOfTenor;
 		this.name = name;

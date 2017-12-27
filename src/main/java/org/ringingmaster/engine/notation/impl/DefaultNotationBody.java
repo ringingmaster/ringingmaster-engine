@@ -32,7 +32,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 	private final boolean foldedPalindrome;
 	private final String leadHeadCode;
 	private final boolean cannedCalls;
-	private final Set<NotationCall> notationCalls;
+	private final ImmutableSet<NotationCall> notationCalls;
 	private final NotationCall defaultCall;
 	private final SortedSet<Integer> callInitiationRow;
 	private final SortedSet<NotationMethodCallingPosition> methodBasedCallingPositions;
@@ -73,7 +73,7 @@ public class DefaultNotationBody extends DefaultNotation implements NotationBody
 
 	@Override
 	public String getNameIncludingNumberOfBells() {
-		return getName() + " " + getNumberOfWorkingBells().getName();
+		return getName() + " " + getNumberOfWorkingBells().getName(); //TODO pre-calculate
 	}
 
 	@Override

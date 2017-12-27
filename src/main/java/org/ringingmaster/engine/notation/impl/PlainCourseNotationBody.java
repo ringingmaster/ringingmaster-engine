@@ -6,6 +6,7 @@ import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import org.ringingmaster.engine.notation.NotationRow;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.SortedSet;
  *
  * User: Stephen
  */
+@Immutable
 public class PlainCourseNotationBody extends DefaultNotation implements NotationBody {
 
 	PlainCourseNotationBody(String name, NumberOfBells numberOfWorkingBells, List<NotationRow> normalisedNotationElements) {
@@ -24,7 +26,7 @@ public class PlainCourseNotationBody extends DefaultNotation implements Notation
 
 	@Override
 	public String getNameIncludingNumberOfBells() {
-		return getName() + " " + getNumberOfWorkingBells().getName();
+		return getName() + " " + getNumberOfWorkingBells().getName(); //TODO pre-calculate
 	}
 
 	@Override

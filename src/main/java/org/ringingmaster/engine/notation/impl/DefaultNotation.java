@@ -22,7 +22,7 @@ public abstract class DefaultNotation implements Notation {
 	private final String name;
 
 	/** A List of NotationElements that has been unfolded, and had the le applied if applicable */
-	private final List<NotationRow> normalisedNotationElements;
+	private final ImmutableList<NotationRow> normalisedNotationElements;
 
 	/**
 	 * Construct a new notation using a simple list of sets of elements.
