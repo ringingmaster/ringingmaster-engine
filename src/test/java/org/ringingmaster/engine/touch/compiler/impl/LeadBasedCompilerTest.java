@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.fail;
+
 /**
  * User: Stephen
  */
@@ -14,7 +16,7 @@ public class LeadBasedCompilerTest {
 //	private final Parser parser = new DefaultParser();
 
 	@Test
-	public void fail() {
+	public void failTest() {
 		fail(); //TODO
 
 	}
