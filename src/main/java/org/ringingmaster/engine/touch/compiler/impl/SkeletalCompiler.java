@@ -12,7 +12,7 @@ import org.ringingmaster.engine.notation.NotationRow;
 import org.ringingmaster.engine.touch.analysis.Analysis;
 import org.ringingmaster.engine.touch.analysis.impl.AnalysisBuilder;
 import org.ringingmaster.engine.touch.compiler.Compiler;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
+import org.ringingmaster.engine.touch.container.Touch;
 import org.ringingmaster.engine.touch.proof.Proof;
 import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 import org.ringingmaster.engine.touch.proof.impl.DefaultProof;

@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
 import org.ringingmaster.engine.notation.NotationCall;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
+import org.ringingmaster.engine.touch.container.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

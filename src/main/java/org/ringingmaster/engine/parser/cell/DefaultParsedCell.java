@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
-import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.element.Element;
+import org.ringingmaster.engine.touch.container.cell.Cell;
+import org.ringingmaster.engine.touch.container.element.Element;
 
 import java.util.Optional;
 

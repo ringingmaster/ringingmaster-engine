@@ -1,8 +1,7 @@
 package org.ringingmaster.engine.touch.compiler.impl;
 
 import org.ringingmaster.engine.touch.compiler.Compiler;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
+import org.ringingmaster.engine.touch.container.Touch;
 
 /**
  * TODO comments.

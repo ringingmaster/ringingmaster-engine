@@ -4,14 +4,14 @@ import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.compiler.impl.CompilerFactory;
-import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.container.ObservableTouch;
+import org.ringingmaster.engine.touch.container.checkingtype.CheckingType;
 import org.ringingmaster.engine.touch.proof.Proof;
 import org.ringingmaster.engine.touch.proof.ProofTerminationReason;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_LEADS_MAX;
-import static org.ringingmaster.engine.touch.newcontainer.ObservableTouch.TERMINATION_MAX_ROWS_MAX;
+import static org.ringingmaster.engine.touch.container.ObservableTouch.TERMINATION_MAX_LEADS_MAX;
+import static org.ringingmaster.engine.touch.container.ObservableTouch.TERMINATION_MAX_ROWS_MAX;
 
 /**
  * TODO comments???

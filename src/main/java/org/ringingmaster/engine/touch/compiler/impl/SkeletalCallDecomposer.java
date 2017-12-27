@@ -3,10 +3,10 @@ package org.ringingmaster.engine.touch.compiler.impl;
 import com.google.common.collect.Lists;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.NotThreadSafe;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
-import org.ringingmaster.engine.touch.newcontainer.variance.impl.NullVariance;
+import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.container.cell.Cell;
+import org.ringingmaster.engine.touch.container.variance.Variance;
+import org.ringingmaster.engine.touch.container.variance.impl.NullVariance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

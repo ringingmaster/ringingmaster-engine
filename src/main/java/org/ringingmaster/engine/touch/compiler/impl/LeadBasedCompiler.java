@@ -5,8 +5,8 @@ import net.jcip.annotations.ThreadSafe;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.touch.compiler.Compiler;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.container.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

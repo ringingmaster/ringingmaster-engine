@@ -2,7 +2,7 @@ package org.ringingmaster.engine.touch.compiler.impl;
 
 import net.jcip.annotations.Immutable;
 
-import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
+import org.ringingmaster.engine.touch.container.variance.Variance;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

@@ -2,7 +2,7 @@ package org.ringingmaster.engine.touch.proof;
 
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.touch.analysis.Analysis;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
+import org.ringingmaster.engine.touch.container.Touch;
 import net.jcip.annotations.Immutable;
 
 import java.util.Optional;

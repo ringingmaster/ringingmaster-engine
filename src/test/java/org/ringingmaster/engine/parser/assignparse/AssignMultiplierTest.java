@@ -5,16 +5,16 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parse;
-import org.ringingmaster.engine.touch.newcontainer.ObservableTouch;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.container.ObservableTouch;
+import org.ringingmaster.engine.touch.container.checkingtype.CheckingType;
 
 import static org.junit.Assert.assertEquals;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
 import static org.ringingmaster.engine.parser.ParseType.CALL_MULTIPLIER;
-import static org.ringingmaster.engine.touch.newcontainer.TableType.TOUCH_TABLE;
-import static org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.touch.container.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.touch.container.checkingtype.CheckingType.COURSE_BASED;
 
 /**
  * TODO comments???

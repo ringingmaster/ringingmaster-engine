@@ -12,9 +12,9 @@ import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.newcontainer.cell.Cell;
-import org.ringingmaster.engine.touch.newcontainer.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.container.cell.Cell;
+import org.ringingmaster.engine.touch.container.checkingtype.CheckingType;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.touch.container.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * Parses all cells and assigns a parse type where possible

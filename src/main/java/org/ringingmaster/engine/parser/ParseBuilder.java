@@ -5,7 +5,7 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.parser.cell.EmptyParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
+import org.ringingmaster.engine.touch.container.Touch;
 
 import java.util.Optional;
 

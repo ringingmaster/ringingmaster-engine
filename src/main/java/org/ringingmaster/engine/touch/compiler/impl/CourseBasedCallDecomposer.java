@@ -2,8 +2,8 @@ package org.ringingmaster.engine.touch.compiler.impl;
 
 import net.jcip.annotations.NotThreadSafe;
 import org.ringingmaster.engine.parser.ParseType;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.newcontainer.variance.Variance;
+import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.container.variance.Variance;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;

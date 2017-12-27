@@ -8,7 +8,7 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
+import org.ringingmaster.engine.touch.container.Touch;
 
 import java.io.IOException;
 import java.io.InputStream;

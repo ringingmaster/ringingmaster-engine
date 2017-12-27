@@ -4,11 +4,11 @@ import com.google.common.collect.ImmutableSet;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.newcontainer.Touch;
-import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultDefinitionTableAccess;
-import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefaultTouchTableAccess;
-import org.ringingmaster.engine.touch.newcontainer.tableaccess.DefinitionTableAccess;
-import org.ringingmaster.engine.touch.newcontainer.tableaccess.TouchTableAccess;
+import org.ringingmaster.engine.touch.container.Touch;
+import org.ringingmaster.engine.touch.container.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.touch.container.tableaccess.DefaultTouchTableAccess;
+import org.ringingmaster.engine.touch.container.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.touch.container.tableaccess.TouchTableAccess;
 
 import java.util.Optional;
 
