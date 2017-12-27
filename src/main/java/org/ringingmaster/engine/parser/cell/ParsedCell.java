@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 import org.ringingmaster.engine.touch.cell.Cell;
 
 import java.util.Optional;

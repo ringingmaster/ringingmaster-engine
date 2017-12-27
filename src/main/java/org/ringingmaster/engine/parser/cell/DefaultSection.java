@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.parser.cell;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 import org.ringingmaster.engine.parser.ParseType;
 
 /**

@@ -4,7 +4,7 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationRow;
 import com.google.common.collect.ImmutableList;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Iterator;
 import java.util.List;

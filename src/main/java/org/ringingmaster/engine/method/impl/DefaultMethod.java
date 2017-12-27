@@ -5,7 +5,7 @@ import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodLead;
 import org.ringingmaster.engine.method.MethodRow;
 import com.google.common.collect.Iterators;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Iterator;
 import java.util.List;

@@ -3,7 +3,7 @@ package org.ringingmaster.engine.proof;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.analysis.Analysis;
 import org.ringingmaster.engine.touch.Touch;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Optional;
 

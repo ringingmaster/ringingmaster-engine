@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.notation;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Immutable Holder for a Set of NotationElements that make up a single row.

@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compiler.impl;
 
-import net.jcip.annotations.NotThreadSafe;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.variance.Variance;

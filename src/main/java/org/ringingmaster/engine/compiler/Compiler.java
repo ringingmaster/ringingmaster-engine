@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.compiler;
 
 import org.ringingmaster.engine.proof.Proof;
-import net.jcip.annotations.ThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 
 import java.util.function.Supplier;
 

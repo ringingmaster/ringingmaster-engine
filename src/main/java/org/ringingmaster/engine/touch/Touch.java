@@ -2,7 +2,7 @@ package org.ringingmaster.engine.touch;
 
 
 import com.google.common.collect.ImmutableSet;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;

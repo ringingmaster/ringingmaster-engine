@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.compiler.impl;
 
 import com.google.common.collect.Lists;
-import net.jcip.annotations.Immutable;
-import net.jcip.annotations.NotThreadSafe;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.variance.Variance;

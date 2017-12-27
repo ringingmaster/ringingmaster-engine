@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.notation.impl;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
 

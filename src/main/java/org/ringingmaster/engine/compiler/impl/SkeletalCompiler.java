@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compiler.impl;
 
-import net.jcip.annotations.ThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodLead;
 import org.ringingmaster.engine.method.MethodRow;

@@ -6,7 +6,7 @@ import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.method.RowCourseType;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationPlace;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Arrays;
 import java.util.Iterator;

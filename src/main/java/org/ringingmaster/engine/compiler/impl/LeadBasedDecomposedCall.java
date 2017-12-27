@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compiler.impl;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.variance.Variance;

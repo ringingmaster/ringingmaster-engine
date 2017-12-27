@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.method;
 
 import org.ringingmaster.engine.NumberOfBells;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Iterator;
 

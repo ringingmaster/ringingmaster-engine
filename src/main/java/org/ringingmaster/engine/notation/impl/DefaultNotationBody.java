@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.NotationRow;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.List;
 import java.util.Set;

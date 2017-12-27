@@ -2,7 +2,7 @@ package org.ringingmaster.engine.method;
 
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationPlace;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.List;
 import java.util.Set;

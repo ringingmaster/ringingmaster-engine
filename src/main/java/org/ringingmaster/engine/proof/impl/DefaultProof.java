@@ -5,7 +5,7 @@ import org.ringingmaster.engine.analysis.Analysis;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.proof.Proof;
 import org.ringingmaster.engine.proof.ProofTerminationReason;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Optional;
 

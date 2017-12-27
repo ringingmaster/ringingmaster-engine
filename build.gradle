@@ -31,7 +31,6 @@ dependencies {
     compile 'org.ringingmaster:ringingmaster-persist:1.0.0'
 
     // General
-    compile 'net.jcip:jcip-annotations:1.0'
     compile 'io.reactivex.rxjava2:rxjava:2.1.3'
     compile 'org.pcollections:pcollections:2.1.2'
 

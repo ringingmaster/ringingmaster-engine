@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.compiler.impl;
 
 import com.google.common.collect.ImmutableList;
-import net.jcip.annotations.ThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import org.ringingmaster.engine.method.MethodRow;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.compiler.Compiler;

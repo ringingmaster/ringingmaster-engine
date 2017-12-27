@@ -11,7 +11,7 @@ import org.ringingmaster.engine.compiler.Compiler;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import com.google.common.collect.ImmutableList;
-import net.jcip.annotations.ThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
     import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

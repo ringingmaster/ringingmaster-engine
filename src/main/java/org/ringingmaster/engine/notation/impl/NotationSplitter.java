@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.notation.impl;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.ArrayList;
 import java.util.List;

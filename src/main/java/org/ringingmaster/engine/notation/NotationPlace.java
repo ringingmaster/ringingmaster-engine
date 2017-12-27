@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.notation;
 
 import org.ringingmaster.engine.method.Bell;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.HashMap;
 import java.util.HashSet;

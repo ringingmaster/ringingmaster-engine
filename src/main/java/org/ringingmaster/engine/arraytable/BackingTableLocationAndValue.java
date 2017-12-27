@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.arraytable;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * TODO comments???

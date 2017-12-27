@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.touch.variance.impl;
 
 import org.ringingmaster.engine.touch.variance.Variance;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A Null object pattern that always includes everything.

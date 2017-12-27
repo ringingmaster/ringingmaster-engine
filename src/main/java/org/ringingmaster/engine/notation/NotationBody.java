@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.notation;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Set;
 import java.util.SortedSet;

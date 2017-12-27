@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.notation.impl;
 
+import com.google.common.base.Strings;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Method;
@@ -8,11 +9,10 @@ import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import org.ringingmaster.engine.notation.NotationPlace;
 import org.ringingmaster.engine.notation.NotationRow;
-import com.google.common.base.Strings;
-import net.jcip.annotations.NotThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;

@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.touch.variance;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * TODO comments???

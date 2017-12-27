@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.NotationPlace;
 import org.ringingmaster.util.conversion.ConvertionUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 import java.util.Collection;
 import java.util.HashSet;

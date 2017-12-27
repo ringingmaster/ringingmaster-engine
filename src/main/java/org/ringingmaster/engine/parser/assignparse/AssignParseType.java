@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.assignparse;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.HashBasedTable;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;

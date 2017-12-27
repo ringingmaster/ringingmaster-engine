@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.touch.cell;
 
 import com.google.common.collect.ImmutableList;
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 import org.ringingmaster.engine.touch.element.Element;
 
 import java.util.List;
