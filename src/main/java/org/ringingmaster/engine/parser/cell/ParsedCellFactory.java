@@ -1,14 +1,17 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.cell.Cell;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
 
 /**
  * TODO comments???
@@ -17,15 +20,19 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class ParsedCellFactory {
 
-    public static ParsedCell buildParsedCell(Cell cell, Set<Section> sections) {
-        Set<Group> groups = createGroupsToMatchSections(sections);
-        return buildParsedCell(cell, sections, groups);
+    public static ParsedCell buildParsedCell(Cell parentCell, Set<Section> sections) {
+        Set<Group> groups = buildGroupsToMatchSections(sections);
+        return buildParsedCell(parentCell, sections, groups);
     }
 
-    private static Set<Group> createGroupsToMatchSections(Set<Section> sections) {
+    private static Set<Group> buildGroupsToMatchSections(Set<Section> sections) {
         return sections.stream()
-                .map(section ->new DefaultGroup(section.getElementStartIndex(), section.getElementLength(), true, Optional.empty(), section))
+                .map(ParsedCellFactory::buildGroupToMatchSection)
                 .collect(Collectors.toSet());
+    }
+
+    public static Group buildGroupToMatchSection(Section section) {
+        return buildGroup(section.getElementStartIndex(), section.getElementLength(), true, Optional.empty(), Lists.newArrayList(section));
     }
 
     public static ParsedCell buildParsedCell(Cell parentCell, Set<Section> sections, Set<Group> groups) {
@@ -35,8 +42,8 @@ public class ParsedCellFactory {
         Group[] groupByElementIndex = new Group[parentCell.getElementSize()];
         createGroupIndex(groups, groupByElementIndex);
 
-        ImmutableList<Section> allSections = ImmutableList.sortedCopyOf(Section.BY_START_POSITION, sections);
-        ImmutableList<Group> allGroups = ImmutableList.sortedCopyOf(Group.BY_START_POSITION, groups);
+        ImmutableList<Section> allSections = ImmutableList.sortedCopyOf(Section.BY_START_INDEX, sections);
+        ImmutableList<Group> allGroups = ImmutableList.sortedCopyOf(Group.BY_START_INDEX, groups);
 
         return new DefaultParsedCell(parentCell, sectionByElementIndex, groupByElementIndex, allSections, allGroups);
     }
@@ -45,6 +52,7 @@ public class ParsedCellFactory {
     private static void createSectionIndex(Set<Section> sections, Section[] result) {
         for (Section section : sections) {
             for (int index = section.getElementStartIndex(); index < section.getElementStartIndex()+section.getElementLength() ; index++) {
+                checkElementIndex(index, result.length, "Section [" + section + "] outside underlying cell element size.");
                 checkArgument(result[index] == null,
                         "Section [%s] overlaps into section [%s]", section, result[index]);
                 result[index] = section;
@@ -62,5 +70,9 @@ public class ParsedCellFactory {
 
     public static Section buildSection(int elementStartIndex, int elementLength, ParseType parseType) {
         return new DefaultSection(elementStartIndex, elementLength, parseType);
+    }
+
+    public static Group buildGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, List<Section> sections) {
+        return new DefaultGroup(elementStartIndex, elementLength, valid, message, sections);
     }
 }

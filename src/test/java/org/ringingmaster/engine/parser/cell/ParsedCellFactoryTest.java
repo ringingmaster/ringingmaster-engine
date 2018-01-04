@@ -2,21 +2,55 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.Sets;
 import org.junit.Test;
-import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.cell.Cell;
 
 import java.util.HashSet;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.ringingmaster.engine.parser.ParseType.*;
 
 public class ParsedCellFactoryTest {
+
+    @Test
+    public void buildSingleSectionParsedCellHasCorrectDimensions() {
+        HashSet<Section> sections = Sets.newHashSet(
+                ParsedCellFactory.buildSection(0, 1, CALL));
+
+        Cell mock = mock(Cell.class);
+        when(mock.getElementSize()).thenReturn(1);
+
+        final ParsedCell parsedCell = ParsedCellFactory.buildParsedCell(mock, sections);
+
+        assertEquals(1, parsedCell.getElementSize());
+        assertEquals(CALL, parsedCell.getGroupAtElementIndex(0).get().getSections().get(0).getParseType());
+    }
+
+    @Test
+    public void buildTwoSectionNonContiguousSectionsHasCorrectDimensions() {
+        HashSet<Section> sections = Sets.newHashSet(
+                ParsedCellFactory.buildSection(0, 1, CALL),
+                //gap 1,1
+                ParsedCellFactory.buildSection(2, 1, CALLING_POSITION)
+        );
+
+        Cell mock = mock(Cell.class);
+        when(mock.getElementSize()).thenReturn(3);
+
+        final ParsedCell parsedCell = ParsedCellFactory.buildParsedCell(mock, sections);
+
+        assertEquals(CALL, parsedCell.getSectionAtElementIndex(0).get().getParseType());
+        assertFalse(parsedCell.getSectionAtElementIndex(1).isPresent());
+        assertEquals(CALLING_POSITION, parsedCell.getSectionAtElementIndex(2).get().getParseType());
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void overlappingSectionsThrows() {
         HashSet<Section> sections = Sets.newHashSet(
-                ParsedCellFactory.buildSection(0, 2, ParseType.CALL),
-                ParsedCellFactory.buildSection(1, 1, ParseType.CALL_MULTIPLIER));
+                ParsedCellFactory.buildSection(0, 2, CALL),
+                ParsedCellFactory.buildSection(1, 1, CALL_MULTIPLIER));
 
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(3);
