@@ -30,7 +30,7 @@ public class AssertParse {
     public static void assertParse(ParsedCell parsedCell, Expected... expecteds) {
         assertNotNull(parsedCell);
 
-        assertEquals("checking length", Arrays.stream(expecteds).mapToInt(Expected::getLength).sum(), parsedCell.getElementSize());
+        assertEquals("expected length does not match actual length", Arrays.stream(expecteds).mapToInt(Expected::getLength).sum(), parsedCell.getElementSize());
 
         int elementIndex = 0;
         for (Expected expected : expecteds) {
@@ -39,10 +39,13 @@ public class AssertParse {
                 GroupExpected groupExpected = (GroupExpected) expected;
 
                 log.info("Start Group [{}]", elementIndex);
+                if (groupExpected.groupMessage.isPresent()) {
+                    assertEquals("Group message", groupExpected.groupMessage, parsedCell.getGroupAtElementIndex(elementIndex).get().getMessage());
+                }
                 int sectionIndexInGroup = 0;
                 for (SectionExpected sectionExpected : groupExpected.sectionExpecteds) {
                     log.info("  Checking Section [{}, {}]", elementIndex, sectionExpected);
-                    elementIndex = checkSection(parsedCell, elementIndex, sectionExpected, sectionIndexInGroup++);
+                    elementIndex = assertSection(parsedCell, elementIndex, sectionExpected, sectionIndexInGroup++);
                 }
                 log.info("End Group [{}]", elementIndex);
             }
@@ -50,8 +53,8 @@ public class AssertParse {
                 GroupSectionExpected groupSectionExpected = (GroupSectionExpected) expected;
 
                 log.info("Checking Group Section [{}, {}]", elementIndex, groupSectionExpected);
-                checkGroup(parsedCell, elementIndex, groupSectionExpected);
-                elementIndex = checkSection(parsedCell, elementIndex, groupSectionExpected,0);
+                assertGroupForSingleSection(parsedCell, elementIndex, groupSectionExpected);
+                elementIndex = assertSection(parsedCell, elementIndex, groupSectionExpected,0);
 
             }
             else if (expected instanceof UnparsedExpected) {
@@ -69,26 +72,30 @@ public class AssertParse {
         }
     }
 
-    private static void checkGroup(ParsedCell parsedCell, int elementIndex, GroupSectionExpected groupSectionExpected) {
+    private static void assertGroupForSingleSection(ParsedCell parsedCell, int elementIndex, GroupSectionExpected groupSectionExpected) {
         // Assert the group matches the section.
 
         Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
         Optional<Group> groupAtFirstElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
-        assertTrue(groupAtFirstElementIndex.isPresent());
-        assertEquals(1, groupAtFirstElementIndex.get().getSections().size());
+        assertTrue("No group at elementIndex [" + elementIndex + "]", groupAtFirstElementIndex.isPresent());
+        assertEquals("Incorrect number of Sections", 1, groupAtFirstElementIndex.get().getSections().size());
         assertEquals(sectionAtFirstElementIndex.get(), groupAtFirstElementIndex.get().getSections().get(0));
 
         assertEquals("Group validity", groupSectionExpected.validGroup, groupAtFirstElementIndex.get().isValid());
+        if (groupSectionExpected.groupMessage.isPresent()) {
+            assertEquals("Group message", groupSectionExpected.groupMessage, groupAtFirstElementIndex.get().getMessage());
+        }
     }
 
-    private static int checkSection(ParsedCell parsedCell, int elementIndex, SectionExpected sectionExpected, int sectionIndexInGroup) {
+    private static int assertSection(ParsedCell parsedCell, int elementIndex, SectionExpected sectionExpected, int sectionIndexInGroup) {
         Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
         assertTrue("Missing Section: " + sectionExpected, sectionAtFirstElementIndex.isPresent());
         assertEquals("Section: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.parseType, sectionAtFirstElementIndex.get().getParseType());
 
-        // Assert all subsequent element points have the same Section
         for (int i = 0; i < sectionExpected.length; i++) {
+            // Checking all Section index's in section point to the same Section
             assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getSectionAtElementIndex(elementIndex).get());
+            // Checking all Groups index's in section point to the same Section
             assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getGroupAtElementIndex(elementIndex).get().getSections().get(sectionIndexInGroup));
             elementIndex++;
         }
@@ -102,10 +109,12 @@ public class AssertParse {
 
     private static class GroupExpected implements Expected {
 
+        final Optional<String> groupMessage;
         final SectionExpected[] sectionExpecteds;
 
-        GroupExpected(SectionExpected... sectionExpecteds) {
+        GroupExpected(Optional<String> groupMessage, SectionExpected... sectionExpecteds) {
             this.sectionExpecteds = sectionExpecteds;
+            this.groupMessage = groupMessage;
         }
 
         @Override
@@ -165,10 +174,12 @@ public class AssertParse {
      */
     public static class GroupSectionExpected extends SectionExpected {
         final boolean validGroup;
+        final Optional<String> groupMessage;
 
-        GroupSectionExpected(int length, ParseType parseType, boolean validGroup) {
+        GroupSectionExpected(int length, ParseType parseType, boolean groupVaid, Optional<String> groupMessage) {
             super(length, parseType);
-            this.validGroup = validGroup;
+            this.validGroup = groupVaid;
+            this.groupMessage = checkNotNull(groupMessage);
         }
 
         @Override
@@ -185,12 +196,15 @@ public class AssertParse {
 
 
     public static Expected valid(SectionExpected... sectionExpecteds) {
-        return new GroupExpected(sectionExpecteds);
+        return new GroupExpected(Optional.empty(), sectionExpecteds);
     }
 
+    public static Expected invalid(String messge, SectionExpected... sectionExpecteds) {
+        return new GroupExpected(Optional.of(messge), sectionExpecteds);
+    }
 
     public static Expected unparsed() {
-        return unparsed(1);
+        return new UnparsedExpected(1);
     }
 
     public static Expected unparsed(int length) {
@@ -212,15 +226,18 @@ public class AssertParse {
     }
 
     public static Expected valid(int length, ParseType parseType) {
-        return new GroupSectionExpected(length, parseType, true);
+        return new GroupSectionExpected(length, parseType, true, Optional.empty());
     }
 
     public static Expected invalid(ParseType parseType) {
-        return invalid(1, parseType);
+        return new GroupSectionExpected(1, parseType, false, Optional.empty());
     }
 
     public static Expected invalid(int length, ParseType parseType) {
-        return new GroupSectionExpected(length, parseType, false);
+        return new GroupSectionExpected(length, parseType, false, Optional.empty());
     }
 
+    public static Expected invalid(int length, ParseType parseType, String message) {
+        return new GroupSectionExpected(length, parseType, false, Optional.of(message));
+    }
 }
