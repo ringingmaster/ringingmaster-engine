@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.touch.element;
 
-import javax.annotation.concurrent.Immutable;
 import org.ringingmaster.engine.touch.variance.Variance;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Element {
 
     private final String character;
-    private final Optional<Variance> variance;
+    private final Optional<Variance> variance; //TODO we should be able to simply enter variances as text instead of special handling.
 
 
     public Element(char character) {
