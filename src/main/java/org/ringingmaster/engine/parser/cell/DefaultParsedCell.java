@@ -33,6 +33,11 @@ class DefaultParsedCell implements ParsedCell {
     }
 
     @Override
+    public Cell getParentCell() {
+        return parentCell;
+    }
+
+    @Override
     public int getElementSize() {
         return parentCell.getElementSize();
     }
@@ -94,9 +99,5 @@ class DefaultParsedCell implements ParsedCell {
                 ", allSections=" + allSections +
                 ", allGroups=" + allGroups +
                 '}';
-    }
-
-    Cell getParentCell() {
-        return parentCell;
     }
 }
