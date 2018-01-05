@@ -3,9 +3,9 @@ package org.ringingmaster.engine.parser.cell;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import javax.annotation.concurrent.Immutable;
 
-import java.util.List;
+import javax.annotation.concurrent.Immutable;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -27,7 +27,7 @@ class DefaultGroup implements Group {
         this(elementStartIndex, elementLength, valid, message, Lists.newArrayList(section));
     }
 
-    DefaultGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, List<Section> sections) {
+    DefaultGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, Collection<Section> sections) {
         this.elementStartIndex = elementStartIndex;
         this.elementLength = elementLength;
         this.valid = valid;
