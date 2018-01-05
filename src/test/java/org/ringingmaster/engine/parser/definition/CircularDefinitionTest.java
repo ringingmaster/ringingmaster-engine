@@ -12,11 +12,11 @@ import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
+import static org.ringingmaster.engine.parser.ParseType.CALL;
+import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -26,8 +26,10 @@ public class CircularDefinitionTest {
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new CircularDefinition().apply(parse);
+
+        Parse result = new AssignParseType()
+                .andThen(new CircularDefinition())
+                .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
         assertEquals(0, result.allTouchCells().getColumnSize());
@@ -44,8 +46,9 @@ public class CircularDefinitionTest {
         touch.addCharacters(TOUCH_TABLE, 2,0, "CALL");// To force the Parse to be replaced
         touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new CircularDefinition().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new CircularDefinition())
+                .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
         assertEquals(2, result.allTouchCells().getColumnSize());
@@ -62,8 +65,9 @@ public class CircularDefinitionTest {
         touch.addDefinition("DEF_3", "DEF_1");
         touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new CircularDefinition().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new CircularDefinition())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(5, DEFINITION));
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
@@ -79,8 +83,9 @@ public class CircularDefinitionTest {
         touch.addDefinition("DEF_3", "-");
         touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new CircularDefinition().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new CircularDefinition())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(5, DEFINITION));
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION), valid(5, DEFINITION));
@@ -93,8 +98,9 @@ public class CircularDefinitionTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
         touch.addDefinition("DEF_1", "DEF_1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new CircularDefinition().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new CircularDefinition())
+                .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
     }
@@ -106,8 +112,9 @@ public class CircularDefinitionTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "DEF_1");
         touch.addDefinition("DEF_1", "DEF_1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new CircularDefinition().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new CircularDefinition())
+                .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
     }
@@ -118,8 +125,9 @@ public class CircularDefinitionTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
         touch.addDefinition("DEF_1", "DEF_1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new CircularDefinition().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new CircularDefinition())
+                .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
     }

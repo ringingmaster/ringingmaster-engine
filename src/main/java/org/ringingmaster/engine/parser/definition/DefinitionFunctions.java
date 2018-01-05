@@ -5,7 +5,7 @@ import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.ParsedCellBuilder;
+import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
 import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
 
@@ -53,17 +53,17 @@ public class DefinitionFunctions {
     void markInvalid(ImmutableArrayTable<ParsedCell> originalCells, Set<String> invalidDefinitions, HashBasedTable<Integer, Integer, ParsedCell> resultCells, Function<String, String> createErrorMessage) {
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : originalCells) {
             ParsedCell originalCell = locationAndCell.getValue();
-            ParsedCellBuilder parsedCellBuilder = new ParsedCellBuilder().prototypeOf(originalCell);
+            ParsedCellMutator parsedCellMutator = new ParsedCellMutator().prototypeOf(originalCell);
 
             for (Section section : originalCell.allSections()) {
                 String characters = originalCell.getCharacters(section);
                 if (invalidDefinitions.contains(characters)) {
                     String message = createErrorMessage.apply(characters);
-                    parsedCellBuilder.setInvalid(originalCell.getGroupForSection(section), message);
+                    parsedCellMutator.invalidateGroup(originalCell.getGroupForSection(section), message);
                 }
             }
 
-            resultCells.put(locationAndCell.getRow(), locationAndCell.getCol(), parsedCellBuilder.build());
+            resultCells.put(locationAndCell.getRow(), locationAndCell.getCol(), parsedCellMutator.build());
         }
     }
 }

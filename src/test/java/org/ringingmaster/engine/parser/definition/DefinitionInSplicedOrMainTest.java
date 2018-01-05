@@ -43,8 +43,9 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 2,0, "CALL");// To force the Parse to be replaced
         touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
         assertEquals(2, result.allTouchCells().getColumnSize());
@@ -58,8 +59,10 @@ public class DefinitionInSplicedOrMainTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
         touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
         assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
@@ -71,8 +74,10 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
         touch.addCharacters(TOUCH_TABLE, 1,0, "SPLICE");
         touch.addCharacters(TOUCH_TABLE, 0,1, "CALL");
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
         assertParse(result.allTouchCells().get(1,0), valid(6, DEFINITION));
@@ -87,8 +92,9 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
         touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
         assertParse(result.allTouchCells().get(1,0), valid(4, DEFINITION));
@@ -104,8 +110,9 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
         touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
         assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
@@ -121,8 +128,9 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
         touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN_1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
         assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
@@ -137,8 +145,9 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
         touch.addCharacters(TOUCH_TABLE, 1,1, "IN_SPICE");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
         assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
@@ -154,8 +163,9 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 0, 1, "SPLICE");
         touch.addCharacters(TOUCH_TABLE, 1, 1, "IN_SPICE_1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new DefinitionInSplicedOrMain())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0, 0), invalid(4, DEFINITION));
         assertParse(result.allTouchCells().get(0, 1), valid(6, DEFINITION));
