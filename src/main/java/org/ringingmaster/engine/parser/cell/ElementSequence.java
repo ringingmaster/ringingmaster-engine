@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 public interface ElementSequence {
 
-    Comparator<ElementSequence> BY_START_POSITION = Comparator.comparingInt(ElementSequence::getElementStartIndex);
+    Comparator<ElementSequence> BY_START_INDEX = Comparator.comparingInt(ElementSequence::getElementStartIndex);
 
     int getElementStartIndex();
     int getElementLength();
