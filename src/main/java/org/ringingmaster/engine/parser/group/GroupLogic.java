@@ -8,7 +8,7 @@ import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.ParsedCellBuilder;
+import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
 
 import java.util.ArrayDeque;
@@ -79,13 +79,13 @@ public class GroupLogic implements Function<Parse, Parse> {
 
             ParsedCell originalParsedCell = resultCells.get(invalidSection.getKey().row,invalidSection.getKey().col);
             Group group = originalParsedCell.getGroupForSection(section);
-            ParsedCellBuilder parsedCellBuilder = new ParsedCellBuilder()
+            ParsedCellMutator parsedCellMutator = new ParsedCellMutator()
                     .prototypeOf(originalParsedCell)
-                    .setInvalid(group, invalidSection.getValue());
+                    .invalidateGroup(group, invalidSection.getValue());
 
             resultCells.put(invalidSection.getKey().row,
                     invalidSection.getKey().col,
-                    parsedCellBuilder.build());
+                    parsedCellMutator.build());
         }
 
     }

@@ -9,7 +9,7 @@ import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.ParsedCellBuilder;
+import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
 
 import java.util.function.Function;
@@ -47,7 +47,7 @@ public class MultipleCallPositionsInOneCell implements Function<Parse, Parse> {
     }
 
     private ParsedCell transformCell(ParsedCell cell) {
-        ParsedCellBuilder builder = new ParsedCellBuilder()
+        ParsedCellMutator builder = new ParsedCellMutator()
             .prototypeOf(cell);
 
         boolean seenValidCallingPosition = false;
@@ -58,11 +58,11 @@ public class MultipleCallPositionsInOneCell implements Function<Parse, Parse> {
                     seenValidCallingPosition = true;
                 }
                 else {
-                    builder.setInvalid(cell.getGroupForSection(section), "Only one Calling Position allowed in this cell");
+                    builder.invalidateGroup(cell.getGroupForSection(section), "Only one Calling Position allowed in this cell");
                 }
             }
             else {
-                builder.setInvalid(cell.getGroupForSection(section), "Only Calling Positions are allowed in this cell");
+                builder.invalidateGroup(cell.getGroupForSection(section), "Only Calling Positions are allowed in this cell");
             }
         }
 

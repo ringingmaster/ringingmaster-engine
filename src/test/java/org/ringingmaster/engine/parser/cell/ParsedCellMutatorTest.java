@@ -308,6 +308,81 @@ public class ParsedCellMutatorTest {
                 .build();
     }
 
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void addingSectionOutsideParentCellThrows() {
+        ParsedCell parsedCell = buildParsedCell();
+
+        new ParsedCellMutator()
+                .prototypeOf(parsedCell)
+                .addSectionIntoGroup(ParsedCellFactory.buildSection(6, 1, PLAIN_LEAD_MULTIPLIER),
+                        parsedCell.getGroupAtElementIndex(3).get())
+                .build();
+    }
+
+    @Test
+    public void widenSectionToRightReturnsWiderSection() {
+        ParsedCell parsedCell = buildParsedCellWithGap();
+
+        ParsedCell builtCell = new ParsedCellMutator()
+                .prototypeOf(parsedCell)
+                .widenSectionRight(parsedCell.getSectionAtElementIndex(0).get(), 2)
+                .build();
+
+        assertParse(builtCell, valid(3, CALL), valid(1, PLAIN_LEAD), unparsed(2));
+    }
+
+    @Test
+    public void widenSectionToLeftReturnsWiderSection() {
+        ParsedCell parsedCell = buildParsedCellWithGap();
+
+        ParsedCell builtCell = new ParsedCellMutator()
+                .prototypeOf(parsedCell)
+                .widenSectionLeft(parsedCell.getSectionAtElementIndex(3).get(), 2)
+                .build();
+
+        assertParse(builtCell, valid(1, CALL), valid(3, PLAIN_LEAD), unparsed(2));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void widenSectionGreaterThanCellWidthThrows() {
+        ParsedCell parsedCell = buildParsedCellWithGap();
+
+        new ParsedCellMutator()
+                .prototypeOf(parsedCell)
+                .widenSectionRight(parsedCell.getSectionAtElementIndex(3).get(), 3)
+                .build();
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void widenSectionSmallerThan0Throws() {
+        ParsedCell parsedCell = buildParsedCellWithGap();
+
+        new ParsedCellMutator()
+                .prototypeOf(parsedCell)
+                .widenSectionLeft(parsedCell.getSectionAtElementIndex(0).get(), 1)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void widenSectionOverlappingRightThrows() {
+        ParsedCell parsedCell = buildParsedCellWithGap();
+
+        new ParsedCellMutator()
+                .prototypeOf(parsedCell)
+                .widenSectionRight(parsedCell.getSectionAtElementIndex(0).get(), 3)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void widenSectionOverlappingLeftThrows() {
+        ParsedCell parsedCell = buildParsedCellWithGap();
+
+        new ParsedCellMutator()
+                .prototypeOf(parsedCell)
+                .widenSectionLeft(parsedCell.getSectionAtElementIndex(3).get(), 3)
+                .build();
+    }
+
     private ParsedCell buildParsedCellWithGap() {
 
         HashSet<Section> sections = Sets.newHashSet(

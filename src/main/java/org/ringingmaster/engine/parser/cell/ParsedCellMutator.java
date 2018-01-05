@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class ParsedCellMutator {
 
-    private ParsedCell prototype; 
+    private ParsedCell prototype;
 
     private final ParsedCellMutatorGetSectionsAndGroups getSectionsAndGroups = new ParsedCellMutatorGetSectionsAndGroups();
     private final ParsedCellMutatonAddSectionForExistingGroup newSectionForExistingGroup = new ParsedCellMutatonAddSectionForExistingGroup();
@@ -43,8 +43,13 @@ public class ParsedCellMutator {
         return this;
     }
 
-    public ParsedCellMutator widenSection(Section sourceSection, int additionalElementIndex) {
-        widenSection.widenSection(sourceSection, additionalElementIndex);
+    public ParsedCellMutator widenSectionRight(Section sourceSection, int additionalElementCount) {
+        widenSection.widenSectionRight(sourceSection, additionalElementCount);
+        return this;
+    }
+
+    public ParsedCellMutator widenSectionLeft(Section sourceSection, int additionalElementCount) {
+        widenSection.widenSectionLeft(sourceSection, additionalElementCount);
         return this;
     }
 

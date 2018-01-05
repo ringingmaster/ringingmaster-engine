@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.cell.Cell;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,7 +72,7 @@ public class ParsedCellFactory {
         return new DefaultSection(elementStartIndex, elementLength, parseType);
     }
 
-    public static Group buildGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, List<Section> sections) {
+    public static Group buildGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, Collection<Section> sections) {
         return new DefaultGroup(elementStartIndex, elementLength, valid, message, sections);
     }
 }

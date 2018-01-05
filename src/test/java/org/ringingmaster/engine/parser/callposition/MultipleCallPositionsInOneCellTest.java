@@ -12,11 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
+import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
 public class MultipleCallPositionsInOneCellTest {
@@ -26,8 +26,9 @@ public class MultipleCallPositionsInOneCellTest {
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new MultipleCallPositionsInOneCell())
+                .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
         assertEquals(0, result.allTouchCells().getColumnSize());
@@ -42,8 +43,9 @@ public class MultipleCallPositionsInOneCellTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
         touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
+        Parse result = new AssignParseType()
+                .andThen(new MultipleCallPositionsInOneCell())
+                .apply(touch.get());
 
         assertEquals(2, result.allTouchCells().getRowSize());
         assertEquals(2, result.allTouchCells().getColumnSize());
@@ -57,8 +59,10 @@ public class MultipleCallPositionsInOneCellTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "W");
         touch.addCharacters(TOUCH_TABLE, 0,1, "H");
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
+
+        Parse result = new AssignParseType()
+                .andThen(new MultipleCallPositionsInOneCell())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
@@ -69,8 +73,10 @@ public class MultipleCallPositionsInOneCellTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "WH");
         touch.addCharacters(TOUCH_TABLE, 0,1, "-HW");
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new MultipleCallPositionsInOneCell().apply(parse);
+
+        Parse result = new AssignParseType()
+                .andThen(new MultipleCallPositionsInOneCell())
+                .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));
         assertParse(result.allTouchCells().get(0,1), unparsed() ,valid(CALLING_POSITION), invalid(CALLING_POSITION));

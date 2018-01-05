@@ -7,10 +7,6 @@ package org.ringingmaster.engine.parser;
  */
 public enum ParseType {
 
-	/** null - set before other types set */
-	//TODO remove UPARSED
-	@Deprecated
-	UNPARSED,
 	/** space */
 	WHITESPACE,
 	/** a normal calling position e.g. W B H*/

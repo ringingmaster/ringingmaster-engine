@@ -79,8 +79,9 @@ public class ParsedCellMutatorMergeGroups implements Function<ParsedCellMutatorS
                 .map(index -> getGroupForIndex(source.getGroups(), index))
                 .collect(Collectors.toSet());
 
-        PSet<Group> groups = source.getGroups().minusAll(consumedGroups);
-        groups = groups.plusAll(mergeAppiedGroups);
+        final PSet<Group> groups = source.getGroups()
+                .minusAll(consumedGroups)
+                .plusAll(mergeAppiedGroups);
 
         return new ParsedCellMutatorSectionsAndGroups(source.getSections(), groups);
     }
