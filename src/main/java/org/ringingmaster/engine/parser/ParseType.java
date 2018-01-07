@@ -8,6 +8,7 @@ package org.ringingmaster.engine.parser;
 public enum ParseType {
 
 	/** space */
+	@Deprecated //TODO why do we need whitespace parsing?
 	WHITESPACE,
 	/** a normal calling position e.g. W B H*/
 	CALLING_POSITION,
