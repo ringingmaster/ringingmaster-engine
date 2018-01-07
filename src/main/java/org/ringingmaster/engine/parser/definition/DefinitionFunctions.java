@@ -59,7 +59,7 @@ public class DefinitionFunctions {
                 String characters = originalCell.getCharacters(section);
                 if (invalidDefinitions.contains(characters)) {
                     String message = createErrorMessage.apply(characters);
-                    parsedCellMutator.invalidateGroup(originalCell.getGroupForSection(section), message);
+                    parsedCellMutator.invalidateGroup(section.getElementStartIndex(), message);
                 }
             }
 

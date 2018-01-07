@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.touch.cell.Cell;
 
@@ -32,7 +32,7 @@ public class ParsedCellFactory {
     }
 
     public static Group buildGroupToMatchSection(Section section) {
-        return buildGroup(section.getElementStartIndex(), section.getElementLength(), true, Optional.empty(), Lists.newArrayList(section));
+        return buildGroup(section.getElementStartIndex(), section.getElementLength(), true, Optional.empty(), Sets.newHashSet(section));
     }
 
     public static ParsedCell buildParsedCell(Cell parentCell, Set<Section> sections, Set<Group> groups) {
@@ -73,6 +73,7 @@ public class ParsedCellFactory {
     }
 
     public static Group buildGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, Collection<Section> sections) {
+
         return new DefaultGroup(elementStartIndex, elementLength, valid, message, sections);
     }
 }

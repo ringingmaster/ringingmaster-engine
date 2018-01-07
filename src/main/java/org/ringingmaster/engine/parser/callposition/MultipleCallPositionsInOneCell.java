@@ -58,11 +58,11 @@ public class MultipleCallPositionsInOneCell implements Function<Parse, Parse> {
                     seenValidCallingPosition = true;
                 }
                 else {
-                    builder.invalidateGroup(cell.getGroupForSection(section), "Only one Calling Position allowed in this cell");
+                    builder.invalidateGroup(section.getElementStartIndex(), "Only one Calling Position allowed in this cell");
                 }
             }
             else {
-                builder.invalidateGroup(cell.getGroupForSection(section), "Only Calling Positions are allowed in this cell");
+                builder.invalidateGroup(section.getElementStartIndex(), "Only Calling Positions are allowed in this cell");
             }
         }
 

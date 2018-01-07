@@ -13,7 +13,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.ringingmaster.engine.parser.cell.ElementSequence.BY_START_INDEX;
 
 /**
  * TODO comments???
@@ -46,7 +45,9 @@ public class ParsedCellMutatorMergeGroups implements Function<ParsedCellMutatorS
                 });
 
         // Convert to element start position
-        List<Integer> candidateForMergeElementIndex = candidateForMerge.stream().map(Group::getElementStartIndex).collect(Collectors.toList());
+        final List<Integer> candidateForMergeElementIndex = candidateForMerge.stream()
+                .map(Group::getElementStartIndex)
+                .collect(Collectors.toList());
 
         mergeGroups.add(candidateForMergeElementIndex);
     }
@@ -66,9 +67,9 @@ public class ParsedCellMutatorMergeGroups implements Function<ParsedCellMutatorS
                     boolean valid = mergeGroupList.stream().allMatch(Group::isValid);
                     String message = mergeGroupList.stream().map(Group::getMessage).filter(Optional::isPresent)
                             .map(Optional::get).collect(Collectors.joining(","));
-                    List<Section> sectionsForGroup = mergeGroupList.stream()
+                    Set<Section> sectionsForGroup = mergeGroupList.stream()
                             .flatMap(group -> group.getSections().stream())
-                            .sorted(BY_START_INDEX).collect(Collectors.toList());
+                            .collect(Collectors.toSet());
 
                     return ParsedCellFactory.buildGroup(startIndex, elementLength, valid, (message.length() == 0) ? Optional.empty() : Optional.of(message), sectionsForGroup);
                 }).collect(Collectors.toSet());

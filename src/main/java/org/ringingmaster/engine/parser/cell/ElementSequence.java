@@ -9,6 +9,6 @@ public interface ElementSequence {
     int getElementStartIndex();
     int getElementLength();
 
-    boolean fallsWithin(int start);
+    boolean fallsWithin(int elementIndex);
 
 }

@@ -6,7 +6,6 @@ import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
-import org.ringingmaster.engine.parser.cell.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
@@ -78,10 +77,9 @@ public class GroupLogic implements Function<Parse, Parse> {
             Section section = invalidSection.getKey().section;
 
             ParsedCell originalParsedCell = resultCells.get(invalidSection.getKey().row,invalidSection.getKey().col);
-            Group group = originalParsedCell.getGroupForSection(section);
             ParsedCellMutator parsedCellMutator = new ParsedCellMutator()
                     .prototypeOf(originalParsedCell)
-                    .invalidateGroup(group, invalidSection.getValue());
+                    .invalidateGroup(section.getElementStartIndex(), invalidSection.getValue());
 
             resultCells.put(invalidSection.getKey().row,
                     invalidSection.getKey().col,

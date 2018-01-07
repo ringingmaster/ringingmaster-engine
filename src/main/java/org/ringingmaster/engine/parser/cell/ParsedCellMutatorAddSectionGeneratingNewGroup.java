@@ -17,7 +17,7 @@ public class ParsedCellMutatorAddSectionGeneratingNewGroup implements Function<P
 
     private final Set<Section> newSection = new HashSet<>();
 
-    public void addSectionIntoGroup(Section section) {
+    public void addSectionAndGenerateMatchingGroup(Section section) {
         checkNotNull(section);
 
         newSection.add(section);

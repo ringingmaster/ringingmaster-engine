@@ -7,8 +7,8 @@ public class ParsedCellMutator {
     private ParsedCell prototype;
 
     private final ParsedCellMutatorGetSectionsAndGroups getSectionsAndGroups = new ParsedCellMutatorGetSectionsAndGroups();
-    private final ParsedCellMutatonAddSectionForExistingGroup newSectionForExistingGroup = new ParsedCellMutatonAddSectionForExistingGroup();
-    private final ParsedCellMutatorAddSectionGeneratingNewGroup newSectionGeneratingNewGroup = new ParsedCellMutatorAddSectionGeneratingNewGroup();
+    private final ParsedCellMutatonAddSectionToExistingGroup addSectionToExistingGroup = new ParsedCellMutatonAddSectionToExistingGroup();
+    private final ParsedCellMutatorAddSectionGeneratingNewGroup addSectionGeneratingNewGroup = new ParsedCellMutatorAddSectionGeneratingNewGroup();
     private final ParsedCellMutatorWidenSection widenSection = new ParsedCellMutatorWidenSection();
     private final ParsedCellMutatorInvalidateGroups invalidateGroups = new ParsedCellMutatorInvalidateGroups();
     private final ParsedCellMutatorMergeGroups mergeGroups = new ParsedCellMutatorMergeGroups();
@@ -17,8 +17,8 @@ public class ParsedCellMutator {
 
         ParsedCellMutatorSectionsAndGroups sectionsAndGroups =
                 getSectionsAndGroups
-                .andThen(newSectionForExistingGroup)
-                .andThen(newSectionGeneratingNewGroup)
+                .andThen(addSectionToExistingGroup)
+                .andThen(addSectionGeneratingNewGroup)
                 .andThen(widenSection)
                 .andThen(invalidateGroups)
                 .andThen(mergeGroups)
@@ -33,28 +33,28 @@ public class ParsedCellMutator {
         return this;
     }
 
-    public ParsedCellMutator addSectionAndGenerateNewGroup(Section section) {
-        newSectionGeneratingNewGroup.addSectionIntoGroup(section);
+    public ParsedCellMutator addSectionAndGenerateMatchingNewGroup(Section section) {
+        addSectionGeneratingNewGroup.addSectionAndGenerateMatchingGroup(section);
         return this;
     }
 
-    public ParsedCellMutator addSectionIntoGroup(Section section, Group targetGroup) {
-        newSectionForExistingGroup.addSectionIntoGroup(section, targetGroup);
+    public ParsedCellMutator addSectionIntoExistingGroup(Section section, int targetGroupElementIndex) {
+        addSectionToExistingGroup.addSectionIntoGroup(section, targetGroupElementIndex);
         return this;
     }
 
-    public ParsedCellMutator widenSectionRight(Section sourceSection, int additionalElementCount) {
-        widenSection.widenSectionRight(sourceSection, additionalElementCount);
+    public ParsedCellMutator widenSectionRight(int sourceSectionElementIndex, int additionalElementCount) {
+        widenSection.widenSectionRight(sourceSectionElementIndex, additionalElementCount);
         return this;
     }
 
-    public ParsedCellMutator widenSectionLeft(Section sourceSection, int additionalElementCount) {
-        widenSection.widenSectionLeft(sourceSection, additionalElementCount);
+    public ParsedCellMutator widenSectionLeft(int sourceSectionElementIndex, int additionalElementCount) {
+        widenSection.widenSectionLeft(sourceSectionElementIndex, additionalElementCount);
         return this;
     }
 
-    public ParsedCellMutator invalidateGroup(Group group, String message) {
-        invalidateGroups.invalidateGroup(group, message);
+    public ParsedCellMutator invalidateGroup(int sourceGroupElementIndex, String message) {
+        invalidateGroups.invalidateGroup(sourceGroupElementIndex, message);
         return this;
     }
 

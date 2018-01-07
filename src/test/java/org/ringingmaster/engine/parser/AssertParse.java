@@ -52,7 +52,7 @@ public class AssertParse {
             else if (expected instanceof GroupSectionExpected) {
                 GroupSectionExpected groupSectionExpected = (GroupSectionExpected) expected;
 
-                log.info("Checking Group Section [{}, {}]", elementIndex, groupSectionExpected);
+                log.info("Checking Group/Section [{}, {}]", elementIndex, groupSectionExpected);
                 assertGroupForSingleSection(parsedCell, elementIndex, groupSectionExpected);
                 elementIndex = assertSection(parsedCell, elementIndex, groupSectionExpected,0);
 
@@ -68,6 +68,9 @@ public class AssertParse {
                     assertFalse(parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
                     elementIndex++;
                 }
+            }
+            else if (expected instanceof SectionExpected) {
+                throw new IllegalStateException("SectionExpected onlay valid in a GroupExpected");
             }
         }
     }
@@ -92,11 +95,20 @@ public class AssertParse {
         assertTrue("Missing Section: " + sectionExpected, sectionAtFirstElementIndex.isPresent());
         assertEquals("Section: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.parseType, sectionAtFirstElementIndex.get().getParseType());
 
-        for (int i = 0; i < sectionExpected.length; i++) {
+        for (int sectionIndex = 0; sectionIndex < sectionExpected.length; sectionIndex++) {
+            log.info(parsedCell.toString());
+
             // Checking all Section index's in section point to the same Section
-            assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getSectionAtElementIndex(elementIndex).get());
+            final Optional<Section> sectionAtElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
+            assertTrue("Missing Section at element index [" + elementIndex + "]", sectionAtElementIndex.isPresent());
+            assertEquals("Mismatch in Section lookup. Section Index [" + sectionIndex + "], Element Index [" + elementIndex + "]",
+                    sectionAtFirstElementIndex.get(), sectionAtElementIndex.get());
+
             // Checking all Groups index's in section point to the same Section
-            assertEquals(sectionAtFirstElementIndex.get(), parsedCell.getGroupAtElementIndex(elementIndex).get().getSections().get(sectionIndexInGroup));
+            final Optional<Group> groupAtElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
+            assertTrue("Missing Group at element index [" + elementIndex + "]", groupAtElementIndex.isPresent());
+            assertEquals("Mismatch in group indexes Section Index [" + sectionIndex + "], Element Index [" + elementIndex + "], sectionIndexInGroup[" + sectionIndexInGroup + "]",
+                    sectionAtFirstElementIndex.get(), groupAtElementIndex.get().getSections().get(sectionIndexInGroup));
             elementIndex++;
         }
         return elementIndex;
@@ -150,13 +162,20 @@ public class AssertParse {
     }
 
 
-    public static class SectionExpected extends UnparsedExpected {
+    public static class SectionExpected implements Expected {
 
+        final int length;
         final ParseType parseType;
 
         SectionExpected(int length, ParseType parseType) {
-            super(length);
+            assertTrue(length > 0);
             this.parseType = checkNotNull(parseType);
+            this.length = length;
+        }
+
+        @Override
+        public int getLength() {
+            return length;
         }
 
         @Override

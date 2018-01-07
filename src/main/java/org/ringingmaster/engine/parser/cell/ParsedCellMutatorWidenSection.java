@@ -1,9 +1,13 @@
 package org.ringingmaster.engine.parser.cell;
 
+import com.google.common.collect.Sets;
+
 import org.pcollections.PSet;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.AbstractMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Function;
@@ -21,18 +25,18 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
 
     private final Set<SectionWidening> sectionWidenings = new HashSet<>();
 
-    public void widenSectionRight(Section sourceSection, int additionalElementCount) {
-        checkNotNull(sourceSection);
+    public void widenSectionRight(int sourceSectionElementIndex, int additionalElementCount) {
+        checkArgument(sourceSectionElementIndex >= 0);
         checkArgument(additionalElementCount >= 0);
 
-        sectionWidenings.add(new SectionWidening(sourceSection.getElementStartIndex(), additionalElementCount, Side.RIGHT));
+        sectionWidenings.add(new SectionWidening(sourceSectionElementIndex, additionalElementCount, Side.RIGHT));
     }
 
-    public void widenSectionLeft(Section sourceSection, int additionalElementCount) {
-        checkNotNull(sourceSection);
+    public void widenSectionLeft(int sourceSectionElementIndex, int additionalElementCount) {
+        checkArgument(sourceSectionElementIndex >= 0);
         checkArgument(additionalElementCount >= 0);
 
-        sectionWidenings.add(new SectionWidening(sourceSection.getElementStartIndex(), additionalElementCount, Side.LEFT));
+        sectionWidenings.add(new SectionWidening(sourceSectionElementIndex, additionalElementCount, Side.LEFT));
     }
 
     @Override
@@ -41,7 +45,9 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
             return source;
         }
 
-        final Set<Section> widenedSections = sectionWidenings.stream()
+        final Set<SectionWidening> mergedSectionWidenings = mergeSectionWidenings(source.getSections());
+
+        final Set<Section> widenedSections = mergedSectionWidenings.stream()
                 .map(sectionWidening -> {
                     final Section sectionForIndex = getSectionForIndex(source.getSections(), sectionWidening.sourceSectionElementIndex);
                     checkNotNull(sectionForIndex);
@@ -53,7 +59,7 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
                 })
                 .collect(Collectors.toSet());
 
-        final Set<Section> consumedSections = sectionWidenings.stream()
+        final Set<Section> consumedSections = mergedSectionWidenings.stream()
                 .map(sectionWidening -> getSectionForIndex(source.getSections(), sectionWidening.sourceSectionElementIndex))
                 .collect(Collectors.toSet());
 
@@ -61,7 +67,7 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
                 .minusAll(consumedSections)
                 .plusAll(widenedSections);
 
-        final Set<Group> widenedGroups = sectionWidenings.stream()
+        final Set<Group> widenedGroups = mergedSectionWidenings.stream()
                 .map(sectionWidening -> getGroupForIndex(source.getGroups(), sectionWidening.sourceSectionElementIndex))
                 .map(group -> {
                     final Set<Section> newSections = group.getSections().stream()
@@ -75,7 +81,7 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
                 })
                 .collect(Collectors.toSet());
 
-        final Set<Group> consumedGroups = sectionWidenings.stream()
+        final Set<Group> consumedGroups = mergedSectionWidenings.stream()
                 .map(sectionWidening -> getGroupForIndex(source.getGroups(), sectionWidening.sourceSectionElementIndex))
                 .collect(Collectors.toSet());
 
@@ -84,6 +90,58 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
                 .plusAll(widenedGroups);
 
         return new ParsedCellMutatorSectionsAndGroups(sections, groups);
+    }
+
+    private Set<SectionWidening> mergeSectionWidenings(final PSet<Section> sections) {
+        final Map<SectionWidening, Section> wideningsWithSections = sectionWidenings.stream()
+                .map(widening -> new AbstractMap.SimpleEntry<>(widening, getSectionForIndex(sections, widening.sourceSectionElementIndex)))
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(
+                        AbstractMap.SimpleEntry::getKey,
+                        AbstractMap.SimpleEntry::getValue));
+
+        final Set<SectionWidening> wideningsToBeMerged =
+                Sets.newHashSet(Sets.difference(this.sectionWidenings, wideningsWithSections.keySet()));
+
+        int lastLoopCount = Integer.MAX_VALUE;
+        while (wideningsToBeMerged.size() > 0 && wideningsToBeMerged.size() < lastLoopCount) {
+            lastLoopCount = wideningsToBeMerged.size();
+            for (SectionWidening wideningToBeMerged : wideningsToBeMerged) {
+                if (merge(wideningToBeMerged, wideningsWithSections)) {
+                    wideningsToBeMerged.remove(wideningToBeMerged);
+                    break;
+                }
+            }
+        }
+
+        if (wideningsToBeMerged.size() > 0 ) {
+            throw new IllegalStateException("Widenings [" + wideningsToBeMerged + "] have no associated section.");
+        }
+
+        return wideningsWithSections.keySet();
+    }
+
+    private boolean merge(SectionWidening wideningToBeMerged, Map<SectionWidening, Section> wideningsWithSections) {
+        for (Map.Entry<SectionWidening, Section> entry : wideningsWithSections.entrySet()) {
+            if (wideningToBeMerged.side != entry.getKey().side) {
+                break;
+            }
+            if (fallsWithin(entry, wideningToBeMerged)) {
+                wideningsWithSections.remove(entry.getKey());
+                final SectionWidening newSectoinWidening = new SectionWidening(entry.getKey().sourceSectionElementIndex, entry.getKey().additionalElementCount + wideningToBeMerged.additionalElementCount, entry.getKey().side);
+                wideningsWithSections.put(newSectoinWidening, entry.getValue());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean fallsWithin(Map.Entry<SectionWidening, Section> entry, SectionWidening wideningToBeMerged) {
+        final int elementIndex = wideningToBeMerged.sourceSectionElementIndex;
+        int elementStartIndex = (entry.getKey().side == Side.LEFT)?entry.getValue().getElementStartIndex() - entry.getKey().additionalElementCount: entry.getValue().getElementStartIndex();
+        int elementLength = entry.getKey().additionalElementCount + entry.getValue().getElementLength();
+        return elementIndex >= elementStartIndex &&
+                elementIndex < elementStartIndex + elementLength;
     }
 
     private Section getSectionForIndex(Set<Section> allSections, int index) {
@@ -114,6 +172,15 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
             this.sourceSectionElementIndex = sourceSectionElementIndex;
             this.additionalElementCount = additionalElementCount;
             this.side = side;
+        }
+
+        @Override
+        public String toString() {
+            return "SectionWidening{" +
+                    "sourceIndex=" + sourceSectionElementIndex +
+                    " +" + additionalElementCount +
+                    "," + side +
+                    '}';
         }
     }
 
