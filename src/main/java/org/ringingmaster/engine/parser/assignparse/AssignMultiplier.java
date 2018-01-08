@@ -1,8 +1,25 @@
 package org.ringingmaster.engine.parser.assignparse;
 
+import com.google.common.collect.HashBasedTable;
+import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
+import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.Parse;
+import org.ringingmaster.engine.parser.ParseBuilder;
+import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
+import org.ringingmaster.engine.touch.Touch;
 
+import java.util.Optional;
 import java.util.function.Function;
+
+import static org.ringingmaster.engine.parser.ParseType.CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parser.ParseType.DEFAULT_CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parser.ParseType.DEFINITION_MULTIPLIER;
+import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN_MULTIPLIER;
+import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD_MULTIPLIER;
+import static org.ringingmaster.engine.parser.ParseType.SPLICE_MULTIPLIER;
+import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildSection;
 
 /**
  * TODO comments???
@@ -13,104 +30,142 @@ public class AssignMultiplier implements Function<Parse, Parse> {
 
     @Override
     public Parse apply(Parse parse) {
-//        boolean hasDefaultCall = hasDefaultCall(touch);
-//        for (TouchCell cell : touch.mainBodyView()) {
-//            parseCellNumbers(cell, false, touch.isSpliced(), hasDefaultCall);
-//        }
-//        for (TouchDefinition cell : touch.getDefinitions()) {
-//            // TODO eventually parse definition based on usage in splice or main body.
-//            parseCellNumbers(cell, false, touch.isSpliced(), hasDefaultCall);
-//        }
-//
-//        for (TouchCell cell : touch.spliceView()) {
-//            parseCellNumbers(cell, true, touch.isSpliced(), hasDefaultCall);
-//        }
+        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(parse.getTouch());
 
-        return parse;
+        final HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
+                HashBasedTable.create(parse.allTouchCells().getBackingTable());
+
+        for (BackingTableLocationAndValue<ParsedCell> cell : parse.mainBodyCells()) {
+            final ParsedCell replacementParsedCell = parseCellNumbers(cell, false, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+            touchTableResult.put(cell.getRow(), cell.getCol(), replacementParsedCell);
+        }
+
+        for (BackingTableLocationAndValue<ParsedCell> cell : parse.splicedCells()) {
+            final ParsedCell replacementParsedCell = parseCellNumbers(cell, true, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+            touchTableResult.put(cell.getRow(), cell.getCol(), replacementParsedCell);
+        }
+
+
+        final HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
+                HashBasedTable.create(parse.allDefinitionCells().getBackingTable());
+
+
+        for (BackingTableLocationAndValue<ParsedCell> cell : parse.definitionDefinitionCells()) {
+            final ParsedCell replacementParsedCell = parseCellNumbers(cell, false, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+            definitionTableResult.put(cell.getRow(), cell.getCol(), replacementParsedCell);
+        }
+
+        return new ParseBuilder()
+                .prototypeOf(parse)
+                .setTouchTableCells(touchTableResult)
+                .setDefinitionTableCells(definitionTableResult)
+                .build();
     }
 
-//    private void parseCellNumbers(TouchCell cell, boolean spliceCell, boolean splicedPerformance, boolean hasDefaultCall) {
-//        TouchElement nextElement = null;
-//
-//        // reverse iterate elements
-//        for (int index = cell.getLength() - 1; index >= 0; index--) {
-//            TouchElement element = cell.getElement(index);
-//
-//            if (element.getParseType().equals(UNPARSED) &&
-//                    Character.isDigit(element.getCharacter())) {
-//                if (nextElement == null) {
-//                    matchAsDefaultCallMultiplier(element, spliceCell, splicedPerformance, hasDefaultCall);
-//                } else {
-//                    switch (nextElement.getParseType()) {
-//                        case UNPARSED:
-//                        case WHITESPACE:
-//                        case VARIANCE_OPEN:
-//                        case VARIANCE_CLOSE:
-//                        case GROUP_CLOSE:
-//                            matchAsDefaultCallMultiplier(element, spliceCell, splicedPerformance, hasDefaultCall);
-//                            break;
-//
-//                        case CALL:
-//                            addToNextElementsWord(element, CALL_MULTIPLIER, nextElement);
-//                            break;
-//                        case GROUP_OPEN:
-//                            addToNextElementsWord(element, GROUP_OPEN_MULTIPLIER, nextElement);
-//                            break;
-//                        case PLAIN_LEAD:
-//                            addToNextElementsWord(element, PLAIN_LEAD_MULTIPLIER, nextElement);
-//                            break;
-//                        case DEFINITION:
-//                            addToNextElementsWord(element, DEFINITION_MULTIPLIER, nextElement);
-//                            break;
-//                        case SPLICE:
-//                            addToNextElementsWord(element, SPLICE_MULTIPLIER, nextElement);
-//                            break;
-//
-//                        case DEFAULT_CALL_MULTIPLIER:
-//                        case CALL_MULTIPLIER:
-//                        case GROUP_OPEN_MULTIPLIER:
-//                        case PLAIN_LEAD_MULTIPLIER:
-//                        case DEFINITION_MULTIPLIER:
-//                        case SPLICE_MULTIPLIER:
-//                            addToNextElementsWord(element, nextElement.getParseType(), nextElement);
-//                            break;
-//                        //TODO BLOCK and BLOCK_MULTIPLIER
-//                    }
-//                }
-//            }
-//            nextElement = element;
-//        }
-//    }
-//
-//    //TODO need to enhance tool tips as per old ringingmaster. See: CString CellElement::getTipText()
-//
-//
-//    private void matchAsDefaultCallMultiplier(TouchElement element, boolean spliceCell, boolean splicedPerformance, boolean hasDefaultCall) {
-//        if (spliceCell) {
-//            return;
-//        }
-//
-//        TouchWord word = element.createSingleElementWord(DEFAULT_CALL_MULTIPLIER);
-//        if (!hasDefaultCall) {
-//            if (splicedPerformance) {
-//                word.setInvalid("Default call not defined in all methods");
-//            } else {
-//                word.setInvalid("No default call defined");
-//            }
-//        }
-//    }
-//
-//    private void addToNextElementsWord(TouchElement element, ParseType parseType, TouchElement nextElement) {
-//        TouchWord nextWord = nextElement.getWord();
-//        element.setWord(nextWord, parseType);
-//    }
+    private ParsedCell parseCellNumbers(BackingTableLocationAndValue<ParsedCell> cellAndLocation, boolean spliceCell, boolean splicedPerformance, boolean hasDefaultCall) {
+        final ParsedCell cell = cellAndLocation.getValue();
+        Optional<ParseType> parseTypeToRight = Optional.empty();
 
-//    private boolean hasDefaultCall(Touch touch) {
-//        for (NotationBody notation : touch.getNotationsInUse()) {
-//            if (notation.getDefaultCall() == null) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+        final ParsedCellMutator parsedCellMutator = new ParsedCellMutator().prototypeOf(cell);
+
+        // reverse iterate elements
+        for (int elementIndex = cell.getElementSize() - 1; elementIndex >= 0; elementIndex--) {
+
+            if (cell.getSectionAtElementIndex(elementIndex).isPresent()) {
+                parseTypeToRight = Optional.of(cell.getSectionAtElementIndex(elementIndex).get().getParseType());
+            }
+            else if (Character.isDigit(cell.getElement(elementIndex).getCharacter().charAt(0))) {
+
+                if (!parseTypeToRight.isPresent()) {
+                    parseTypeToRight = matchAsDefaultCallMultiplier(elementIndex, parsedCellMutator, spliceCell, splicedPerformance, hasDefaultCall);
+                }
+                else {
+                    switch (parseTypeToRight.get()) {
+                        // Default Call multiplier
+                        case WHITESPACE:
+                        case VARIANCE_OPEN:
+                        case VARIANCE_CLOSE:
+                        case GROUP_CLOSE:
+                            parseTypeToRight = matchAsDefaultCallMultiplier(elementIndex, parsedCellMutator, spliceCell, splicedPerformance, hasDefaultCall);
+                            break;
+
+                        // Initial multipliers
+                        case CALL:
+                            parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, CALL_MULTIPLIER);
+                            break;
+                        case GROUP_OPEN:
+                            parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, GROUP_OPEN_MULTIPLIER);
+                            break;
+                        case PLAIN_LEAD:
+                            parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, PLAIN_LEAD_MULTIPLIER);
+                            break;
+                        case DEFINITION:
+                            parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, DEFINITION_MULTIPLIER);
+                            break;
+                        case SPLICE:
+                            parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, SPLICE_MULTIPLIER);
+                            break;
+
+                        // Duplicating multipliers
+                        case DEFAULT_CALL_MULTIPLIER:
+                        case CALL_MULTIPLIER:
+                        case GROUP_OPEN_MULTIPLIER:
+                        case PLAIN_LEAD_MULTIPLIER:
+                        case DEFINITION_MULTIPLIER:
+                        case SPLICE_MULTIPLIER:
+                            parsedCellMutator.widenSectionLeft(elementIndex+1, 1);
+                            break;
+                        //TODO BLOCK and BLOCK_MULTIPLIER
+                    }
+                }
+            }
+            else {
+                // unparsed and not a digit
+                parseTypeToRight = Optional.empty();
+            }
+
+       }
+
+        return parsedCellMutator.build();
+    }
+
+    private Optional<ParseType> addSectionToExistingGroup(ParsedCellMutator parsedCellMutator, int elementIndex, ParseType parseType) {
+        parsedCellMutator.addSectionIntoExistingGroup(buildSection(elementIndex, 1, parseType), elementIndex + 1);
+        return Optional.of(parseType);
+    }
+
+    //TODO need to enhance tool tips as per old ringingmaster. See: CString CellElement::getTipText()
+
+
+    private Optional<ParseType> matchAsDefaultCallMultiplier(int elementIndex, ParsedCellMutator parsedCellMutator, boolean spliceCell, boolean splicedPerformance, boolean hasFullyDefinedDefaultCall) {
+        if (spliceCell) {
+            return Optional.empty();
+        }
+
+        parsedCellMutator.addSectionAndGenerateMatchingNewGroup(buildSection(elementIndex, 1, DEFAULT_CALL_MULTIPLIER));
+
+        if (!hasFullyDefinedDefaultCall) {
+            if (splicedPerformance) {
+                parsedCellMutator.invalidateGroup(elementIndex, "Default call not defined in all methods");
+            } else {
+                parsedCellMutator.invalidateGroup(elementIndex, "No default call defined");
+            }
+        }
+        return Optional.of(DEFAULT_CALL_MULTIPLIER);
+
+    }
+
+    //TODO we should be able to detect the actual notations being used for spliced, and only check those.
+    private boolean hasFullyDefinedDefaultCall(Touch touch) {
+        for (NotationBody notation : touch.getInUseNotations()) {
+            if (notation.getDefaultCall() == null) {
+                return false;
+            }
+        }
+
+        if (touch.getInUseNotations().size() == 0) {
+            return false;
+        }
+        return true;
+    }
 }
