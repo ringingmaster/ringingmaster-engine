@@ -64,8 +64,8 @@ public class AssertParse {
 
                 // Assert all sections and groups are empty.
                 for (int i = 0; i < unparsedExpected.length; i++) {
-                    assertFalse(parsedCell.getSectionAtElementIndex(elementIndex).isPresent());
-                    assertFalse(parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
+                    assertFalse("Section is present when it should be unparsed [" + elementIndex + "]", parsedCell.getSectionAtElementIndex(elementIndex).isPresent());
+                    assertFalse("Group is present when it should be unparsed [" + elementIndex + "]", parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
                     elementIndex++;
                 }
             }

@@ -37,9 +37,9 @@ public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
 
         // Step 2: Find usage of definition shorthands in both main and spliced and
         final Set<String> mainBodyDefinitions = new HashSet<>();
-        followDefinitions(mainBodyDefinitions, definitionFunctions.findDefinitionsInUse(parse.mainBodyCells()), adjacency);
+        definitionFunctions.followDefinitions(mainBodyDefinitions, definitionFunctions.findDefinitionsInUse(parse.mainBodyCells()), adjacency);
         final Set<String> splicedDefinitions = new HashSet<>();
-        followDefinitions(splicedDefinitions, definitionFunctions.findDefinitionsInUse(parse.splicedCells()), adjacency);
+        definitionFunctions.followDefinitions(splicedDefinitions, definitionFunctions.findDefinitionsInUse(parse.splicedCells()), adjacency);
 
         //Step 3: find the problematic definitions
         Set<String> invalidDefinitions = Sets.intersection(mainBodyDefinitions, splicedDefinitions);
@@ -62,16 +62,6 @@ public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
                 .setTouchTableCells(touchTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
-    }
-
-    private void followDefinitions(Set<String> results, Set<String> definitionsToFollow, Map<String, Set<String>> adjacency) {
-        for (String definition : definitionsToFollow) {
-            if (!results.contains(definition)) {
-                results.add(definition);
-                final Set<String> dependentDefinition = adjacency.get(definition);
-                followDefinitions(results, dependentDefinition, adjacency);
-            }
-        }
     }
 
 }

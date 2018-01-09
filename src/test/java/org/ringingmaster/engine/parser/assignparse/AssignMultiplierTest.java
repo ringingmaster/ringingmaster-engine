@@ -32,6 +32,7 @@ import static org.ringingmaster.engine.parser.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???
@@ -270,7 +271,58 @@ public class AssignMultiplierTest {
 
         assertParse(parse.allTouchCells().get(0,0), invalid(DEFAULT_CALL_MULTIPLIER));
     }
-    //TODO need tests of spliced area
+
+
+    @Test
+    public void multiplierWorksInDefinition() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def2");
+
+        Parse parse = new AssignParseType()
+                .andThen(new AssignMultiplier())
+                .apply(touch.get());
+
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0,1), valid(DEFAULT_CALL_MULTIPLIER));
+    }
+
+    @Test
+    public void multiplierDoesNotAddDefaultCallWhenUsedOnlyInSplice() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.addCharacters(TOUCH_TABLE, 0, 1, "def2");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType()
+                .andThen(new AssignMultiplier())
+                .apply(touch.get());
+
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0,DEFINITION_COLUMN), unparsed());
+    }
+
+    @Test
+    public void multiplierDoesAddDefaultCallWhenUsedInMainCells() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def2");
+        touch.addCharacters(TOUCH_TABLE, 0, 1, "-");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType()
+                .andThen(new AssignMultiplier())
+                .apply(touch.get());
+
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0,DEFINITION_COLUMN), valid(DEFAULT_CALL_MULTIPLIER));
+    }
+
+    @Test
+    public void multiplierDoesNotAddDefaultCallWhenUsedOnlyInSpliceAndMainCells() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def2");
+        touch.addCharacters(TOUCH_TABLE, 0, 1, "def2");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType()
+                .andThen(new AssignMultiplier())
+                .apply(touch.get());
+
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), unparsed());
+    }
+
     //TODO need tests of definition area
 
     private NotationBody buildPlainBobMinor() {
@@ -292,8 +344,6 @@ public class AssignMultiplierTest {
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
                 .setName("Little Bob")
                 .setFoldedPalindromeNotationShorthand("x16x14", "12")
-//                .addCall("Bob", "-", "14", false)
-//                .addCall("Single", "s", "1234", false)
                 .addCallInitiationRow(7)
                 .addMethodCallingPosition("W", 7, 1)
                 .addMethodCallingPosition("H", 7, 2)
@@ -311,6 +361,7 @@ public class AssignMultiplierTest {
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         touch.addDefinition("def1", "-P");
+        touch.addDefinition("def2", "2");
         return touch;
     }
 

@@ -39,7 +39,7 @@ public class DefinitionFunctions {
                 ));
     }
 
-    Set<String> findDefinitionsInUse(ImmutableArrayTable<ParsedCell> locationAndCells) {
+    public Set<String> findDefinitionsInUse(ImmutableArrayTable<ParsedCell> locationAndCells) {
 
         return StreamSupport.stream(locationAndCells.spliterator(), false)
                 .map(BackingTableLocationAndValue::getValue)
@@ -48,6 +48,16 @@ public class DefinitionFunctions {
                         .map(parsedCell::getCharacters)
                 )
                 .collect(Collectors.toSet());
+    }
+
+    void followDefinitions(Set<String> results, Set<String> definitionsToFollow, Map<String, Set<String>> adjacency) {
+        for (String definition : definitionsToFollow) {
+            if (!results.contains(definition)) {
+                results.add(definition);
+                final Set<String> dependentDefinition = adjacency.get(definition);
+                followDefinitions(results, dependentDefinition, adjacency);
+            }
+        }
     }
 
     void markInvalid(ImmutableArrayTable<ParsedCell> originalCells, Set<String> invalidDefinitions, HashBasedTable<Integer, Integer, ParsedCell> resultCells, Function<String, String> createErrorMessage) {

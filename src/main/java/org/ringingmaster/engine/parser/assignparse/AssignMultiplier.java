@@ -2,15 +2,18 @@ package org.ringingmaster.engine.parser.assignparse;
 
 import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
+import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
+import org.ringingmaster.engine.parser.definition.DefinitionFunctions;
 import org.ringingmaster.engine.touch.Touch;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import static org.ringingmaster.engine.parser.ParseType.CALL_MULTIPLIER;
@@ -20,6 +23,7 @@ import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN_MULTIPLIER;
 import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD_MULTIPLIER;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildSection;
+import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???
@@ -28,6 +32,9 @@ import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildSectio
  */
 public class AssignMultiplier implements Function<Parse, Parse> {
 
+    private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
+
+
     @Override
     public Parse apply(Parse parse) {
         final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(parse.getTouch());
@@ -35,26 +42,35 @@ public class AssignMultiplier implements Function<Parse, Parse> {
         final HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
-        for (BackingTableLocationAndValue<ParsedCell> cell : parse.mainBodyCells()) {
-            final ParsedCell replacementParsedCell = parseCellNumbers(cell, false, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
-            touchTableResult.put(cell.getRow(), cell.getCol(), replacementParsedCell);
+        for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : parse.mainBodyCells()) {
+            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), false, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+            touchTableResult.put(cellAndLocation.getRow(), cellAndLocation.getCol(), replacementParsedCell);
         }
 
-        for (BackingTableLocationAndValue<ParsedCell> cell : parse.splicedCells()) {
-            final ParsedCell replacementParsedCell = parseCellNumbers(cell, true, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
-            touchTableResult.put(cell.getRow(), cell.getCol(), replacementParsedCell);
+        for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : parse.splicedCells()) {
+            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), true, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+            touchTableResult.put(cellAndLocation.getRow(), cellAndLocation.getCol(), replacementParsedCell);
         }
 
+        // NOTE: The callPositionCells do not have any need for multiplier so are not parsed.
+
+        final Set<String> splicedDefinitionsInUse = definitionFunctions.findDefinitionsInUse(parse.splicedCells());
 
         final HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
                 HashBasedTable.create(parse.allDefinitionCells().getBackingTable());
 
+        for (String shorthand : parse.getAllDefinitionShorthands()) {
+            final Optional<ImmutableArrayTable<ParsedCell>> definitionByShorthand = parse.findDefinitionByShorthand(shorthand);
 
-        for (BackingTableLocationAndValue<ParsedCell> cell : parse.definitionDefinitionCells()) {
-            final ParsedCell replacementParsedCell = parseCellNumbers(cell, false, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
-            definitionTableResult.put(cell.getRow(), cell.getCol(), replacementParsedCell);
+            if (definitionByShorthand.isPresent()) {
+                boolean splicedCell = splicedDefinitionsInUse.contains(shorthand);
+                final ImmutableArrayTable<ParsedCell> cell = definitionByShorthand.get();
+                final ParsedCell replacementParsedCell = parseCellNumbers(cell.get(0, DEFINITION_COLUMN), splicedCell, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+                definitionTableResult.put(cell.getBackingRowIndex(0), cell.getBackingColumnIndex(DEFINITION_COLUMN), replacementParsedCell);
+            }
         }
 
+        
         return new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(touchTableResult)
@@ -62,8 +78,7 @@ public class AssignMultiplier implements Function<Parse, Parse> {
                 .build();
     }
 
-    private ParsedCell parseCellNumbers(BackingTableLocationAndValue<ParsedCell> cellAndLocation, boolean spliceCell, boolean splicedPerformance, boolean hasDefaultCall) {
-        final ParsedCell cell = cellAndLocation.getValue();
+    private ParsedCell parseCellNumbers(final ParsedCell cell, boolean spliceCell, boolean splicedPerformance, boolean hasDefaultCall) {
         Optional<ParseType> parseTypeToRight = Optional.empty();
 
         final ParsedCellMutator parsedCellMutator = new ParsedCellMutator().prototypeOf(cell);
