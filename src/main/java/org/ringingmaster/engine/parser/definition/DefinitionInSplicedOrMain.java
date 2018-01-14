@@ -6,11 +6,12 @@ import com.google.errorprone.annotations.Immutable;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.functions.InUseMainBodyDefinitionsTransitively;
+import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
+import org.ringingmaster.engine.parser.functions.DefinitionFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -24,7 +25,6 @@ import java.util.function.Function;
 public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
 
     // TODO can we get the dependency chain in the error message?
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] should be used in the main body or the splice area, but not both";
@@ -32,14 +32,8 @@ public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
 
     public Parse apply(Parse parse) {
 
-        // Step 1: Map out the internal dependencies in the definitions
-        Map<String, Set<String>> adjacency = definitionFunctions.buildDefinitionsAdjacencyList(parse);
-
-        // Step 2: Find usage of definition shorthands in both main and spliced and
-        final Set<String> mainBodyDefinitions = new HashSet<>();
-        definitionFunctions.followDefinitions(mainBodyDefinitions, definitionFunctions.findDefinitionsInUse(parse.mainBodyCells()), adjacency);
-        final Set<String> splicedDefinitions = new HashSet<>();
-        definitionFunctions.followDefinitions(splicedDefinitions, definitionFunctions.findDefinitionsInUse(parse.splicedCells()), adjacency);
+        final Set<String> mainBodyDefinitions = new InUseMainBodyDefinitionsTransitively().apply(parse);
+        final Set<String> splicedDefinitions = new InUseSpliceDefinitionsTransitively().apply(parse);
 
         //Step 3: find the problematic definitions
         Set<String> invalidDefinitions = Sets.intersection(mainBodyDefinitions, splicedDefinitions);
@@ -48,6 +42,7 @@ public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
         }
 
         // Step 4: Mark invalid
+        final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
         HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
         definitionFunctions.markInvalid(parse.mainBodyCells(), invalidDefinitions, touchTableResult, createErrorMessage);

@@ -1,11 +1,12 @@
 package org.ringingmaster.engine.parser;
 
+import org.ringingmaster.engine.parser.assignparse.AssignMultiplier;
 import org.ringingmaster.engine.parser.assignparse.AssignParseType;
 import org.ringingmaster.engine.parser.callposition.MultipleCallPositionsInOneCell;
 import org.ringingmaster.engine.parser.definition.CircularDefinition;
 import org.ringingmaster.engine.parser.definition.DefinitionInSplicedOrMain;
 import org.ringingmaster.engine.parser.group.GroupLogic;
-import org.ringingmaster.engine.parser.assignparse.AssignMultiplier;
+import org.ringingmaster.engine.parser.splice.SplicedCallsNotDefinedInEachMethod;
 import org.ringingmaster.engine.touch.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +24,12 @@ public class Parser implements Function<Touch, Parse> {
     private final Logger log = LoggerFactory.getLogger(Parser.class);
 
     private final AssignParseType assignParseType = new AssignParseType();
-    final MultipleCallPositionsInOneCell multipleCallPositionsInOneCell = new MultipleCallPositionsInOneCell();
+    private final AssignMultiplier assignMultiplier = new AssignMultiplier();
+    private final MultipleCallPositionsInOneCell multipleCallPositionsInOneCell = new MultipleCallPositionsInOneCell();
+    private final SplicedCallsNotDefinedInEachMethod splicedCallsNotDefinedInEachMethod = new SplicedCallsNotDefinedInEachMethod();
     private final GroupLogic groupLogic = new GroupLogic();
     private final DefinitionInSplicedOrMain definitionInSplicedOrMain = new DefinitionInSplicedOrMain();
     private final CircularDefinition circularDefinition = new CircularDefinition();
-    private final AssignMultiplier assignMultiplier = new AssignMultiplier();
 
 
     @Override
@@ -35,11 +37,12 @@ public class Parser implements Function<Touch, Parse> {
 
         log.info("Parsing");
 
-        return assignParseType
-                .andThen(multipleCallPositionsInOneCell)
-                .andThen(assignMultiplier)
         //TODO think very care fully about what parts of each parser needs applying to definitions,
-//TODO		parseSplicedCallsNotDefinedInEachMethod();
+
+        return assignParseType
+                .andThen(assignMultiplier)
+                .andThen(multipleCallPositionsInOneCell)
+                .andThen(splicedCallsNotDefinedInEachMethod)
 //TODO		parseSplicedCallPosMethodNotDefinedInEachMethod();
 //TODO		parseSplicedCallPosAgregateNotDefinedInEachMethod();
 //TODO		parseSpliceCountDifferentInEachMethod();

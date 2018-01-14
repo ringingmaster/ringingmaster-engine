@@ -2,20 +2,20 @@ package org.ringingmaster.engine.parser.assignparse;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.HashBasedTable;
-import javax.annotation.concurrent.Immutable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
+import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -161,7 +161,7 @@ public class AssignParseType implements Function<Touch, Parse> {
 
 
     private void addCallingPositionTokens(Touch touch, Map<String, ParseType> parsings) {
-        for (NotationBody notation : touch.getInUseNotations()) {
+        for (NotationBody notation : touch.getAvailableNotations()) {
             for (NotationMethodCallingPosition callingPosition : notation.getMethodBasedCallingPositions()) {
                 parsings.put(callingPosition.getName(), ParseType.CALLING_POSITION);
             }
@@ -176,7 +176,7 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
     private void addCallTokens(Touch touch, Map<String, ParseType> parsings) {
-        for (NotationBody notation : touch.getInUseNotations()) {
+        for (NotationBody notation : touch.getAvailableNotations()) {
             for (NotationCall notationCall : notation.getCalls()) {
                 parsings.put(notationCall.getNameShorthand(), ParseType.CALL);
                 parsings.put(notationCall.getName(), ParseType.CALL);
@@ -185,7 +185,7 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
     private void addSpliceTokens(Touch touch, Map<String, ParseType> parsings) {
-        for (NotationBody notation : touch.getInUseNotations()) {
+        for (NotationBody notation : touch.getAvailableNotations()) {
             if (!Strings.isNullOrEmpty(notation.getSpliceIdentifier())){
                 parsings.put(notation.getSpliceIdentifier(), ParseType.SPLICE);
             }

@@ -1,13 +1,14 @@
 package org.ringingmaster.engine.parser.definition;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.Immutable;
 import org.pcollections.ConsPStack;
 import org.pcollections.PStack;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
+import org.ringingmaster.engine.parser.functions.DefinitionFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,15 +33,10 @@ public class CircularDefinition implements Function<Parse, Parse> {
 
     public Parse apply(Parse parse) {
 
-        // Step 1: Map out the internal dependencies in the definitions
-        Map<String, Set<String>> adjacency = definitionFunctions.buildDefinitionsAdjacencyList(parse);
-
-        final Sets.SetView<String> definitionsInUse = Sets.union(definitionFunctions.findDefinitionsInUse(parse.mainBodyCells()),
-                                                      Sets.union(definitionFunctions.findDefinitionsInUse(parse.splicedCells()),
-                                                                 parse.getAllDefinitionShorthands()));
+        Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(parse);
 
         Set<String> invalidDefinitions = new HashSet<>();
-        for (String shorthand : definitionsInUse) {
+        for (String shorthand : parse.getAllDefinitionShorthands()) {
             discoverCircularity(invalidDefinitions, adjacency, ConsPStack.singleton(shorthand));
         }
 

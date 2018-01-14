@@ -2,7 +2,6 @@ package org.ringingmaster.engine.touch;
 
 
 import com.google.common.collect.ImmutableSet;
-import javax.annotation.concurrent.Immutable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
@@ -19,6 +18,7 @@ import org.ringingmaster.engine.touch.tableaccess.DefaultTouchTableAccess;
 import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
 import org.ringingmaster.engine.touch.tableaccess.TouchTableAccess;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -130,7 +130,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
         return NotationBuilderHelper.filterNotationsUptoNumberOfBells(allNotations, numberOfBells);
     }
 
-    public PSet<NotationBody> getInUseNotations() {
+    public PSet<NotationBody> getAvailableNotations() {
         //TODO precalculate
         if (isSpliced()) {
             return getValidNotations();

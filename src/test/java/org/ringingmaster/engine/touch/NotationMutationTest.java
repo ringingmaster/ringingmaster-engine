@@ -231,12 +231,12 @@ public class NotationMutationTest {
         touch.addNotation(METHOD_A_8_BELL);
 
         assertEquals(3, touch.get().getAllNotations().size());
-        assertEquals(1, touch.get().getInUseNotations().size());
+        assertEquals(1, touch.get().getAvailableNotations().size());
         assertEquals(2, touch.get().getValidNotations().size());
 
         touch.setSpliced(true);
         assertEquals(3, touch.get().getAllNotations().size());
-        assertEquals(2, touch.get().getInUseNotations().size());
+        assertEquals(2, touch.get().getAvailableNotations().size());
         assertEquals(2, touch.get().getValidNotations().size());
     }
 

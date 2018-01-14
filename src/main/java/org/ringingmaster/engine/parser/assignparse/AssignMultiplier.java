@@ -9,7 +9,8 @@ import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
-import org.ringingmaster.engine.parser.definition.DefinitionFunctions;
+import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
+import org.ringingmaster.engine.parser.functions.DefinitionFunctions;
 import org.ringingmaster.engine.touch.Touch;
 
 import java.util.Optional;
@@ -53,8 +54,7 @@ public class AssignMultiplier implements Function<Parse, Parse> {
         }
 
         // NOTE: The callPositionCells do not have any need for multiplier so are not parsed.
-
-        final Set<String> splicedDefinitionsInUse = definitionFunctions.findDefinitionsInUse(parse.splicedCells());
+        final Set<String> splicedDefinitionsInUse = new InUseSpliceDefinitionsTransitively().apply(parse);
 
         final HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
                 HashBasedTable.create(parse.allDefinitionCells().getBackingTable());
@@ -172,13 +172,13 @@ public class AssignMultiplier implements Function<Parse, Parse> {
 
     //TODO we should be able to detect the actual notations being used for spliced, and only check those.
     private boolean hasFullyDefinedDefaultCall(Touch touch) {
-        for (NotationBody notation : touch.getInUseNotations()) {
+        for (NotationBody notation : touch.getAvailableNotations()) {
             if (notation.getDefaultCall() == null) {
                 return false;
             }
         }
 
-        if (touch.getInUseNotations().size() == 0) {
+        if (touch.getAvailableNotations().size() == 0) {
             return false;
         }
         return true;
