@@ -48,16 +48,6 @@ public class AssignParseTypeTest {
     }
 
     @Test
-    public void correctlyParsesSpliceToken() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "pp");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "-P-");
-        touch.setSpliced(true);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 1), unparsed(), valid(SPLICE), unparsed());
-    }
-
-    @Test
     public void correctlyParsesSimpleCallPosition() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W");
         touch.setTouchCheckingType(COURSE_BASED);
