@@ -13,6 +13,7 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
+import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
@@ -27,6 +28,16 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.S
  * @author stevelake
  */
 public class AssignParseTypeWHITESPACETest {
+
+    @Test
+    public void correctlyParsesWhitespaceInCallingArea() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W H");
+        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+
+        assertParse(parse.allTouchCells().get(0, 0), valid(CALLING_POSITION), valid(WHITESPACE), valid(CALLING_POSITION));
+    }
 
     @Test
     public void correctlyParsesWhitespaceInMainBody() {
@@ -97,7 +108,6 @@ public class AssignParseTypeWHITESPACETest {
 
         assertParse(parse.findDefinitionByShorthand("de f2").get().get(0, SHORTHAND_COLUMN), valid(WHITESPACE), valid(5, DEFINITION), valid(WHITESPACE));
     }
-
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
