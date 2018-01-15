@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.GROUP_CLOSE;
-import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN;
 import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
@@ -34,7 +32,6 @@ public class AssignParseTypeTest {
         assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(CALL));
     }
 
-
     @Test
     public void correctlyAllocatedOverlappingParsings() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "Bob");
@@ -52,15 +49,6 @@ public class AssignParseTypeTest {
         Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(3, CALL), valid(PLAIN_LEAD));
     }
-
-    @Test
-    public void correctlyIdentifiesGroupOpenAndClose() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "(-)s");
-
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
-    }
-
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
