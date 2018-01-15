@@ -6,21 +6,16 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.TableType;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
-import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
 import static org.ringingmaster.engine.parser.ParseType.GROUP_CLOSE;
 import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN;
 import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
-import static org.ringingmaster.engine.parser.ParseType.SPLICE;
-import static org.ringingmaster.engine.parser.ParseType.VARIANCE_CLOSE;
-import static org.ringingmaster.engine.parser.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
 /**
@@ -64,22 +59,6 @@ public class AssignParseTypeTest {
 
         Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
-    }
-
-	@Test
-	public void correctlyIdentifiesVariance() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[-]s");
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0,0), valid(VARIANCE_OPEN), valid(CALL), valid(VARIANCE_CLOSE), valid(CALL));
-	}
-
-    @Test
-    public void varianceInSpliceIsNotParsed() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.setSpliced(true);
-        touch.addCharacters(TableType.TOUCH_TABLE, 0,1,"[P]");
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0,1), unparsed(), valid(SPLICE), unparsed());
     }
 
 
