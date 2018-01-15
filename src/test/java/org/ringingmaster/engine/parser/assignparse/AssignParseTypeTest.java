@@ -8,6 +8,7 @@ import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.callposition.MultipleCallPositionsInOneCell;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.touch.ObservableTouch;
+import org.ringingmaster.engine.touch.TableType;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,6 @@ import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -45,20 +45,6 @@ public class AssignParseTypeTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-s");
         Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(CALL));
-    }
-
-    @Test
-    public void correctlyParsesSimpleWhitespace() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "- Bob");
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(WHITESPACE), valid(3, CALL));
-    }
-
-    @Test
-    public void correctlyParsesPlainLeadToken() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-p-");
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(PLAIN_LEAD), valid(CALL));
     }
 
     @Test
@@ -182,15 +168,29 @@ public class AssignParseTypeTest {
     }
 
     @Test
-    public void embeddedDefinitionBothInMainBodyIsDefinition() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
-        touch.addDefinition("def2", "-def3p");
+    public void transativeDefinitionInMainBodyParsedAsMainBody() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def3");
         touch.addDefinition("def3", "def2");
+        touch.addDefinition("def2", "def1");
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(4, DEFINITION), valid(PLAIN_LEAD));
         assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
     }
+
+    @Test
+    public void transativeDefinitionInSplicedParsedAsSplice() {
+    ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+    touch.addCharacters(TableType.TOUCH_TABLE,0,1,"def3");
+    touch.addDefinition("def3", "def2");
+    touch.addDefinition("def2", "def1");
+
+    Parse parse = new AssignParseType().apply(touch.get());
+    assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
+    assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
+    assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), valid(SPLICE));
+}
 
 	@Test
 	public void correctlyIdentifiesVariance() {
@@ -198,6 +198,15 @@ public class AssignParseTypeTest {
         Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0,0), valid(VARIANCE_OPEN), valid(CALL), valid(VARIANCE_CLOSE), valid(CALL));
 	}
+
+    @Test
+    public void varianceInSpliceIsNotParsed() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.setSpliced(true);
+        touch.addCharacters(TableType.TOUCH_TABLE, 0,1,"[P]");
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0,1), unparsed(), valid(SPLICE), unparsed());
+    }
 
 
     //TODO need lots of these type of tests for all the different combinations.

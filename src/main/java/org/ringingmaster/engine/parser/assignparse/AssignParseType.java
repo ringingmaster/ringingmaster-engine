@@ -51,7 +51,6 @@ public class AssignParseType implements Function<Touch, Parse> {
 
         
         //TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parseTokenMappings);
-//TODO should we allow embedded definitions in definitions?	probably, but will need some good tests. addDefinitionTokens(touch, parseTokenMappings);
 
 
         return new ParseBuilder()
@@ -71,7 +70,8 @@ public class AssignParseType implements Function<Touch, Parse> {
                     (definitionTable) -> {
                         final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
                         // We only use splices mappings when token is not in main body but is in spliced.
-                        Map<String, ParseType> chosenMappings = (!mainBodyDefinitions.contains(shorthand))&&spliceAreaDefinitions.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
+                        Map<String, ParseType> chosenMappings = (!mainBodyDefinitions.contains(shorthand))&&
+                                                                    spliceAreaDefinitions.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
                         parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {});
                     }
             );
@@ -83,6 +83,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         // This is a special parse - we just take trimmed versions of every definition and add it as a parse
         Map<String, ParseType> parseTokenMappings = new HashMap<>();
         addDefinitionTokens(touch, parseTokenMappings);
+        addWhitespaceTokens(parseTokenMappings);
 
         parse(parsedDefinitionCells, parseTokenMappings, touch.definitionShorthandCells(), (parsedCell) -> {});
     }
@@ -143,7 +144,6 @@ public class AssignParseType implements Function<Touch, Parse> {
     private Map<String, ParseType> buildSpliceAreaParseTokenMap(Touch touch) {
         Map<String, ParseType> parseTokenMappings = new HashMap<>();
         addSpliceTokens(touch, parseTokenMappings);
-        addVarianceTokens(parseTokenMappings);
         addGroupTokens(parseTokenMappings);
         addDefinitionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
