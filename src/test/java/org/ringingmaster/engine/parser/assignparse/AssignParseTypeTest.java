@@ -18,7 +18,6 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.ParseType.GROUP_CLOSE;
 import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN;
@@ -27,7 +26,6 @@ import static org.ringingmaster.engine.parser.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
-import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
@@ -46,26 +44,6 @@ public class AssignParseTypeTest {
         Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(CALL));
     }
-
-    @Test
-    public void correctlyParsesSimpleCallPosition() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W");
-        touch.setTouchCheckingType(COURSE_BASED);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALLING_POSITION));
-    }
-
-
-    @Test
-    public void ignoreOtherCharactersInCallingPositionCell() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "bHd");
-        touch.setTouchCheckingType(COURSE_BASED);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), unparsed(), valid(CALLING_POSITION), unparsed());
-    }
-
 
     @Test
     public void correctlyParsesDefinitionTokenInMainBody() {
