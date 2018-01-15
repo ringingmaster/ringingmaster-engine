@@ -61,11 +61,12 @@ public class AssertParse {
                 UnparsedExpected unparsedExpected = (UnparsedExpected) expected;
 
                 log.info("Checking Unparsed [{}, {}]", elementIndex, unparsedExpected);
-
                 // Assert all sections and groups are empty.
                 for (int i = 0; i < unparsedExpected.length; i++) {
-                    assertFalse("Section is present when it should be unparsed [" + elementIndex + "]", parsedCell.getSectionAtElementIndex(elementIndex).isPresent());
-                    assertFalse("Group is present when it should be unparsed [" + elementIndex + "]", parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
+                    assertFalse("Section is present when it should be unparsed [" + elementIndex + "], [" + parsedCell.getSectionAtElementIndex(elementIndex) + "]",
+                            parsedCell.getSectionAtElementIndex(elementIndex).isPresent());
+                    assertFalse("Group is present when it should be unparsed [" + elementIndex + "], [" + parsedCell.getGroupAtElementIndex(elementIndex) + "]",
+                            parsedCell.getGroupAtElementIndex(elementIndex).isPresent());
                     elementIndex++;
                 }
             }
@@ -93,18 +94,17 @@ public class AssertParse {
     private static int assertSection(ParsedCell parsedCell, int elementIndex, SectionExpected sectionExpected, int sectionIndexInGroup) {
         Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
         assertTrue("Missing Section: " + sectionExpected, sectionAtFirstElementIndex.isPresent());
-        assertEquals("Section: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.parseType, sectionAtFirstElementIndex.get().getParseType());
+        assertEquals("Section ParseType wrong: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.parseType, sectionAtFirstElementIndex.get().getParseType());
+        assertEquals("Section length wrong: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.length, sectionAtFirstElementIndex.get().getElementLength());
 
         for (int sectionIndex = 0; sectionIndex < sectionExpected.length; sectionIndex++) {
-            log.info(parsedCell.toString());
-
             // Checking all Section index's in section point to the same Section
             final Optional<Section> sectionAtElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
             assertTrue("Missing Section at element index [" + elementIndex + "]", sectionAtElementIndex.isPresent());
             assertEquals("Mismatch in Section lookup. Section Index [" + sectionIndex + "], Element Index [" + elementIndex + "]",
                     sectionAtFirstElementIndex.get(), sectionAtElementIndex.get());
 
-            // Checking all Groups index's in section point to the same Section
+            // Checking all Groups index's in section bounds point to the same Section
             final Optional<Group> groupAtElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
             assertTrue("Missing Group at element index [" + elementIndex + "]", groupAtElementIndex.isPresent());
             assertEquals("Mismatch in group indexes Section Index [" + sectionIndex + "], Element Index [" + elementIndex + "], sectionIndexInGroup[" + sectionIndexInGroup + "]",
