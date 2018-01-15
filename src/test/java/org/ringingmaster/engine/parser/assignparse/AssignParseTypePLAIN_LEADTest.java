@@ -25,6 +25,16 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
 public class AssignParseTypePLAIN_LEADTest {
 
     @Test
+    public void plainLeadInCallingAreaNotParsed() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "p");
+        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+
+        assertParse(parse.allTouchCells().get(0, 0), unparsed());
+    }
+
+    @Test
     public void correctlyParsesPlainLeadTokenInMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-p-");
 
