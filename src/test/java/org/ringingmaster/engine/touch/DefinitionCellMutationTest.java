@@ -69,6 +69,60 @@ public class DefinitionCellMutationTest {
     }
 
     @Test
+    public void addingDefinitionThroughAddMethodWithLeadingWhitespaceTrims()  {
+
+        ObservableTouch touch = new ObservableTouch();
+        touch.addDefinition(" A", "SL");
+
+        assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
+    }
+
+    @Test
+    public void addingDefinitionThroughAddMethodWithTrailingWhitespaceTrims()  {
+
+        ObservableTouch touch = new ObservableTouch();
+        touch.addDefinition("A ", "SL");
+
+        assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
+    }
+
+    @Test
+    public void addingDefinitionThroughAddMethodWithCentralWhitespaceDoesNotTrim()  {
+
+        ObservableTouch touch = new ObservableTouch();
+        touch.addDefinition("A B", "SL");
+
+        assertTrue(touch.get().findDefinitionByShorthand("A B").isPresent());
+    }
+
+    @Test
+    public void addingDefinitionThroughCellEditingWithLeadingWhitespaceTrims()  {
+
+        ObservableTouch touch = new ObservableTouch();
+        touch.addCharacters(DEFINITION_TABLE, 0, SHORTHAND_COLUMN, " A");
+
+        assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
+    }
+
+    @Test
+    public void addingDefinitionThroughCellEditingWithTrailingWhitespaceTrims()  {
+
+        ObservableTouch touch = new ObservableTouch();
+        touch.addCharacters(DEFINITION_TABLE, 0, SHORTHAND_COLUMN, "A ");
+
+        assertTrue(touch.get().findDefinitionByShorthand("A").isPresent());
+    }
+
+    @Test
+    public void addingDefinitionThroughCellEditingWithEmbeddedWhitespaceDoesNotTrim()  {
+
+        ObservableTouch touch = new ObservableTouch();
+        touch.addCharacters(DEFINITION_TABLE, 0, SHORTHAND_COLUMN, "A B");
+
+        assertTrue(touch.get().findDefinitionByShorthand("A B").isPresent());
+    }
+
+    @Test
     public void canRemoveDefinitionThroughRemoveMethod()  {
         ObservableTouch touch = new ObservableTouch();
         touch.addDefinition("A", "aa");
