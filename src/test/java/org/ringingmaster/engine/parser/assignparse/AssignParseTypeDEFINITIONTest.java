@@ -139,6 +139,7 @@ public class AssignParseTypeDEFINITIONTest {
         touch.addDefinition("def2", "def1");
 
         Parse parse = new AssignParseType().apply(touch.get());
+
         assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), valid(SPLICE));
@@ -167,7 +168,7 @@ public class AssignParseTypeDEFINITIONTest {
         touch.addNotation(notationBody);
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
-        touch.addDefinition("def1", "W");
+        touch.addDefinition("def1", "-P");
         return touch;
     }
 
