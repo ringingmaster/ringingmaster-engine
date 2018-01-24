@@ -11,6 +11,8 @@ import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
 import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
+import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
@@ -60,25 +62,6 @@ public class AssignParseType implements Function<Touch, Parse> {
                 .build();
     }
 
-    private void parseDefinitionDefinitionArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells, Set<String> mainBodyDefinitions, Set<String> spliceAreaDefinitions) {
-
-        Map<String, ParseType> mainBodyParseTokenMappings = buildMainBodyParseTokenMap(touch);
-        Map<String, ParseType> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(touch);
-
-        for (String shorthand : touch.getAllDefinitionShorthands()) {
-            touch.findDefinitionByShorthand(shorthand).ifPresent(
-                    (definitionTable) -> {
-                        final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
-                        // We only use splices mappings when token is not in main body but is in spliced.
-                        Map<String, ParseType> chosenMappings = (!mainBodyDefinitions.contains(shorthand))&&
-                                                                    spliceAreaDefinitions.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
-                        parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {});
-                    }
-            );
-        }
-
-    }
-
     private void parseDefinitionShorthandArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {
         // This is a special parse - we just take trimmed versions of every definition and add it as a parse
         Map<String, ParseType> parseTokenMappings = new HashMap<>();
@@ -119,8 +102,11 @@ public class AssignParseType implements Function<Touch, Parse> {
         addPlainLeadToken(touch, parseTokenMappings);
         addVarianceTokens(parseTokenMappings);
         addGroupTokens(parseTokenMappings);
-        addDefinitionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
+        // We add definitions last so if there is a namespace clash, the definition wins.
+        // This is necessary because in parseDefinitionDefinitionArea we parse the definitions first on
+        // their own and we want the same behaviour.
+        addDefinitionTokens(touch, parseTokenMappings);
         return parseTokenMappings;
     }
 
@@ -147,6 +133,62 @@ public class AssignParseType implements Function<Touch, Parse> {
         addGroupTokens(parseTokenMappings);
         addDefinitionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
+        // We add definitions last so if there is a namespace clash, the definition wins.
+        // This is necessary because in parseDefinitionDefinitionArea we parse the definitions first on
+        // their own and we want the same behaviour.
+        addDefinitionTokens(touch, parseTokenMappings);
+        return parseTokenMappings;
+    }
+
+    private void parseDefinitionDefinitionArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells, Set<String> mainBodyDefinitions, Set<String> spliceAreaDefinitions) {
+
+        if (touch.getAllDefinitionShorthands().size() == 0) {
+            return;
+        }
+
+        // Pass 1 - parse definitions
+        Map<String, ParseType> definitionMappings = buildDefinitionDefinitionTokenMap(touch);
+        for (String shorthand : touch.getAllDefinitionShorthands()) {
+            touch.findDefinitionByShorthand(shorthand).ifPresent(
+                    (definitionTable) -> {
+                        final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
+                        parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {});
+                    }
+            );
+        }
+
+        // Pass 2 - find transative definitions
+        final Parse tempParseToFindAdjacensyList = new ParseBuilder()
+                .prototypeOf(touch)
+                .setTouchTableCells(HashBasedTable.create())
+                .setDefinitionTableCells(parsedDefinitionCells)
+                .build();
+        final Map<String, Set<String>> adjencency = new BuildDefinitionsAdjacencyList().apply(tempParseToFindAdjacensyList);
+
+        Set<String> mainBodyDefinitionsWithTransative = new FollowTransitiveDefinitions().apply(mainBodyDefinitions, adjencency);
+        Set<String> spliceAreaDefinitionsWithTransative = new FollowTransitiveDefinitions().apply(spliceAreaDefinitions, adjencency);
+
+        // Pass 3 - parse other values
+        Map<String, ParseType> mainBodyParseTokenMappings = buildMainBodyParseTokenMap(touch);
+        Map<String, ParseType> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(touch);
+
+        for (String shorthand : touch.getAllDefinitionShorthands()) {
+            touch.findDefinitionByShorthand(shorthand).ifPresent(
+                    (definitionTable) -> {
+                        final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
+                        // We only use splices mappings when token is not in main body but is in spliced.
+                        Map<String, ParseType> chosenMappings = (!mainBodyDefinitionsWithTransative.contains(shorthand))&&
+                                spliceAreaDefinitionsWithTransative.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
+                        parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {});
+                    }
+            );
+        }
+
+    }
+
+    private Map<String, ParseType> buildDefinitionDefinitionTokenMap(Touch touch) {
+        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+        addDefinitionTokens(touch, parseTokenMappings);
         return parseTokenMappings;
     }
 
@@ -167,7 +209,6 @@ public class AssignParseType implements Function<Touch, Parse> {
             }
         }
     }
-
 
     private void addPlainLeadToken(Touch touch, Map<String, ParseType> parsings) {
         if (touch.getCheckingType() == CheckingType.LEAD_BASED) {

@@ -21,8 +21,6 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
 /**
- * TODO comments???
- *
  * @author stevelake
  */
 public class AssignParseTypeDEFINITIONTest {
@@ -135,6 +133,7 @@ public class AssignParseTypeDEFINITIONTest {
     public void transativeDefinitionInSplicedParsedAsSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
         touch.addCharacters(TableType.TOUCH_TABLE,0,1,"def3");
+        touch.setSpliced(true);
         touch.addDefinition("def3", "def2");
         touch.addDefinition("def2", "def1");
 
@@ -143,6 +142,21 @@ public class AssignParseTypeDEFINITIONTest {
         assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), valid(SPLICE));
+    }
+
+    @Test
+    public void transativeDefinitionInSplicedAndMainBodyParsedAsMainBody() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def33");
+        touch.addCharacters(TableType.TOUCH_TABLE,0,1,"def3");
+        touch.setSpliced(true);
+        touch.addDefinition("def3", "def2");
+        touch.addDefinition("def2", "def1");
+
+        Parse parse = new AssignParseType().apply(touch.get());
+
+        assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
     }
 
     private NotationBody buildPlainBobMinor() {
