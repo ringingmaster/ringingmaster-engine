@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.group;
+package org.ringingmaster.engine.parser.brace;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
@@ -6,6 +6,7 @@ import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.Parse;
 import org.ringingmaster.engine.parser.ParseBuilder;
+import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
@@ -15,9 +16,28 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class GroupLogic implements Function<Parse, Parse> {
+/**
+ * TODO comments???
+ *
+ * @author stevelake
+ */
+public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
+
+    private final ParseType openingBrace;
+    private final ParseType closingBrace;
+    private final String braceTypeName;
+    private final int nestingDepth;
+
+    public SkeletalBraceLogic(ParseType openingBrace, ParseType closingBrace, String braceTypeName, int nestingDepth) {
+        this.openingBrace = checkNotNull(openingBrace);
+        this.closingBrace = checkNotNull(closingBrace);
+        this.braceTypeName = checkNotNull(braceTypeName);
+        this.nestingDepth = nestingDepth;
+        checkArgument(nestingDepth > 0);
+    }
 
     public Parse apply(Parse parse) {
 
@@ -27,7 +47,7 @@ public class GroupLogic implements Function<Parse, Parse> {
         parseCells(parse.mainBodyCells(), resultCells);
         parseCells(parse.splicedCells(), resultCells);
 
-        // We parse definitions individually. This is so that any grouping in a definition
+        // We parse definitions individually. This is so that any open/close brace in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
                 HashBasedTable.create(parse.definitionDefinitionCells().getBackingTable());
@@ -49,27 +69,30 @@ public class GroupLogic implements Function<Parse, Parse> {
 
         Map<CoordinateAndSection, String> invalidSections = Maps.newHashMap();
 
-        Deque<CoordinateAndSection> openGroups = new ArrayDeque<>();
+        Deque<CoordinateAndSection> openBraces = new ArrayDeque<>();
 
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : originalCells) {
             for (Section section : locationAndCell.getValue().allSections()) {
-                switch (section.getParseType()) {
-                    case GROUP_OPEN:
-                        openGroups.addFirst(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section));
-                        break;
-                    case GROUP_CLOSE:
-                        if (openGroups.size() > 0) {
-                            openGroups.removeFirst();
-                        }
-                        else {
-                            invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "No matching opening brace");
-                        }
-                        break;
+                if (openingBrace.equals(section.getParseType())) {
+                    if (openBraces.size() >= nestingDepth) {
+                        invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "Nesting depth greater than the " + nestingDepth + " allowed for " + braceTypeName );
+                    }
+                    else {
+                        openBraces.addFirst(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section));
+                    }
+                }
+                else if (closingBrace.equals(section.getParseType())) {
+                    if (openBraces.size() > 0) {
+                        openBraces.removeFirst();
+                    }
+                    else {
+                        invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "No matching opening " + braceTypeName + " brace");
+                    }
                 }
             }
         }
-        while (openGroups.peekFirst() != null ) {
-            invalidSections.put(openGroups.removeFirst(), "No matching closing brace");
+        while (openBraces.peekFirst() != null ) {
+            invalidSections.put(openBraces.removeFirst(), "No matching closing " + braceTypeName + " brace");
         }
 
         for (Map.Entry<CoordinateAndSection, String> invalidSection : invalidSections.entrySet()) {

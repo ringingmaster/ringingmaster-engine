@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.group;
+package org.ringingmaster.engine.parser.brace;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
@@ -159,11 +159,11 @@ public class GroupLogicTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.setSpliced(true);
         touch.addCharacters(TOUCH_TABLE, 0,0, "(");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "(");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "(");//spliced
         touch.addCharacters(TOUCH_TABLE, 1,0, "-");
-        touch.addCharacters(TOUCH_TABLE, 1,1, ")");
+        touch.addCharacters(TOUCH_TABLE, 1,1, ")");//spliced
         touch.addCharacters(TOUCH_TABLE, 2,0, ")");
-        touch.addCharacters(TOUCH_TABLE, 2,1, ")");
+        touch.addCharacters(TOUCH_TABLE, 2,1, ")");//spliced
 
         Parse result = new AssignParseType()
                 .andThen(new GroupLogic())
@@ -203,6 +203,38 @@ public class GroupLogicTest {
                 .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(CALL ), valid(GROUP_CLOSE));
+    }
+
+    @Test
+    public void nestingDepthOkAt4() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
+        touch.addCharacters(TOUCH_TABLE, 0,0, "((((-))))");
+
+        Parse result = new AssignParseType()
+                .andThen(new GroupLogic())
+                .apply(touch.get());
+
+        assertParse(result.allTouchCells().get(0,0),
+                valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_OPEN),
+                valid(1, CALL),
+                valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE)
+        );
+    }
+
+    @Test
+    public void nestingDepthInvalidAt5() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
+        touch.addCharacters(TOUCH_TABLE, 0,0, "(((((-)))))");
+
+        Parse result = new AssignParseType()
+                .andThen(new GroupLogic())
+                .apply(touch.get());
+
+        assertParse(result.allTouchCells().get(0,0),
+                valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), valid(1, GROUP_OPEN), invalid(1, GROUP_OPEN),
+                valid(1, CALL),
+                valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE), valid(1, GROUP_CLOSE), invalid(1, GROUP_CLOSE)
+        );
     }
 
     private NotationBody buildPlainBobMinor() {
