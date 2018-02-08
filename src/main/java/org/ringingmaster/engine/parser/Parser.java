@@ -3,6 +3,7 @@ package org.ringingmaster.engine.parser;
 import org.ringingmaster.engine.parser.assignparse.AssignMultiplier;
 import org.ringingmaster.engine.parser.assignparse.AssignParseType;
 import org.ringingmaster.engine.parser.brace.GroupLogic;
+import org.ringingmaster.engine.parser.brace.GroupVarianceNotOverlapping;
 import org.ringingmaster.engine.parser.brace.VarianceLogic;
 import org.ringingmaster.engine.parser.callposition.MultipleCallPositionsInOneCell;
 import org.ringingmaster.engine.parser.definition.CircularDefinition;
@@ -30,6 +31,7 @@ public class Parser implements Function<Touch, Parse> {
     private final SplicedCallsNotDefinedInEachMethod splicedCallsNotDefinedInEachMethod = new SplicedCallsNotDefinedInEachMethod();
     private final VarianceLogic varianceLogic = new VarianceLogic();
     private final GroupLogic groupLogic = new GroupLogic();
+    private final GroupVarianceNotOverlapping groupVarianceNotOverlapping = new GroupVarianceNotOverlapping();
     private final DefinitionInSplicedOrMain definitionInSplicedOrMain = new DefinitionInSplicedOrMain();
     private final CircularDefinition circularDefinition = new CircularDefinition();
 
@@ -51,7 +53,7 @@ public class Parser implements Function<Touch, Parse> {
                 .andThen(varianceLogic)
                 .andThen(groupLogic)
 //TODO		parseGroupOnDifferentLines(); // TODO I dont think we need this one now as allowing groups on many lines. Might have to do extra parsing when a block definition in use though to make sure we have full groups in the block
-//TODO		parseVarianceGroupInteractionLogic();
+                .andThen(groupVarianceNotOverlapping)
 //TODO		parseSpaceOnlyInCell(); //TODO I dont think this is necessary, apart from where whole rows and columns are empty
 //TODO		parseCallsInColumnWithoutCallingPos();
 //TODO		parseSplicedNotBlocks();
