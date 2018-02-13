@@ -8,6 +8,7 @@ import org.ringingmaster.engine.parser.brace.VarianceLogic;
 import org.ringingmaster.engine.parser.callposition.MultipleCallPositionsInOneCell;
 import org.ringingmaster.engine.parser.definition.CircularDefinition;
 import org.ringingmaster.engine.parser.definition.DefinitionInSplicedOrMain;
+import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.splice.SplicedCallsNotDefinedInEachMethod;
 import org.ringingmaster.engine.touch.Touch;
 import org.slf4j.Logger;

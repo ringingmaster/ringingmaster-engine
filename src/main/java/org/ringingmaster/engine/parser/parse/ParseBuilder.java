@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser;
+package org.ringingmaster.engine.parser.parse;
 
 import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;

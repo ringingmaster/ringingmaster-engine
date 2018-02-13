@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.parser.functions;
 
-import org.ringingmaster.engine.parser.Parse;
+import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.Map;
 import java.util.Set;

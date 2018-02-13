@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
-import org.ringingmaster.engine.parser.Parse;
+import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.touch.ObservableTouch;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 

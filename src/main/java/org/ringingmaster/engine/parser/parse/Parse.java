@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser;
+package org.ringingmaster.engine.parser.parse;
 
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.touch.Touch;
