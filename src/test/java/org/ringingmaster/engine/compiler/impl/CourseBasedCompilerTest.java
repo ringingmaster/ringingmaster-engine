@@ -2,19 +2,26 @@ package org.ringingmaster.engine.compiler.impl;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
-import org.junit.Assert;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.parser.Parse;
+import org.ringingmaster.engine.parser.Parser;
+import org.ringingmaster.engine.proof.Proof;
+import org.ringingmaster.engine.proof.ProofTerminationReason;
+import org.ringingmaster.engine.touch.ObservableTouch;
 import org.ringingmaster.engine.touch.Touch;
+import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
 
 /**
@@ -23,17 +30,15 @@ import static org.junit.Assert.fail;
  */
 public class CourseBasedCompilerTest {
 
-//	private final Parser parser = new DefaultParser();
+	private final Parser parser = new Parser();
 
 	@Test
 	public void compileSingleCallCalledFromTenor() throws IOException {
-		fail(); //TODO
-
-//		Touch touch = buildPlainBobMinorTouchShell(1, 2);
-//		touch.addCharacters(0, 0, "W");
-//		touch.addCharacters(0, 1, "-");
-//		Proof proof = parseProveAndCheckTouch(15
-//				, "/PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+		ObservableTouch touch = buildPlainBobMinorTouchShell();
+		touch.addCharacters(TOUCH_TABLE,0, 0, "W");
+		touch.addCharacters(TOUCH_TABLE,1, 0, "-");
+		Proof proof = parseProveAndCheckTouch(15
+				, "/PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch.get());
 	}
 
 	@Test
@@ -48,16 +53,13 @@ public class CourseBasedCompilerTest {
 //				, "/PlainBobMinor W - From5.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
 	}
 
-	private Touch buildPlainBobMinorTouchShell(int width, int height) {
-		fail(); //TODO
-
-		return null;
-//		Touch touch = TouchBuilder.newTouch(NumberOfBells.BELLS_6, width, height);
-//		touch.setTitle("Test Touch");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-//		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
-//		return touch;
+	private ObservableTouch buildPlainBobMinorTouchShell() {
+		ObservableTouch touch = new ObservableTouch();
+		touch.setNumberOfBells(NumberOfBells.BELLS_6);
+		touch.setTitle("Test Touch");
+		touch.addNotation(buildPlainBobMinor());
+		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+		return touch;
 	}
 
 	private NotationBody buildPlainBobMinor() {
@@ -72,16 +74,17 @@ public class CourseBasedCompilerTest {
 				.build();
 	}
 
-//	private Proof parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
-//	                                      ProofTerminationReason terminationReason, Touch touch) throws IOException {
-//		parser.parseAndAnnotate(touch);
-//		Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);
-//		assertEquals(terminationReason, proof.getTerminationReason());
-//		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
-//		checkAgainstFile(proof.getCreatedMethod().get(), fileName);
-//		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
-//		return proof;
-//	}
+	private Proof parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
+	                                      ProofTerminationReason terminationReason, Touch touch) throws IOException {
+        final Parse parse = parser.apply(touch);
+
+        Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);
+		assertEquals(terminationReason, proof.getTerminationReason());
+		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
+		checkAgainstFile(proof.getCreatedMethod().get(), fileName);
+		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
+		return proof;
+	}
 
 	private void checkAgainstFile(Method method, String fileName) throws IOException {
 		String allChangesAsText = method.getAllChangesAsText();
@@ -90,7 +93,7 @@ public class CourseBasedCompilerTest {
 			fileContent = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
 		}
 
-		Assert.assertEquals(convertToOsLineSeparators(fileContent), convertToOsLineSeparators(allChangesAsText));
+		assertEquals(convertToOsLineSeparators(fileContent), convertToOsLineSeparators(allChangesAsText));
 	}
 
 	private String convertToOsLineSeparators(String text) {
