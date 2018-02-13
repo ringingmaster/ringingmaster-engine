@@ -2,7 +2,7 @@ package org.ringingmaster.engine.compiler.impl;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.touch.variance.Variance;
 
 import static com.google.common.base.Preconditions.checkNotNull;

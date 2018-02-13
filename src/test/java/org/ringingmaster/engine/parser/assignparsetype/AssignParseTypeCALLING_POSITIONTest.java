@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.assignparse;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
@@ -11,9 +11,7 @@ import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
-import static org.ringingmaster.engine.parser.ParseType.SPLICE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -23,60 +21,40 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
  *
  * @author stevelake
  */
-public class AssignParseTypeSPLICETest {
+public class AssignParseTypeCALLING_POSITIONTest {
 
     @Test
-    public void spliceIgnoredInCallingPoitionArea() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "WP");
+    public void callingPositionParsedInCallingPoitionArea() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "WH");
         touch.setTouchCheckingType(COURSE_BASED);
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALLING_POSITION), unparsed());
+        assertParse(parse.allTouchCells().get(0, 0), valid(CALLING_POSITION), valid(CALLING_POSITION));
     }
 
     @Test
-    public void spliceIgnoredInMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-P-");
+    public void callingPositionIgnoredInMainBody() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), unparsed(), valid(CALL));
+        assertParse(parse.allTouchCells().get(0, 0), unparsed());
     }
 
     @Test
-    public void spliceParsedInSplice() {
+    public void callingPositionUnparsedInSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE,0,1,"P");
+        touch.addCharacters(TOUCH_TABLE,0,1,"W");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 1), valid(SPLICE));
+        assertParse(parse.allTouchCells().get(0, 1), unparsed());
     }
 
     @Test
-    public void spliceNameParsedInSplice() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE,0,1,"Plain Bob");
-        touch.setSpliced(true);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 1), valid(9, SPLICE));
-    }
-
-    @Test
-    public void spliceNameFullyQualifiedParsedInSplice() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE,0,1,"Plain Bob Minor");
-        touch.setSpliced(true);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 1), valid(15, SPLICE));
-    }
-
-    @Test
-    public void spliceIgnoredInUnusedDefinition() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+    public void callingPositionUnparsedInUnusedDefinition() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W");
 
         Parse parse = new AssignParseType().apply(touch.get());
 
@@ -84,7 +62,7 @@ public class AssignParseTypeSPLICETest {
     }
 
     @Test
-    public void spliceUnparsedInDefinitionUsedInMainBody() {
+    public void callingPositionUnparsedInDefinitionUsedInMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(touch.get());
@@ -93,18 +71,18 @@ public class AssignParseTypeSPLICETest {
     }
 
     @Test
-    public void spliceParsedInDefinitionUsedInSplice() {
+    public void callingPositionParsedInDefinitionUsedInSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
         touch.addCharacters(TOUCH_TABLE,0,1, "def1");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(SPLICE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
     }
 
     @Test
-    public void spliceParsedInDefinitionUsedInSpliceAnMainBody() {
+    public void callingPositionParsedInDefinitionUsedInSpliceAnMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
         touch.addCharacters(TOUCH_TABLE,0,1, "def1");
         touch.setSpliced(true);
@@ -112,6 +90,15 @@ public class AssignParseTypeSPLICETest {
         Parse parse = new AssignParseType().apply(touch.get());
 
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
+    }
+
+    @Test
+    public void ignoreOtherCharactersInCallingPositionCell() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "bHd");
+        touch.setTouchCheckingType(COURSE_BASED);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0, 0), unparsed(), valid(CALLING_POSITION), unparsed());
     }
 
 
@@ -138,7 +125,7 @@ public class AssignParseTypeSPLICETest {
         touch.addNotation(notationBody);
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
-        touch.addDefinition("def1", "P");
+        touch.addDefinition("def1", "W");
         return touch;
     }
 

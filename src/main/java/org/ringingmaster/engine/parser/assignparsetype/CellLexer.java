@@ -1,7 +1,7 @@
-package org.ringingmaster.engine.parser.assignparse;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 import javax.annotation.concurrent.Immutable;
-import org.ringingmaster.engine.parser.ParseType;
+
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellFactory;
 import org.ringingmaster.engine.parser.cell.Section;

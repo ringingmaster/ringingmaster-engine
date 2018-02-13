@@ -5,7 +5,7 @@ import org.ringingmaster.engine.parser.parse.Parse;
 import java.util.Map;
 import java.util.Set;
 
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 
 /**
  * TODO comments???

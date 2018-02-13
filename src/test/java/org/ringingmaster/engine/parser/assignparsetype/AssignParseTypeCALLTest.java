@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.assignparse;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
@@ -6,108 +6,92 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.TableType;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.CALLING_POSITION;
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
-import static org.ringingmaster.engine.parser.ParseType.SPLICE;
-import static org.ringingmaster.engine.parser.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.touch.TableType.DEFINITION_TABLE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
-import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
 /**
  * TODO comments???
  *
  * @author stevelake
  */
-public class AssignParseTypeWHITESPACETest {
+public class AssignParseTypeCALLTest {
 
     @Test
-    public void correctlyParsesWhitespaceInCallingArea() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W H");
-        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALLING_POSITION), valid(WHITESPACE), valid(CALLING_POSITION));
-    }
-
-    @Test
-    public void correctlyParsesWhitespaceInMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "- Bob");
-
-        Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(WHITESPACE), valid(3, CALL));
-    }
-
-    @Test
-    public void correctlyParsesWhitespaceInSplice() {
+    public void callIgnoredInCallingPoitionArea() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TableType.TOUCH_TABLE,0,1,"P P ");
+        touch.setTouchCheckingType(COURSE_BASED);
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.allTouchCells().get(0, 1), valid(SPLICE), valid(WHITESPACE), valid(SPLICE), valid(WHITESPACE));
+        assertParse(parse.allTouchCells().get(0, 0), unparsed());
     }
 
     @Test
-    public void correctlyParsesWhitespaceInUnusedDefinition() {
+    public void callIgnoredInMainBody() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-P-");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), unparsed(), valid(CALL));
+    }
+
+    @Test
+    public void callUnparsedInSplice() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.addCharacters(TOUCH_TABLE,0,1,"-");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0, 1), unparsed());
+    }
+
+    @Test
+    public void callParsedInUnusedDefinition() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(WHITESPACE), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL));
     }
 
     @Test
-    public void correctlyParsesWhitespaceInDefinitionUsedInMainBody() {
+    public void callUnparsedInDefinitionUsedInMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(WHITESPACE), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL));
     }
 
     @Test
-    public void correctlyParsesWhitespaceInDefinitionUsedInSplice() {
+    public void callUnparsedInDefinitionUsedInSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
         touch.addCharacters(TOUCH_TABLE,0,1, "def1");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), valid(WHITESPACE), unparsed());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
     }
 
     @Test
-    public void correctlyParsesWhitespaceInDefinitionUsedInMainBodySplice() {
+    public void callParsedInDefinitionUsedInSpliceAnMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
         touch.addCharacters(TOUCH_TABLE,0,1, "def1");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(WHITESPACE), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL));
     }
 
-    @Test
-    public void correctlyParsesWhitespaceInDefinitionShorthand() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(DEFINITION_TABLE,1,0, " de f2 ");
-
-        Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.findDefinitionByShorthand("de f2").get().get(0, SHORTHAND_COLUMN), valid(WHITESPACE), valid(5, DEFINITION), valid(WHITESPACE));
-    }
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
@@ -132,7 +116,7 @@ public class AssignParseTypeWHITESPACETest {
         touch.addNotation(notationBody);
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
-        touch.addDefinition("def1", "- -");
+        touch.addDefinition("def1", "-");
         return touch;
     }
 

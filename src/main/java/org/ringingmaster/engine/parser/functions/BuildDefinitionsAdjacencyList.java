@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 
 /**
  * TODO comments???

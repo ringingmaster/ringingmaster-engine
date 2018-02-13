@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.functions;
 
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 
 import java.util.Set;

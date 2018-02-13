@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.assignparse;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.HashBasedTable;
@@ -9,7 +9,6 @@ import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
-import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
 import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;

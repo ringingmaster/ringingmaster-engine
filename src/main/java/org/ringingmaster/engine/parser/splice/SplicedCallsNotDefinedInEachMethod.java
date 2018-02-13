@@ -7,7 +7,7 @@ import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.ringingmaster.engine.parser.ParseType.SPLICE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 
 /**
  * TODO comments???

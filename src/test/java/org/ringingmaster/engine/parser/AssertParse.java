@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.parser;
 
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.Section;

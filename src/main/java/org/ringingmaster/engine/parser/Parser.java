@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parser;
 
-import org.ringingmaster.engine.parser.assignparse.AssignMultiplier;
-import org.ringingmaster.engine.parser.assignparse.AssignParseType;
+import org.ringingmaster.engine.parser.assignparsetype.AssignMultiplier;
+import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 import org.ringingmaster.engine.parser.brace.GroupLogic;
 import org.ringingmaster.engine.parser.brace.GroupVarianceNotOverlapping;
 import org.ringingmaster.engine.parser.brace.VarianceLogic;

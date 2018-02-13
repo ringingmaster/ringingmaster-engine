@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parser.brace;
 
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
 import java.util.function.Function;
 

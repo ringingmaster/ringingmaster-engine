@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.assignparse;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
@@ -11,7 +11,9 @@ import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_CLOSE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_OPEN;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -21,77 +23,83 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
  *
  * @author stevelake
  */
-public class AssignParseTypeCALLTest {
+public class AssignParseTypeGROUPTest {
 
     @Test
-    public void callIgnoredInCallingPoitionArea() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+    public void groupIgnoredInCallingPoitionArea() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "()");
         touch.setTouchCheckingType(COURSE_BASED);
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), unparsed());
+        assertParse(parse.allTouchCells().get(0, 0), unparsed(2));
     }
 
     @Test
-    public void callIgnoredInMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-P-");
+    public void groupParsedInMainBody() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "()");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), unparsed(), valid(CALL));
+        assertParse(parse.allTouchCells().get(0, 0), valid(GROUP_OPEN), valid(GROUP_CLOSE));
     }
 
     @Test
-    public void callUnparsedInSplice() {
+    public void groupUnparsedInSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE,0,1,"-");
+        touch.addCharacters(TOUCH_TABLE,0,1,"()");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 1), unparsed());
+        assertParse(parse.allTouchCells().get(0, 1), valid(GROUP_OPEN), valid(GROUP_CLOSE));
     }
 
     @Test
-    public void callParsedInUnusedDefinition() {
+    public void groupParsedInUnusedDefinition() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
     }
 
     @Test
-    public void callUnparsedInDefinitionUsedInMainBody() {
+    public void groupParsedInDefinitionUsedInMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
     }
 
     @Test
-    public void callUnparsedInDefinitionUsedInSplice() {
+    public void groupUnparsedInDefinitionUsedInSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
         touch.addCharacters(TOUCH_TABLE,0,1, "def1");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
     }
 
     @Test
-    public void callParsedInDefinitionUsedInSpliceAnMainBody() {
+    public void groupParsedInDefinitionUsedInSpliceAnMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
         touch.addCharacters(TOUCH_TABLE,0,1, "def1");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
     }
 
+    @Test
+    public void correctlyIdentifiesGroup() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "(-)s");
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0,0), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
+    }
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
@@ -116,7 +124,7 @@ public class AssignParseTypeCALLTest {
         touch.addNotation(notationBody);
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
-        touch.addDefinition("def1", "-");
+        touch.addDefinition("def1", "()");
         return touch;
     }
 

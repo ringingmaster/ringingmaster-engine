@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.cell;
 
 
 import com.google.errorprone.annotations.Immutable;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
 /**
  * A Section represents a contiguous sequence of elements that have an assigned ParseType

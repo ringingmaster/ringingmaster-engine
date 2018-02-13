@@ -16,10 +16,10 @@ import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.section;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.CALL_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
-import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
 
 /**
  * TODO comments???

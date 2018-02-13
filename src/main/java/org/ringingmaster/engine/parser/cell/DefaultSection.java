@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parser.cell;
 
 import javax.annotation.concurrent.Immutable;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
 /**
  * TODO comments???

@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.assignparse;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
@@ -11,8 +11,9 @@ import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.parser.ParseType.CALL;
-import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -22,59 +23,89 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
  *
  * @author stevelake
  */
-public class AssignParseTypePLAIN_LEADTest {
+public class AssignParseTypeSPLICETest {
 
     @Test
-    public void plainLeadInCallingAreaNotParsed() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "p");
-        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.allTouchCells().get(0, 0), unparsed());
-    }
-
-    @Test
-    public void correctlyParsesPlainLeadTokenInMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-p-");
-
-        Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(PLAIN_LEAD), valid(CALL));
-    }
-
-    @Test
-    public void doesNotParsePlainLeadInSplice() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE,0,1,"p");
+    public void spliceIgnoredInCallingPoitionArea() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "WP");
+        touch.setTouchCheckingType(COURSE_BASED);
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.allTouchCells().get(0, 1), unparsed());
+        assertParse(parse.allTouchCells().get(0, 0), valid(CALLING_POSITION), unparsed());
     }
 
     @Test
-    public void correctlyParsesPlainLeadInUnusedDefinition() {
+    public void spliceIgnoredInMainBody() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-P-");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), unparsed(), valid(CALL));
+    }
+
+    @Test
+    public void spliceParsedInSplice() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.addCharacters(TOUCH_TABLE,0,1,"P");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0, 1), valid(SPLICE));
+    }
+
+    @Test
+    public void spliceNameParsedInSplice() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.addCharacters(TOUCH_TABLE,0,1,"Plain Bob");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0, 1), valid(9, SPLICE));
+    }
+
+    @Test
+    public void spliceNameFullyQualifiedParsedInSplice() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.addCharacters(TOUCH_TABLE,0,1,"Plain Bob Minor");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0, 1), valid(15, SPLICE));
+    }
+
+    @Test
+    public void spliceIgnoredInUnusedDefinition() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(PLAIN_LEAD));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
     }
 
     @Test
-    public void correctlyParsesPlainLeadInDefinitionUsedInMainBody() {
+    public void spliceUnparsedInDefinitionUsedInMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(PLAIN_LEAD));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
     }
 
     @Test
-    public void correctlyParsesPlainLeadInDefinitionUsedInSplice() {
+    public void spliceParsedInDefinitionUsedInSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        touch.addCharacters(TOUCH_TABLE,0,1, "def1");
+        touch.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(touch.get());
+
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(SPLICE));
+    }
+
+    @Test
+    public void spliceParsedInDefinitionUsedInSpliceAnMainBody() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
         touch.addCharacters(TOUCH_TABLE,0,1, "def1");
         touch.setSpliced(true);
 
@@ -83,27 +114,6 @@ public class AssignParseTypePLAIN_LEADTest {
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
     }
 
-    @Test
-    public void correctlyParsesPlainLeadInDefinitionUsedInSpliceAndMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
-        touch.addCharacters(TOUCH_TABLE,0,1, "def1");
-        touch.setSpliced(true);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(PLAIN_LEAD));
-    }
-
-    @Test
-    public void plainLeadUnparsedInMainBodyWhenCourseBased() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W");
-        touch.addCharacters(TOUCH_TABLE, 1,0,"p");
-        touch.setTouchCheckingType(COURSE_BASED);
-
-        Parse parse = new AssignParseType().apply(touch.get());
-
-        assertParse(parse.mainBodyCells().get(0,0), unparsed());
-    }
 
     private NotationBody buildPlainBobMinor() {
         return NotationBuilder.getInstance()
@@ -128,7 +138,7 @@ public class AssignParseTypePLAIN_LEADTest {
         touch.addNotation(notationBody);
         touch.setTouchCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
-        touch.addDefinition("def1", "p");
+        touch.addDefinition("def1", "P");
         return touch;
     }
 

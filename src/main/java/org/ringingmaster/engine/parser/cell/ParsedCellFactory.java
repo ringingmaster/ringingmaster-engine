@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
-import org.ringingmaster.engine.parser.ParseType;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.touch.cell.Cell;
 
 import java.util.Collection;

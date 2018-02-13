@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.assignparse;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
@@ -6,7 +6,6 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
-import org.ringingmaster.engine.parser.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
@@ -17,12 +16,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import static org.ringingmaster.engine.parser.ParseType.CALL_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.DEFAULT_CALL_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.DEFINITION_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.GROUP_OPEN_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.PLAIN_LEAD_MULTIPLIER;
-import static org.ringingmaster.engine.parser.ParseType.SPLICE_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_OPEN_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildSection;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 

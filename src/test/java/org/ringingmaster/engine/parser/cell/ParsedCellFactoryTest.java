@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.ringingmaster.engine.parser.ParseType.*;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.*;
 
 public class ParsedCellFactoryTest {
 

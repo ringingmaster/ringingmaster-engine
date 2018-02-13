@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser;
+package org.ringingmaster.engine.parser.assignparsetype;
 
 /**
  * The different types that elements can be parsed to.
