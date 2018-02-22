@@ -1,8 +1,6 @@
 package org.ringingmaster.engine.compiler.impl;
 
 import com.google.common.collect.Lists;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.variance.Variance;
@@ -10,6 +8,8 @@ import org.ringingmaster.engine.touch.variance.impl.NullVariance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -72,11 +72,11 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //				case PLAIN_LEAD_MULTIPLIER:
 //					decomposeWord(word, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER);
 //					break;
-//				case GROUP_OPEN:
-//				case GROUP_OPEN_MULTIPLIER:
+//				case MULTIPLIER_GROUP_OPEN:
+//				case MULTIPLIER_GROUP_OPEN_MULTIPLIER:
 //					openGroup(word);
 //					break;
-//				case GROUP_CLOSE:
+//				case MULTIPLIER_GROUP_CLOSE:
 //					closeGroup();
 //					break;
 //				case VARIANCE_OPEN:
@@ -132,13 +132,13 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //		return new MultiplierAndCall(multiplier, parseTypeBuff.toString(), currentVariance);
 //	}
 //
-//	private void openGroup(TouchWord word) {
-//		MultiplierAndCall multiplierAndCall = getMultiplierAndCall(word, ParseType.GROUP_OPEN, ParseType.GROUP_OPEN_MULTIPLIER);
+//	private void openMultiplierGroup(TouchWord word) {
+//		MultiplierAndCall multiplierAndCall = getMultiplierAndCall(word, ParseType.MULTIPLIER_GROUP_OPEN, ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER);
 //		log.debug("Open Group level [{}] with multiplier [{}]", (callFIFO.size() + 1), multiplierAndCall.getMultiplier());
 //		callFIFO.addFirst(new CallGroup(multiplierAndCall.getMultiplier()));
 //	}
 //
-//	private void closeGroup() {
+//	private void closeMultiplierGroup() {
 //		CallGroup callGroup = callFIFO.removeFirst();
 //		log.debug("Close Group level [{}] with multiplier [{}]", (callFIFO.size() + 1), callGroup.getMultiplier());
 //		for (int i=0;i<callGroup.getMultiplier();i++) {

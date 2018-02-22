@@ -12,8 +12,8 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_CLOSE;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_OPEN;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_CLOSE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_OPEN;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -41,7 +41,7 @@ public class AssignParseTypeGROUPTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(GROUP_OPEN), valid(GROUP_CLOSE));
+        assertParse(parse.allTouchCells().get(0, 0), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class AssignParseTypeGROUPTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 1), valid(GROUP_OPEN), valid(GROUP_CLOSE));
+        assertParse(parse.allTouchCells().get(0, 1), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class AssignParseTypeGROUPTest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class AssignParseTypeGROUPTest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class AssignParseTypeGROUPTest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
@@ -91,14 +91,14 @@ public class AssignParseTypeGROUPTest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(GROUP_OPEN), valid(GROUP_CLOSE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void correctlyIdentifiesGroup() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "(-)s");
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0,0), valid(GROUP_OPEN), valid(CALL), valid(GROUP_CLOSE), valid(CALL));
+        assertParse(parse.allTouchCells().get(0,0), valid(MULTIPLIER_GROUP_OPEN), valid(CALL), valid(MULTIPLIER_GROUP_CLOSE), valid(CALL));
     }
 
     private NotationBody buildPlainBobMinor() {

@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author stevelake
  */
-public class GroupVarianceNotOverlapping implements Function<Parse, Parse> {
+public class MultiplierGroupAndVarianceNotOverlapping implements Function<Parse, Parse> {
 
     public Parse apply(Parse parse) {
 
@@ -59,17 +59,17 @@ public class GroupVarianceNotOverlapping implements Function<Parse, Parse> {
 
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : originalCells) {
             for (Section section : locationAndCell.getValue().allSections()) {
-                if (section.getParseType().equals(ParseType.GROUP_OPEN) ||
+                if (section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) ||
                         section.getParseType().equals(ParseType.VARIANCE_OPEN)) {
                     openBraces.addFirst(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section));
                 }
-                else if (section.getParseType().equals(ParseType.GROUP_CLOSE) ||
+                else if (section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE) ||
                         section.getParseType().equals(ParseType.VARIANCE_CLOSE)) {
 
                     final CoordinateAndSection head = openBraces.remove();
 
-                    if ((head.section.getParseType().equals(ParseType.GROUP_OPEN) && section.getParseType().equals(ParseType.VARIANCE_CLOSE)) ||
-                        (head.section.getParseType().equals(ParseType.VARIANCE_OPEN) && section.getParseType().equals(ParseType.GROUP_CLOSE))){
+                    if ((head.section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) && section.getParseType().equals(ParseType.VARIANCE_CLOSE)) ||
+                        (head.section.getParseType().equals(ParseType.VARIANCE_OPEN) && section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE))){
                         invalidSections.put(head, "Variances and groups can't overlap");
                         invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "???");
                     }

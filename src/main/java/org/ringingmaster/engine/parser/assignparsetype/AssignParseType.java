@@ -100,7 +100,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         addCallTokens(touch, parseTokenMappings);
         addPlainLeadToken(touch, parseTokenMappings);
         addVarianceTokens(parseTokenMappings);
-        addGroupTokens(parseTokenMappings);
+        addMultiplierGroupTokens(parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
         // We add definitions last so if there is a namespace clash, the definition wins.
         // This is necessary because in parseDefinitionDefinitionArea we parse the definitions first on
@@ -129,7 +129,7 @@ public class AssignParseType implements Function<Touch, Parse> {
     private Map<String, ParseType> buildSpliceAreaParseTokenMap(Touch touch) {
         Map<String, ParseType> parseTokenMappings = new HashMap<>();
         addSpliceTokens(touch, parseTokenMappings);
-        addGroupTokens(parseTokenMappings);
+        addMultiplierGroupTokens(parseTokenMappings);
         addDefinitionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
         // We add definitions last so if there is a namespace clash, the definition wins.
@@ -249,9 +249,9 @@ public class AssignParseType implements Function<Touch, Parse> {
         parsings.put("]", ParseType.VARIANCE_CLOSE);
     }
 
-    private void addGroupTokens(Map<String, ParseType> parsings) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
-        parsings.put("(", ParseType.GROUP_OPEN);// TODO should these be defined as constants somewhere?
-        parsings.put(")", ParseType.GROUP_CLOSE);
+    private void addMultiplierGroupTokens(Map<String, ParseType> parsings) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
+        parsings.put("(", ParseType.MULTIPLIER_GROUP_OPEN);// TODO should these be defined as constants somewhere?
+        parsings.put(")", ParseType.MULTIPLIER_GROUP_CLOSE);
     }
 
 }

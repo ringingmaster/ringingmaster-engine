@@ -2,8 +2,8 @@ package org.ringingmaster.engine.parser;
 
 import org.ringingmaster.engine.parser.assignparsetype.AssignMultiplier;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
-import org.ringingmaster.engine.parser.brace.GroupLogic;
-import org.ringingmaster.engine.parser.brace.GroupVarianceNotOverlapping;
+import org.ringingmaster.engine.parser.brace.MultiplierGroupLogic;
+import org.ringingmaster.engine.parser.brace.MultiplierGroupAndVarianceNotOverlapping;
 import org.ringingmaster.engine.parser.brace.VarianceLogic;
 import org.ringingmaster.engine.parser.callposition.MultipleCallPositionsInOneCell;
 import org.ringingmaster.engine.parser.definition.CircularDefinition;
@@ -31,8 +31,8 @@ public class Parser implements Function<Touch, Parse> {
     private final MultipleCallPositionsInOneCell multipleCallPositionsInOneCell = new MultipleCallPositionsInOneCell();
     private final SplicedCallsNotDefinedInEachMethod splicedCallsNotDefinedInEachMethod = new SplicedCallsNotDefinedInEachMethod();
     private final VarianceLogic varianceLogic = new VarianceLogic();
-    private final GroupLogic groupLogic = new GroupLogic();
-    private final GroupVarianceNotOverlapping groupVarianceNotOverlapping = new GroupVarianceNotOverlapping();
+    private final MultiplierGroupLogic multiplierGroupLogic = new MultiplierGroupLogic();
+    private final MultiplierGroupAndVarianceNotOverlapping multiplierGroupAndVarianceNotOverlapping = new MultiplierGroupAndVarianceNotOverlapping();
     private final DefinitionInSplicedOrMain definitionInSplicedOrMain = new DefinitionInSplicedOrMain();
     private final CircularDefinition circularDefinition = new CircularDefinition();
 
@@ -52,9 +52,9 @@ public class Parser implements Function<Touch, Parse> {
 //TODO		parseSplicedCallPosAgregateNotDefinedInEachMethod();
 //TODO		parseSpliceCountDifferentInEachMethod();
                 .andThen(varianceLogic)
-                .andThen(groupLogic)
+                .andThen(multiplierGroupLogic)
 //TODO		parseGroupOnDifferentLines(); // TODO I dont think we need this one now as allowing groups on many lines. Might have to do extra parsing when a block definition in use though to make sure we have full groups in the block
-                .andThen(groupVarianceNotOverlapping)
+                .andThen(multiplierGroupAndVarianceNotOverlapping)
 //TODO		parseSpaceOnlyInCell(); //TODO I dont think this is necessary, apart from where whole rows and columns are empty
 //TODO		parseCallsInColumnWithoutCallingPos();
 //TODO		parseSplicedNotBlocks();

@@ -19,7 +19,7 @@ import java.util.function.Function;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION_MULTIPLIER;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_OPEN_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildSection;
@@ -99,7 +99,7 @@ public class AssignMultiplier implements Function<Parse, Parse> {
                         case WHITESPACE:
                         case VARIANCE_OPEN:
                         case VARIANCE_CLOSE:
-                        case GROUP_CLOSE:
+                        case MULTIPLIER_GROUP_CLOSE:
                             parseTypeToRight = matchAsDefaultCallMultiplier(elementIndex, parsedCellMutator, spliceCell, splicedPerformance, hasDefaultCall);
                             break;
 
@@ -107,8 +107,8 @@ public class AssignMultiplier implements Function<Parse, Parse> {
                         case CALL:
                             parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, CALL_MULTIPLIER);
                             break;
-                        case GROUP_OPEN:
-                            parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, GROUP_OPEN_MULTIPLIER);
+                        case MULTIPLIER_GROUP_OPEN:
+                            parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, MULTIPLIER_GROUP_OPEN_MULTIPLIER);
                             break;
                         case PLAIN_LEAD:
                             parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, PLAIN_LEAD_MULTIPLIER);
@@ -123,7 +123,7 @@ public class AssignMultiplier implements Function<Parse, Parse> {
                         // Duplicating multipliers
                         case DEFAULT_CALL_MULTIPLIER:
                         case CALL_MULTIPLIER:
-                        case GROUP_OPEN_MULTIPLIER:
+                        case MULTIPLIER_GROUP_OPEN_MULTIPLIER:
                         case PLAIN_LEAD_MULTIPLIER:
                         case DEFINITION_MULTIPLIER:
                         case SPLICE_MULTIPLIER:

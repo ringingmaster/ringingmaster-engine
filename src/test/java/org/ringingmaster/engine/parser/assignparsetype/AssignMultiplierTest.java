@@ -20,9 +20,9 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MUL
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION_MULTIPLIER;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_CLOSE;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_OPEN;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.GROUP_OPEN_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_CLOSE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_OPEN;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
@@ -149,7 +149,7 @@ public class AssignMultiplierTest {
                 .andThen(new AssignMultiplier())
                 .apply(touch.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(GROUP_OPEN_MULTIPLIER), section(GROUP_OPEN)), valid(DEFAULT_CALL_MULTIPLIER), valid(GROUP_CLOSE));
+        assertParse(parse.allTouchCells().get(0,0), valid(section(MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)), valid(DEFAULT_CALL_MULTIPLIER), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
@@ -160,7 +160,7 @@ public class AssignMultiplierTest {
                 .andThen(new AssignMultiplier())
                 .apply(touch.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(3, GROUP_OPEN_MULTIPLIER), section(GROUP_OPEN)));
+        assertParse(parse.allTouchCells().get(0,0), valid(section(3, MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)));
     }
 
     @Test
