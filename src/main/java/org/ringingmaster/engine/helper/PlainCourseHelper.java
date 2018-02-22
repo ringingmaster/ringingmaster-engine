@@ -6,8 +6,8 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.compiler.impl.CompilerFactory;
 import org.ringingmaster.engine.touch.ObservableTouch;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
-import org.ringingmaster.engine.proof.Proof;
-import org.ringingmaster.engine.proof.ProofTerminationReason;
+import org.ringingmaster.engine.compilernew.proof.Proof;
+import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
 
 import static com.google.common.base.Preconditions.checkState;
 import static org.ringingmaster.engine.touch.ObservableTouch.TERMINATION_MAX_LEADS_MAX;

@@ -5,7 +5,7 @@ import org.ringingmaster.engine.method.MethodLead;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.LeadHeadCalculator;
 import org.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
-import org.ringingmaster.engine.proof.Proof;
+import org.ringingmaster.engine.compilernew.proof.Proof;
 import org.ringingmaster.persist.DocumentPersist;
 import org.junit.Assert;
 import org.junit.Test;

@@ -2,6 +2,7 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
 import java.util.Optional;
 
@@ -18,4 +19,8 @@ public interface Group extends ElementSequence {
     boolean isValid();
 
     Optional<String> getMessage();
+
+    // Helper methods
+
+    ParseType getFirstSectionParseType();
 }

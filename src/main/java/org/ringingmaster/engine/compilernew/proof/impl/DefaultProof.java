@@ -1,12 +1,12 @@
-package org.ringingmaster.engine.proof.impl;
+package org.ringingmaster.engine.compilernew.proof.impl;
 
-import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.analysis.Analysis;
-import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.proof.Proof;
-import org.ringingmaster.engine.proof.ProofTerminationReason;
-import javax.annotation.concurrent.Immutable;
+import org.ringingmaster.engine.compilernew.proof.Proof;
+import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
+import org.ringingmaster.engine.method.Method;
+import org.ringingmaster.engine.parser.parse.Parse;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -16,29 +16,29 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * User: Stephen
  */
 @Immutable
-public class DefaultProof implements Proof {
+class DefaultProof implements Proof {
 
-	private final Touch touch;
+	private final Parse parse;
 	private final ProofTerminationReason terminationReason;
 	private final Optional<String> terminateNotes;
 	private final Optional<Method> createdMethod;
 	private final Optional<Analysis> analysis;
-	private final long proofTime;
+	private final long proofTimeMs;
 
 
-	public DefaultProof(Touch touch, ProofTerminationReason terminationReason, Optional<String> terminateNotes,
-	                    Optional<Method> createdMethod, Optional<Analysis> analysis, long proofTime) {
-		this.touch = checkNotNull(touch, "touch must not be null");
+	public DefaultProof(Parse parse, ProofTerminationReason terminationReason, Optional<String> terminateNotes,
+						Optional<Method> createdMethod, Optional<Analysis> analysis, long proofTimeMs) {
+		this.parse = checkNotNull(parse, "parse must not be null");
 		this.terminationReason = checkNotNull(terminationReason, "terminationReason must not be null");
 		this.terminateNotes = checkNotNull(terminateNotes, "terminateNotes must not be null");
 		this.createdMethod = checkNotNull(createdMethod); // createdMethod can be absent when termination reason is INVALID_TOUCH
 		this.analysis = checkNotNull(analysis); //analysis can be absent when not requested
-		this.proofTime = proofTime;
+		this.proofTimeMs = proofTimeMs;
 	}
 
 	@Override
-	public Touch getTouch() {
-		return touch;
+	public Parse getParse() {
+		return parse;
 	}
 
 	@Override
@@ -88,6 +88,6 @@ public class DefaultProof implements Proof {
 
 	@Override
 	public long getProofTimeMs() {
-		return proofTime;
+		return proofTimeMs;
 	}
 }

@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.proof;
+package org.ringingmaster.engine.compilernew.proof;
 
 /**
  * TODO comments???

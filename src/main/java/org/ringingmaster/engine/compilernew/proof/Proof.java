@@ -1,10 +1,10 @@
-package org.ringingmaster.engine.proof;
+package org.ringingmaster.engine.compilernew.proof;
 
-import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.analysis.Analysis;
-import org.ringingmaster.engine.touch.Touch;
-import javax.annotation.concurrent.Immutable;
+import org.ringingmaster.engine.method.Method;
+import org.ringingmaster.engine.parser.parse.Parse;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 /**
@@ -15,11 +15,7 @@ import java.util.Optional;
 @Immutable
 public interface Proof {
 
-	/**
-	 * An immutable {@link Touch} as it was when the
-	 * proof was requested.
-	 */
-	Touch getTouch();
+	Parse getParse();
 
 	ProofTerminationReason getTerminationReason();
 
