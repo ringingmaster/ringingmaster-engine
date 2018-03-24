@@ -7,6 +7,7 @@ import org.ringingmaster.engine.compiler.impl.DecomposedCall;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.cell.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.touch.variance.Variance;
 import org.ringingmaster.engine.touch.variance.impl.NullVariance;
@@ -40,7 +41,7 @@ public class CallDecomposer {
 
     // TODO Can this can be a function that turns cells into a call list
     //TODO should flat map / stream this lot?
-    ImmutableList<CourseBasedDecomposedCall> createCallSequence(Parse parse, String logPreamble) {
+    public ImmutableList<CourseBasedDecomposedCall> createCallSequence(Parse parse, String logPreamble) {
         log.debug("{} > create call sequence", logPreamble);
         final Deque<CallSequenceMultiplier> multiplierFIFO = new ArrayDeque<>();
         Variance currentVariance = NullVariance.INSTANCE;
@@ -48,7 +49,7 @@ public class CallDecomposer {
         multiplierFIFO.addFirst(new CallSequenceMultiplier(1));
 
         for (BackingTableLocationAndValue<ParsedCell> cell : parse.mainBodyCells()) {
-            generateCallInstancesForCell(cell.getValue(), cell.getCol(), logPreamble);
+            generateCallInstancesForCell(cell.getValue(), cell.getCol(), multiplierFIFO, logPreamble);
         }
 
         checkState(multiplierFIFO.size() == 1);
@@ -56,17 +57,17 @@ public class CallDecomposer {
         return ImmutableList.copyOf(multiplierFIFO.removeFirst());
     }
 
-    private void generateCallInstancesForCell(ParsedCell cell, int columnIndex, String logPreamble) {
+    private void generateCallInstancesForCell(ParsedCell cell, int columnIndex, final Deque<CallSequenceMultiplier> multiplierFIFO, String logPreamble) {
         final ImmutableList<Group> groups = cell.allGroups();
         for (Group group : groups) {
             switch (group.getFirstSectionParseType()) {
                 case PLAIN_LEAD:
                 case PLAIN_LEAD_MULTIPLIER:
-                    decomposeMultiplierSection(group, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER, logPreamble);
+                    decomposeMultiplierSection(cell, group, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER, multiplierFIFO, logPreamble);
                     break;
                 case CALL:
                 case CALL_MULTIPLIER:
-                    decomposeMultiplierSection(group, columnIndex, CALL, CALL_MULTIPLIER, logPreamble);
+                    decomposeMultiplierSection(cell, group, columnIndex, CALL, CALL_MULTIPLIER, multiplierFIFO, logPreamble);
                 break;
                 case MULTIPLIER_GROUP_OPEN:
                 case MULTIPLIER_GROUP_OPEN_MULTIPLIER:
@@ -88,47 +89,44 @@ public class CallDecomposer {
         }
     }
 
-    private void decomposeMultiplierSection(Group group, int columnIndex,
-                                            ParseType parseType, ParseType multiplierParseType, String logPreamble) {
-        MultiplierAndCall multiplierAndCall = getMultiplierAndCall(group, parseType, multiplierParseType);
+    private void decomposeMultiplierSection(ParsedCell cell, Group group, int columnIndex,
+                                            ParseType parseType, ParseType multiplierParseType,
+                                            final Deque<CallSequenceMultiplier> multiplierFIFO, String logPreamble) {
+        MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(cell, group, parseType, multiplierParseType);
 
         log.debug("{}  - Adding call [{}] with multiplier [{}] to group level [{}]",
-                logPreamble, multiplierAndCall.getCallName(), multiplierAndCall.getMultiplier(), multiplierFIFO.size());
-        if (multiplierAndCall.getCallName().length() > 0 ) {
-            for (int i=0;i<multiplierAndCall.getMultiplier();i++) {
-                CourseBasedDecomposedCall decomposedCall = buildDecomposedCall(multiplierAndCall.getCallName(), multiplierAndCall.getVariance(), columnIndex, parseType);
+                logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), multiplierFIFO.size());
+        if (multiplierAndParseContents.getParseContents().length() > 0 ) {
+            for (int i = 0; i< multiplierAndParseContents.getMultiplier(); i++) {
+                CourseBasedDecomposedCall decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), columnIndex, parseType);
                 multiplierFIFO.peekFirst().add(decomposedCall);
             }
         }
     }
 
-    MultiplierAndCall getMultiplierAndCall(Group group, ParseType parseType, ParseType multiplierParseType) {
-        List<TouchElement> elementsInWord = word.getElements();
-        StringBuilder parseTypeBuff = new StringBuilder(elementsInWord.size());
-        StringBuilder multiplierBuff = new StringBuilder(elementsInWord.size());
-        boolean finishedMultiplier = false;
-        for (TouchElement element : elementsInWord) {
-            if (!finishedMultiplier && element.getParseType().equals(multiplierParseType)) {
-                multiplierBuff.append(element.getCharacter());
+    private MultiplierAndParseContents getMultiplierAndCall(ParsedCell cell, Group group, ParseType parseType, ParseType multiplierParseType) {
+        checkState(group.getSections().size() > 0 && group.getSections().size() <=2);
+
+        int multiplierValue = 1;
+        String parseContents = "";
+
+        for (Section section : group.getSections()) {
+            if (section.getParseType() == multiplierParseType){
+                String multiplierString = cell.getCharacters(section);
+                multiplierValue = Integer.parseInt(multiplierString);
             }
-            else if (element.getParseType().equals(parseType)) {
-                parseTypeBuff.append(element.getCharacter());
-                finishedMultiplier = true;
+            if (section.getParseType() == parseType) {
+                parseContents = cell.getCharacters(section);
             }
-        }
-        int multiplier = 1;
-        if (multiplierBuff.length() > 0) {
-            String multiplierString = multiplierBuff.toString();
-            multiplier = Integer.parseInt(multiplierString);
         }
 
-        return new MultiplierAndCall(multiplier, parseTypeBuff.toString(), currentVariance);
+        return new MultiplierAndParseContents(multiplierValue, parseContents);
     }
 
     private void openMultiplierGroup(Group group) {
-        MultiplierAndCall multiplierAndCall = getMultiplierAndCall(word, ParseType.MULTIPLIER_GROUP_OPEN, ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER);
-        log.debug("Open Group level [{}] with multiplier [{}]", (multiplierFIFO.size() + 1), multiplierAndCall.getMultiplier());
-        multiplierFIFO.addFirst(new CallSequenceMultiplier(multiplierAndCall.getMultiplier()));
+        MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(word, ParseType.MULTIPLIER_GROUP_OPEN, ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER);
+        log.debug("Open Group level [{}] with multiplier [{}]", (multiplierFIFO.size() + 1), multiplierAndParseContents.getMultiplier());
+        multiplierFIFO.addFirst(new CallSequenceMultiplier(multiplierAndParseContents.getMultiplier()));
     }
 
     private void closeMultiplierGroup() {
@@ -181,17 +179,22 @@ public class CallDecomposer {
     }
 
     @Immutable
-    private class MultiplierAndCall extends DecomposedCall {
+    private class MultiplierAndParseContents {
         private final int multiplier;
+        private final String parseContents;
 
-        public MultiplierAndCall(int multiplier, String callName, Variance variance) {
-            super(callName, variance);
+        public MultiplierAndParseContents(int multiplier, String parseContents) {
             this.multiplier = multiplier;
             checkArgument(multiplier > 0, "Multiplier must be positive");
+            this.parseContents = parseContents;
         }
 
         int getMultiplier() {
             return multiplier;
+        }
+
+        public String getParseContents() {
+            return parseContents;
         }
     }
 }
