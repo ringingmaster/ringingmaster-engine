@@ -51,7 +51,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         parseDefinitionDefinitionArea(touch, parsedDefinitionCells, mainBodyDefinitions, spliceAreaDefinitions);
 
         
-        //TODO should we allow variance in definitions?	 Probably not.	addVarianceTokens(parseTokenMappings);
+        //TODO should we allow variance in definitions?
 
 
         return new ParseBuilder()

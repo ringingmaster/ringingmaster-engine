@@ -1,6 +1,10 @@
 package org.ringingmaster.engine.compiler.impl;
 
-import javax.annotation.concurrent.ThreadSafe;
+import org.ringingmaster.engine.analysis.Analysis;
+import org.ringingmaster.engine.analysis.impl.AnalysisBuilder;
+import org.ringingmaster.engine.compiler.Compiler;
+import org.ringingmaster.engine.compilernew.proof.Proof;
+import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodLead;
 import org.ringingmaster.engine.method.MethodRow;
@@ -9,16 +13,11 @@ import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationRow;
-import org.ringingmaster.engine.analysis.Analysis;
-import org.ringingmaster.engine.analysis.impl.AnalysisBuilder;
-import org.ringingmaster.engine.compiler.Compiler;
 import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.proof.Proof;
-import org.ringingmaster.engine.proof.ProofTerminationReason;
-import org.ringingmaster.engine.proof.impl.DefaultProof;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +72,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		if (invalidTouch.isPresent()) {
 			terminate(ProofTerminationReason.INVALID_TOUCH, invalidTouch.get());
 		}
-		else {
-			preCompile(touch);
+		else { preCompile(touch);
 			checkTerminateEarly(shouldTerminateEarly);
 
 			buildCallLookupByName();
@@ -89,7 +87,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 			}
 		}
 		long proofTime = System.currentTimeMillis() - start;
-		proof = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, analysis, proofTime);
+//		proof = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, analysis, proofTime);
 		log.debug("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), proofTime);
 		return proof;
 	}

@@ -37,7 +37,7 @@ public class CourseBasedCompilerTest {
 		ObservableTouch touch = buildPlainBobMinorTouchShell();
 		touch.addCharacters(TOUCH_TABLE,0, 0, "W");
 		touch.addCharacters(TOUCH_TABLE,1, 0, "-");
-		Proof proof = parseProveAndCheckTouch(15
+		parseProveAndCheckTouch(15
 				, "/PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch.get());
 	}
 

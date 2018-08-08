@@ -2,10 +2,14 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
 import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * TODO comments???
@@ -21,12 +25,14 @@ class DefaultGroup implements Group {
     private final Optional<String> message;
     private final ImmutableList<Section> sections;
 
-    DefaultGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, Collection<Section> sortedSections) {
+    DefaultGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, Collection<Section> sections) {
         this.elementStartIndex = elementStartIndex;
         this.elementLength = elementLength;
         this.valid = valid;
-        this.message = message;
-        this.sections = ImmutableList.sortedCopyOf(BY_START_INDEX, sortedSections);
+        this.message = checkNotNull(message);
+        checkNotNull(sections);
+        checkState(!sections.isEmpty()); // relied on in getFirstSectionParseType()
+        this.sections = ImmutableList.sortedCopyOf(BY_START_INDEX, sections);
     }
 
     @Override
@@ -58,6 +64,12 @@ class DefaultGroup implements Group {
     @Override
     public Optional<String> getMessage() {
         return message;
+    }
+
+    @Override
+    public ParseType getFirstSectionParseType() {
+        // we have a predicate that insists there is at least 1 section.
+        return sections.get(0).getParseType();
     }
 
     @Override

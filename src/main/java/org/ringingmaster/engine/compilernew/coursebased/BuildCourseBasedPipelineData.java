@@ -1,6 +1,6 @@
-package org.ringingmaster.engine.compilernew.internaldata;
+package org.ringingmaster.engine.compilernew.coursebased;
 
-import org.ringingmaster.engine.compilernew.coursebased.CourseBasedCompilerPipelineData;
+import org.ringingmaster.engine.compilernew.internaldata.CourseBasedCompilerPipelineData;
 import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.function.Function;

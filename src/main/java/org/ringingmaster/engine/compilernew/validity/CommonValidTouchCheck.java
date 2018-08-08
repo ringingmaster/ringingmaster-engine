@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compilernew.validity;
 
-import org.ringingmaster.engine.compilernew.coursebased.CourseBasedCompilerPipelineData;
+import org.ringingmaster.engine.compilernew.internaldata.CommonCompilerPipelineData;
 import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
 import org.ringingmaster.engine.touch.Touch;
 
@@ -11,10 +11,10 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class ValidTouchCheck implements Function<CourseBasedCompilerPipelineData, CourseBasedCompilerPipelineData> {
+public class CommonValidTouchCheck<T extends CommonCompilerPipelineData<T>> implements Function<T, T> {
 
     @Override
-    public CourseBasedCompilerPipelineData apply(CourseBasedCompilerPipelineData data) {
+    public T apply(T data) {
         final Touch touch = data.getParse().getTouch();
         if (touch.isSpliced()) {
             if (touch.getAvailableNotations().size() == 0) {

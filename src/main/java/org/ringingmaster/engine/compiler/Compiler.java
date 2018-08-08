@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.compiler;
 
-import org.ringingmaster.engine.proof.Proof;
-import javax.annotation.concurrent.ThreadSafe;
+import org.ringingmaster.engine.compilernew.proof.Proof;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.function.Supplier;
 
 /**

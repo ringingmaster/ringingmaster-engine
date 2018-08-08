@@ -341,7 +341,20 @@ public class NotationBuilder {
 	}
 
 	private Method buildPlainCourse(List<NotationRow> normalisedNotationElements) {
-		NotationBody plainCourseNotation = new PlainCourseNotationBody(name, numberOfWorkingBells, normalisedNotationElements);
+		NotationBody plainCourseNotation =
+			new DefaultNotationBody(name,
+				numberOfWorkingBells,
+				normalisedNotationElements,
+				Collections.emptyList(),
+				true, //TODO should this be defaulting to true??
+				"",
+				false,
+				Collections.emptySet(),
+				null,
+				Collections.emptySet(),
+				Collections.emptySet(),
+				spliceIdentifier);
+
 		return PlainCourseHelper.buildPlainCourse(plainCourseNotation, "[NotationBuilder] ", false).getCreatedMethod().get();
 	}
 

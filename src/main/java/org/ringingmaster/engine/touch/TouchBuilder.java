@@ -23,7 +23,7 @@ import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
 
 /**
- * TODO Comments
+ * Used exclusively by class ObservableTouch.
  *
  * @author Lake
  */

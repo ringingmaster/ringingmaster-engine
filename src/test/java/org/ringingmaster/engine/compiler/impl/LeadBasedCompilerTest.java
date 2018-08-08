@@ -1,9 +1,19 @@
 package org.ringingmaster.engine.compiler.impl;
 
 import org.junit.Test;
+import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.compilernew.Compiler;
+import org.ringingmaster.engine.compilernew.proof.Proof;
+import org.ringingmaster.engine.method.Method;
+import org.ringingmaster.engine.notation.NotationBody;
+import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.parser.Parser;
+import org.ringingmaster.engine.touch.ObservableTouch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -13,30 +23,39 @@ public class LeadBasedCompilerTest {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-//	private final Parser parser = new DefaultParser();
+	private static Parser parser = new Parser();
+	private static Compiler compiler = new Compiler();
+
+	@Test
+	public void canConstructAllChangeLead() {
+		final NotationBody mockedNotationBody = NotationBuilder.getInstance()
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+				.setUnfoldedNotationShorthand("-")
+				.build();
+		ObservableTouch touch = new ObservableTouch();
+		touch.addNotation(mockedNotationBody);
+		touch.setTerminationMaxLeads(1);
+
+		Proof proof = parser
+				.andThen(compiler)
+				.apply(touch.get());
+
+		Method method = proof.getCreatedMethod().get();
+
+		assertNotNull("Should return non null Method", method);
+		assertEquals("X should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
+		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
+		assertEquals("Row 1 should be all change", "21436587", method.getLead(0).getRow(1).getDisplayString(false));
+	}
 
 	@Test
 	public void failTest() {
 		fail(); //TODO
 
 	}
+//
 
-//	@Test
-//	public void canConstructAllChangeLead() {
-//		final NotationBody mockedNotationBody = mockNotation(NumberOfBells.BELLS_8, NotationRowHelper.buildNotationRow(NotationPlace.ALL_CHANGE));
-//
-//		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
-//		touch.setTerminationMaxLeads(1);
-//		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
-//		Method method = result.getCreatedMethod().get();
-//
-//		assertNotNull("Should return non null Method", method);
-//		assertEquals("X should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
-//		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
-//		assertEquals("Row 1 should be all change", "21436587", method.getLead(0).getRow(1).getDisplayString(false));
-//	}
-//
-//	@Test
+	//	@Test
 //	public void canConstructChangePlaceLead() {
 //		final NotationBody mockedNotationBody = mockNotation(NumberOfBells.BELLS_8, NotationRowHelper.buildNotationRow(NotationPlace.PLACE_1, NotationPlace.PLACE_4));
 //
@@ -263,36 +282,28 @@ public class LeadBasedCompilerTest {
 //		return text;
 //	}
 //
-//	private NotationBody buildPlainBobMinor() {
-//		return NotationBuilder.getInstance()
-//				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
-//				.setName("Plain Bob")
-//				.setFoldedPalindromeNotationShorthand("-16-16-16", "12")
-//				.addCall("Bob", "-", "14", true)
-//				.addCall("Single", "s", "1234", false)
-//				.build();
+
+//	private ObservableTouch buildPlainBobMinorTouchShell() {
+//		ObservableTouch touch = new ObservableTouch();
+//		touch.setNumberOfBells(NumberOfBells.BELLS_6);
+//		touch.setTitle("Test Touch");
+//		touch.addNotation(buildPlainBobMinor());
+//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+//		return touch;
 //	}
-//
-//	private NotationBody mockNotation(final NumberOfBells numberOfBells, final NotationRow... rows) {
-//		final NotationBody mockedNotationBody = mock(NotationBody.class);
-//
-//		when(mockedNotationBody.iterator()).thenAnswer(new Answer<Iterator<NotationRow>>() {
-//			@Override
-//			public Iterator<NotationRow> answer(final InvocationOnMock invocation) {
-//				return Arrays.asList(rows).iterator();
-//			}
-//		});
-//		when(mockedNotationBody.getNumberOfWorkingBells()).thenReturn(numberOfBells);
-//		when(mockedNotationBody.getRowCount()).thenReturn(rows.length);
-//		for (int i=0;i<rows.length;i++) {
-//			when(mockedNotationBody.getRow(i)).thenReturn(rows[i]);
-//
-//		}
-//		when(mockedNotationBody.getName()).thenReturn("Unnamed");
-//		when(mockedNotationBody.getNameIncludingNumberOfBells()).thenReturn("Unnamed " + numberOfBells.getName());
-//
-//		return mockedNotationBody;
-//	}
+
+
+	private NotationBody buildPlainBobMinor() {
+		return NotationBuilder.getInstance()
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+				.setName("Plain Bob")
+				.setFoldedPalindromeNotationShorthand("-16-16-16", "12")
+				.addCall("Bob", "-", "14", true)
+				.addCall("Single", "s", "1234", false)
+				.build();
+	}
+
+
 	//TODO compound terminations
 
 

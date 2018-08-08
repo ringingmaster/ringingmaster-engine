@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.compilernew.coursebased;
+package org.ringingmaster.engine.compilernew.internaldata;
 
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.compiler.impl.CourseBasedDecomposedCall;
@@ -16,14 +16,10 @@ import java.util.Optional;
  * @author stevelake
  */
 @Immutable
-public class CourseBasedCompilerPipelineData {
+public class CourseBasedCompilerPipelineData extends CommonCompilerPipelineData<CourseBasedCompilerPipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final Parse parse;
-    private final String logPreamble;
-    private final Optional<ProofTerminationReason> terminationReason;
-    private final Optional<String> terminateNotes;
     private final ImmutableList<Optional<String>> callPositionNames;
     private final ImmutableList<CourseBasedDecomposedCall> callSequence;
 
@@ -39,26 +35,16 @@ public class CourseBasedCompilerPipelineData {
                                             Optional<ProofTerminationReason> terminationReason, Optional<String> terminateNotes,
                                             ImmutableList<Optional<String>> callPositionNames,
                                             ImmutableList<CourseBasedDecomposedCall> callSequence) {
-        this.parse = parse;
-        this.logPreamble = logPreamble;
-        this.terminationReason = terminationReason;
-        this.terminateNotes = terminateNotes;
+        super(parse, logPreamble, terminationReason, terminateNotes);
         this.callPositionNames = callPositionNames;
         this.callSequence = callSequence;
     }
 
-    public Parse getParse() {
-        return parse;
-    }
-
-    public String getLogPreamble() {
-        return logPreamble;
-    }
-
     public CourseBasedCompilerPipelineData terminate(final ProofTerminationReason terminationReason, String terminateNotes) {
         if (!isTerminated()) {
-            log.debug("{}  - Terminate [{}] {}", logPreamble, terminateNotes, terminationReason);
-            return new CourseBasedCompilerPipelineData(parse, logPreamble, Optional.of(terminationReason), Optional.of(terminateNotes), callPositionNames, callSequence);
+            log.debug("{}  - Terminate [{}] {}", getLogPreamble(), terminateNotes, terminationReason);
+            return new CourseBasedCompilerPipelineData(getParse(), getLogPreamble(),
+                    Optional.of(terminationReason), Optional.of(terminateNotes), getCallPositionNames(), getCallSequence());
         }
         else  {
             log.warn("Requesting second terminate [{}]{}", terminationReason, terminateNotes);
@@ -66,20 +52,9 @@ public class CourseBasedCompilerPipelineData {
         }
     }
 
-    public Optional<ProofTerminationReason> getTerminationReason() {
-        return terminationReason;
-    }
-
-    public Optional<String> getTerminateNotes() {
-        return terminateNotes;
-    }
-
-    public boolean isTerminated() {
-        return terminationReason.isPresent();
-    }
-
     public CourseBasedCompilerPipelineData setCallSequence(ImmutableList<CourseBasedDecomposedCall> callSequence) {
-        return new CourseBasedCompilerPipelineData(parse, logPreamble, terminationReason, terminateNotes, callPositionNames, callSequence);
+        return new CourseBasedCompilerPipelineData(getParse(), getLogPreamble(),
+                getTerminationReason(), getTerminateNotes(), getCallPositionNames(), callSequence);
     }
 
     public ImmutableList<CourseBasedDecomposedCall> getCallSequence() {
@@ -87,7 +62,8 @@ public class CourseBasedCompilerPipelineData {
     }
 
     public CourseBasedCompilerPipelineData setCallPositionNames(ImmutableList<Optional<String>> callPositionNames) {
-        return new CourseBasedCompilerPipelineData(parse, logPreamble, terminationReason, terminateNotes, callPositionNames, callSequence);
+        return new CourseBasedCompilerPipelineData(getParse(), getLogPreamble(),
+                getTerminationReason(), getTerminateNotes(), callPositionNames, getCallSequence());
     }
 
     public ImmutableList<Optional<String>> getCallPositionNames() {

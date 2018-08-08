@@ -4,8 +4,8 @@ group 'org.ringingmaster'
 version '1.0.0'
 
 compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 1.10
+    targetCompatibility = 1.10
 }
 
 repositories {

@@ -1,7 +1,6 @@
 package org.ringingmaster.engine.parser.parse;
 
 import com.google.common.collect.ImmutableSet;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.touch.Touch;
@@ -10,6 +9,7 @@ import org.ringingmaster.engine.touch.tableaccess.DefaultTouchTableAccess;
 import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
 import org.ringingmaster.engine.touch.tableaccess.TouchTableAccess;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 /**
