@@ -2,6 +2,7 @@ package org.ringingmaster.engine.compilernew.impl;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.compilernew.CompileTerminationReason;
@@ -90,9 +91,9 @@ public class LeadBasedCompilerTest {
 		assertEquals("Row 1 should have place 1 & 4 made", "13246587", method.getLead(0).getRow(1).getDisplayString(false));
 	}
 
-//	@Ignore
-//	@Test TODO
-//	public void leadSeparatorPositionsCorrect() {
+	@Ignore
+	@Test
+	public void leadSeparatorPositionsCorrect() {
 //		final NotationBody mockedNotationBody = mockNotation(NumberOfBells.BELLS_8,
 //				NotationRowHelper.buildNotationRow(NotationPlace.ALL_CHANGE),
 //				NotationRowHelper.buildNotationRow(NotationPlace.PLACE_1, NotationPlace.PLACE_4));
@@ -103,8 +104,8 @@ public class LeadBasedCompilerTest {
 //		Method method = result.getMethod().get();
 //
 //		assertArrayEquals(new int[]{1}, method.getLead(0).getLeadSeparatorPositions());
-//	}
-//
+	}
+
 	@Test
 	public void leadCountTerminationCorrectlyCountsLeads() {
 
