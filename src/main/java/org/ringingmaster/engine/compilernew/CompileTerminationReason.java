@@ -1,10 +1,10 @@
-package org.ringingmaster.engine.compilernew.proof;
+package org.ringingmaster.engine.compilernew;
 
 /**
  * TODO comments???
  * User: Stephen
  */
-public enum ProofTerminationReason {
+public enum CompileTerminationReason {
 	INVALID_TOUCH,
 	ROW_COUNT,
 	LEAD_COUNT,

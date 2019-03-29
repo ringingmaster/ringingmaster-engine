@@ -18,7 +18,7 @@ import java.util.Optional;
  * @author stevelake
  */
 @Immutable
-public class DefaultParse implements Parse {
+class DefaultParse implements Parse {
 
     private final Touch touch;
     private final TouchTableAccess<ParsedCell> touchTableAccessDelegate;

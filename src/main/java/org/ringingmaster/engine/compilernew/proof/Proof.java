@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.compilernew.proof;
 
 import org.ringingmaster.engine.analysis.Analysis;
+import org.ringingmaster.engine.compilernew.CompileTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.parser.parse.Parse;
 
@@ -17,7 +18,7 @@ public interface Proof {
 
 	Parse getParse();
 
-	ProofTerminationReason getTerminationReason();
+	CompileTerminationReason getTerminationReason();
 
 	String getTerminateReasonDisplayString();
 

@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.helper;
 
+import org.ringingmaster.engine.compilernew.CompileTerminationReason;
 import org.ringingmaster.engine.compilernew.Compiler;
 import org.ringingmaster.engine.compilernew.proof.Proof;
-import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
@@ -11,6 +11,7 @@ import org.ringingmaster.engine.touch.ObservableTouch;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -25,6 +26,7 @@ public class PlainCourseHelper {
 
 	private static Parser parser = new Parser();
 	private static Compiler compiler = new Compiler();
+	private static AtomicInteger counter = new AtomicInteger();
 
 	public static Proof buildPlainCourse(NotationBody notation, String logPreamble, boolean withAnalysis) {
 
@@ -36,7 +38,7 @@ public class PlainCourseHelper {
 		Method createdMethod = proof.getCreatedMethod().get();
 
 		checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
-		checkState(ProofTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),
+		checkState(CompileTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),
 				"Plain course must terminate with row [%s]" +
 						" but actually terminated with [%s]",
 				proof.getParse().getUnderlyingTouch().getTerminationChange().get().getDisplayString(true),
@@ -52,7 +54,7 @@ public class PlainCourseHelper {
 	 */
 	public static Function<NotationBody, Touch> buildPlainCourseInstance = notationBody -> {
 		final ObservableTouch touch = new ObservableTouch();
-		touch.setTitle("Plain Course of " + notationBody.getNameIncludingNumberOfBells());
+		touch.setTitle("PLAINCOURSE_" + counter.getAndIncrement() + ":" + notationBody.getNameIncludingNumberOfBells());
 		touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
 		touch.addNotation(notationBody);
 		touch.setCheckingType(CheckingType.LEAD_BASED);

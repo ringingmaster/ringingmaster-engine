@@ -33,7 +33,9 @@ public class LeadBasedCompilerTest {
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.setUnfoldedNotationShorthand("-")
 				.build();
+
 		ObservableTouch touch = new ObservableTouch();
+		touch.setTitle("???");
 		touch.addNotation(mockedNotationBody);
 //		touch.setTerminationMaxLeads(1);
 		touch.setCheckingType(CheckingType.LEAD_BASED);
@@ -104,7 +106,7 @@ public class LeadBasedCompilerTest {
 //			Method method = result.getCreatedMethod().get();
 //
 //			assertEquals(i, method.getLeadCount());
-//			assertEquals(ProofTerminationReason.LEAD_COUNT, result.getTerminationReason());
+//			assertEquals(CompileTerminationReason.LEAD_COUNT, result.getTerminationReason());
 //		}
 //	}
 //
@@ -125,7 +127,7 @@ public class LeadBasedCompilerTest {
 //			Method method = result.getCreatedMethod().get();
 //
 //			assertEquals(i, method.getRowCount());
-//			assertEquals(ProofTerminationReason.ROW_COUNT, result.getTerminationReason());
+//			assertEquals(CompileTerminationReason.ROW_COUNT, result.getTerminationReason());
 //		}
 //	}
 //
@@ -171,7 +173,7 @@ public class LeadBasedCompilerTest {
 ////		}
 ////		LeadBasedCompiler leadBasedCompiler = new LeadBasedCompiler(touch);
 ////		Proof compile = leadBasedCompiler.compile(false, () -> false);
-////		Assert.assertEquals(ProofTerminationReason.INVALID_TOUCH, compile.getTerminationReason());
+////		Assert.assertEquals(CompileTerminationReason.INVALID_TOUCH, compile.getTerminationReason());
 ////		Assert.assertEquals("No active method", compile.getTerminateReasonDisplayString());
 //	}
 //
@@ -214,7 +216,7 @@ public class LeadBasedCompilerTest {
 //		touch.insertCharacter(0, 0, 2, 's');
 //		touch.insertCharacter(0, 0, 3, ']');
 //		parser.parseAndAnnotate(touch);
-//		proveAndCheckTouch(6, "/PlainBobMinor -[s] omit2.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+//		proveAndCheckTouch(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, touch);
 //	}
 //
 //	@Test
@@ -226,7 +228,7 @@ public class LeadBasedCompilerTest {
 //		touch.insertCharacter(0, 0, 2, 's');
 //		touch.insertCharacter(0, 0, 3, ']');
 //		parser.parseAndAnnotate(touch);
-//		proveAndCheckTouch(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, ProofTerminationReason.EMPTY_PARTS, touch);
+//		proveAndCheckTouch(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, CompileTerminationReason.EMPTY_PARTS, touch);
 //	}
 //
 //	@Test
@@ -235,14 +237,14 @@ public class LeadBasedCompilerTest {
 //		touch.addCharacters(0, 0, "-def-");
 //		touch.addDefinition("def", "2(s-)");
 //		parser.parseAndAnnotate(touch);
-//		proveAndCheckTouch(6, "/PlainBobMinor -def-.txt", false, ProofTerminationReason.SPECIFIED_ROW, touch);
+//		proveAndCheckTouch(6, "/PlainBobMinor -def-.txt", false, CompileTerminationReason.SPECIFIED_ROW, touch);
 //	}
 //
 //	Proof checkSimple1CellPlainBobTouch(String touchString, int expectedLeadCount, String fileName, boolean trueTouch) throws IOException {
 //		Touch touch = buildPlainBobMinorTouchShell();
 //		touch.addCharacters(0, 0, touchString);
 //		parser.parseAndAnnotate(touch);
-//		return proveAndCheckTouch(expectedLeadCount, fileName, trueTouch, ProofTerminationReason.SPECIFIED_ROW, touch);
+//		return proveAndCheckTouch(expectedLeadCount, fileName, trueTouch, CompileTerminationReason.SPECIFIED_ROW, touch);
 //	}
 //
 //	private Touch buildPlainBobMinorTouchShell() {
@@ -258,7 +260,7 @@ public class LeadBasedCompilerTest {
 //	}
 //
 //	private Proof proveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
-//	                                 ProofTerminationReason terminationReason, Touch touch) throws IOException {
+//	                                 CompileTerminationReason terminationReason, Touch touch) throws IOException {
 //		Proof proof = new LeadBasedCompiler(touch).compile(true, () -> false);
 //		assertEquals(terminationReason, proof.getTerminationReason());
 //		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());

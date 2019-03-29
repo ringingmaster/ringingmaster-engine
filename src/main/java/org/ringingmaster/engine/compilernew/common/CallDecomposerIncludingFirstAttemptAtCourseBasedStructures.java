@@ -1,9 +1,9 @@
-package org.ringingmaster.engine.compilernew.call;
+package org.ringingmaster.engine.compilernew.common;
 
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.compiler.impl.LeadBasedDecomposedCall;
+import org.ringingmaster.engine.compiler.impl.CourseBasedDecomposedCall;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Optional;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.*;
 
 /**
@@ -28,20 +27,20 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.*;
  * @author stevelake
  */
 @Immutable
-public class CallDecomposer {
+public class CallDecomposerIncludingFirstAttemptAtCourseBasedStructures {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 
     // TODO Can this can be a function that turns cells into a call list
     //TODO should flat map / stream this lot?
-    public ImmutableList<LeadBasedDecomposedCall> createCallSequence(Parse parse, String logPreamble) {
+    public ImmutableList<CourseBasedDecomposedCall> createCallSequence(Parse parse, ImmutableList<Optional<String>> callPositionNames, String logPreamble) {
         log.debug("{} > create call sequence", logPreamble);
         final Deque<CallSequenceMultiplier> multiplierFIFO = new ArrayDeque<>();
         multiplierFIFO.addFirst(new CallSequenceMultiplier(1));
 
         for (BackingTableLocationAndValue<ParsedCell> cell : parse.mainBodyCells()) {
-            generateCallInstancesForCell(cell.getValue(), cell.getCol(), multiplierFIFO, parse, logPreamble);
+            generateCallInstancesForCell(cell.getValue(), cell.getCol(), multiplierFIFO, callPositionNames, parse, logPreamble);
         }
 
         checkState(multiplierFIFO.size() == 1);
@@ -51,6 +50,7 @@ public class CallDecomposer {
 
     private void generateCallInstancesForCell(ParsedCell cell, int columnIndex,
                                               final Deque<CallSequenceMultiplier> multiplierFIFO,
+                                              ImmutableList<Optional<String>> callPositionNames,
                                               Parse parse,
                                               String logPreamble) {
         final ImmutableList<Group> groups = cell.allGroups();
@@ -58,11 +58,11 @@ public class CallDecomposer {
             switch (group.getFirstSectionParseType()) {
                 case PLAIN_LEAD:
                 case PLAIN_LEAD_MULTIPLIER:
-                    decomposeMultiplierSection(cell, group, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER, multiplierFIFO, logPreamble);
+                    decomposeMultiplierSection(cell, group, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER, multiplierFIFO, callPositionNames, logPreamble);
                     break;
                 case CALL:
                 case CALL_MULTIPLIER:
-                    decomposeMultiplierSection(cell, group, columnIndex, CALL, CALL_MULTIPLIER, multiplierFIFO, logPreamble);
+                    decomposeMultiplierSection(cell, group, columnIndex, CALL, CALL_MULTIPLIER, multiplierFIFO, callPositionNames, logPreamble);
                 break;
                 case MULTIPLIER_GROUP_OPEN:
                 case MULTIPLIER_GROUP_OPEN_MULTIPLIER:
@@ -83,7 +83,7 @@ public class CallDecomposer {
 //                    closeVariance(group);
                     break;
                 case DEFINITION:
-                    insertExpandedDefinition(cell, group, columnIndex, multiplierFIFO, parse, logPreamble);
+                    insertExpandedDefinition(cell, group, columnIndex, multiplierFIFO, callPositionNames, parse, logPreamble);
                     break;
             }
         }
@@ -92,6 +92,7 @@ public class CallDecomposer {
     private void decomposeMultiplierSection(final ParsedCell cell, final Group group, final int columnIndex,
                                             final ParseType parseType, final ParseType multiplierParseType,
                                             final Deque<CallSequenceMultiplier> multiplierFIFO,
+                                            final ImmutableList<Optional<String>> callPositionNames,
                                             final String logPreamble) {
         MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(cell, group, parseType, multiplierParseType);
 
@@ -99,7 +100,7 @@ public class CallDecomposer {
                 logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), multiplierFIFO.size());
         if (multiplierAndParseContents.getParseContents().length() > 0 ) {
             for (int i = 0; i< multiplierAndParseContents.getMultiplier(); i++) {
-                LeadBasedDecomposedCall decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), columnIndex, parseType);
+                CourseBasedDecomposedCall decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), callPositionNames, columnIndex, parseType);
                 multiplierFIFO.peekFirst().add(decomposedCall);
             }
         }
@@ -134,6 +135,7 @@ public class CallDecomposer {
 
     private void insertExpandedDefinition(final ParsedCell cell, final Group group, final int columnIndex,
                                           final Deque<CallSequenceMultiplier> multiplierFIFO,
+                                          final ImmutableList<Optional<String>> callPositionNames,
                                           final Parse parse,
                                           final String logPreamble) {
         log.debug("Start expand definition [{}]", group);
@@ -143,7 +145,7 @@ public class CallDecomposer {
         checkState(definitionCells.isPresent(), "No definitionCells found for %s. Check that the parsing is correctly marking as valid definition ", columnIndex);
 
         for (BackingTableLocationAndValue<ParsedCell> definitionContentsCell : definitionCells.get()) {
-            generateCallInstancesForCell(definitionContentsCell.getValue(), columnIndex, multiplierFIFO, parse, logPreamble);
+            generateCallInstancesForCell(definitionContentsCell.getValue(), columnIndex, multiplierFIFO, callPositionNames, parse, logPreamble);
         }
 
         log.debug("Finish expand definition [{}]",group);
@@ -168,12 +170,14 @@ public class CallDecomposer {
         return new MultiplierAndParseContents(multiplierValue, parseContents);
     }
 
-
-    protected LeadBasedDecomposedCall buildDecomposedCall(String callName, int columnIndex, ParseType parseType) {
-        return new LeadBasedDecomposedCall(callName, null, parseType);
+    protected CourseBasedDecomposedCall buildDecomposedCall(String callName, ImmutableList<Optional<String>> callPositionNames, int columnIndex, ParseType parseType) {
+        checkPositionIndex(columnIndex, callPositionNames.size(), "column index out of bounds");
+        Optional<String> callPositionName = callPositionNames.get(columnIndex);
+        checkState(callPositionName.isPresent(), "No callPositionName for %s. Check that the parsing is correctly excluding columns with no valid call position", columnIndex);
+        return new CourseBasedDecomposedCall(callName, null, callPositionName.get()); //TODO Variance
     }
 
-    private class CallSequenceMultiplier extends ArrayList<LeadBasedDecomposedCall> {
+    private class CallSequenceMultiplier extends ArrayList<CourseBasedDecomposedCall> {
 
         private final int multiplier;
 

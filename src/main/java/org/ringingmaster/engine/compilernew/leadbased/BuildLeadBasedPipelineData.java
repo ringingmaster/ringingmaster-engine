@@ -1,6 +1,5 @@
 package org.ringingmaster.engine.compilernew.leadbased;
 
-import org.ringingmaster.engine.compilernew.internaldata.LeadBasedCompilerPipelineData;
 import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.function.Function;
@@ -10,11 +9,11 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class BuildLeadBasedPipelineData implements Function<Parse, LeadBasedCompilerPipelineData> {
+public class BuildLeadBasedPipelineData implements Function<Parse, LeadBasedCompilePipelineData> {
 
     @Override
-    public LeadBasedCompilerPipelineData apply(Parse parse) {
-        return new LeadBasedCompilerPipelineData(parse);
+    public LeadBasedCompilePipelineData apply(Parse parse) {
+        return new LeadBasedCompilePipelineData(parse);
     }
 
 }

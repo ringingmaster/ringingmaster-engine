@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compilernew.proof.impl;
 
-import org.ringingmaster.engine.compilernew.internaldata.CompilerPipelineData;
+import org.ringingmaster.engine.compilernew.common.CompilePipelineData;
 import org.ringingmaster.engine.compilernew.proof.Proof;
 
 import java.util.Optional;
@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author stevelake
  */
-public class BuildProof<T extends CompilerPipelineData<T>> implements Function<T, Proof> {
+public class BuildProof<T extends CompilePipelineData<T>> implements Function<T, Proof> {
 
     @Override
     public Proof apply(T data) {

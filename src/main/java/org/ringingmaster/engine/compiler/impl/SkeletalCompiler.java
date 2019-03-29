@@ -3,8 +3,8 @@ package org.ringingmaster.engine.compiler.impl;
 import org.ringingmaster.engine.analysis.Analysis;
 import org.ringingmaster.engine.analysis.impl.AnalysisBuilder;
 import org.ringingmaster.engine.compiler.Compiler;
+import org.ringingmaster.engine.compilernew.CompileTerminationReason;
 import org.ringingmaster.engine.compilernew.proof.Proof;
-import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodLead;
 import org.ringingmaster.engine.method.MethodRow;
@@ -53,7 +53,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	// outputs
 	private volatile Optional<Method> method = Optional.empty();
 	private volatile Optional<Analysis> analysis = Optional.empty();
-	private volatile Optional<ProofTerminationReason> terminationReason = Optional.empty();
+	private volatile Optional<CompileTerminationReason> terminationReason = Optional.empty();
 	private volatile Optional<String> terminateNotes = Optional.empty();
 	private volatile Proof proof;
 
@@ -70,7 +70,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		final Optional<String> invalidTouch = checkInvalidTouch(touch);
 
 		if (invalidTouch.isPresent()) {
-			terminate(ProofTerminationReason.INVALID_TOUCH, invalidTouch.get());
+			terminate(CompileTerminationReason.INVALID_TOUCH, invalidTouch.get());
 		}
 		else { preCompile(touch);
 			checkTerminateEarly(shouldTerminateEarly);
@@ -138,7 +138,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		final List<MethodLead> leads = new ArrayList<>();
 
 		if (maskedNotation.getRowCount() == 0) {
-			terminate(ProofTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
+			terminate(CompileTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
 		}
 		while (!isTerminated()) {
 			log.debug("{}   - lead [{}]", logPreamble, leads.size());
@@ -217,7 +217,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 				//New Part
 				partIndex++;
 				if (partIndex >= enteringPartIndex + EMPTY_PART_TOLERANCE) {
-					terminate(ProofTerminationReason.EMPTY_PARTS, Integer.toString(EMPTY_PART_TOLERANCE));
+					terminate(CompileTerminationReason.EMPTY_PARTS, Integer.toString(EMPTY_PART_TOLERANCE));
 					break;
 				}
 				log.debug("{}  - part [{}]", logPreamble, partIndex);
@@ -256,24 +256,24 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	private void checkTerminationMaxLeads(List<MethodLead> leads) {
 		if (touch.getTerminationMaxLeads().isPresent() &&
 				leads.size() >= touch.getTerminationMaxLeads().get()) {
-			terminate(ProofTerminationReason.LEAD_COUNT, touch.getTerminationMaxLeads().get().toString());
+			terminate(CompileTerminationReason.LEAD_COUNT, touch.getTerminationMaxLeads().get().toString());
 		}
 	}
 
 	private void checkTerminationMaxRows(MethodRow newRow) {
 		if (newRow.getRowNumber() >= touch.getTerminationMaxRows()) {
-			terminate(ProofTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()));
+			terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()));
 		}
 	}
 
 	private void checkTerminationChange(MethodRow newRow) {
 		if (touch.getTerminationChange().isPresent() &&
 				touch.getTerminationChange().get().equals(newRow)) {
-			terminate(ProofTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString());
+			terminate(CompileTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString());
 		}
 	}
 
-	private void terminate(final ProofTerminationReason terminationReason, String terminateNotes) {
+	private void terminate(final CompileTerminationReason terminationReason, String terminateNotes) {
 		if (!isTerminated()) {
 			log.debug("{}  - Terminate [{}] {}", logPreamble, terminateNotes, terminationReason);
 			this.terminationReason = Optional.of(terminationReason);

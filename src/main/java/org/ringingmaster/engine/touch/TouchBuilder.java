@@ -66,7 +66,7 @@ class TouchBuilder {
      * @return
      */
     TouchBuilder defaults() {
-        setTitle("");
+        setTitle("UNNAMED");
         setAuthor("");
 
         setNumberOfBells(NumberOfBells.BELLS_6);

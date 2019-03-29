@@ -4,8 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.compiler.impl.LeadBasedDecomposedCall;
 import org.ringingmaster.engine.compiler.impl.MaskedNotation;
 import org.ringingmaster.engine.compiler.impl.TerminateEarlyException;
-import org.ringingmaster.engine.compilernew.internaldata.LeadBasedCompilerPipelineData;
-import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
+import org.ringingmaster.engine.compilernew.CompileTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodLead;
 import org.ringingmaster.engine.method.MethodRow;
@@ -32,7 +31,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LE
  *
  * @author Steve Lake
  */
-public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipelineData, LeadBasedCompilerPipelineData> {
+public class CompileLeadBasedTouch implements Function<LeadBasedCompilePipelineData, LeadBasedCompilePipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -40,7 +39,7 @@ public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipeline
 
 
     @Override
-    public LeadBasedCompilerPipelineData apply(LeadBasedCompilerPipelineData leadBasedCompilerPipelineData) {
+    public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData leadBasedCompilerPipelineData) {
 
         Optional<Method> method = compileTouch(() -> false,
                 leadBasedCompilerPipelineData.getParse().getUnderlyingTouch(),
@@ -62,12 +61,12 @@ public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipeline
 
     //outputs
 
-    private Optional<ProofTerminationReason> terminationReason = Optional.empty();//TODO make stateless
+    private Optional<CompileTerminationReason> terminationReason = Optional.empty();//TODO make stateless
     private Optional<String> terminateNotes = Optional.empty();//TODO make stateless
 
 
     private Optional<Method> compileTouch(Supplier<Boolean> allowTerminateEarly, Touch touch, ImmutableList<LeadBasedDecomposedCall> callSequence, String logPreamble) {
-        log.debug("{} > create touch", logPreamble);
+        log.debug("{} > compile lead based touch", logPreamble);
         log.debug("{}  - part [{}]", logPreamble, partIndex);
         int partIndex = 0;
         // This is required here to handle the case when the first parts are omitted, and a check for empty parts are required.
@@ -83,7 +82,7 @@ public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipeline
         final List<MethodLead> leads = new ArrayList<>();
 
         if (maskedNotation.getRowCount() == 0) {
-            terminate(ProofTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", logPreamble);
+            terminate(CompileTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", logPreamble);
         }
         while (!isTerminated()) {
             log.debug("{}   - lead [{}]", logPreamble, leads.size());
@@ -94,7 +93,7 @@ public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipeline
             checkTerminateEarly(allowTerminateEarly);
         }
         Optional<Method> method = Optional.of(MethodBuilder.buildMethod(touch.getNumberOfBells(), leads));
-        log.debug("{} < create touch", logPreamble);
+        log.debug("{} < compile lead based touch", logPreamble);
 
         return method;
     }
@@ -169,7 +168,7 @@ public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipeline
                 //New Part
                 partIndex++;
                 if (partIndex >= enteringPartIndex + EMPTY_PART_TOLERANCE) {
-                    terminate(ProofTerminationReason.EMPTY_PARTS, Integer.toString(EMPTY_PART_TOLERANCE), logPreamble);
+                    terminate(CompileTerminationReason.EMPTY_PARTS, Integer.toString(EMPTY_PART_TOLERANCE), logPreamble);
                     break;
                 }
                 log.debug("{}  - part [{}]", logPreamble, partIndex);
@@ -196,7 +195,7 @@ public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipeline
     private void checkTerminationMaxLeads(List<MethodLead> leads, Touch touch, String logPreamble) {
         if (touch.getTerminationMaxLeads().isPresent() &&
                 leads.size() >= touch.getTerminationMaxLeads().get()) {
-            terminate(ProofTerminationReason.LEAD_COUNT, touch.getTerminationMaxLeads().get().toString(), logPreamble);
+            terminate(CompileTerminationReason.LEAD_COUNT, touch.getTerminationMaxLeads().get().toString(), logPreamble);
         }
     }
 
@@ -208,18 +207,18 @@ public class CompileLeadBasedTouch implements Function<LeadBasedCompilerPipeline
 
     private void checkTerminationMaxRows(Touch touch, MethodRow newRow, String logPreamble) {
         if (newRow.getRowNumber() >= touch.getTerminationMaxRows()) {
-            terminate(ProofTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()), logPreamble);
+            terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()), logPreamble);
         }
     }
 
     private void checkTerminationChange(Touch touch, MethodRow newRow, String logPreamble) {
         if (touch.getTerminationChange().isPresent() &&
                 touch.getTerminationChange().get().equals(newRow)) {
-            terminate(ProofTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString(), logPreamble);
+            terminate(CompileTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString(), logPreamble);
         }
     }
 
-    private void terminate(final ProofTerminationReason terminationReason, String terminateNotes, String logPreamble) {
+    private void terminate(final CompileTerminationReason terminationReason, String terminateNotes, String logPreamble) {
         if (!isTerminated()) {
             log.debug("{}  - Terminate [{}] {}", logPreamble, terminateNotes, terminationReason);
             this.terminationReason = Optional.of(terminationReason);

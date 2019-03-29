@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.compilernew.proof.impl;
 
 import org.ringingmaster.engine.analysis.Analysis;
+import org.ringingmaster.engine.compilernew.CompileTerminationReason;
 import org.ringingmaster.engine.compilernew.proof.Proof;
-import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.parser.parse.Parse;
 
@@ -19,14 +19,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class DefaultProof implements Proof {
 
 	private final Parse parse;
-	private final ProofTerminationReason terminationReason;
+	private final CompileTerminationReason terminationReason;
 	private final Optional<String> terminateNotes;
 	private final Optional<Method> createdMethod;
 	private final Optional<Analysis> analysis;
 	private final long proofTimeMs;
 
 
-	public DefaultProof(Parse parse, ProofTerminationReason terminationReason, Optional<String> terminateNotes,
+	DefaultProof(Parse parse, CompileTerminationReason terminationReason, Optional<String> terminateNotes,
 						Optional<Method> createdMethod, Optional<Analysis> analysis, long proofTimeMs) {
 		this.parse = checkNotNull(parse, "parse must not be null");
 		this.terminationReason = checkNotNull(terminationReason, "terminationReason must not be null");
@@ -42,7 +42,7 @@ class DefaultProof implements Proof {
 	}
 
 	@Override
-	public ProofTerminationReason getTerminationReason() {
+	public CompileTerminationReason getTerminationReason() {
 		return terminationReason;
 	}
 

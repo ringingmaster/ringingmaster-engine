@@ -1,6 +1,6 @@
-package org.ringingmaster.engine.compilernew.internaldata;
+package org.ringingmaster.engine.compilernew.common;
 
-import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
+import org.ringingmaster.engine.compilernew.CompileTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.slf4j.Logger;
@@ -15,20 +15,20 @@ import java.util.Optional;
  * @author Lake
  */
 @Immutable
-public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
+public abstract class CompilePipelineData<T extends CompilePipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final Parse parse;
     private final String logPreamble;
     private final Optional<Method> createdMethod;
-    private final Optional<ProofTerminationReason> terminationReason;
+    private final Optional<CompileTerminationReason> terminationReason;
     private final Optional<String> terminateNotes;
 
-    protected CompilerPipelineData(Parse parse, String logPreamble,
-                                   Optional<Method> createdMethod,
-                                   Optional<ProofTerminationReason> terminationReason,
-                                   Optional<String> terminateNotes) {
+    protected CompilePipelineData(Parse parse, String logPreamble,
+                                  Optional<Method> createdMethod,
+                                  Optional<CompileTerminationReason> terminationReason,
+                                  Optional<String> terminateNotes) {
         this.parse = parse;
         this.logPreamble = logPreamble;
         this.createdMethod = createdMethod;
@@ -54,7 +54,7 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
         return createdMethod;
     }
 
-    public T terminate(final ProofTerminationReason terminationReason, String terminateNotes) {
+    public T terminate(final CompileTerminationReason terminationReason, String terminateNotes) {
         if (!isTerminated()) {
             return build(parse, logPreamble,
                     createdMethod,
@@ -66,7 +66,7 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
         }
     }
 
-    public Optional<ProofTerminationReason> getTerminationReason() {
+    public Optional<CompileTerminationReason> getTerminationReason() {
         return terminationReason;
     }
 
@@ -81,7 +81,7 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
 
     protected abstract T build(Parse parse, String logPreamble,
                                Optional<Method> method,
-                               Optional<ProofTerminationReason> terminationReason, Optional<String> terminateNotes);
+                               Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes);
 
 
 

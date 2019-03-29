@@ -4,13 +4,13 @@ import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.compilernew.CompileTerminationReason;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.Parser;
 import org.ringingmaster.engine.compilernew.proof.Proof;
-import org.ringingmaster.engine.compilernew.proof.ProofTerminationReason;
 import org.ringingmaster.engine.touch.ObservableTouch;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
@@ -38,7 +38,7 @@ public class CourseBasedCompilerTest {
 		touch.addCharacters(TOUCH_TABLE,0, 0, "W");
 		touch.addCharacters(TOUCH_TABLE,1, 0, "-");
 		parseProveAndCheckTouch(15
-				, "/PlainBobMinor W - FromTenor.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch.get());
+				, "/PlainBobMinor W - FromTenor.txt", true, CompileTerminationReason.SPECIFIED_ROW, touch.get());
 	}
 
 	@Test
@@ -50,7 +50,7 @@ public class CourseBasedCompilerTest {
 //		touch.addCharacters(0, 0, "W");
 //		touch.addCharacters(0, 1, "-");
 //		Proof proof = parseProveAndCheckTouch(15
-//				, "/PlainBobMinor W - From5.txt", true, ProofTerminationReason.SPECIFIED_ROW, touch);
+//				, "/PlainBobMinor W - From5.txt", true, CompileTerminationReason.SPECIFIED_ROW, touch);
 	}
 
 	private ObservableTouch buildPlainBobMinorTouchShell() {
@@ -75,7 +75,7 @@ public class CourseBasedCompilerTest {
 	}
 
 	private Proof parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
-	                                      ProofTerminationReason terminationReason, Touch touch) throws IOException {
+										  CompileTerminationReason terminationReason, Touch touch) throws IOException {
         final Parse parse = parser.apply(touch);
 
         Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);

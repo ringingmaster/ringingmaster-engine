@@ -2,7 +2,6 @@ package org.ringingmaster.engine.compilernew.coursebased;
 
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.compilernew.internaldata.CourseBasedCompilerPipelineData;
 import org.ringingmaster.engine.parser.cell.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.Section;
@@ -19,10 +18,10 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_
  *
  * @author stevelake
  */
-public class BuildCallPositionNames implements Function<CourseBasedCompilerPipelineData, CourseBasedCompilerPipelineData> {
+public class BuildCallPositionNames implements Function<CourseBasedCompilePipelineData, CourseBasedCompilePipelineData> {
 
     @Override
-    public CourseBasedCompilerPipelineData apply(CourseBasedCompilerPipelineData data) {
+    public CourseBasedCompilePipelineData apply(CourseBasedCompilePipelineData data) {
 
         final ImmutableList<Optional<String>> callPositionNames = buildCallPositionNames(data.getParse());
         return data.setCallPositionNames(callPositionNames);

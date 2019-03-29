@@ -40,11 +40,11 @@ public class Parser implements Function<Touch, Parse> {
     @Override
     public Parse apply(Touch touch) {
 
-        log.info("Parsing");
+        log.info("[{}] > parsing", touch.getTitle());
 
         //TODO think very care fully about what parts of each parser needs applying to definitions,
 
-        return assignParseType
+        Parse parse = assignParseType
                 .andThen(assignMultiplier)
                 .andThen(multipleCallPositionsInOneCell)
                 .andThen(splicedCallsNotDefinedInEachMethod)
@@ -62,5 +62,7 @@ public class Parser implements Function<Touch, Parse> {
                 .andThen(circularDefinition)
                 .apply(touch);
 
+        log.info("[{}] < parsing", touch.getTitle());
+        return parse;
     }
 }
