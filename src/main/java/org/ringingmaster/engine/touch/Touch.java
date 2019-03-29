@@ -97,7 +97,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
         this.terminationMaxCircularity = terminationMaxCircularity;
         this.terminationChange = terminationChange;
 
-        touchTableAccessDelegate = new DefaultTouchTableAccess<>(cells, checkingType, isSpliced());
+        this.touchTableAccessDelegate = new DefaultTouchTableAccess<>(cells, checkingType, isSpliced());
     }
 
 

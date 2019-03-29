@@ -2,11 +2,7 @@ package org.ringingmaster.engine.touch;
 
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import org.pcollections.PSet;
@@ -24,24 +20,16 @@ import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.cell.CellBuilder;
 import org.ringingmaster.engine.touch.cell.EmptyCell;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.touch.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.touch.tableaccess.DefaultTouchTableAccess;
 import org.ringingmaster.util.smartcompare.SmartCompare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static org.ringingmaster.engine.touch.TableType.DEFINITION_TABLE;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
@@ -68,7 +56,9 @@ public class ObservableTouch {
     private final BehaviorSubject<Touch> subject = BehaviorSubject.create();
     private final SmartCompare s = new SmartCompare("", "> ")
             .comparePaths("numberOfBells")
-            .comparePaths("startChange");
+            .comparePaths("startChange")
+            .bindComparator((field, object1, object2) -> ((DefaultTouchTableAccess)object1).allTouchCells() == ((DefaultTouchTableAccess)object2).allTouchCells(),"touchTableAccessDelegate")
+            .bindComparator((field, object1, object2) -> ((DefaultDefinitionTableAccess)object1).allDefinitionCells() == ((DefaultDefinitionTableAccess)object2).allDefinitionCells(),"definitionTableCellsDelegate");
 
     public Observable<Touch> observable() {
         return subject;
