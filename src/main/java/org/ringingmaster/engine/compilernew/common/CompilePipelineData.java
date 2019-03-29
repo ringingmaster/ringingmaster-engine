@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * TODO Comments
  *
@@ -29,11 +31,11 @@ public abstract class CompilePipelineData<T extends CompilePipelineData> {
                                   Optional<Method> createdMethod,
                                   Optional<CompileTerminationReason> terminationReason,
                                   Optional<String> terminateNotes) {
-        this.parse = parse;
-        this.logPreamble = logPreamble;
-        this.createdMethod = createdMethod;
-        this.terminationReason = terminationReason;
-        this.terminateNotes = terminateNotes;
+        this.parse = checkNotNull(parse);
+        this.logPreamble = checkNotNull(logPreamble);
+        this.createdMethod = checkNotNull(createdMethod);
+        this.terminationReason = checkNotNull(terminationReason);
+        this.terminateNotes = checkNotNull(terminateNotes);
     }
 
     public Parse getParse() {

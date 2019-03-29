@@ -5,7 +5,6 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.compilernew.Compiler;
 import org.ringingmaster.engine.compilernew.proof.Proof;
 import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parser;
@@ -39,7 +38,7 @@ public class LeadBasedCompilerTest {
 		touch.addNotation(allChange);
 		touch.setCheckingType(CheckingType.LEAD_BASED);
 		touch.setNumberOfBells(NumberOfBells.BELLS_8);
-		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_8));
+		touch.setTerminationMaxLeads(1);
 
 		Proof proof = parser
 				.andThen(compiler)
@@ -55,28 +54,28 @@ public class LeadBasedCompilerTest {
 
 
 
-//	@Test
-//	public void canConstructChangePlaceLead() {
-//		final NotationBody notation = NotationBuilder.getInstance()
-//				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
-//				.setUnfoldedNotationShorthand("14")
-//				.build();
-//
-//		ObservableTouch touch = new ObservableTouch();
-//		touch.addNotation(notation);
-//		touch.setTerminationMaxLeads(1);
-//
-//
-//		Method method = parser
-//				.andThen(compiler)
-//				.apply(touch.get())
-//				.getCreatedMethod().get();
-//
-//
-//		assertEquals("14 should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
-//		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
-//		assertEquals("Row 1 should have place 1 & 4 made", "13246587", method.getLead(0).getRow(1).getDisplayString(false));
-//	}
+	@Test
+	public void canConstructChangePlaceLead() {
+		final NotationBody notation = NotationBuilder.getInstance()
+				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+				.setUnfoldedNotationShorthand("14")
+				.build();
+
+		ObservableTouch touch = new ObservableTouch();
+		touch.setCheckingType(CheckingType.LEAD_BASED);
+		touch.addNotation(notation);
+		touch.setTerminationMaxLeads(1);
+
+		Method method = parser
+				.andThen(compiler)
+				.apply(touch.get())
+				.getCreatedMethod().get();
+
+
+		assertEquals("14 should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
+		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
+		assertEquals("Row 1 should have place 1 & 4 made", "13246587", method.getLead(0).getRow(1).getDisplayString(false));
+	}
 
 //	@Ignore
 //	@Test

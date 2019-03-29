@@ -28,7 +28,7 @@ public class PlainCourseHelper {
 	private static Compiler compiler = new Compiler();
 	private static AtomicInteger counter = new AtomicInteger();
 
-	public static Proof buildPlainCourse(NotationBody notation, String logPreamble, boolean withAnalysis) {
+	public static Proof buildPlainCourse(NotationBody notation, String logPreamble /*TODO How to get this in the pipeline? */, boolean withAnalysis) {
 
 		Proof proof = buildPlainCourseInstance
 				.andThen(parser)

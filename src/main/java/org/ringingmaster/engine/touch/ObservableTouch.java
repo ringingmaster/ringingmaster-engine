@@ -246,7 +246,13 @@ public class ObservableTouch {
             throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "]: " + System.lineSeparator() + message);
         }
 
+        // IOf we are the first notation, then pre-emotively set the number of bells to match.
+        if (currentTouch.getAllNotations().size() == 0) {
+            setNumberOfBells(notationToAdd.getNumberOfWorkingBells());
+        }
+
         TouchBuilder touchBuilder = new TouchBuilder().prototypeOf(currentTouch);
+
 
         PSet<NotationBody> withAddedNotation = currentTouch.getAllNotations().plus(notationToAdd);
         touchBuilder.setAllNotations(withAddedNotation);

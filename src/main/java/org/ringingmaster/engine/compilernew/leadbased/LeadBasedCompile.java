@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.compilernew.leadbased;
 
+
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.compiler.impl.LeadBasedDecomposedCall;
 import org.ringingmaster.engine.compiler.impl.MaskedNotation;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
 
@@ -37,199 +39,210 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
 
     public static final int EMPTY_PART_TOLERANCE = 2; //TODO this should be paramaterised
 
+    class State {
+
+        // inputs
+        private final Supplier<Boolean> allowTerminateEarly;
+        private final Touch touch;
+        private final ImmutableList<LeadBasedDecomposedCall> callSequence;
+        private final String logPreamble;
+
+        // internal data.
+        private int callSequenceIndex;
+        private int partIndex;
+        private LeadBasedDecomposedCall nextCall;
+        private Map<String, NotationCall> callLookupByName;
+        private MethodRow currentMethodRow;
+        private MaskedNotation maskedNotation;
+        private final List<MethodLead> leads = new ArrayList<>();
+
+        //outputs
+        private Optional<Method> method = Optional.empty();
+        private Optional<CompileTerminationReason> terminationReason = Optional.empty();
+        private Optional<String> terminateNotes = Optional.empty();
+
+        State(Supplier<Boolean> allowTerminateEarly, Touch touch, ImmutableList<LeadBasedDecomposedCall> callSequence, String logPreamble)  {
+            this.allowTerminateEarly = checkNotNull(allowTerminateEarly);
+            this.touch = checkNotNull(touch);
+            this.callSequence = checkNotNull(callSequence);
+            this.logPreamble = checkNotNull(logPreamble);
+        }
+    }
 
     @Override
     public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData leadBasedCompilerPipelineData) {
 
-        Optional<Method> method = compileTouch(() -> false,
+        State state = new State(() -> false,
                 leadBasedCompilerPipelineData.getParse().getUnderlyingTouch(),
                 leadBasedCompilerPipelineData.getCallSequence(),
                 leadBasedCompilerPipelineData.getLogPreamble());
 
+        compileTouch(state);
+
         return leadBasedCompilerPipelineData
-                .terminate(terminationReason.get(), terminateNotes.get())
-                .setCreatedMethod(method);
+                .terminate(state.terminationReason.get(), state.terminateNotes.get())
+                .setCreatedMethod(state.method);
     }
 
-    // inputs
-    private int callSequenceIndex; //TODO make stateless
-    private int partIndex;//TODO make stateless
-
-    // internal data.
-    private LeadBasedDecomposedCall nextCall;//TODO make stateless
-    private Map<String, NotationCall> callLookupByName; //TODO make stateless
-
-    //outputs
-
-    private Optional<CompileTerminationReason> terminationReason = Optional.empty();//TODO make stateless
-    private Optional<String> terminateNotes = Optional.empty();//TODO make stateless
-
-
-    private Optional<Method> compileTouch(Supplier<Boolean> allowTerminateEarly, Touch touch, ImmutableList<LeadBasedDecomposedCall> callSequence, String logPreamble) {
-        log.debug("{} > compile lead based touch", logPreamble);
-        log.debug("{}  - part [{}]", logPreamble, partIndex);
+    private void compileTouch(State state) {
+        log.debug("{} > compile lead based touch", state.logPreamble);
+        log.debug("{}  - part [{}]", state.logPreamble, state.partIndex);
         int partIndex = 0;
         // This is required here to handle the case when the first parts are omitted, and a check for empty parts are required.
-        callSequenceIndex = -1;
-        if (!isPlainCourse(callSequence)) {
-            advanceToNextCall(callSequence, logPreamble);
+        state.callSequenceIndex = -1;
+        if (!isPlainCourse(state)) {
+            advanceToNextCall(state);
         }
 
-        MethodRow startChange = createStartChange(touch);
+        state.currentMethodRow = createStartChange(state);
+        state.maskedNotation = new MaskedNotation(state.touch.getNonSplicedActiveNotation().get());
 
-        MaskedNotation maskedNotation = new MaskedNotation(touch.getNonSplicedActiveNotation().get());
-
-        final List<MethodLead> leads = new ArrayList<>();
-
-        if (maskedNotation.getRowCount() == 0) {
-            terminate(CompileTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", logPreamble);
+        if (state.maskedNotation.getRowCount() == 0) {
+            terminate(CompileTerminationReason.INVALID_TOUCH, "Notation [" + state.maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", state);
         }
-        while (!isTerminated()) {
-            log.debug("{}   - lead [{}]", logPreamble, leads.size());
-            final MethodLead lead = compileLead(callSequence, maskedNotation, startChange, touch, logPreamble);
-            leads.add(lead);
-            startChange = lead.getLastRow();
-            checkTerminationMaxLeads(leads, touch, logPreamble);
-            checkTerminateEarly(allowTerminateEarly);
+        while (!isTerminated(state)) {
+            log.debug("{}   - lead [{}]", state.logPreamble, state.leads.size());
+            final MethodLead lead = compileLead( state);
+            state.leads.add(lead);
+            state.currentMethodRow = lead.getLastRow();
+            checkTerminationMaxLeads(state);
+            checkTerminateEarly(state);
         }
-        Optional<Method> method = Optional.of(MethodBuilder.buildMethod(touch.getNumberOfBells(), leads));
-        log.debug("{} < compile lead based touch", logPreamble);
-
-        return method;
+        state.method = Optional.of(MethodBuilder.buildMethod(state.touch.getNumberOfBells(), state.leads));
+        log.debug("{} < compile lead based touch", state.logPreamble);
     }
 
-    private boolean isPlainCourse(ImmutableList<LeadBasedDecomposedCall> callSequence) {
+    private boolean isPlainCourse(State state) {
         // A plain course will have no callSequence length
-        return callSequence.size() == 0;
+        return state.callSequence.size() == 0;
     }
 
-    private MethodRow createStartChange(Touch touch) {
-        MethodRow startChange = touch.getStartChange();
-        checkState(startChange.getNumberOfBells() == touch.getNumberOfBells());
-        Stroke startStroke = touch.getStartStroke();
+    private MethodRow createStartChange(State state) {
+        MethodRow startChange = state.touch.getStartChange();
+        checkState(startChange.getNumberOfBells() == state.touch.getNumberOfBells());
+        Stroke startStroke = state.touch.getStartStroke();
 
         startChange = startChange.setStroke(startStroke);
 
         return startChange;
     }
 
-    private MethodLead compileLead(ImmutableList<LeadBasedDecomposedCall> callSequence, final MaskedNotation maskedNotation, MethodRow currentMethodRow, Touch touch, String logPreamble) {
+    private MethodLead compileLead(State state) {
 
         final List<MethodRow> rows = new ArrayList<>();
         final List<Integer> leadSeparatorPositions = new ArrayList<>();
 
-        rows.add(currentMethodRow);
+        rows.add(state.currentMethodRow);
 
-        for (NotationRow notationRow : maskedNotation) {
+        for (NotationRow notationRow : state.maskedNotation) {
 
-            currentMethodRow = buildNextRow(notationRow, currentMethodRow);
-            rows.add(currentMethodRow);
+            buildNextRow(notationRow, state);
+            rows.add(state.currentMethodRow);
 
-            checkTerminationChange(touch, currentMethodRow, logPreamble);
-            checkTerminationMaxRows(touch, currentMethodRow, logPreamble);
-            if (isTerminated()) {
+            checkTerminationChange(state);
+            checkTerminationMaxRows(state);
+            if (isTerminated(state)) {
                 break;
             }
-            tryToMakeACall(callSequence, maskedNotation, currentMethodRow, logPreamble);
+            tryToMakeACall(state);
         }
 
 //TODO		addLeadSeparator(currentNotation, rows, leadSeparatorPositions);
 
-        final MethodLead lead = MethodBuilder.buildLead(touch.getNumberOfBells(), rows, leadSeparatorPositions);
+        final MethodLead lead = MethodBuilder.buildLead(state.touch.getNumberOfBells(), rows, leadSeparatorPositions);
         return lead;
     }
 
-    private MethodRow buildNextRow(final NotationRow notationRow, final MethodRow previousRow) {
-        MethodRow nextRow;
+    private void buildNextRow(final NotationRow notationRow, State state) {
         if (notationRow.isAllChange()) {
-            nextRow = MethodBuilder.buildAllChangeRow(previousRow);
+            state.currentMethodRow = MethodBuilder.buildAllChangeRow(state.currentMethodRow);
         }
         else {
-            nextRow = MethodBuilder.buildRowWithPlaces(previousRow, notationRow);
+            state.currentMethodRow = MethodBuilder.buildRowWithPlaces(state.currentMethodRow, notationRow);
         }
-        return nextRow;
     }
 
-    private void tryToMakeACall(ImmutableList<LeadBasedDecomposedCall> callSequence, MaskedNotation maskedNotation, MethodRow currentMethodRow, String logPreamble) {
-        if (nextCall != null && maskedNotation.isAtCallPoint()) {
-            NotationCall call = callLookupByName.get(nextCall.getCallName());
-            boolean callConsumed = applyNextCall(maskedNotation, currentMethodRow, nextCall, call, logPreamble);
+    private void tryToMakeACall( State state) {
+        if (state.nextCall != null && state.maskedNotation.isAtCallPoint()) {
+            boolean callConsumed = applyNextCall(state);
             if (callConsumed) {
-                advanceToNextCall(callSequence,logPreamble);
+                advanceToNextCall(state);
             }
         }
     }
 
-    private void advanceToNextCall(ImmutableList<LeadBasedDecomposedCall> callSequence, String logPreamble) {
-        int enteringPartIndex = partIndex;
+    private void advanceToNextCall(State state) {
+        int enteringPartIndex = state.partIndex;
         do {
-            callSequenceIndex++;
-            if (callSequenceIndex >= callSequence.size()) {
+            state.callSequenceIndex++;
+            if (state.callSequenceIndex >= state.callSequence.size()) {
                 //New Part
-                partIndex++;
-                if (partIndex >= enteringPartIndex + EMPTY_PART_TOLERANCE) {
-                    terminate(CompileTerminationReason.EMPTY_PARTS, Integer.toString(EMPTY_PART_TOLERANCE), logPreamble);
+                state.partIndex++;
+                if (state.partIndex >= enteringPartIndex + EMPTY_PART_TOLERANCE) {
+                    terminate(CompileTerminationReason.EMPTY_PARTS, Integer.toString(EMPTY_PART_TOLERANCE), state);
                     break;
                 }
-                log.debug("{}  - part [{}]", logPreamble, partIndex);
-                callSequenceIndex = 0;
+                log.debug("{}  - part [{}]", state.logPreamble, state.partIndex);
+                state.callSequenceIndex = 0;
             }
-            nextCall = callSequence.get(callSequenceIndex);
+            state.nextCall = state.callSequence.get(state.callSequenceIndex);
 
-        } while (!nextCall.getVariance().includePart(partIndex));
+        } while (!state.nextCall.getVariance().includePart(state.partIndex));
     }
 
-    protected boolean applyNextCall(MaskedNotation maskedNotation, MethodRow currentMethodRow,
-                                    LeadBasedDecomposedCall nextCallMeta, NotationCall call, String logPreamble) {
-        if (nextCallMeta.getParseType().equals(PLAIN_LEAD)) {
+    private boolean applyNextCall( State state) {
+        if (state.nextCall.getParseType().equals(PLAIN_LEAD)) {
             // No Call, but consume the call.
-            log.debug("{} Apply Plain lead", logPreamble);
+            log.debug("{} Apply Plain lead", state.logPreamble);
         }
         else {
-            maskedNotation.applyCall(call, logPreamble);
+            NotationCall call = state.callLookupByName.get(state.nextCall.getCallName());
+            log.debug("{} Apply call [{}]", state.logPreamble, call);
+            state.maskedNotation.applyCall(call, state.logPreamble);
         }
         // We consumed the call
         return true;
     }
 
-    private void checkTerminationMaxLeads(List<MethodLead> leads, Touch touch, String logPreamble) {
-        if (touch.getTerminationMaxLeads().isPresent() &&
-                leads.size() >= touch.getTerminationMaxLeads().get()) {
-            terminate(CompileTerminationReason.LEAD_COUNT, touch.getTerminationMaxLeads().get().toString(), logPreamble);
+    private void checkTerminationMaxLeads(State state) {
+        if (state.touch.getTerminationMaxLeads().isPresent() &&
+                state.leads.size() >= state.touch.getTerminationMaxLeads().get()) {
+            terminate(CompileTerminationReason.LEAD_COUNT, state.touch.getTerminationMaxLeads().get().toString(), state);
         }
     }
 
-    private void checkTerminateEarly(Supplier<Boolean> allowTerminateEarly) {
-        if (allowTerminateEarly.get()) {
+    private void checkTerminateEarly(State state) {
+        if (state.allowTerminateEarly.get()) {
             throw new TerminateEarlyException("Terminate Early request");
         }
     }
 
-    private void checkTerminationMaxRows(Touch touch, MethodRow newRow, String logPreamble) {
-        if (newRow.getRowNumber() >= touch.getTerminationMaxRows()) {
-            terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()), logPreamble);
+    private void checkTerminationMaxRows(State state) {
+        if (state.currentMethodRow.getRowNumber() >= state.touch.getTerminationMaxRows()) {
+            terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(state.touch.getTerminationMaxRows()), state);
         }
     }
 
-    private void checkTerminationChange(Touch touch, MethodRow newRow, String logPreamble) {
-        if (touch.getTerminationChange().isPresent() &&
-                touch.getTerminationChange().get().equals(newRow)) {
-            terminate(CompileTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString(), logPreamble);
+    private void checkTerminationChange(State state) {
+        if (state.touch.getTerminationChange().isPresent() &&
+                state.touch.getTerminationChange().get().equals(state.currentMethodRow)) {
+            terminate(CompileTerminationReason.SPECIFIED_ROW, state.touch.getTerminationChange().get().toString(), state);
         }
     }
 
-    private void terminate(final CompileTerminationReason terminationReason, String terminateNotes, String logPreamble) {
-        if (!isTerminated()) {
-            log.debug("{}  - Terminate [{}] {}", logPreamble, terminateNotes, terminationReason);
-            this.terminationReason = Optional.of(terminationReason);
-            this.terminateNotes = Optional.of(terminateNotes);
+    private void terminate(final CompileTerminationReason terminationReason, String terminateNotes, State state) {
+        if (!isTerminated(state)) {
+            log.debug("{}  - Terminate [{}] {}", state.logPreamble, terminateNotes, terminationReason);
+            state.terminationReason = Optional.of(terminationReason);
+            state.terminateNotes = Optional.of(terminateNotes);
         }
         else  {
             log.warn("Requesting second terminate [{}]{}", terminationReason, terminateNotes);
         }
     }
 
-    private boolean isTerminated() {
-        return terminationReason.isPresent();
+    private boolean isTerminated(State state) {
+        return state.terminationReason.isPresent();
     }
+
 }

@@ -39,8 +39,8 @@ public class Compiler implements Function<Parse, Proof> {
 
         switch (parse.getUnderlyingTouch().getCheckingType() ) {
 
-            case COURSE_BASED:
-                return courseBasedCompilePipeline;
+//            case COURSE_BASED:
+//                return courseBasedCompilePipeline;
             case LEAD_BASED:
                 return leadBasedCompilePipeline;
             default:
