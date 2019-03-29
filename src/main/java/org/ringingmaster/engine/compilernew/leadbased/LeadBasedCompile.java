@@ -31,9 +31,9 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LE
  *
  * @author Steve Lake
  */
-public class CompileLeadBasedTouch implements Function<LeadBasedCompilePipelineData, LeadBasedCompilePipelineData> {
+public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, LeadBasedCompilePipelineData> {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(LeadBasedCompile.class);
 
     public static final int EMPTY_PART_TOLERANCE = 2; //TODO this should be paramaterised
 

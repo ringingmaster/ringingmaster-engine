@@ -7,14 +7,16 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
 import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
+import org.ringingmaster.engine.parser.parse.Parse;
+import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
@@ -35,9 +37,13 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
 @Immutable
 public class AssignParseType implements Function<Touch, Parse> {
 
+    private final Logger log = LoggerFactory.getLogger(AssignParseType.class);
+
     private final CellLexer lexer = new CellLexer();
 
     public Parse apply(Touch touch) {
+
+        log.debug("[{}] > assign parse type", touch.getTitle());
 
         final HashBasedTable<Integer, Integer, ParsedCell> parsedTouchCells = HashBasedTable.create();
         parseCallPositionArea(touch, parsedTouchCells);
@@ -54,11 +60,15 @@ public class AssignParseType implements Function<Touch, Parse> {
         //TODO should we allow variance in definitions?
 
 
-        return new ParseBuilder()
+        Parse parse = new ParseBuilder()
                 .prototypeOf(touch)
                 .setTouchTableCells(parsedTouchCells)
                 .setDefinitionTableCells(parsedDefinitionCells)
                 .build();
+
+        log.debug("[{}] < assign parse type", parse.getUnderlyingTouch().getTitle());
+
+        return parse;
     }
 
     private void parseDefinitionShorthandArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {

@@ -33,6 +33,8 @@ public class CircularDefinition implements Function<Parse, Parse> {
 
     public Parse apply(Parse parse) {
 
+        log.debug("[{}] > circular definition check", parse.getUnderlyingTouch().getTitle());
+
         Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(parse);
 
         Set<String> invalidDefinitions = new HashSet<>();
@@ -50,11 +52,15 @@ public class CircularDefinition implements Function<Parse, Parse> {
         definitionFunctions.markInvalid(parse.definitionDefinitionCells(), invalidDefinitions, definitionTableResult, createErrorMessage);
 
 
-        return new ParseBuilder()
+        Parse result = new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(touchTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
+
+        log.debug("[{}] < circular definition check", parse.getUnderlyingTouch().getTitle());
+
+        return result;
     }
 
     private void discoverCircularity(Set<String> results, Map<String, Set<String>> adjacency, PStack<String> path) {

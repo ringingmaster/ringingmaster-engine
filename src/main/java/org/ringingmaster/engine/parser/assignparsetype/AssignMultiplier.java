@@ -4,13 +4,15 @@ import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
-import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
 import org.ringingmaster.engine.parser.functions.DefinitionFunctions;
+import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
+import org.ringingmaster.engine.parser.parse.Parse;
+import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.touch.Touch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.Set;
@@ -32,11 +34,17 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
  */
 public class AssignMultiplier implements Function<Parse, Parse> {
 
+    private final Logger log = LoggerFactory.getLogger(AssignMultiplier.class);
+
+
     private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
 
 
     @Override
     public Parse apply(Parse parse) {
+
+        log.debug("[{}] > assign multiplier", parse.getUnderlyingTouch().getTitle());
+
         final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(parse.getUnderlyingTouch());
 
         final HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
@@ -69,12 +77,16 @@ public class AssignMultiplier implements Function<Parse, Parse> {
             }
         }
 
-        
-        return new ParseBuilder()
+
+        Parse result = new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(touchTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
+
+        log.debug("[{}] < assign multiplier", parse.getUnderlyingTouch().getTitle());
+
+        return result;
     }
 
     private ParsedCell parseCellNumbers(final ParsedCell cell, boolean spliceCell, boolean splicedPerformance, boolean hasDefaultCall) {

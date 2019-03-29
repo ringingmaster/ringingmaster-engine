@@ -4,12 +4,14 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.parse.Parse;
+import org.ringingmaster.engine.parser.parse.ParseBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -26,6 +28,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private final ParseType openingBrace;
     private final ParseType closingBrace;
     private final String braceTypeName;
@@ -40,6 +44,7 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
     }
 
     public Parse apply(Parse parse) {
+        log.debug("[{}] > " + braceTypeName + " check", parse.getUnderlyingTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
@@ -57,11 +62,15 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
             parseCells(cell,  definitionTableResult);
         }
 
-        return new ParseBuilder()
+        Parse result = new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(resultCells)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
+
+        log.debug("[{}] < " + braceTypeName + " check", parse.getUnderlyingTouch().getTitle());
+
+        return result;
 
     }
 

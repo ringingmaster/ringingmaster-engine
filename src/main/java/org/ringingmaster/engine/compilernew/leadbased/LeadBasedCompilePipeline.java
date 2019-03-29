@@ -17,7 +17,7 @@ public class LeadBasedCompilePipeline implements Function<Parse, Proof> {
     private final BuildLeadBasedPipelineData buildLeadBasedPipelineData = new BuildLeadBasedPipelineData();
     private final ValidTouchCheck<LeadBasedCompilePipelineData> validTouchCheck = new ValidTouchCheck<>();
     private final BuildCallSequence buildCallSequence = new BuildCallSequence();
-    private final CompileLeadBasedTouch compile = new CompileLeadBasedTouch();
+    private final LeadBasedCompile compile = new LeadBasedCompile();
 
     private final BuildProof<LeadBasedCompilePipelineData> buildProof = new BuildProof<>();
 

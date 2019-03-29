@@ -6,11 +6,13 @@ import com.google.errorprone.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
-import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.parse.Parse;
+import org.ringingmaster.engine.parser.parse.ParseBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 
@@ -23,16 +25,25 @@ import java.util.function.Function;
 @Immutable
 public class MultipleCallPositionsInOneCell implements Function<Parse, Parse> {
 
+    private final Logger log = LoggerFactory.getLogger(MultipleCallPositionsInOneCell.class);
+
     public Parse apply(Parse parse) {
+
+        log.debug("[{}] > multiple call positions in one cell", parse.getUnderlyingTouch().getTitle());
+
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
         parseCallPositionArea(parse, resultCells);
 
-        return new ParseBuilder()
+        Parse build = new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(resultCells)
                 .build();
+
+        log.debug("[{}] < multiple call positions in one cell", parse.getUnderlyingTouch().getTitle());
+
+        return build;
     }
 
     private void parseCallPositionArea(Parse originalParse, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {

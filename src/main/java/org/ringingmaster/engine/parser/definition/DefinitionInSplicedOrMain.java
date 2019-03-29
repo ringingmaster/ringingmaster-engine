@@ -31,6 +31,16 @@ public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
 
 
     public Parse apply(Parse parse) {
+        log.debug("[{}] > definition in spliced or main check", parse.getUnderlyingTouch().getTitle());
+
+        Parse result = doCheck(parse);
+
+        log.debug("[{}] < definition in spliced or main check", parse.getUnderlyingTouch().getTitle());
+
+        return result;
+    }
+
+    public Parse doCheck(Parse parse) {
 
         final Set<String> mainBodyDefinitions = new InUseMainBodyDefinitionsTransitively().apply(parse);
         final Set<String> splicedDefinitions = new InUseSpliceDefinitionsTransitively().apply(parse);
@@ -42,6 +52,8 @@ public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
         }
 
         // Step 4: Mark invalid
+        log.debug("[{}] marking invalid definitions", parse.getUnderlyingTouch().getTitle());
+
         final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
         HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());

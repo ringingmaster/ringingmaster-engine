@@ -5,13 +5,15 @@ import com.google.common.collect.Sets;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.Section;
 import org.ringingmaster.engine.parser.functions.InUseNamesForParseType;
+import org.ringingmaster.engine.parser.parse.Parse;
+import org.ringingmaster.engine.parser.parse.ParseBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,9 +31,19 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
  */
 public class SplicedCallsNotDefinedInEachMethod implements Function<Parse, Parse> {
 
+    private final Logger log = LoggerFactory.getLogger(SplicedCallsNotDefinedInEachMethod.class);
+
     @Override
     public Parse apply(Parse parse) {
+        log.debug("[{}] > splice calls not defined in each method", parse.getUnderlyingTouch().getTitle());
+        Parse response = doCheck(parse);
+        log.debug("[{}] < splice calls not defined in each method", parse.getUnderlyingTouch().getTitle());
+        return response;
+    }
+
+    public Parse doCheck(Parse parse) {
         if (! parse.getUnderlyingTouch().isSpliced()) {
+            log.debug("[{}] ignore check: not spliced", parse.getUnderlyingTouch().getTitle());
             return parse;
         }
 
@@ -53,6 +65,7 @@ public class SplicedCallsNotDefinedInEachMethod implements Function<Parse, Parse
         final Set<String> invalidCalls = Sets.difference(allCalls, commonCalls);
 
         if (invalidCalls.size() == 0) {
+
             return parse;
         }
 

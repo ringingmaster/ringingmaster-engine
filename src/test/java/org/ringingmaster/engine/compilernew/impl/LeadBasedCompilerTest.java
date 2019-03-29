@@ -1,10 +1,11 @@
-package org.ringingmaster.engine.compiler.impl;
+package org.ringingmaster.engine.compilernew.impl;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.compilernew.Compiler;
 import org.ringingmaster.engine.compilernew.proof.Proof;
 import org.ringingmaster.engine.method.Method;
+import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parser;
@@ -29,17 +30,16 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void canConstructAllChangeLeadWithNoCalls() {
-		final NotationBody mockedNotationBody = NotationBuilder.getInstance()
+		final NotationBody allChange = NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.setUnfoldedNotationShorthand("-")
 				.build();
 
 		ObservableTouch touch = new ObservableTouch();
-		touch.setTitle("???");
-		touch.addNotation(mockedNotationBody);
-//		touch.setTerminationMaxLeads(1);
+		touch.addNotation(allChange);
 		touch.setCheckingType(CheckingType.LEAD_BASED);
 		touch.setNumberOfBells(NumberOfBells.BELLS_8);
+		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_8));
 
 		Proof proof = parser
 				.andThen(compiler)
@@ -53,27 +53,31 @@ public class LeadBasedCompilerTest {
 		assertEquals("Row 1 should be all change", "21436587", method.getLead(0).getRow(1).getDisplayString(false));
 	}
 
-	@Test
-	public void failTest() {
-		fail(); //TODO
 
-	}
-//
 
-	//	@Test
+//	@Test
 //	public void canConstructChangePlaceLead() {
-//		final NotationBody mockedNotationBody = mockNotation(NumberOfBells.BELLS_8, NotationRowHelper.buildNotationRow(NotationPlace.PLACE_1, NotationPlace.PLACE_4));
+//		final NotationBody notation = NotationBuilder.getInstance()
+//				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+//				.setUnfoldedNotationShorthand("14")
+//				.build();
 //
-//		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
+//		ObservableTouch touch = new ObservableTouch();
+//		touch.addNotation(notation);
 //		touch.setTerminationMaxLeads(1);
-//		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
-//		Method method = result.getCreatedMethod().get();
+//
+//
+//		Method method = parser
+//				.andThen(compiler)
+//				.apply(touch.get())
+//				.getCreatedMethod().get();
+//
 //
 //		assertEquals("14 should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
 //		assertEquals("Row 0 should be rounds", "12345678", method.getLead(0).getRow(0).getDisplayString(false));
 //		assertEquals("Row 1 should have place 1 & 4 made", "13246587", method.getLead(0).getRow(1).getDisplayString(false));
 //	}
-//
+
 //	@Ignore
 //	@Test
 //	public void leadSeparatorPositionsCorrect() {
@@ -309,6 +313,12 @@ public class LeadBasedCompilerTest {
 	}
 
 
+
+	@Test
+	public void failTest() {
+		fail(); //TODO
+
+	}
 	//TODO compound terminations
 
 
