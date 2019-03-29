@@ -21,7 +21,7 @@ public class ValidTouchCheck<T extends CompilePipelineData<T>> implements Functi
             }
         }
         else { // Not Spliced
-            if (touch.getNonSplicedActiveNotation() == null) {
+            if (!touch.getNonSplicedActiveNotation().isPresent()) {
                 return data.terminate(CompileTerminationReason.INVALID_TOUCH, "No active method");
             }
         }

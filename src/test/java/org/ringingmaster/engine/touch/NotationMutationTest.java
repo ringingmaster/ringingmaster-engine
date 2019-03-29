@@ -204,11 +204,12 @@ public class NotationMutationTest {
     @Test
     public void removingNotationSwitchesToClosestNumberOfBellsHighestFirst() {
         ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(NumberOfBells.BELLS_8);
 
         touch.addNotation(METHOD_A_6_BELL);
         touch.addNotation(METHOD_A_7_BELL);
         touch.addNotation(METHOD_A_8_BELL);
+        touch.setNumberOfBells(NumberOfBells.BELLS_8);
+
         Assert.assertEquals(Optional.of(METHOD_A_6_BELL), touch.get().getNonSplicedActiveNotation());
 
         touch.setNonSplicedActiveNotation(METHOD_A_7_BELL);

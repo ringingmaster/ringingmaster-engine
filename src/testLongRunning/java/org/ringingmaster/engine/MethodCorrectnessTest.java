@@ -40,7 +40,7 @@ public class MethodCorrectnessTest {
 					final String leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
 
 					Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
-					MethodLead lead = proof.getCreatedMethod().get().getLead(0);
+					MethodLead lead = proof.getMethod().get().getLead(0);
 
 					if (!Objects.equals(leadHead, lead.getLastRow().getDisplayString(false))) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
@@ -106,7 +106,7 @@ public class MethodCorrectnessTest {
 							.build();
 
 					Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
-					MethodLead lead = proof.getCreatedMethod().get().getLead(0);
+					MethodLead lead = proof.getMethod().get().getLead(0);
 
 					if (persistableNotation.getLeadLength() != lead.getRowCount() - 1) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",

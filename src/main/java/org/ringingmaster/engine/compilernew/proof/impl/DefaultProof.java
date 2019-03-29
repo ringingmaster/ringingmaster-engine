@@ -53,11 +53,11 @@ class DefaultProof implements Proof {
 			case INVALID_TOUCH:
 				return (terminateNotes.isPresent())?terminateNotes.get():"";
 			case ROW_COUNT:
-				return "Row limit (" + getCreatedMethod().get().getRowCount() + ")";
+				return "Row limit (" + getMethod().get().getRowCount() + ")";
 			case LEAD_COUNT:
-				return "Lead limit (" + getCreatedMethod().get().getLeadCount() + ")";
+				return "Lead limit (" + getMethod().get().getLeadCount() + ")";
 			case SPECIFIED_ROW:
-				return "Change (" + getCreatedMethod().get().getLastRow().getDisplayString(true) + ")";
+				return "Change (" + getMethod().get().getLastRow().getDisplayString(true) + ")";
 			case EMPTY_PARTS:
 				return  "Aborted - Empty parts found";
 			// TODO this is from C++
@@ -77,7 +77,7 @@ class DefaultProof implements Proof {
 
 
 	@Override
-	public Optional<Method> getCreatedMethod() {
+	public Optional<Method> getMethod() {
 		return createdMethod;
 	}
 

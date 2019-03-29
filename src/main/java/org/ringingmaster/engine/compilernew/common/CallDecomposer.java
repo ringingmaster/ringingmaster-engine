@@ -9,6 +9,7 @@ import org.ringingmaster.engine.parser.cell.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
+import org.ringingmaster.engine.touch.variance.impl.NullVariance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,11 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.*;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
+import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???
@@ -142,9 +147,10 @@ public class CallDecomposer {
         Optional<ImmutableArrayTable<ParsedCell>> definitionCells = parse.findDefinitionByShorthand(definitionIdentifier);
         checkState(definitionCells.isPresent(), "No definitionCells found for %s. Check that the parsing is correctly marking as valid definition ", columnIndex);
 
-        for (BackingTableLocationAndValue<ParsedCell> definitionContentsCell : definitionCells.get()) {
-            generateCallInstancesForCell(definitionContentsCell.getValue(), columnIndex, multiplierFIFO, parse, logPreamble);
-        }
+//        for (BackingTableLocationAndValue<ParsedCell> definitionContentsCell : definitionCells.get()) {
+            generateCallInstancesForCell(definitionCells.get().get(0, DEFINITION_COLUMN), columnIndex, multiplierFIFO, parse, logPreamble);
+//            log.debug(definitionContentsCell.toString());
+//        }
 
         log.debug("Finish expand definition [{}]",group);
     }
@@ -170,7 +176,7 @@ public class CallDecomposer {
 
 
     protected LeadBasedDecomposedCall buildDecomposedCall(String callName, int columnIndex, ParseType parseType) {
-        return new LeadBasedDecomposedCall(callName, null, parseType);
+        return new LeadBasedDecomposedCall(callName, NullVariance.getInstance(), parseType); //TODO remove NullVariance
     }
 
     private class CallSequenceMultiplier extends ArrayList<LeadBasedDecomposedCall> {

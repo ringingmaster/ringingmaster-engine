@@ -16,7 +16,7 @@ public class TitleMutationTest {
 
         ObservableTouch touch = new ObservableTouch();
 
-        assertEquals("", touch.get().getTitle());
+        assertEquals(TouchBuilder.DEFAULT_TITLE, touch.get().getTitle());
     }
 
     @Test

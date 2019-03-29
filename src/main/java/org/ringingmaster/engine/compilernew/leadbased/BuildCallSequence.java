@@ -17,6 +17,10 @@ public class BuildCallSequence implements Function<LeadBasedCompilePipelineData,
 
     @Override
     public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData data) {
+        if (data.isTerminated()) {
+            return data;
+        }
+
         final ImmutableList<LeadBasedDecomposedCall> callSequence = callDecomposer.createCallSequence(data.getParse(), data.getLogPreamble());
         return data.setCallSequence(callSequence);
     }

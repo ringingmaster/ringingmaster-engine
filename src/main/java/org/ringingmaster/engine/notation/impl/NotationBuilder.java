@@ -355,7 +355,7 @@ public class NotationBuilder {
 				Collections.emptySet(),
 				spliceIdentifier);
 
-		return PlainCourseHelper.buildPlainCourse(plainCourseNotation, "[NotationBuilder] ", false).getCreatedMethod().get();
+		return PlainCourseHelper.buildPlainCourse(plainCourseNotation, "[NotationBuilder] ", false).getMethod().get();
 	}
 
 	private NotationCall getDefaultNotationCall(SortedSet<NotationCall> notationCalls) {

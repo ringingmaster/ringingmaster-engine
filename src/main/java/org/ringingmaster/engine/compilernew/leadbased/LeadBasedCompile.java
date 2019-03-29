@@ -2,6 +2,7 @@ package org.ringingmaster.engine.compilernew.leadbased;
 
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.compiler.impl.LeadBasedDecomposedCall;
 import org.ringingmaster.engine.compiler.impl.MaskedNotation;
 import org.ringingmaster.engine.compiler.impl.TerminateEarlyException;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -45,13 +45,13 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         private final Supplier<Boolean> allowTerminateEarly;
         private final Touch touch;
         private final ImmutableList<LeadBasedDecomposedCall> callSequence;
+        private final ImmutableMap<String, NotationCall> callLookupByName;
         private final String logPreamble;
 
         // internal data.
         private int callSequenceIndex;
         private int partIndex;
         private LeadBasedDecomposedCall nextCall;
-        private Map<String, NotationCall> callLookupByName;
         private MethodRow currentMethodRow;
         private MaskedNotation maskedNotation;
         private final List<MethodLead> leads = new ArrayList<>();
@@ -61,25 +61,31 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         private Optional<CompileTerminationReason> terminationReason = Optional.empty();
         private Optional<String> terminateNotes = Optional.empty();
 
-        State(Supplier<Boolean> allowTerminateEarly, Touch touch, ImmutableList<LeadBasedDecomposedCall> callSequence, String logPreamble)  {
+        State(Supplier<Boolean> allowTerminateEarly, Touch touch, ImmutableList<LeadBasedDecomposedCall> callSequence, ImmutableMap<String, NotationCall> callLookupByName, String logPreamble)  {
             this.allowTerminateEarly = checkNotNull(allowTerminateEarly);
             this.touch = checkNotNull(touch);
             this.callSequence = checkNotNull(callSequence);
+            this.callLookupByName = checkNotNull(callLookupByName);
             this.logPreamble = checkNotNull(logPreamble);
         }
     }
 
     @Override
-    public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData leadBasedCompilerPipelineData) {
+    public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData data) {
+
+        if (data.isTerminated()) {
+            return data;
+        }
 
         State state = new State(() -> false,
-                leadBasedCompilerPipelineData.getParse().getUnderlyingTouch(),
-                leadBasedCompilerPipelineData.getCallSequence(),
-                leadBasedCompilerPipelineData.getLogPreamble());
+                data.getParse().getUnderlyingTouch(),
+                data.getCallSequence(),
+                data.getLookupByName(),
+                data.getLogPreamble());
 
         compileTouch(state);
 
-        return leadBasedCompilerPipelineData
+        return data
                 .terminate(state.terminationReason.get(), state.terminateNotes.get())
                 .setCreatedMethod(state.method);
     }
@@ -160,6 +166,8 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         else {
             state.currentMethodRow = MethodBuilder.buildRowWithPlaces(state.currentMethodRow, notationRow);
         }
+
+        log.trace( "{} add row [{}]", state.logPreamble, state.currentMethodRow);
     }
 
     private void tryToMakeACall( State state) {

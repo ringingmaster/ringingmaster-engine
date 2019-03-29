@@ -35,7 +35,7 @@ public class PlainCourseHelper {
 				.andThen(compiler)
 				.apply(notation);
 
-		Method createdMethod = proof.getCreatedMethod().get();
+		Method createdMethod = proof.getMethod().get();
 
 		checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
 		checkState(CompileTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),

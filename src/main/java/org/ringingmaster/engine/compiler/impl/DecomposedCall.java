@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.compiler.impl;
 
-import javax.annotation.concurrent.Immutable;
-
 import org.ringingmaster.engine.touch.variance.Variance;
+
+import javax.annotation.concurrent.Immutable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

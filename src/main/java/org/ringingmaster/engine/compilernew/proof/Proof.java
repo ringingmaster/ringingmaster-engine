@@ -22,7 +22,7 @@ public interface Proof {
 
 	String getTerminateReasonDisplayString();
 
-	Optional<Method> getCreatedMethod();
+	Optional<Method> getMethod();
 
 	Optional<Analysis> getAnalysis();
 

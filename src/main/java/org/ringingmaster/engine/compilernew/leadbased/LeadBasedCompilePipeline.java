@@ -17,6 +17,7 @@ public class LeadBasedCompilePipeline implements Function<Parse, Proof> {
     private final BuildLeadBasedPipelineData buildLeadBasedPipelineData = new BuildLeadBasedPipelineData();
     private final ValidTouchCheck<LeadBasedCompilePipelineData> validTouchCheck = new ValidTouchCheck<>();
     private final BuildCallSequence buildCallSequence = new BuildCallSequence();
+    private final BuildCallLookupByName buildCallLookupByName = new BuildCallLookupByName();
     private final LeadBasedCompile compile = new LeadBasedCompile();
 
     private final BuildProof<LeadBasedCompilePipelineData> buildProof = new BuildProof<>();
@@ -27,6 +28,7 @@ public class LeadBasedCompilePipeline implements Function<Parse, Proof> {
         return buildLeadBasedPipelineData
                 .andThen(validTouchCheck)
                 .andThen(buildCallSequence)
+                .andThen(buildCallLookupByName)
                 .andThen(compile)
                 .andThen(buildProof)
 

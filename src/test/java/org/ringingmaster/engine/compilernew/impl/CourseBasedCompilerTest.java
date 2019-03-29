@@ -64,8 +64,8 @@ public class CourseBasedCompilerTest {
 //
 //        Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);
 //		assertEquals(terminationReason, proof.getTerminationReason());
-//		assertEquals(expectedLeadCount, proof.getCreatedMethod().get().getLeadCount());
-//		checkAgainstFile(proof.getCreatedMethod().get(), fileName);
+//		assertEquals(expectedLeadCount, proof.getMethod().get().getLeadCount());
+//		checkAgainstFile(proof.getMethod().get(), fileName);
 //		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
 //		return proof;
 //	}

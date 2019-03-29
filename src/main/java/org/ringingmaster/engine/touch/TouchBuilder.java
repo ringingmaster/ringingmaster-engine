@@ -29,6 +29,8 @@ import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
  */
 class TouchBuilder {
 
+    public static final String DEFAULT_TITLE = "UNNAMED";
+
     private Touch prototype;
 
     private Optional<String> title = Optional.empty();
@@ -66,7 +68,7 @@ class TouchBuilder {
      * @return
      */
     TouchBuilder defaults() {
-        setTitle("UNNAMED");
+        setTitle(DEFAULT_TITLE);
         setAuthor("");
 
         setNumberOfBells(NumberOfBells.BELLS_6);
