@@ -12,6 +12,6 @@ import org.ringingmaster.engine.touch.tableaccess.TouchTableAccess;
  */
 public interface Parse extends TouchTableAccess<ParsedCell>, DefinitionTableAccess<ParsedCell>  {
 
-    Touch getTouch();
+    Touch getUnderlyingTouch();
 
 }

@@ -28,7 +28,7 @@ public class AssignParseTypeSPLICETest {
     @Test
     public void spliceIgnoredInCallingPoitionArea() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "WP");
-        touch.setTouchCheckingType(COURSE_BASED);
+        touch.setCheckingType(COURSE_BASED);
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
@@ -136,7 +136,7 @@ public class AssignParseTypeSPLICETest {
             touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
         }
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         touch.addDefinition("def1", "P");
         return touch;

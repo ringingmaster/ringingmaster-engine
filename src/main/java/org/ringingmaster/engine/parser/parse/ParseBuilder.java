@@ -37,7 +37,7 @@ public class ParseBuilder {
         }
         else if (prototypeParse.isPresent()) {
             return new DefaultParse(
-                    prototypeParse.get().getTouch(),
+                    prototypeParse.get().getUnderlyingTouch(),
                     touchCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
                             .orElse(prototypeParse.get().allTouchCells()),
                     definitionCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))

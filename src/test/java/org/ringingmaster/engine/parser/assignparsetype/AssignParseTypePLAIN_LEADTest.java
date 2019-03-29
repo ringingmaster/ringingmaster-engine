@@ -27,7 +27,7 @@ public class AssignParseTypePLAIN_LEADTest {
     @Test
     public void plainLeadInCallingAreaNotParsed() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "p");
-        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+        touch.setCheckingType(CheckingType.COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
@@ -98,7 +98,7 @@ public class AssignParseTypePLAIN_LEADTest {
     public void plainLeadUnparsedInMainBodyWhenCourseBased() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W");
         touch.addCharacters(TOUCH_TABLE, 1,0,"p");
-        touch.setTouchCheckingType(COURSE_BASED);
+        touch.setCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
@@ -126,7 +126,7 @@ public class AssignParseTypePLAIN_LEADTest {
             touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
         }
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         touch.addDefinition("def1", "p");
         return touch;

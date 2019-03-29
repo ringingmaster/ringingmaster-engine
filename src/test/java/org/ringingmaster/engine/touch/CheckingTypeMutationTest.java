@@ -24,7 +24,7 @@ public class CheckingTypeMutationTest {
     public void changeIsReflected() throws Exception {
 
         ObservableTouch touch = new ObservableTouch();
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
 
         assertEquals(CheckingType.LEAD_BASED, touch.get().getCheckingType());
     }

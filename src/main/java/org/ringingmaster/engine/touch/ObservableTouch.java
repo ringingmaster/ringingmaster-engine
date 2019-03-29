@@ -162,7 +162,7 @@ public class ObservableTouch {
 
     //TODO need a checkNumberOfBells to drive UI
 
-    public void setTouchCheckingType(CheckingType checkingType) {
+    public void setCheckingType(CheckingType checkingType) {
         checkNotNull(checkingType);
 
         if (Objects.equals(currentTouch.getCheckingType(), checkingType)) {

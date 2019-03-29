@@ -100,7 +100,7 @@ public class MultipleCallPositionsInOneCellTest {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+        touch.setCheckingType(CheckingType.COURSE_BASED);
         touch.setSpliced(false);
         return touch;
     }

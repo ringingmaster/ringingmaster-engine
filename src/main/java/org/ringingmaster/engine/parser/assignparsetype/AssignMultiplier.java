@@ -37,18 +37,18 @@ public class AssignMultiplier implements Function<Parse, Parse> {
 
     @Override
     public Parse apply(Parse parse) {
-        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(parse.getTouch());
+        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(parse.getUnderlyingTouch());
 
         final HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
         for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : parse.mainBodyCells()) {
-            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), false, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), false, parse.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
             touchTableResult.put(cellAndLocation.getRow(), cellAndLocation.getCol(), replacementParsedCell);
         }
 
         for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : parse.splicedCells()) {
-            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), true, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), true, parse.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
             touchTableResult.put(cellAndLocation.getRow(), cellAndLocation.getCol(), replacementParsedCell);
         }
 
@@ -64,7 +64,7 @@ public class AssignMultiplier implements Function<Parse, Parse> {
             if (definitionByShorthand.isPresent()) {
                 boolean splicedCell = splicedDefinitionsInUse.contains(shorthand);
                 final ImmutableArrayTable<ParsedCell> cell = definitionByShorthand.get();
-                final ParsedCell replacementParsedCell = parseCellNumbers(cell.get(0, DEFINITION_COLUMN), splicedCell, parse.getTouch().isSpliced(), hasFullyDefinedDefaultCall);
+                final ParsedCell replacementParsedCell = parseCellNumbers(cell.get(0, DEFINITION_COLUMN), splicedCell, parse.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
                 definitionTableResult.put(cell.getBackingRowIndex(0), cell.getBackingColumnIndex(DEFINITION_COLUMN), replacementParsedCell);
             }
         }

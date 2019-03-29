@@ -9,6 +9,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parser;
 import org.ringingmaster.engine.touch.ObservableTouch;
+import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +28,16 @@ public class LeadBasedCompilerTest {
 	private static Compiler compiler = new Compiler();
 
 	@Test
-	public void canConstructAllChangeLead() {
+	public void canConstructAllChangeLeadWithNoCalls() {
 		final NotationBody mockedNotationBody = NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.setUnfoldedNotationShorthand("-")
 				.build();
 		ObservableTouch touch = new ObservableTouch();
 		touch.addNotation(mockedNotationBody);
-		touch.setTerminationMaxLeads(1);
+//		touch.setTerminationMaxLeads(1);
+		touch.setCheckingType(CheckingType.LEAD_BASED);
+		touch.setNumberOfBells(NumberOfBells.BELLS_8);
 
 		Proof proof = parser
 				.andThen(compiler)
@@ -148,7 +151,7 @@ public class LeadBasedCompilerTest {
 //	public void compilePlainCourseOfPlainBobMinor() throws IOException {
 //		Touch touch = TouchBuilder.buildPlainCourseInstance(buildPlainBobMinor());
 //		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
-//		assertEquals("Plain Course of Plain Bob Minor", result.getTouch().getTitle());
+//		assertEquals("Plain Course of Plain Bob Minor", result.getUnderlyingTouch().getTitle());
 //		assertEquals(60, result.getCreatedMethod().get().getRowCount());
 //		assertEquals(5, result.getCreatedMethod().get().getLeadCount());
 //		checkAgainstFile(result.getCreatedMethod().get(), "/PlainBobMinor.txt");
@@ -162,7 +165,7 @@ public class LeadBasedCompilerTest {
 ////		try {
 ////			touch = TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
 ////			touch.setTerminationMaxRows(10);
-////			touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+////			touch.setCheckingType(CheckingType.LEAD_BASED);
 ////		} catch (Exception e) {
 ////			fail();
 ////		}
@@ -248,7 +251,7 @@ public class LeadBasedCompilerTest {
 //
 ////		Touch touch = TouchBuilder.newTouch(NumberOfBells.BELLS_6, 1, 1);
 ////		touch.addNotation(buildPlainBobMinor());
-////		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+////		touch.setCheckingType(CheckingType.LEAD_BASED);
 ////		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
 ////		touch.setPlainLeadToken("p");
 ////		return touch;
@@ -288,7 +291,7 @@ public class LeadBasedCompilerTest {
 //		touch.setNumberOfBells(NumberOfBells.BELLS_6);
 //		touch.setTitle("Test Touch");
 //		touch.addNotation(buildPlainBobMinor());
-//		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+//		touch.setCheckingType(CheckingType.COURSE_BASED);
 //		return touch;
 //	}
 

@@ -31,7 +31,7 @@ public class DefaultParse implements Parse {
     }
 
     @Override
-    public Touch getTouch() {
+    public Touch getUnderlyingTouch() {
         return touch;
     }
 

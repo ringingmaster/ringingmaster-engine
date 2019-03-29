@@ -55,7 +55,7 @@ public class AssignMultiplierTest {
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), null);
-        touch.setTouchCheckingType(COURSE_BASED);
+        touch.setCheckingType(COURSE_BASED);
 
         touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
         touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
@@ -358,7 +358,7 @@ public class AssignMultiplierTest {
             touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
         }
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         touch.addDefinition("def1", "-P");
         touch.addDefinition("def2", "2");

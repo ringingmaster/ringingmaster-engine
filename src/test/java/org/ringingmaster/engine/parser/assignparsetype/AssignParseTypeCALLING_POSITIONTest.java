@@ -26,7 +26,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
     @Test
     public void callingPositionParsedInCallingPoitionArea() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "WH");
-        touch.setTouchCheckingType(COURSE_BASED);
+        touch.setCheckingType(COURSE_BASED);
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
@@ -95,7 +95,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
     @Test
     public void ignoreOtherCharactersInCallingPositionCell() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "bHd");
-        touch.setTouchCheckingType(COURSE_BASED);
+        touch.setCheckingType(COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(touch.get());
         assertParse(parse.allTouchCells().get(0, 0), unparsed(), valid(CALLING_POSITION), unparsed());
@@ -123,7 +123,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
             touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
         }
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         touch.addDefinition("def1", "W");
         return touch;

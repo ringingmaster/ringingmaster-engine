@@ -142,7 +142,7 @@ public class MultiplierGroupAndVarianceNotOverlappingTest {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(touch::addNotation);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         return touch;
     }

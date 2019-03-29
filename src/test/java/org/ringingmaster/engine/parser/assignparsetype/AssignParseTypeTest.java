@@ -71,7 +71,7 @@ public class AssignParseTypeTest {
             touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
         }
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         touch.addDefinition("def1", "-P");
         return touch;

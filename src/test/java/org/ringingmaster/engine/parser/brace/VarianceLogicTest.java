@@ -99,7 +99,7 @@ public class VarianceLogicTest {
     @Test
     public void variancesWithinCourseBasedInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+        touch.setCheckingType(CheckingType.COURSE_BASED);
         touch.addCharacters(TOUCH_TABLE, 0,0, "[");
         touch.addCharacters(TOUCH_TABLE, 0,1, "]");
         touch.addCharacters(TOUCH_TABLE, 1,0, "-");
@@ -158,7 +158,7 @@ public class VarianceLogicTest {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(touch::addNotation);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         return touch;
     }

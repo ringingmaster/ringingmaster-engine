@@ -38,7 +38,7 @@ public class CircularDefinitionTest {
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.setTouchCheckingType(COURSE_BASED);
+        touch.setCheckingType(COURSE_BASED);
 
         touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
         touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
@@ -164,7 +164,7 @@ public class CircularDefinitionTest {
         ObservableTouch touch = new ObservableTouch();
         touch.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(touch::addNotation);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(true);
         touch.addDefinition("CALL", "-1-");
         touch.addDefinition("SPLICE", "P");

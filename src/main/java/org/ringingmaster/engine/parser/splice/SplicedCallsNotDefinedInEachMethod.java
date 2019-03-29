@@ -31,11 +31,11 @@ public class SplicedCallsNotDefinedInEachMethod implements Function<Parse, Parse
 
     @Override
     public Parse apply(Parse parse) {
-        if (! parse.getTouch().isSpliced()) {
+        if (! parse.getUnderlyingTouch().isSpliced()) {
             return parse;
         }
 
-        final PSet<NotationBody> allNotations =  parse.getTouch().getAvailableNotations();
+        final PSet<NotationBody> allNotations =  parse.getUnderlyingTouch().getAvailableNotations();
         if (allNotations.size() == 0) {
             // We don't need to do any invalidating because there will have been no parsing of calls going on.
             return parse;

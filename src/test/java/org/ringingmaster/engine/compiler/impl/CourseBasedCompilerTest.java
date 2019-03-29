@@ -58,7 +58,7 @@ public class CourseBasedCompilerTest {
 		touch.setNumberOfBells(NumberOfBells.BELLS_6);
 		touch.setTitle("Test Touch");
 		touch.addNotation(buildPlainBobMinor());
-		touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+		touch.setCheckingType(CheckingType.COURSE_BASED);
 		return touch;
 	}
 

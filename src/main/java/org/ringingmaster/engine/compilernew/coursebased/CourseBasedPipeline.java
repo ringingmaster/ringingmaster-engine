@@ -1,9 +1,10 @@
 package org.ringingmaster.engine.compilernew.coursebased;
 
 import org.ringingmaster.engine.compilernew.internaldata.CourseBasedCompilerPipelineData;
+import org.ringingmaster.engine.compilernew.leadbased.BuildCallSequence;
 import org.ringingmaster.engine.compilernew.proof.Proof;
 import org.ringingmaster.engine.compilernew.proof.impl.BuildProof;
-import org.ringingmaster.engine.compilernew.validity.CommonValidTouchCheck;
+import org.ringingmaster.engine.compilernew.validity.ValidTouchCheck;
 import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.function.Function;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 public class CourseBasedPipeline implements Function<Parse, Proof> {
 
     private final BuildCourseBasedPipelineData buildCourseBasedPipelineData = new BuildCourseBasedPipelineData();
-    private final CommonValidTouchCheck<CourseBasedCompilerPipelineData> commonValidTouchCheck = new CommonValidTouchCheck<>();
+    private final ValidTouchCheck<CourseBasedCompilerPipelineData> validTouchCheck = new ValidTouchCheck<>();
     private final BuildCallPositionNames buildCallPositionNames = new BuildCallPositionNames();
     private final BuildCallSequence buildCallSequence = new BuildCallSequence();
 
@@ -25,9 +26,9 @@ public class CourseBasedPipeline implements Function<Parse, Proof> {
     @Override
     public Proof apply(Parse parse) {
         return this.buildCourseBasedPipelineData
-                .andThen(commonValidTouchCheck)
+                .andThen(validTouchCheck)
                 .andThen(buildCallPositionNames)
-                .andThen(buildCallSequence)
+                //TODO add back in when common between lead and course. .andThen(buildCallSequence)
                 
                 .andThen(buildProof)
 

@@ -26,14 +26,14 @@ public class Compiler implements Function<Parse, Proof> {
 
     private Function<Parse, Proof> getPipeline(Parse parse) {
 
-        switch (parse.getTouch().getCheckingType() ) {
+        switch (parse.getUnderlyingTouch().getCheckingType() ) {
 
             case COURSE_BASED:
                 return courseBasedPipeline;
             case LEAD_BASED:
                 return leadBasedPipeline;
             default:
-                throw new RuntimeException("No pipeline for Parse Type [" + parse.getTouch().getCheckingType() + "]");
+                throw new RuntimeException("No pipeline for Parse Type [" + parse.getUnderlyingTouch().getCheckingType() + "]");
         }
     }
 

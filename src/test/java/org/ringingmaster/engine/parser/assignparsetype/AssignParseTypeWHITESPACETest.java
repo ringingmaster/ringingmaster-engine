@@ -32,7 +32,7 @@ public class AssignParseTypeWHITESPACETest {
     @Test
     public void correctlyParsesWhitespaceInCallingArea() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "W H");
-        touch.setTouchCheckingType(CheckingType.COURSE_BASED);
+        touch.setCheckingType(CheckingType.COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(touch.get());
 
@@ -130,7 +130,7 @@ public class AssignParseTypeWHITESPACETest {
             touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
         }
         touch.addNotation(notationBody);
-        touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+        touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
         touch.addDefinition("def1", "- -");
         return touch;

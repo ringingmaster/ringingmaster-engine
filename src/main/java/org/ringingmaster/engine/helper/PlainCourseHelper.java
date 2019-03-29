@@ -39,7 +39,7 @@ public class PlainCourseHelper {
 		checkState(ProofTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),
 				"Plain course must terminate with row [%s]" +
 						" but actually terminated with [%s]",
-				proof.getParse().getTouch().getTerminationChange().get().getDisplayString(true),
+				proof.getParse().getUnderlyingTouch().getTerminationChange().get().getDisplayString(true),
 				proof.getTerminateReasonDisplayString());
 		return proof;
 	}
@@ -50,12 +50,12 @@ public class PlainCourseHelper {
 	 * @param notationBody
 	 * @return
 	 */
-	private static Function<NotationBody, Touch> buildPlainCourseInstance = notationBody -> {
+	public static Function<NotationBody, Touch> buildPlainCourseInstance = notationBody -> {
 		final ObservableTouch touch = new ObservableTouch();
 		touch.setTitle("Plain Course of " + notationBody.getNameIncludingNumberOfBells());
 		touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
 		touch.addNotation(notationBody);
-		touch.setTouchCheckingType(CheckingType.LEAD_BASED);
+		touch.setCheckingType(CheckingType.LEAD_BASED);
 		touch.setTerminationChange(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
 		touch.setTerminationMaxLeads(TERMINATION_MAX_LEADS_MAX);
 		touch.setTerminationMaxRows(TERMINATION_MAX_ROWS_MAX);
