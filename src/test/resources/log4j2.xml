@@ -8,7 +8,7 @@
 
 	<Loggers>
 
-		<logger name="org.ringingmaster.engine.compilernew" level="debug"/>
+		<logger name="org.ringingmaster.engine.compiler" level="debug"/>
 
 		<Root level="info">
 			<AppenderRef ref="CONSOLE"/>

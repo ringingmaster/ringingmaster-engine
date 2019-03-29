@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.helper;
 
-import org.ringingmaster.engine.compilernew.CompileTerminationReason;
-import org.ringingmaster.engine.compilernew.Compiler;
-import org.ringingmaster.engine.compilernew.proof.Proof;
+import org.ringingmaster.engine.compiler.CompileTerminationReason;
+import org.ringingmaster.engine.compiler.Compiler;
+import org.ringingmaster.engine.compiler.proof.Proof;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.impl.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
