@@ -46,6 +46,13 @@ public enum ParseType {
 	VARIANCE_OPEN,
 	/** a square variance bracket - close ']' */
 	VARIANCE_CLOSE,
+	/** The detail that defines a variance
+	 * 				omit parts 2 and 3 '[-2,3 -]'
+	 * 				include in parts 4 and 8 '[+4,8 -]'
+	 * 				omit from odd parts '[-o -]'
+	 * 				include in even parts  '[+e -]'
+	 * 				*/
+	VARIANCE_DETAIL,
 
 	/** a bracket for multiplier grouping - open '(' - needs a multiplier */
 	MULTIPLIER_GROUP_OPEN,

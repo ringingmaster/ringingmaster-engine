@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -73,7 +72,7 @@ public class AssignParseType implements Function<Touch, Parse> {
 
     private void parseDefinitionShorthandArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {
         // This is a special parse - we just take trimmed versions of every definition and add it as a parse
-        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+        Set<ParseDefinition> parseTokenMappings = new HashSet<>();
         addDefinitionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
 
@@ -84,7 +83,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         if (touch.getCheckingType() != CheckingType.COURSE_BASED) {
             return;
         }
-        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+        Set<ParseDefinition> parseTokenMappings = new HashSet<>();
         addCallingPositionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
 
@@ -92,7 +91,7 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
     private Set<String> parseMainBodyArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        Map<String, ParseType> parseTokenMappings = buildMainBodyParseTokenMap(touch);
+        Set<ParseDefinition> parseTokenMappings = buildMainBodyParseTokenMap(touch);
 
         Set<String> definitionsInUse = new HashSet<>();
         parse(parsedCells, parseTokenMappings, touch.mainBodyCells(), (parsedCell) ->
@@ -105,8 +104,8 @@ public class AssignParseType implements Function<Touch, Parse> {
         return definitionsInUse;
     }
 
-    private Map<String, ParseType> buildMainBodyParseTokenMap(Touch touch) {
-        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+    private Set<ParseDefinition> buildMainBodyParseTokenMap(Touch touch) {
+        Set<ParseDefinition> parseTokenMappings = new HashSet<>();
         addCallTokens(touch, parseTokenMappings);
         addPlainLeadToken(touch, parseTokenMappings);
         addVarianceTokens(parseTokenMappings);
@@ -123,7 +122,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         if (!touch.isSpliced()) {
             return Collections.emptySet();
         }
-        Map<String, ParseType> parseTokenMappings = buildSpliceAreaParseTokenMap(touch);
+        Set<ParseDefinition> parseTokenMappings = buildSpliceAreaParseTokenMap(touch);
 
         Set<String> definitionsInUse = new HashSet<>();
         parse(parsedCells, parseTokenMappings, touch.splicedCells(), (parsedCell) ->
@@ -136,8 +135,8 @@ public class AssignParseType implements Function<Touch, Parse> {
         return definitionsInUse;
     }
 
-    private Map<String, ParseType> buildSpliceAreaParseTokenMap(Touch touch) {
-        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+    private Set<ParseDefinition> buildSpliceAreaParseTokenMap(Touch touch) {
+        Set<ParseDefinition> parseTokenMappings = new HashSet<>();
         addSpliceTokens(touch, parseTokenMappings);
         addMultiplierGroupTokens(parseTokenMappings);
         addDefinitionTokens(touch, parseTokenMappings);
@@ -156,7 +155,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         }
 
         // Pass 1 - parse definitions
-        Map<String, ParseType> definitionMappings = buildDefinitionDefinitionTokenMap(touch);
+        Set<ParseDefinition> definitionMappings = buildDefinitionDefinitionTokenMap(touch);
         for (String shorthand : touch.getAllDefinitionShorthands()) {
             touch.findDefinitionByShorthand(shorthand).ifPresent(
                     (definitionTable) -> {
@@ -178,15 +177,15 @@ public class AssignParseType implements Function<Touch, Parse> {
         Set<String> spliceAreaDefinitionsWithTransative = new FollowTransitiveDefinitions().apply(spliceAreaDefinitions, adjencency);
 
         // Pass 3 - parse other values
-        Map<String, ParseType> mainBodyParseTokenMappings = buildMainBodyParseTokenMap(touch);
-        Map<String, ParseType> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(touch);
+        Set<ParseDefinition> mainBodyParseTokenMappings = buildMainBodyParseTokenMap(touch);
+        Set<ParseDefinition> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(touch);
 
         for (String shorthand : touch.getAllDefinitionShorthands()) {
             touch.findDefinitionByShorthand(shorthand).ifPresent(
                     (definitionTable) -> {
                         final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
                         // We only use splices mappings when token is not in main body but is in spliced.
-                        Map<String, ParseType> chosenMappings = (!mainBodyDefinitionsWithTransative.contains(shorthand))&&
+                        Set<ParseDefinition> chosenMappings = (!mainBodyDefinitionsWithTransative.contains(shorthand))&&
                                 spliceAreaDefinitionsWithTransative.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
                         parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {});
                     }
@@ -195,14 +194,14 @@ public class AssignParseType implements Function<Touch, Parse> {
 
     }
 
-    private Map<String, ParseType> buildDefinitionDefinitionTokenMap(Touch touch) {
-        Map<String, ParseType> parseTokenMappings = new HashMap<>();
+    private Set<ParseDefinition> buildDefinitionDefinitionTokenMap(Touch touch) {
+        Set<ParseDefinition> parseTokenMappings = new HashSet<>();
         addDefinitionTokens(touch, parseTokenMappings);
         return parseTokenMappings;
     }
 
 
-    private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Map<String, ParseType> parseTokenMappings, ImmutableArrayTable<Cell> cells, Consumer<ParsedCell> observer) {
+    private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Set<ParseDefinition> parseTokenMappings, ImmutableArrayTable<Cell> cells, Consumer<ParsedCell> observer) {
         for (BackingTableLocationAndValue<Cell> cellAndLocation : cells) {
             ParsedCell parsedCell = lexer.lexCell(cellAndLocation.getValue(), parseTokenMappings);
             observer.accept(parsedCell);
@@ -211,57 +210,57 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
 
-    private void addCallingPositionTokens(Touch touch, Map<String, ParseType> parsings) {
+    private void addCallingPositionTokens(Touch touch, Set<ParseDefinition> parseDefinitions) {
         for (NotationBody notation : touch.getAvailableNotations()) {
             for (NotationMethodCallingPosition callingPosition : notation.getMethodBasedCallingPositions()) {
-                parsings.put(callingPosition.getName(), ParseType.CALLING_POSITION);
+                parseDefinitions.add(new ParseDefinition(callingPosition.getName(), ParseType.CALLING_POSITION));
             }
         }
     }
 
-    private void addPlainLeadToken(Touch touch, Map<String, ParseType> parsings) {
+    private void addPlainLeadToken(Touch touch, Set<ParseDefinition> parseDefinitions) {
         if (touch.getCheckingType() == CheckingType.LEAD_BASED) {
-            parsings.put(touch.getPlainLeadToken(), ParseType.PLAIN_LEAD);
+            parseDefinitions.add(new ParseDefinition(touch.getPlainLeadToken(), ParseType.PLAIN_LEAD));
         }
     }
 
-    private void addCallTokens(Touch touch, Map<String, ParseType> parsings) {
+    private void addCallTokens(Touch touch, Set<ParseDefinition> parseDefinitions) {
         for (NotationBody notation : touch.getAvailableNotations()) {
             for (NotationCall notationCall : notation.getCalls()) {
-                parsings.put(notationCall.getNameShorthand(), ParseType.CALL);
-                parsings.put(notationCall.getName(), ParseType.CALL);
+                parseDefinitions.add(new ParseDefinition(notationCall.getNameShorthand(), ParseType.CALL));
+                parseDefinitions.add(new ParseDefinition(notationCall.getName(), ParseType.CALL));
             }
         }
     }
 
-    private void addSpliceTokens(Touch touch, Map<String, ParseType> parsings) {
+    private void addSpliceTokens(Touch touch, Set<ParseDefinition> parseDefinitions) {
         for (NotationBody notation : touch.getAvailableNotations()) {
             if (!Strings.isNullOrEmpty(notation.getSpliceIdentifier())){
-                parsings.put(notation.getSpliceIdentifier(), ParseType.SPLICE);
+                parseDefinitions.add(new ParseDefinition(notation.getSpliceIdentifier(), ParseType.SPLICE));
             }
-            parsings.put(notation.getName(), ParseType.SPLICE);
-            parsings.put(notation.getNameIncludingNumberOfBells(), ParseType.SPLICE);
+            parseDefinitions.add(new ParseDefinition(notation.getName(), ParseType.SPLICE));
+            parseDefinitions.add(new ParseDefinition(notation.getNameIncludingNumberOfBells(), ParseType.SPLICE));
         }
     }
 
-    private void addDefinitionTokens(Touch touch, Map<String, ParseType> parsings) {
+    private void addDefinitionTokens(Touch touch, Set<ParseDefinition> parseDefinitions) {
         for (String shorthand : touch.getAllDefinitionShorthands()) {
-            parsings.put(shorthand, ParseType.DEFINITION);
+            parseDefinitions.add(new ParseDefinition(shorthand, ParseType.DEFINITION));
         }
     }
 
-    private void addWhitespaceTokens(Map<String, ParseType> parsings) {
-        parsings.put(" ", ParseType.WHITESPACE);
+    private void addWhitespaceTokens(Set<ParseDefinition> parseDefinitions) {
+        parseDefinitions.add(new ParseDefinition("\\s", ParseType.WHITESPACE));
     }
 
-    private void addVarianceTokens(Map<String, ParseType> parsings) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
-        parsings.put("[", ParseType.VARIANCE_OPEN);// TODO should these be defined as constants somewhere?
-        parsings.put("]", ParseType.VARIANCE_CLOSE);
+    private void addVarianceTokens(Set<ParseDefinition> parseDefinitions) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
+        parseDefinitions.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", ParseType.VARIANCE_OPEN, ParseType.VARIANCE_DETAIL));// TODO should these be defined as constants somewhere?
+        parseDefinitions.add(new ParseDefinition("\\]", ParseType.VARIANCE_CLOSE));
     }
 
-    private void addMultiplierGroupTokens(Map<String, ParseType> parsings) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
-        parsings.put("(", ParseType.MULTIPLIER_GROUP_OPEN);// TODO should these be defined as constants somewhere?
-        parsings.put(")", ParseType.MULTIPLIER_GROUP_CLOSE);
+    private void addMultiplierGroupTokens(Set<ParseDefinition> parseDefinitions) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
+        parseDefinitions.add(new ParseDefinition("\\(", ParseType.MULTIPLIER_GROUP_OPEN));// TODO should these be defined as constants somewhere?
+        parseDefinitions.add(new ParseDefinition("\\)", ParseType.MULTIPLIER_GROUP_CLOSE));
     }
 
 }

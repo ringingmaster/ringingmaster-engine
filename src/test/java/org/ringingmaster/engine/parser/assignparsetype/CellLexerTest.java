@@ -1,19 +1,22 @@
 package org.ringingmaster.engine.parser.assignparsetype;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.cell.CellBuilder;
 
-import java.util.HashMap;
+import java.util.Set;
 
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
 
 /**
  * TODO comments???
@@ -27,7 +30,7 @@ public class CellLexerTest {
     @Test
     public void emptyCellReturnsEmptyParseType() {
 
-        HashMap<String, ParseType> a = Maps.newHashMap();
+        Set<ParseDefinition> a = Sets.newHashSet();
 
         Cell cell = buildCell("");
 
@@ -39,8 +42,8 @@ public class CellLexerTest {
 
     @Test
     public void parseFailReturnsUnparsed() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("a", CALL);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("a", CALL));
         Cell cell = buildCell("zy");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
@@ -50,8 +53,8 @@ public class CellLexerTest {
 
     @Test
     public void singleCharacterCellReturnsCorrectParseType() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("a", CALL);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("a", CALL));
         Cell cell = buildCell("a");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a);
@@ -61,9 +64,9 @@ public class CellLexerTest {
 
     @Test
     public void distinguishTwoNonOverlappingParseTypes() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("a", CALL);
-        a.put("b", SPLICE);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("a", CALL));
+        a.add(new ParseDefinition("b", SPLICE));
 
         Cell cell = buildCell("ab");
 
@@ -74,9 +77,9 @@ public class CellLexerTest {
 
     @Test
     public void overlappingTokensUseLongerTokenFirst() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("ab", CALL);
-        a.put("bcd", SPLICE);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("ab", CALL));
+        a.add(new ParseDefinition("bcd", SPLICE));
 
         Cell cell = buildCell("abcd");
 
@@ -87,9 +90,9 @@ public class CellLexerTest {
 
     @Test
     public void extendedRightTokensUseLongerTokenFirst() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("ab", CALL);
-        a.put("abc", SPLICE);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("ab", CALL));
+        a.add(new ParseDefinition("abc", SPLICE));
 
         Cell cell = buildCell("abc");
 
@@ -100,9 +103,9 @@ public class CellLexerTest {
 
     @Test
     public void extendedLeftTokensUseLongerTokenFirst() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("bc", CALL);
-        a.put("abc", SPLICE);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("bc", CALL));
+        a.add(new ParseDefinition("abc", SPLICE));
 
         Cell cell = buildCell("abc");
 
@@ -113,9 +116,9 @@ public class CellLexerTest {
 
     @Test
     public void whitespaceInTokenGetsMarkedAsToken() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("a b", CALL);
-        a.put(" ", WHITESPACE);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("a b", CALL));
+        a.add(new ParseDefinition(" ", WHITESPACE));
 
         Cell cell = buildCell("xa b s");
 
@@ -127,9 +130,9 @@ public class CellLexerTest {
 
     @Test
     public void backToBackParsingsDoNotResultInGaps() {
-        HashMap<String, ParseType> a = Maps.newHashMap();
-        a.put("-", CALL);
-        a.put(" ", WHITESPACE);
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("-", CALL));
+        a.add(new ParseDefinition(" ", WHITESPACE));
 
         Cell cell = buildCell("- ");
 
@@ -137,6 +140,65 @@ public class CellLexerTest {
 
         assertParse(parsedCell, valid(CALL), valid(WHITESPACE));
 
+    }
+
+
+    @Test
+    public void matchingRegexWithMultipleGroupsAddsMultipleGroups() {
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
+
+        Cell cell = buildCell("[-o]");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+
+        assertParse(parsedCell, valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), unparsed());
+    }
+
+    @Test (expected = IllegalStateException.class)
+    public void mismatchBetweenParseTypesCountAndRegexGroupsCountThrows() {
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN));
+
+        Cell cell = buildCell("[-o]");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+    }
+
+    @Test (expected = IllegalStateException.class)
+    public void notUsingRegexGroupsAndSupplyingMoreThanOneParseTypeThrows() {
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("\\[", VARIANCE_OPEN, VARIANCE_DETAIL));
+
+        Cell cell = buildCell("[-o]");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+    }
+
+    @Test (expected = IllegalStateException.class)
+    public void notUsingRegexGroupsAndSupplyingLessThanOneParseTypeThrows() {
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("\\["));
+
+        Cell cell = buildCell("[-o]");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+    }
+
+    @Test
+    public void matchComplexGroupsInsideOtherParsings() {
+        Set<ParseDefinition> a = Sets.newHashSet();
+        a.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
+        a.add(new ParseDefinition("\\]", VARIANCE_CLOSE));
+        a.add(new ParseDefinition("-", CALL));
+        a.add(new ParseDefinition("o", CALL));
+        a.add(new ParseDefinition("\\s", WHITESPACE));
+
+        Cell cell = buildCell("o[-o -]");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+
+        assertParse(parsedCell, valid(CALL), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(WHITESPACE), valid(CALL), valid(VARIANCE_CLOSE));
     }
 
 

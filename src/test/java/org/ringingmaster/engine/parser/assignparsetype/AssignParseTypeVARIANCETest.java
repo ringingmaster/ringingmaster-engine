@@ -13,6 +13,7 @@ import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
@@ -27,21 +28,21 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceIgnoredInCallingPoitionArea() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[]");
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[-o]");
         touch.setCheckingType(COURSE_BASED);
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), unparsed(2));
+        assertParse(parse.allTouchCells().get(0, 0), unparsed(4));
     }
 
     @Test
     public void varianceParsedInMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[]");
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[-o]");
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(VARIANCE_OPEN), valid(VARIANCE_CLOSE));
+        assertParse(parse.allTouchCells().get(0, 0), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(VARIANCE_CLOSE));
     }
 
     @Test
@@ -60,7 +61,7 @@ public class AssignParseTypeVARIANCETest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(VARIANCE_CLOSE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(VARIANCE_CLOSE));
     }
 
     @Test
@@ -69,7 +70,7 @@ public class AssignParseTypeVARIANCETest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(VARIANCE_CLOSE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(VARIANCE_CLOSE));
     }
 
     @Test
@@ -80,7 +81,7 @@ public class AssignParseTypeVARIANCETest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(2));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(4));
     }
 
     @Test
@@ -91,14 +92,21 @@ public class AssignParseTypeVARIANCETest {
 
         Parse parse = new AssignParseType().apply(touch.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(VARIANCE_CLOSE));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(VARIANCE_CLOSE));
     }
 
     @Test
     public void correctlyIdentifiesVariance() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[-]s");
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[-o-]s");
         Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0,0), valid(VARIANCE_OPEN), valid(CALL), valid(VARIANCE_CLOSE), valid(CALL));
+        assertParse(parse.allTouchCells().get(0,0), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(CALL), valid(VARIANCE_CLOSE), valid(CALL));
+    }
+
+    @Test
+    public void identifiesVarianceTypeWhenNoContent() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "[-2]");
+        Parse parse = new AssignParseType().apply(touch.get());
+        assertParse(parse.allTouchCells().get(0,0), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(VARIANCE_CLOSE));
     }
 
     private NotationBody buildPlainBobMinor() {
@@ -124,7 +132,7 @@ public class AssignParseTypeVARIANCETest {
         touch.addNotation(notationBody);
         touch.setCheckingType(CheckingType.LEAD_BASED);
         touch.setSpliced(false);
-        touch.addDefinition("def1", "[]");
+        touch.addDefinition("def1", "[-o]");
         return touch;
     }
 
