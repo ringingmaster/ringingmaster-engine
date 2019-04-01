@@ -22,14 +22,14 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLI
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
-public class MultiplierGroupLogicTest {
+public class ValidateMultiplierGroupLogicTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
@@ -48,7 +48,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -64,7 +64,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "()");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(1, MULTIPLIER_GROUP_OPEN), valid(1, MULTIPLIER_GROUP_CLOSE));
@@ -76,7 +76,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, ")(");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, MULTIPLIER_GROUP_CLOSE), invalid(1, MULTIPLIER_GROUP_OPEN));
@@ -89,7 +89,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "(");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, MULTIPLIER_GROUP_CLOSE));
@@ -102,7 +102,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "(())");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(1, MULTIPLIER_GROUP_OPEN), valid(1, MULTIPLIER_GROUP_OPEN), valid(1, MULTIPLIER_GROUP_CLOSE), valid(1, MULTIPLIER_GROUP_CLOSE));
@@ -116,7 +116,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "))");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(1, MULTIPLIER_GROUP_OPEN));
@@ -131,7 +131,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "(()");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, MULTIPLIER_GROUP_OPEN), valid(1, MULTIPLIER_GROUP_OPEN), valid(1, MULTIPLIER_GROUP_CLOSE));
@@ -145,7 +145,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, ")");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, MULTIPLIER_GROUP_OPEN));
@@ -166,7 +166,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, ")");//spliced
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(1, MULTIPLIER_GROUP_OPEN));
@@ -186,7 +186,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "-");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), unparsed());
@@ -199,7 +199,7 @@ public class MultiplierGroupLogicTest {
         touch.addDefinition("DEF1", "(-)");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(CALL ), valid(MULTIPLIER_GROUP_CLOSE));
@@ -211,7 +211,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "((((-))))");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
@@ -227,7 +227,7 @@ public class MultiplierGroupLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "(((((-)))))");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupLogic())
+                .andThen(new ValidateMultiplierGroupLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),

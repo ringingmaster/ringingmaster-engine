@@ -37,12 +37,12 @@ class CellLexer {
         return o1.getRegex().compareTo(o2.getRegex());
     };
 
-    ParsedCell lexCell(Cell cell, Set<ParseDefinition> parseDefinitions) {
-        Set<Section> sections = calculateSections(cell, parseDefinitions);
+    ParsedCell lexCell(Cell cell, Set<ParseDefinition> parseDefinitions, String logPreamble) {
+        Set<Section> sections = calculateSections(cell, parseDefinitions, logPreamble);
         return ParsedCellFactory.buildParsedCell(cell, sections);
     }
 
-    private Set<Section> calculateSections(Cell cell, Set<ParseDefinition> parseDefinitions) {
+    private Set<Section> calculateSections(Cell cell, Set<ParseDefinition> parseDefinitions, String logPreamble) {
         final String cellAsString = cell.getCharacters();
         Set<Section> sections = new HashSet<>();
 
@@ -52,7 +52,7 @@ class CellLexer {
         sortedParseDefinitions.forEach((parseing) -> {
             checkState(parseing.getRegex().length() > 0, "Should never have an empty token. Mapped to [{}]", Arrays.toString(parseing.getParseTypes()));
 
-            log.debug("Testing for [{}]", parseing);
+            log.debug("[{}]  testing for [{}]", logPreamble, parseing);
 
             Pattern p = Pattern.compile(parseing.getRegex());//. represents single character
             Matcher m = p.matcher(cellAsString);
@@ -63,11 +63,11 @@ class CellLexer {
                 int start = m.start();
                 int end = m.end();
 
-                log.debug(" Starting at index [{}], found match between index [{}-{}] with [{}] groups", searchFromIndex, start, end, m.groupCount());
+                log.debug("[{}]   starting at index [{}], found match between index [{}-{}] with [{}] groups", logPreamble, searchFromIndex, start, end, m.groupCount());
 
                 if (m.groupCount() == 0) {
                     checkState(parseing.getParseTypes().length == 1, "No regex groups detected - should have 1 parse type, but supplied [%s]", parseing.getParseTypes().length );
-                    addLexicalMatchIfRoom(sections, parseing.getParseTypes()[0], start, end-start);
+                    addLexicalMatchIfRoom(sections, parseing.getParseTypes()[0], start, end-start, logPreamble);
                 }
                 else {
                     checkState(m.groupCount() == parseing.getParseTypes().length, "Mismatch between parse types count [%s] and regex groups length [%s] ", parseing.getParseTypes().length, m.groupCount());
@@ -75,7 +75,7 @@ class CellLexer {
                     for (int group = 1; group <= m.groupCount() ; group++) {
                         // We have a lexical match - do we have room?
                         int groupLength = m.group(group).length();
-                        addLexicalMatchIfRoom(sections, parseing.getParseTypes()[group-1], groupStart, groupLength);
+                        addLexicalMatchIfRoom(sections, parseing.getParseTypes()[group-1], groupStart, groupLength, logPreamble);
                         groupStart += groupLength;
 
                     }
@@ -88,15 +88,15 @@ class CellLexer {
         return sections;
     }
 
-    private void addLexicalMatchIfRoom(Set<Section> sections, ParseType parseType, int start, int length) {
-        log.debug("  Looking for room for lexical match [{}] [{},{}]", parseType, start, length);
+    private void addLexicalMatchIfRoom(Set<Section> sections, ParseType parseType, int start, int length, String logPreamble) {
+        log.debug("[{}]    looking for room for lexical match [{}] [{},{}]", logPreamble, parseType, start, length);
 
         if (isSectionAvailable(start, length, sections)) {
             sections.add(ParsedCellFactory.buildSection(start, length, parseType));
-            log.debug("   Adding section");
+            log.debug("[{}]     adding section", logPreamble);
         }
         else {
-            log.debug("   Not Adding section");
+            log.debug("[{}]     not adding section", logPreamble);
         }
     }
 

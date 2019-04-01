@@ -5,9 +5,9 @@ import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
 import java.util.function.Function;
 
-public class VarianceLogic extends SkeletalBraceLogic implements Function<Parse, Parse> {
+public class ValidateVarianceLogic extends SkeletalBraceLogic implements Function<Parse, Parse> {
 
-    public VarianceLogic() {
+    public ValidateVarianceLogic() {
         super(ParseType.VARIANCE_OPEN, ParseType.VARIANCE_CLOSE, "variance", 1);
     }
 }

@@ -19,7 +19,7 @@ import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
-public class MultipleCallPositionsInOneCellTest {
+public class ValidateSingleCallPositionPerCellTest {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -27,7 +27,7 @@ public class MultipleCallPositionsInOneCellTest {
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         Parse result = new AssignParseType()
-                .andThen(new MultipleCallPositionsInOneCell())
+                .andThen(new ValidateSingleCallPositionPerCell())
                 .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
@@ -44,7 +44,7 @@ public class MultipleCallPositionsInOneCellTest {
         touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
 
         Parse result = new AssignParseType()
-                .andThen(new MultipleCallPositionsInOneCell())
+                .andThen(new ValidateSingleCallPositionPerCell())
                 .apply(touch.get());
 
         assertEquals(2, result.allTouchCells().getRowSize());
@@ -61,7 +61,7 @@ public class MultipleCallPositionsInOneCellTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "H");
 
         Parse result = new AssignParseType()
-                .andThen(new MultipleCallPositionsInOneCell())
+                .andThen(new ValidateSingleCallPositionPerCell())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
@@ -75,7 +75,7 @@ public class MultipleCallPositionsInOneCellTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "-HW");
 
         Parse result = new AssignParseType()
-                .andThen(new MultipleCallPositionsInOneCell())
+                .andThen(new ValidateSingleCallPositionPerCell())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));

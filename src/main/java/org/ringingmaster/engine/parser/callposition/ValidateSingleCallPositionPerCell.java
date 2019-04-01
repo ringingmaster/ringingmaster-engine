@@ -23,13 +23,13 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class MultipleCallPositionsInOneCell implements Function<Parse, Parse> {
+public class ValidateSingleCallPositionPerCell implements Function<Parse, Parse> {
 
-    private final Logger log = LoggerFactory.getLogger(MultipleCallPositionsInOneCell.class);
+    private final Logger log = LoggerFactory.getLogger(ValidateSingleCallPositionPerCell.class);
 
     public Parse apply(Parse parse) {
 
-        log.debug("[{}] > multiple call positions in one cell", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate single call position per cell", parse.getUnderlyingTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
@@ -41,7 +41,7 @@ public class MultipleCallPositionsInOneCell implements Function<Parse, Parse> {
                 .setTouchTableCells(resultCells)
                 .build();
 
-        log.debug("[{}] < multiple call positions in one cell", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate single call position per cell", parse.getUnderlyingTouch().getTitle());
 
         return build;
     }

@@ -49,8 +49,8 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
-        parseCells(parse.mainBodyCells(), resultCells);
-        parseCells(parse.splicedCells(), resultCells);
+        parseCells(parse.mainBodyCells(), resultCells, parse.getUnderlyingTouch().getTitle());
+        parseCells(parse.splicedCells(), resultCells, parse.getUnderlyingTouch().getTitle());
 
         // We parse definitions individually. This is so that any open/close brace in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
@@ -59,7 +59,7 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
         final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = parse.definitionDefinitionCells();
         for(int rowIndex = 0; rowIndex < definitionDefinitionCells.getRowSize();rowIndex++) {
             final ImmutableArrayTable<ParsedCell> cell = definitionDefinitionCells.subTable(rowIndex, rowIndex + 1, 0, 1);
-            parseCells(cell,  definitionTableResult);
+            parseCells(cell,  definitionTableResult, parse.getUnderlyingTouch().getTitle());
         }
 
         Parse result = new ParseBuilder()
@@ -74,7 +74,7 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
 
     }
 
-    private void parseCells(ImmutableArrayTable<ParsedCell> originalCells, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {
+    private void parseCells(ImmutableArrayTable<ParsedCell> originalCells, HashBasedTable<Integer, Integer, ParsedCell> resultCells, String logPreamble) {
 
         Map<CoordinateAndSection, String> invalidSections = Maps.newHashMap();
 
@@ -103,6 +103,9 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
         while (openBraces.peekFirst() != null ) {
             invalidSections.put(openBraces.removeFirst(), "No matching closing " + braceTypeName + " brace");
         }
+        if (!invalidSections.isEmpty()) {
+            log.debug("[{}]  marking invalid sections [{}]", logPreamble, invalidSections);
+        }
 
         for (Map.Entry<CoordinateAndSection, String> invalidSection : invalidSections.entrySet()) {
 
@@ -126,8 +129,8 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
         final Section section;
 
         CoordinateAndSection(int row, int col, Section section) {
-            this.row = checkNotNull(row);
-            this.col = checkNotNull(col);
+            this.row = row;
+            this.col = col;
             this.section = checkNotNull(section);
         }
 

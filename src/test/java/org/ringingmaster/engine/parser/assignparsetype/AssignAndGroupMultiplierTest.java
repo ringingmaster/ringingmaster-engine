@@ -28,6 +28,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LE
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
@@ -39,13 +40,13 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
  *
  * @author stevelake
  */
-public class AssignMultiplierTest {
+public class AssignAndGroupMultiplierTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), null);
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertEquals(0, parse.allTouchCells().getRowSize());
@@ -64,7 +65,7 @@ public class AssignMultiplierTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertEquals(3, parse.allTouchCells().getRowSize());
@@ -80,7 +81,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-2");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(CALL), valid(DEFAULT_CALL_MULTIPLIER));
@@ -91,7 +92,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-22");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(CALL), valid(2,DEFAULT_CALL_MULTIPLIER));
@@ -102,7 +103,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2 ");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(WHITESPACE));
@@ -110,13 +111,13 @@ public class AssignMultiplierTest {
 
     @Test
     public void correctlyParseDefaultCallMultiplierBeforeVariance() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "6[7]");
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "6[-o7]");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_OPEN), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_CLOSE));
+        assertParse(parse.allTouchCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_OPEN), valid(2,VARIANCE_DETAIL), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_CLOSE));
     }
 
     @Test
@@ -124,7 +125,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2-");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(CALL_MULTIPLIER), section(CALL)));
@@ -135,7 +136,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "28-");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(2,CALL_MULTIPLIER), section(CALL)));
@@ -146,7 +147,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "6(7)");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)), valid(DEFAULT_CALL_MULTIPLIER), valid(MULTIPLIER_GROUP_CLOSE));
@@ -157,7 +158,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "624(");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(3, MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)));
@@ -168,7 +169,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "3p");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(PLAIN_LEAD_MULTIPLIER), section(PLAIN_LEAD)));
@@ -179,7 +180,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "434p");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(3, PLAIN_LEAD_MULTIPLIER), section(PLAIN_LEAD)));
@@ -190,7 +191,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2def1");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(1, DEFINITION_MULTIPLIER), section(4, DEFINITION)));
@@ -201,7 +202,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "243def1");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), valid(section(3, DEFINITION_MULTIPLIER), section(4, DEFINITION)));
@@ -214,7 +215,7 @@ public class AssignMultiplierTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,1), valid(section(1, SPLICE_MULTIPLIER), section(SPLICE)));
@@ -227,7 +228,7 @@ public class AssignMultiplierTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,1), valid(section(3, SPLICE_MULTIPLIER), section(SPLICE)));
@@ -240,7 +241,7 @@ public class AssignMultiplierTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,1), unparsed(4));
@@ -252,7 +253,7 @@ public class AssignMultiplierTest {
         touch.removeNotation(Iterables.getOnlyElement(touch.get().getAllNotations()));
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), invalid(1, DEFAULT_CALL_MULTIPLIER, "No default call defined"));
@@ -266,7 +267,7 @@ public class AssignMultiplierTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.allTouchCells().get(0,0), invalid(DEFAULT_CALL_MULTIPLIER));
@@ -278,7 +279,7 @@ public class AssignMultiplierTest {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def2");
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0,1), valid(DEFAULT_CALL_MULTIPLIER));
@@ -291,7 +292,7 @@ public class AssignMultiplierTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0,DEFINITION_COLUMN), unparsed());
@@ -304,7 +305,7 @@ public class AssignMultiplierTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0,DEFINITION_COLUMN), valid(DEFAULT_CALL_MULTIPLIER));
@@ -317,7 +318,7 @@ public class AssignMultiplierTest {
         touch.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .andThen(new AssignMultiplier())
+                .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), unparsed());

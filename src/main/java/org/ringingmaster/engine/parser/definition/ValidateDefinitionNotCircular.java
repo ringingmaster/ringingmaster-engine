@@ -23,7 +23,7 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class CircularDefinition implements Function<Parse, Parse> {
+public class ValidateDefinitionNotCircular implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();

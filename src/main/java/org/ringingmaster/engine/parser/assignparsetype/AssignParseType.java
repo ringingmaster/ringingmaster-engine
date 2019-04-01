@@ -29,7 +29,8 @@ import java.util.function.Function;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
- * Parses all cells and assigns a parse type where possible
+ * Parses all cells and assigns a parse type where possible.
+ * Does not include multipliers.
  *
  * @author stevelake
  */
@@ -76,7 +77,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         addDefinitionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
 
-        parse(parsedDefinitionCells, parseTokenMappings, touch.definitionShorthandCells(), (parsedCell) -> {});
+        parse(parsedDefinitionCells, parseTokenMappings, touch.definitionShorthandCells(), (parsedCell) -> {}, touch.getTitle());
     }
 
     private void parseCallPositionArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
@@ -87,7 +88,7 @@ public class AssignParseType implements Function<Touch, Parse> {
         addCallingPositionTokens(touch, parseTokenMappings);
         addWhitespaceTokens(parseTokenMappings);
 
-        parse(parsedCells, parseTokenMappings, touch.callPositionCells(), (parsedCell) -> {});
+        parse(parsedCells, parseTokenMappings, touch.callPositionCells(), (parsedCell) -> {}, touch.getTitle());
     }
 
     private Set<String> parseMainBodyArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
@@ -98,7 +99,8 @@ public class AssignParseType implements Function<Touch, Parse> {
                 parsedCell.allSections().stream()
                         .filter(section -> section.getParseType().equals(ParseType.DEFINITION))
                         .map(parsedCell::getCharacters)
-                        .forEach(definitionsInUse::add)
+                        .forEach(definitionsInUse::add),
+                touch.getTitle()
         );
 
         return definitionsInUse;
@@ -129,7 +131,8 @@ public class AssignParseType implements Function<Touch, Parse> {
                 parsedCell.allSections().stream()
                     .filter(section -> section.getParseType().equals(ParseType.DEFINITION))
                     .map(parsedCell::getCharacters)
-                    .forEach(definitionsInUse::add)
+                    .forEach(definitionsInUse::add),
+                            touch.getTitle()
         );
 
         return definitionsInUse;
@@ -160,7 +163,7 @@ public class AssignParseType implements Function<Touch, Parse> {
             touch.findDefinitionByShorthand(shorthand).ifPresent(
                     (definitionTable) -> {
                         final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
-                        parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {});
+                        parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {}, touch.getTitle());
                     }
             );
         }
@@ -187,7 +190,7 @@ public class AssignParseType implements Function<Touch, Parse> {
                         // We only use splices mappings when token is not in main body but is in spliced.
                         Set<ParseDefinition> chosenMappings = (!mainBodyDefinitionsWithTransative.contains(shorthand))&&
                                 spliceAreaDefinitionsWithTransative.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
-                        parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {});
+                        parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {}, touch.getTitle());
                     }
             );
         }
@@ -201,9 +204,9 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
 
-    private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Set<ParseDefinition> parseTokenMappings, ImmutableArrayTable<Cell> cells, Consumer<ParsedCell> observer) {
+    private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Set<ParseDefinition> parseTokenMappings, ImmutableArrayTable<Cell> cells, Consumer<ParsedCell> observer, String logPreamble) {
         for (BackingTableLocationAndValue<Cell> cellAndLocation : cells) {
-            ParsedCell parsedCell = lexer.lexCell(cellAndLocation.getValue(), parseTokenMappings);
+            ParsedCell parsedCell = lexer.lexCell(cellAndLocation.getValue(), parseTokenMappings, logPreamble);
             observer.accept(parsedCell);
             parsedCells.put(cellAndLocation.getRow(), cellAndLocation.getCol(), parsedCell);
         }
@@ -254,7 +257,7 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
     private void addVarianceTokens(Set<ParseDefinition> parseDefinitions) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
-        parseDefinitions.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", ParseType.VARIANCE_OPEN, ParseType.VARIANCE_DETAIL));// TODO should these be defined as constants somewhere?
+        parseDefinitions.add(new ParseDefinition("(?i)(\\[)((?:[-+])(?:(?:odd|even|[oe])|(?:(?:[0-9]+)(?:[,][0-9]+)*)+))", ParseType.VARIANCE_OPEN, ParseType.VARIANCE_DETAIL));// TODO should these be defined as constants somewhere?
         parseDefinitions.add(new ParseDefinition("\\]", ParseType.VARIANCE_CLOSE));
     }
 

@@ -25,19 +25,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author stevelake
  */
-public class MultiplierGroupAndVarianceNotOverlapping implements Function<Parse, Parse> {
+public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<Parse, Parse> {
 
-    private final Logger log = LoggerFactory.getLogger(MultiplierGroupAndVarianceNotOverlapping.class);
+    private final Logger log = LoggerFactory.getLogger(ValidateMultiplierGroupAndVarianceDontOverlap.class);
 
     public Parse apply(Parse parse) {
 
-        log.debug("[{}] > multiplier group and variance not overlapping check", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate multiplier group and variance dine overlap", parse.getUnderlyingTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
 
-        parseCells(parse.mainBodyCells(), resultCells);
-        parseCells(parse.splicedCells(), resultCells);
+        parseCells(parse.mainBodyCells(), resultCells, parse.getUnderlyingTouch().getTitle());
+        parseCells(parse.splicedCells(), resultCells, parse.getUnderlyingTouch().getTitle());
 
         // We parse definitions individually. This is so that any open/close brace in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
@@ -46,7 +46,7 @@ public class MultiplierGroupAndVarianceNotOverlapping implements Function<Parse,
         final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = parse.definitionDefinitionCells();
         for(int rowIndex = 0; rowIndex < definitionDefinitionCells.getRowSize();rowIndex++) {
             final ImmutableArrayTable<ParsedCell> cell = definitionDefinitionCells.subTable(rowIndex, rowIndex + 1, 0, 1);
-            parseCells(cell,  definitionTableResult);
+            parseCells(cell, definitionTableResult, parse.getUnderlyingTouch().getTitle());
         }
 
         Parse result = new ParseBuilder()
@@ -55,13 +55,13 @@ public class MultiplierGroupAndVarianceNotOverlapping implements Function<Parse,
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < multiplier group and variance not overlapping check", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate multiplier group and variance dine overlap", parse.getUnderlyingTouch().getTitle());
 
         return result;
 
     }
 
-    private void parseCells(ImmutableArrayTable<ParsedCell> originalCells, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {
+    private void parseCells(ImmutableArrayTable<ParsedCell> originalCells, HashBasedTable<Integer, Integer, ParsedCell> resultCells, String logPreamble) {
 
         Map<CoordinateAndSection, String> invalidSections = Maps.newHashMap();
 
@@ -90,6 +90,10 @@ public class MultiplierGroupAndVarianceNotOverlapping implements Function<Parse,
         while (openBraces.peekFirst() != null ) {
             invalidSections.put(openBraces.removeFirst(), "Variances and groups can't overlap");
         }
+        if (!invalidSections.isEmpty()) {
+            log.debug("[{}]  removing invalid sections [{}]", logPreamble, invalidSections);
+        }
+
 
         for (Map.Entry<CoordinateAndSection, String> invalidSection : invalidSections.entrySet()) {
 

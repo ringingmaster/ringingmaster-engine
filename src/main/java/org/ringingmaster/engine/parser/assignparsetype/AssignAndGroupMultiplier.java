@@ -6,7 +6,6 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
-import org.ringingmaster.engine.parser.functions.DefinitionFunctions;
 import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
@@ -32,18 +31,14 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
  *
  * @author stevelake
  */
-public class AssignMultiplier implements Function<Parse, Parse> {
+public class AssignAndGroupMultiplier implements Function<Parse, Parse> {
 
-    private final Logger log = LoggerFactory.getLogger(AssignMultiplier.class);
-
-
-    private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
-
+    private final Logger log = LoggerFactory.getLogger(AssignAndGroupMultiplier.class);
 
     @Override
     public Parse apply(Parse parse) {
 
-        log.debug("[{}] > assign multiplier", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > assign and group multiplier", parse.getUnderlyingTouch().getTitle());
 
         final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(parse.getUnderlyingTouch());
 
@@ -78,13 +73,13 @@ public class AssignMultiplier implements Function<Parse, Parse> {
         }
 
 
-        Parse result = new ParseBuilder()
+        final Parse result = new ParseBuilder()
                 .prototypeOf(parse)
                 .setTouchTableCells(touchTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < assign multiplier", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < assign and group multiplier", parse.getUnderlyingTouch().getTitle());
 
         return result;
     }
@@ -115,7 +110,7 @@ public class AssignMultiplier implements Function<Parse, Parse> {
                             parseTypeToRight = matchAsDefaultCallMultiplier(elementIndex, parsedCellMutator, spliceCell, splicedPerformance, hasDefaultCall);
                             break;
 
-                        // Initial multipliers
+                        // Initial (Rightmost) multipliers
                         case CALL:
                             parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, CALL_MULTIPLIER);
                             break;
@@ -132,7 +127,7 @@ public class AssignMultiplier implements Function<Parse, Parse> {
                             parseTypeToRight = addSectionToExistingGroup(parsedCellMutator, elementIndex, SPLICE_MULTIPLIER);
                             break;
 
-                        // Duplicating multipliers
+                        // Additional (moving left) multiplier characters
                         case DEFAULT_CALL_MULTIPLIER:
                         case CALL_MULTIPLIER:
                         case MULTIPLIER_GROUP_OPEN_MULTIPLIER:

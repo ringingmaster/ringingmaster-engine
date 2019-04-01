@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.cell;
 
 import java.util.Set;
 
-public class ParsedCellMutator {
+public class    ParsedCellMutator {
 
     private ParsedCell prototype;
 

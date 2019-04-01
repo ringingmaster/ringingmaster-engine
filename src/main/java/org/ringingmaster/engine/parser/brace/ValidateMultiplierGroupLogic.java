@@ -5,9 +5,9 @@ import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
 import java.util.function.Function;
 
-public class MultiplierGroupLogic extends SkeletalBraceLogic implements Function<Parse, Parse> {
+public class ValidateMultiplierGroupLogic extends SkeletalBraceLogic implements Function<Parse, Parse> {
 
-    public MultiplierGroupLogic() {
+    public ValidateMultiplierGroupLogic() {
         super(ParseType.MULTIPLIER_GROUP_OPEN, ParseType.MULTIPLIER_GROUP_CLOSE, "group", 4);
     }
 }

@@ -25,44 +25,63 @@ import java.util.stream.Stream;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 
 /**
- * TODO comments???
+ * Validates that any call that is actually in use is available in every method in spliced
  *
  * @author stevelake
  */
-public class SplicedCallsNotDefinedInEachMethod implements Function<Parse, Parse> {
+public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Function<Parse, Parse> {
 
-    private final Logger log = LoggerFactory.getLogger(SplicedCallsNotDefinedInEachMethod.class);
+    private final Logger log = LoggerFactory.getLogger(ValidateInUseCallAvailableInEveryMethodWhenSpliced.class);
 
     @Override
     public Parse apply(Parse parse) {
-        log.debug("[{}] > splice calls not defined in each method", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate in use calls available in every method when spliced", parse.getUnderlyingTouch().getTitle());
         Parse response = doCheck(parse);
-        log.debug("[{}] < splice calls not defined in each method", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate in use calls available in every method when spliced", parse.getUnderlyingTouch().getTitle());
         return response;
     }
 
-    public Parse doCheck(Parse parse) {
+    private Parse doCheck(Parse parse) {
         if (! parse.getUnderlyingTouch().isSpliced()) {
-            log.debug("[{}] ignore check: not spliced", parse.getUnderlyingTouch().getTitle());
+            log.debug("[{}]  ignore check: not spliced", parse.getUnderlyingTouch().getTitle());
             return parse;
         }
 
-        final PSet<NotationBody> allNotations =  parse.getUnderlyingTouch().getAvailableNotations();
-        if (allNotations.size() == 0) {
+        final PSet<NotationBody> validNotationsInTouch =  parse.getUnderlyingTouch().getAvailableNotations();
+        if (validNotationsInTouch.size() == 0) {
             // We don't need to do any invalidating because there will have been no parsing of calls going on.
             return parse;
         }
+        if (log.isDebugEnabled()) {
+            log.debug("[{}]  valid notations available in touch {}", parse.getUnderlyingTouch().getTitle(),
+                    validNotationsInTouch.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
+        }
 
-        final Set<String> spliceNames = Sets.union(new InUseNamesForParseType().apply(parse.splicedCells(), SPLICE),
+        final Set<String> spliceNamesInUse = Sets.union(new InUseNamesForParseType().apply(parse.splicedCells(), SPLICE),
                                                    new InUseNamesForParseType().apply(parse.definitionDefinitionCells(), SPLICE));
+        log.debug("[{}]  splice Names in use {}", parse.getUnderlyingTouch().getTitle(),
+                spliceNamesInUse)  ;
 
-        final Set<NotationBody> inUseNotations = allNotations.stream()
-                .filter(notation -> spliceNames.contains(notation.getSpliceIdentifier()))
+
+        final Set<NotationBody> notationsInUse = validNotationsInTouch.stream()
+                .filter(notation -> spliceNamesInUse.contains(notation.getSpliceIdentifier()))
                 .collect(Collectors.toSet());
+        if (log.isDebugEnabled()) {
+            log.debug("[{}]  notations in use {}", parse.getUnderlyingTouch().getTitle(),
+                    notationsInUse.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
+        }
 
-        final Set<String> allCalls = getAllCalls(allNotations);
-        final Set<String> commonCalls = getCommonCallsFromInUseNotations(inUseNotations);
-        final Set<String> invalidCalls = Sets.difference(allCalls, commonCalls);
+        final Set<String> availableCallsFromValidNotations = getAllCalls(validNotationsInTouch);
+        log.debug("[{}]  calls available {}", parse.getUnderlyingTouch().getTitle(),
+                spliceNamesInUse)  ;
+
+        final Set<String> commonCalls = getCommonCallsFromNotationsInUse(notationsInUse);
+        log.debug("[{}]  calls that are defined in every valid notation {}", parse.getUnderlyingTouch().getTitle(),
+                commonCalls)  ;
+
+        final Set<String> invalidCalls = Sets.difference(availableCallsFromValidNotations, commonCalls);
+        log.debug("[{}]  calls that cant be used {}", parse.getUnderlyingTouch().getTitle(),
+                invalidCalls)  ;
 
         if (invalidCalls.size() == 0) {
 
@@ -113,14 +132,14 @@ public class SplicedCallsNotDefinedInEachMethod implements Function<Parse, Parse
                 .collect(Collectors.toSet());
     }
 
-    private Set<String> getCommonCallsFromInUseNotations(Set<NotationBody> allNotations) {
-        if (allNotations.size() == 0) {
+    private Set<String> getCommonCallsFromNotationsInUse(Set<NotationBody> inUseNotations) {
+        if (inUseNotations.size() == 0) {
             return Collections.emptySet();
         }
 
         Set<String> commonCalls = null;
 
-        for (NotationBody notation : allNotations) {
+        for (NotationBody notation : inUseNotations) {
             if (commonCalls == null) {
                 commonCalls = getCalls(notation);
             }

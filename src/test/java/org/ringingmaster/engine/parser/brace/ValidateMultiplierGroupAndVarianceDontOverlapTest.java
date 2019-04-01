@@ -21,14 +21,14 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 
-public class MultiplierGroupAndVarianceNotOverlappingTest {
+public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupAndVarianceNotOverlapping())
+                .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
@@ -47,7 +47,7 @@ public class MultiplierGroupAndVarianceNotOverlappingTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupAndVarianceNotOverlapping())
+                .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -65,7 +65,7 @@ public class MultiplierGroupAndVarianceNotOverlappingTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "([])");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupAndVarianceNotOverlapping())
+                .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
@@ -78,7 +78,7 @@ public class MultiplierGroupAndVarianceNotOverlappingTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "[()]");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupAndVarianceNotOverlapping())
+                .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
@@ -91,7 +91,7 @@ public class MultiplierGroupAndVarianceNotOverlappingTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "([)]");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupAndVarianceNotOverlapping())
+                .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
@@ -104,7 +104,7 @@ public class MultiplierGroupAndVarianceNotOverlappingTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "[(])");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupAndVarianceNotOverlapping())
+                .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
@@ -117,7 +117,7 @@ public class MultiplierGroupAndVarianceNotOverlappingTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "[(][)]");
 
         Parse result = new AssignParseType()
-                .andThen(new MultiplierGroupAndVarianceNotOverlapping())
+                .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),

@@ -18,18 +18,19 @@ import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
-public class VarianceLogicTest {
+public class ValidateVarianceLogicTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
@@ -48,7 +49,7 @@ public class VarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -61,39 +62,39 @@ public class VarianceLogicTest {
     @Test
     public void parsesNoContentPairOfVarianceInSingleCell() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "[]");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "[-o]");
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(1, VARIANCE_OPEN), valid(1, VARIANCE_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), valid(1, VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(1, VARIANCE_CLOSE));
     }
 
     @Test
     public void varianceInSingleCellInWrongOrderInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "][");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "][-o");
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), invalid(1, VARIANCE_CLOSE), invalid(1, VARIANCE_OPEN));
+        assertParse(result.allTouchCells().get(0,0), invalid(1, VARIANCE_CLOSE), invalid(1, VARIANCE_OPEN), invalid(2, VARIANCE_DETAIL));
     }
 
     @Test
     public void varianceOnMultiLineCellInWrongOrderInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         touch.addCharacters(TOUCH_TABLE, 0,0, "]");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "[");
+        touch.addCharacters(TOUCH_TABLE, 1,0, "[-0");
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(1, VARIANCE_CLOSE));
-        assertParse(result.allTouchCells().get(1,0), invalid(1, VARIANCE_OPEN));
+        assertParse(result.allTouchCells().get(1,0), invalid(1, VARIANCE_OPEN), invalid(2, VARIANCE_DETAIL));
     }
 
     @Test
@@ -105,7 +106,7 @@ public class VarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "-");
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), unparsed());
@@ -115,28 +116,30 @@ public class VarianceLogicTest {
     @Test
     public void varianceWithinDefinitionValid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addDefinition("DEF1", "[-]");
+        touch.addDefinition("DEF1", "[-e-]");
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
-        assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(CALL), valid(VARIANCE_CLOSE));
+        assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(CALL), valid(VARIANCE_CLOSE));
     }
 
     @Test
     public void nestingVarianceinvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "[[-]]");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "[-o[-e-]]");
 
         Parse result = new AssignParseType()
-                .andThen(new VarianceLogic())
+                .andThen(new ValidateVarianceLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
-                valid(1, VARIANCE_OPEN), invalid(1, VARIANCE_OPEN),
-                valid(1, CALL),
-                valid(1, VARIANCE_CLOSE), invalid(1, VARIANCE_CLOSE)
+                valid(1, VARIANCE_OPEN), valid(2, VARIANCE_DETAIL),
+                    invalid(1, VARIANCE_OPEN), invalid(2, VARIANCE_DETAIL),
+                        valid(1, CALL),
+                    valid(1, VARIANCE_CLOSE),
+                invalid(1, VARIANCE_CLOSE)
         );
     }
 

@@ -12,21 +12,24 @@ import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
-public class DefinitionInSplicedOrMainTest {
+public class ValidateDefinitionNotCircularTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new DefinitionInSplicedOrMain().apply(parse);
+
+        Parse result = new AssignParseType()
+                .andThen(new ValidateDefinitionNotCircular())
+                .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
         assertEquals(0, result.allTouchCells().getColumnSize());
@@ -44,7 +47,7 @@ public class DefinitionInSplicedOrMainTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
+                .andThen(new ValidateDefinitionNotCircular())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -55,121 +58,78 @@ public class DefinitionInSplicedOrMainTest {
     }
 
     @Test
-    public void differentDefinitionsValidInMainAndSpliced() {
+    public void circularDependencyInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
+        touch.addDefinition("DEF_1", "DEF_2");
+        touch.addDefinition("DEF_2", "DEF_3");
+        touch.addDefinition("DEF_3", "DEF_1");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
+                .andThen(new ValidateDefinitionNotCircular())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
+        assertParse(result.allTouchCells().get(0,0), invalid(5, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_2").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_3").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
     }
 
     @Test
-    public void usingSameDefinitionInMainAndSplicedSetsBothInvalid() {
+    public void circularDependencyleavesAdditionalPathValid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "CALL");
+        touch.addDefinition("DEF_1", "DEF_2DEF_3");
+        touch.addDefinition("DEF_2", "DEF_1");
+        touch.addDefinition("DEF_3", "-");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
+                .andThen(new ValidateDefinitionNotCircular())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(1,0), valid(6, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), invalid(4, DEFINITION));
+        assertParse(result.allTouchCells().get(0,0), invalid(5, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION), valid(5, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_2").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_3").get().get(0, DEFINITION_COLUMN), valid(CALL));
     }
 
     @Test
-    public void usingSameDefinitionInEitherMainOrSplicedIsValid() {
+    public void circularDependencyInsideSingleDefInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
+        touch.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
+                .andThen(new ValidateDefinitionNotCircular())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(1,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
-        assertParse(result.allTouchCells().get(1,1), valid(6, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
     }
 
     @Test
-    public void embeddedDefinitionInMainUsedInSplicedInvalid() {
+    public void circularDependencyInsideSingleDefWhenUsedInMainInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_MAIN", "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "-");
+        touch.addCharacters(TOUCH_TABLE, 0,1, "DEF_1");
+        touch.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
+                .andThen(new ValidateDefinitionNotCircular())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
-        assertParse(result.findDefinitionByShorthand("IN_MAIN").get().get(0, DEFINITION_COLUMN), invalid(6, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
     }
 
     @Test
-    public void embeddedDefinitionInMainTransitivelyUsedInSplicedInvalid() {
+    public void circularDependencyInsideSingleDefWhenUsedInSpliceInvalid() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_MAIN_1", "IN_MAIN_2");
-        touch.addDefinition("IN_MAIN_2", "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN_1");
+        touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
+        touch.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
+                .andThen(new ValidateDefinitionNotCircular())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
-        assertParse(result.findDefinitionByShorthand("IN_MAIN_2").get().get(0, DEFINITION_COLUMN), invalid(6, DEFINITION));
-    }
-
-    @Test
-    public void embeddedDefinitionInSplicedUsedInMainInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_SPICE", "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,1, "IN_SPICE");
-
-        Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
-                .apply(touch.get());
-
-        assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
-        assertParse(result.findDefinitionByShorthand("IN_SPICE").get().get(0, DEFINITION_COLUMN), invalid(4, DEFINITION));
-    }
-
-    @Test
-    public void embeddedDefinitionInSplicedTransitivelyUsedInMainInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_SPICE_1", "IN_SPICE_2");
-        touch.addDefinition("IN_SPICE_2", "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0, 0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1, 1, "IN_SPICE_1");
-
-        Parse result = new AssignParseType()
-                .andThen(new DefinitionInSplicedOrMain())
-                .apply(touch.get());
-
-        assertParse(result.allTouchCells().get(0, 0), invalid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0, 1), valid(6, DEFINITION));
-        assertParse(result.findDefinitionByShorthand("IN_SPICE_2").get().get(0, DEFINITION_COLUMN), invalid(4, DEFINITION));
+        assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
     }
 
     private NotationBody buildPlainBobMinor() {

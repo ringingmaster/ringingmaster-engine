@@ -22,9 +22,12 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
+public class ValidateDefinitionIsNotUsedSplicedAndMain implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
+
 
     // TODO can we get the dependency chain in the error message?
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] should be used in the main body or the splice area, but not both";
@@ -45,16 +48,18 @@ public class DefinitionInSplicedOrMain implements Function<Parse, Parse> {
         final Set<String> mainBodyDefinitions = new InUseMainBodyDefinitionsTransitively().apply(parse);
         final Set<String> splicedDefinitions = new InUseSpliceDefinitionsTransitively().apply(parse);
 
-        //Step 3: find the problematic definitions
+        //Step 1: find the problematic definitions
         Set<String> invalidDefinitions = Sets.intersection(mainBodyDefinitions, splicedDefinitions);
         if (invalidDefinitions.size() == 0) {
             return parse;
         }
 
         // Step 4: Mark invalid
-        log.debug("[{}] marking invalid definitions", parse.getUnderlyingTouch().getTitle());
+        if (!invalidDefinitions.isEmpty()) {
+            log.debug("[{}]  marking invalid definitions [{}]", parse.getUnderlyingTouch().getTitle(), invalidDefinitions);
+        }
 
-        final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
+
         HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
                 HashBasedTable.create(parse.allTouchCells().getBackingTable());
         definitionFunctions.markInvalid(parse.mainBodyCells(), invalidDefinitions, touchTableResult, createErrorMessage);

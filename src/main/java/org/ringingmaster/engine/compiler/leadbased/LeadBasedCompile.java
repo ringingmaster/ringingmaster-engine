@@ -93,7 +93,7 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     private void compileTouch(State state) {
         log.debug("{} > compile lead based touch", state.logPreamble);
         log.debug("{}  - part [{}]", state.logPreamble, state.partIndex);
-        int partIndex = 0;
+
         // This is required here to handle the case when the first parts are omitted, and a check for empty parts are required.
         state.callSequenceIndex = -1;
         if (!isPlainCourse(state)) {

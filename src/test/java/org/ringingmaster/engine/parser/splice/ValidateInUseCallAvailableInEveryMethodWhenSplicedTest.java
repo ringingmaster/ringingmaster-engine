@@ -28,14 +28,14 @@ import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BA
  *
  * @author stevelake
  */
-public class SplicedCallsNotDefinedInEachMethodTest {
+public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
@@ -54,7 +54,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -75,7 +75,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "PL");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(3, CALL));
@@ -91,7 +91,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "PL");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(3, CALL));
@@ -107,7 +107,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "PL");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(CALL));
@@ -123,7 +123,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "P");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(3, CALL));
@@ -139,7 +139,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "P");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(CALL));
@@ -156,7 +156,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "L");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(3, CALL));
@@ -172,10 +172,42 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "L");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(CALL));
+        assertParse(result.allTouchCells().get(0,1), valid(SPLICE));
+    }
+
+    @Test
+    public void splicedInvalidatesCallNameWhenCallShorthandNotAvailableInNotationWithTooManyBells() {
+        final NotationBody plainBobMinor = buildPlainBobMinor();
+        ObservableTouch touch = buildSingleCellTouch(plainBobMinor);
+        touch.addNotation(buildCambridgeMajorNoCalls());
+        touch.addCharacters(TableType.TOUCH_TABLE, 0,0, "Bob");
+        touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "P");
+
+        Parse result = new AssignParseType()
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
+                .apply(touch.get());
+
+        assertParse(result.allTouchCells().get(0,0), valid(3, CALL));
+        assertParse(result.allTouchCells().get(0,1), valid(SPLICE));
+    }
+
+    @Test
+    public void splicedInvalidatesCallShorthandWhenCallShorthandNotAvailableInNotationWithTooManyBells() {
+        final NotationBody plainBobMinor = buildPlainBobMinor();
+        ObservableTouch touch = buildSingleCellTouch(plainBobMinor);
+        touch.addNotation(buildCambridgeMajorNoCalls());
+        touch.addCharacters(TableType.TOUCH_TABLE, 0,0, "-");
+        touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "P");
+
+        Parse result = new AssignParseType()
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
+                .apply(touch.get());
+
+        assertParse(result.allTouchCells().get(0,0), valid(CALL));
         assertParse(result.allTouchCells().get(0,1), valid(SPLICE));
     }
 
@@ -189,7 +221,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addDefinition("DEF1", "L");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(3, CALL));
@@ -207,7 +239,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addDefinition("DEF1", "L");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(CALL));
@@ -225,7 +257,7 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addDefinition("DEF1", "-");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
@@ -243,12 +275,28 @@ public class SplicedCallsNotDefinedInEachMethodTest {
         touch.addDefinition("DEF1", "Bob");
 
         Parse result = new AssignParseType()
-                .andThen(new SplicedCallsNotDefinedInEachMethod())
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
         assertParse(result.allTouchCells().get(0,1), valid(SPLICE), valid(SPLICE));
         assertParse(result.findDefinitionByShorthand("DEF1").get().get(0,1), invalid(3, CALL));
+    }
+
+    @Test
+    public void callShorthandDefinedInAllMethodsIsValid() {
+        final NotationBody plainBobMinor = buildPlainBobMinor();
+        ObservableTouch touch = buildSingleCellTouch(plainBobMinor);
+        touch.addNotation(buildDoublePlainBobMinor());
+        touch.addCharacters(TableType.TOUCH_TABLE, 0,0, "-");
+        touch.addCharacters(TableType.TOUCH_TABLE, 0,1, "PD");
+
+        Parse result = new AssignParseType()
+                .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
+                .apply(touch.get());
+
+        assertParse(result.allTouchCells().get(0,0), valid(1, CALL));
+        assertParse(result.allTouchCells().get(0,1), valid(SPLICE), valid(SPLICE));
     }
 
     private NotationBody buildPlainBobMinor() {
@@ -262,6 +310,33 @@ public class SplicedCallsNotDefinedInEachMethodTest {
                 .addMethodCallingPosition("W", 7, 1)
                 .addMethodCallingPosition("H", 7, 2)
                 .setSpliceIdentifier("P")
+                .build();
+    }
+
+    private NotationBody buildDoublePlainBobMinor() {
+        return NotationBuilder.getInstance()
+                .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+                .setName("Double Bob")
+                .setFoldedPalindromeNotationShorthand("X16X16X56", "12")
+                .addCall("Bob", "-", "14", true)
+                .addCall("Single", "s", "1234", false)
+                .addCallInitiationRow(7)
+                .addMethodCallingPosition("W", 7, 1)
+                .addMethodCallingPosition("H", 7, 2)
+                .setSpliceIdentifier("D")
+                .build();
+    }
+
+    private NotationBody buildCambridgeMajorNoCalls() {
+        return NotationBuilder.getInstance()
+                .setNumberOfWorkingBells(NumberOfBells.BELLS_8)
+                .setName("Cambridge")
+                .setFoldedPalindromeNotationShorthand("x38.x.14.x.258.x.36.x.14.x.58.x.16.x.78", "12")
+                .addCall("Call", "c", "14", true)
+                .addCallInitiationRow(18)
+                .addMethodCallingPosition("W", 18, 1)
+                .addMethodCallingPosition("H", 18, 2)
+                .setSpliceIdentifier("C")
                 .build();
     }
 

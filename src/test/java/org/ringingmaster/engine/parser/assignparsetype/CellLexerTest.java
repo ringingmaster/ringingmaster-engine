@@ -34,7 +34,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell);
 
@@ -46,7 +46,7 @@ public class CellLexerTest {
         a.add(new ParseDefinition("a", CALL));
         Cell cell = buildCell("zy");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, unparsed(2));
     }
@@ -57,7 +57,7 @@ public class CellLexerTest {
         a.add(new ParseDefinition("a", CALL));
         Cell cell = buildCell("a");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, valid(CALL));
     }
@@ -70,7 +70,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("ab");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, valid(CALL), valid(SPLICE));
     }
@@ -83,7 +83,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("abcd");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, unparsed(1), valid(3, SPLICE));
     }
@@ -96,7 +96,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("abc");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, valid(3, SPLICE));
     }
@@ -109,7 +109,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("abc");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, valid(3, SPLICE));
     }
@@ -122,7 +122,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("xa b s");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, unparsed(1), valid(3, CALL), valid(WHITESPACE), unparsed(1));
 
@@ -136,7 +136,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("- ");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, valid(CALL), valid(WHITESPACE));
 
@@ -150,7 +150,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("[-o]");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), unparsed());
     }
@@ -162,7 +162,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("[-o]");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
     }
 
     @Test (expected = IllegalStateException.class)
@@ -172,7 +172,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("[-o]");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
     }
 
     @Test (expected = IllegalStateException.class)
@@ -182,7 +182,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("[-o]");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
     }
 
     @Test
@@ -196,7 +196,7 @@ public class CellLexerTest {
 
         Cell cell = buildCell("o[-o -]");
 
-        ParsedCell parsedCell = cellLexer.lexCell(cell, a);
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, valid(CALL), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(WHITESPACE), valid(CALL), valid(VARIANCE_CLOSE));
     }
