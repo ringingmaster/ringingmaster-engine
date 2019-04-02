@@ -2,12 +2,13 @@ package org.ringingmaster.engine.parser;
 
 import org.ringingmaster.engine.parser.assignparsetype.AssignAndGroupMultiplier;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
-import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupLogic;
+import org.ringingmaster.engine.parser.assignparsetype.GroupTheValidationOpenAndDetailParseTypes;
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupAndVarianceDontOverlap;
+import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupLogic;
 import org.ringingmaster.engine.parser.brace.ValidateVarianceLogic;
 import org.ringingmaster.engine.parser.callposition.ValidateSingleCallPositionPerCell;
-import org.ringingmaster.engine.parser.definition.ValidateDefinitionNotCircular;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsNotUsedSplicedAndMain;
+import org.ringingmaster.engine.parser.definition.ValidateDefinitionNotCircular;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.splice.ValidateInUseCallAvailableInEveryMethodWhenSpliced;
 import org.ringingmaster.engine.touch.Touch;
@@ -28,6 +29,8 @@ public class Parser implements Function<Touch, Parse> {
 
     private final AssignParseType assignParseType = new AssignParseType();
     private final AssignAndGroupMultiplier assignAndGroupMultiplier = new AssignAndGroupMultiplier();
+    private final GroupTheValidationOpenAndDetailParseTypes groupTheValidationOpenAndDetailParseTypes = new GroupTheValidationOpenAndDetailParseTypes();
+
     private final ValidateSingleCallPositionPerCell validateSingleCallPositionPerCell = new ValidateSingleCallPositionPerCell();
     private final ValidateInUseCallAvailableInEveryMethodWhenSpliced validateInUseCallAvailableInEveryMethodWhenSpliced = new ValidateInUseCallAvailableInEveryMethodWhenSpliced();
     private final ValidateVarianceLogic validateVarianceLogic = new ValidateVarianceLogic();
@@ -44,8 +47,13 @@ public class Parser implements Function<Touch, Parse> {
 
         //TODO think very care fully about what parts of each parser needs applying to definitions,
 
-        Parse parse = assignParseType
+        Parse parse =
+                // set the parse types
+                assignParseType
                 .andThen(assignAndGroupMultiplier)
+                .andThen(groupTheValidationOpenAndDetailParseTypes)
+
+                // validate
                 .andThen(validateSingleCallPositionPerCell)
                 .andThen(validateInUseCallAvailableInEveryMethodWhenSpliced)
 //TODO		parseSplicedCallPosMethodNotDefinedInEachMethod();

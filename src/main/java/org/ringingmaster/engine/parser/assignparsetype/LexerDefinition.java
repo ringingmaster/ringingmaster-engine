@@ -4,33 +4,37 @@ import com.google.errorprone.annotations.Immutable;
 
 import java.util.Arrays;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * TODO comments???
+ * Defines a something we will lex for.
  *
  * @author Steve Lake
  */
 @Immutable
-class ParseDefinition {
+class LexerDefinition {
 
     private final String regex;
     private final ParseType[] parseTypes;
 
-    ParseDefinition(String regex, ParseType... parseTypes) {
-        this.regex = regex;
-        this.parseTypes = parseTypes;
+    LexerDefinition(String regex, ParseType... parseTypes) {
+        this.regex = checkNotNull(regex);
+        checkArgument(parseTypes.length > 0);
+        this.parseTypes = checkNotNull(parseTypes);
     }
 
-    public String getRegex() {
+    String getRegex() {
         return regex;
     }
 
-    public ParseType[] getParseTypes() {
+    ParseType[] getParseTypes() {
         return parseTypes;
     }
 
     @Override
     public String toString() {
-        return "ParseDefinition{" +
+        return "LexerDefinition{" +
                 "regex='" + regex + '\'' +
                 ", parseTypes=" + Arrays.toString(parseTypes) +
                 '}';

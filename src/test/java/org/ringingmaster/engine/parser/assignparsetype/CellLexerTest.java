@@ -30,7 +30,7 @@ public class CellLexerTest {
     @Test
     public void emptyCellReturnsEmptyParseType() {
 
-        Set<ParseDefinition> a = Sets.newHashSet();
+        Set<LexerDefinition> a = Sets.newHashSet();
 
         Cell cell = buildCell("");
 
@@ -42,8 +42,8 @@ public class CellLexerTest {
 
     @Test
     public void parseFailReturnsUnparsed() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("a", CALL));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("a", CALL));
         Cell cell = buildCell("zy");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
@@ -53,8 +53,8 @@ public class CellLexerTest {
 
     @Test
     public void singleCharacterCellReturnsCorrectParseType() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("a", CALL));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("a", CALL));
         Cell cell = buildCell("a");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
@@ -64,9 +64,9 @@ public class CellLexerTest {
 
     @Test
     public void distinguishTwoNonOverlappingParseTypes() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("a", CALL));
-        a.add(new ParseDefinition("b", SPLICE));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("a", CALL));
+        a.add(new LexerDefinition("b", SPLICE));
 
         Cell cell = buildCell("ab");
 
@@ -77,9 +77,9 @@ public class CellLexerTest {
 
     @Test
     public void overlappingTokensUseLongerTokenFirst() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("ab", CALL));
-        a.add(new ParseDefinition("bcd", SPLICE));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("ab", CALL));
+        a.add(new LexerDefinition("bcd", SPLICE));
 
         Cell cell = buildCell("abcd");
 
@@ -90,9 +90,9 @@ public class CellLexerTest {
 
     @Test
     public void extendedRightTokensUseLongerTokenFirst() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("ab", CALL));
-        a.add(new ParseDefinition("abc", SPLICE));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("ab", CALL));
+        a.add(new LexerDefinition("abc", SPLICE));
 
         Cell cell = buildCell("abc");
 
@@ -103,9 +103,9 @@ public class CellLexerTest {
 
     @Test
     public void extendedLeftTokensUseLongerTokenFirst() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("bc", CALL));
-        a.add(new ParseDefinition("abc", SPLICE));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("bc", CALL));
+        a.add(new LexerDefinition("abc", SPLICE));
 
         Cell cell = buildCell("abc");
 
@@ -116,9 +116,9 @@ public class CellLexerTest {
 
     @Test
     public void whitespaceInTokenGetsMarkedAsToken() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("a b", CALL));
-        a.add(new ParseDefinition(" ", WHITESPACE));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("a b", CALL));
+        a.add(new LexerDefinition(" ", WHITESPACE));
 
         Cell cell = buildCell("xa b s");
 
@@ -130,9 +130,9 @@ public class CellLexerTest {
 
     @Test
     public void backToBackParsingsDoNotResultInGaps() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("-", CALL));
-        a.add(new ParseDefinition(" ", WHITESPACE));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("-", CALL));
+        a.add(new LexerDefinition(" ", WHITESPACE));
 
         Cell cell = buildCell("- ");
 
@@ -145,8 +145,8 @@ public class CellLexerTest {
 
     @Test
     public void matchingRegexWithMultipleGroupsAddsMultipleGroups() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
 
         Cell cell = buildCell("[-o]");
 
@@ -157,8 +157,8 @@ public class CellLexerTest {
 
     @Test (expected = IllegalStateException.class)
     public void mismatchBetweenParseTypesCountAndRegexGroupsCountThrows() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN));
 
         Cell cell = buildCell("[-o]");
 
@@ -167,8 +167,8 @@ public class CellLexerTest {
 
     @Test (expected = IllegalStateException.class)
     public void notUsingRegexGroupsAndSupplyingMoreThanOneParseTypeThrows() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("\\[", VARIANCE_OPEN, VARIANCE_DETAIL));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("\\[", VARIANCE_OPEN, VARIANCE_DETAIL));
 
         Cell cell = buildCell("[-o]");
 
@@ -177,8 +177,8 @@ public class CellLexerTest {
 
     @Test (expected = IllegalStateException.class)
     public void notUsingRegexGroupsAndSupplyingLessThanOneParseTypeThrows() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("\\["));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("\\["));
 
         Cell cell = buildCell("[-o]");
 
@@ -187,12 +187,12 @@ public class CellLexerTest {
 
     @Test
     public void matchComplexGroupsInsideOtherParsings() {
-        Set<ParseDefinition> a = Sets.newHashSet();
-        a.add(new ParseDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
-        a.add(new ParseDefinition("\\]", VARIANCE_CLOSE));
-        a.add(new ParseDefinition("-", CALL));
-        a.add(new ParseDefinition("o", CALL));
-        a.add(new ParseDefinition("\\s", WHITESPACE));
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
+        a.add(new LexerDefinition("\\]", VARIANCE_CLOSE));
+        a.add(new LexerDefinition("-", CALL));
+        a.add(new LexerDefinition("o", CALL));
+        a.add(new LexerDefinition("\\s", WHITESPACE));
 
         Cell cell = buildCell("o[-o -]");
 

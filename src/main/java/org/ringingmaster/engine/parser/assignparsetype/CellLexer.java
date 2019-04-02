@@ -29,7 +29,7 @@ class CellLexer {
 
     private final Logger log = LoggerFactory.getLogger(CellLexer.class);
 
-    private static Comparator<ParseDefinition> SORT_SIZE_THEN_NAME = (o1, o2) -> {
+    private static Comparator<LexerDefinition> SORT_SIZE_THEN_NAME = (o1, o2) -> {
         int result = (o2.getRegex().length() - o1.getRegex().length());
         if (result != 0) {
             return result;
@@ -37,19 +37,19 @@ class CellLexer {
         return o1.getRegex().compareTo(o2.getRegex());
     };
 
-    ParsedCell lexCell(Cell cell, Set<ParseDefinition> parseDefinitions, String logPreamble) {
-        Set<Section> sections = calculateSections(cell, parseDefinitions, logPreamble);
+    ParsedCell lexCell(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {
+        Set<Section> sections = calculateSections(cell, lexerDefinitions, logPreamble);
         return ParsedCellFactory.buildParsedCell(cell, sections);
     }
 
-    private Set<Section> calculateSections(Cell cell, Set<ParseDefinition> parseDefinitions, String logPreamble) {
+    private Set<Section> calculateSections(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {
         final String cellAsString = cell.getCharacters();
         Set<Section> sections = new HashSet<>();
 
-        List<ParseDefinition> sortedParseDefinitions = new ArrayList<>(parseDefinitions);
-        sortedParseDefinitions.sort(SORT_SIZE_THEN_NAME);
+        List<LexerDefinition> sortedLexerDefinitions = new ArrayList<>(lexerDefinitions);
+        sortedLexerDefinitions.sort(SORT_SIZE_THEN_NAME);
 
-        sortedParseDefinitions.forEach((parseing) -> {
+        sortedLexerDefinitions.forEach((parseing) -> {
             checkState(parseing.getRegex().length() > 0, "Should never have an empty token. Mapped to [{}]", Arrays.toString(parseing.getParseTypes()));
 
             log.debug("[{}]  testing for [{}]", logPreamble, parseing);
