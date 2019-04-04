@@ -1,6 +1,8 @@
 package org.ringingmaster.engine.parser.cell;
 
 import org.pcollections.PSet;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import javax.annotation.concurrent.Immutable;
 

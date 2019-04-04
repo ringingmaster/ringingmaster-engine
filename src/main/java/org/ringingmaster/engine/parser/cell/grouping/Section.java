@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.cell;
+package org.ringingmaster.engine.parser.cell.grouping;
 
 
 import com.google.errorprone.annotations.Immutable;
@@ -10,7 +10,7 @@ import org.ringingmaster.engine.parser.assignparsetype.ParseType;
  * @author stevelake
  */
 @Immutable
-public interface Section extends ElementSequence {
+public interface Section extends ElementRange {
 
     ParseType getParseType();
 }

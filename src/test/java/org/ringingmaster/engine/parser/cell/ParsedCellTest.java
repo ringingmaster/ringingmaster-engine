@@ -3,6 +3,8 @@ package org.ringingmaster.engine.parser.cell;
 import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
 
 import java.util.HashSet;
@@ -47,9 +49,9 @@ public class ParsedCellTest {
     private ParsedCell buildParsedCell() {
 
         HashSet<Section> sections = Sets.newHashSet(
-                ParsedCellFactory.buildSection(0, 2, ParseType.CALL),
-                ParsedCellFactory.buildSection(2, 1, ParseType.CALL_MULTIPLIER),
-                ParsedCellFactory.buildSection(3, 3, ParseType.PLAIN_LEAD));
+                GroupingFactory.buildSection(0, 2, ParseType.CALL),
+                GroupingFactory.buildSection(2, 1, ParseType.CALL_MULTIPLIER),
+                GroupingFactory.buildSection(3, 3, ParseType.PLAIN_LEAD));
 
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(6);

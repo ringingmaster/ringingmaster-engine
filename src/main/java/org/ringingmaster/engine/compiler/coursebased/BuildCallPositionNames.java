@@ -2,9 +2,9 @@ package org.ringingmaster.engine.compiler.coursebased;
 
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.parser.cell.Group;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.Optional;

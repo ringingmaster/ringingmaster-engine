@@ -1,6 +1,8 @@
 package org.ringingmaster.engine.parser.cell;
 
 import org.pcollections.HashTreePSet;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +49,7 @@ public class ParsedCellMutatorInvalidateGroups implements Function<ParsedCellMut
                         .map((originalMessage) -> originalMessage + ", " + invalidGroupCandidates.get(originalGroup))
                         .orElse(invalidGroupCandidates.get(originalGroup));
 
-                return ParsedCellFactory.buildGroup(originalGroup.getElementStartIndex(), originalGroup.getElementLength(),
+                return GroupingFactory.buildGroup(originalGroup.getStartIndex(), originalGroup.getLength(),
                         false, Optional.of(message), originalGroup.getSections());
             }
             return originalGroup;

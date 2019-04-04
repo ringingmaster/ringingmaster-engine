@@ -33,10 +33,11 @@ public class GroupTheValidationOpenAndDetailParseTypes implements Function<Parse
     @Override
     public Parse apply(@Nullable Parse input) {
         log.debug("[{}] > group the validation open and detail parse types", input.getUnderlyingTouch().getTitle());
-
-??
+        //TODO
         log.debug("[{}] < group the validation open and detail parse types", input.getUnderlyingTouch().getTitle());
 
-        return input;
+        throw new RuntimeException("TODO GroupTheValidationOpenAndDetailParseTypes");
+
+        //return input;
     }
 }

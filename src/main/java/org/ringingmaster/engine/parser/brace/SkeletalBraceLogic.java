@@ -7,7 +7,7 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
-import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;
@@ -114,7 +114,7 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
             ParsedCell originalParsedCell = resultCells.get(invalidSection.getKey().row,invalidSection.getKey().col);
             ParsedCellMutator parsedCellMutator = new ParsedCellMutator()
                     .prototypeOf(originalParsedCell)
-                    .invalidateGroup(section.getElementStartIndex(), invalidSection.getValue());
+                    .invalidateGroup(section.getStartIndex(), invalidSection.getValue());
 
             resultCells.put(invalidSection.getKey().row,
                     invalidSection.getKey().col,

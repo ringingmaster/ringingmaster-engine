@@ -3,6 +3,8 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.Sets;
 import org.junit.Test;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
 
 import java.util.HashSet;
@@ -115,8 +117,8 @@ public class ParsedCellMutatorTest {
                 .build();
 
         assertEquals(builtCell.getGroupAtElementIndex(0).get(), builtCell.getGroupAtElementIndex(2).get());
-        assertEquals(0, builtCell.getGroupAtElementIndex(0).get().getElementStartIndex());
-        assertEquals(3, builtCell.getGroupAtElementIndex(0).get().getElementLength());
+        assertEquals(0, builtCell.getGroupAtElementIndex(0).get().getStartIndex());
+        assertEquals(3, builtCell.getGroupAtElementIndex(0).get().getLength());
         assertEquals(2, builtCell.getGroupAtElementIndex(0).get().getSections().size());
         assertEquals("MESSAGE", builtCell.getGroupAtElementIndex(0).get().getMessage().get());
         assertFalse(builtCell.getGroupAtElementIndex(0).get().isValid());
@@ -191,7 +193,7 @@ public class ParsedCellMutatorTest {
 
         ParsedCell builtCell = new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionAndGenerateMatchingNewGroup(ParsedCellFactory.buildSection(1, 2, PLAIN_LEAD_MULTIPLIER))
+                .addSectionAndGenerateMatchingNewGroup(GroupingFactory.buildSection(1, 2, PLAIN_LEAD_MULTIPLIER))
                 .build();
 
         assertParse(builtCell, valid(CALL), valid(2, PLAIN_LEAD_MULTIPLIER), valid(PLAIN_LEAD), unparsed(2));
@@ -203,7 +205,7 @@ public class ParsedCellMutatorTest {
 
         new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionAndGenerateMatchingNewGroup(ParsedCellFactory.buildSection(3, 1, PLAIN_LEAD_MULTIPLIER))
+                .addSectionAndGenerateMatchingNewGroup(GroupingFactory.buildSection(3, 1, PLAIN_LEAD_MULTIPLIER))
                 .build();
         }
 
@@ -213,7 +215,7 @@ public class ParsedCellMutatorTest {
 
         ParsedCell builtCell = new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(1, 2, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(1, 2, PLAIN_LEAD_MULTIPLIER),3)
                 .build();
 
         assertParse(builtCell, valid(CALL), valid(section(2, PLAIN_LEAD_MULTIPLIER), section(PLAIN_LEAD)), unparsed(2));
@@ -226,8 +228,8 @@ public class ParsedCellMutatorTest {
 
         ParsedCell builtCell = new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(1, 1, PLAIN_LEAD_MULTIPLIER),3)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(2, 1, CALL_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(1, 1, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(2, 1, CALL_MULTIPLIER),3)
                 .build();
 
         assertParse(builtCell, valid(CALL), valid(section(PLAIN_LEAD_MULTIPLIER), section(CALL_MULTIPLIER), section(PLAIN_LEAD)), unparsed(2));
@@ -239,7 +241,7 @@ public class ParsedCellMutatorTest {
 
         ParsedCell builtCell = new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(4, 2, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(4, 2, PLAIN_LEAD_MULTIPLIER),3)
                 .build();
 
         assertParse(builtCell, valid(CALL), unparsed(2), valid(section(PLAIN_LEAD),section(2, PLAIN_LEAD_MULTIPLIER)));
@@ -252,8 +254,8 @@ public class ParsedCellMutatorTest {
 
         ParsedCell builtCell = new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(4, 1, PLAIN_LEAD_MULTIPLIER),3)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(5, 1, CALL_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(4, 1, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(5, 1, CALL_MULTIPLIER),3)
                 .build();
 
         assertParse(builtCell, valid(CALL), unparsed(2), valid(section(PLAIN_LEAD), section(PLAIN_LEAD_MULTIPLIER), section(CALL_MULTIPLIER)));
@@ -265,8 +267,8 @@ public class ParsedCellMutatorTest {
 
         ParsedCell builtCell = new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(1, 2, PLAIN_LEAD_MULTIPLIER),3)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(4, 2, CALL_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(1, 2, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(4, 2, CALL_MULTIPLIER),3)
                 .build();
 
         assertParse(builtCell, valid(CALL), valid(section(2, PLAIN_LEAD_MULTIPLIER),  section(PLAIN_LEAD), section(2, CALL_MULTIPLIER)));
@@ -278,7 +280,7 @@ public class ParsedCellMutatorTest {
 
         new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(2, 3, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(2, 3, PLAIN_LEAD_MULTIPLIER),3)
                 .build();
     }
 
@@ -288,7 +290,7 @@ public class ParsedCellMutatorTest {
 
         new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(1, 1, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(1, 1, PLAIN_LEAD_MULTIPLIER),3)
                 .build();
     }
 
@@ -298,7 +300,7 @@ public class ParsedCellMutatorTest {
 
         new ParsedCellMutator()
                 .prototypeOf(parsedCell)
-                .addSectionIntoExistingGroup(ParsedCellFactory.buildSection(6, 1, PLAIN_LEAD_MULTIPLIER),3)
+                .addSectionIntoExistingGroup(GroupingFactory.buildSection(6, 1, PLAIN_LEAD_MULTIPLIER),3)
                 .build();
     }
 
@@ -420,9 +422,9 @@ public class ParsedCellMutatorTest {
     private ParsedCell buildParsedCellWithGap() {
 
         HashSet<Section> sections = Sets.newHashSet(
-                ParsedCellFactory.buildSection(0, 1, CALL),
+                GroupingFactory.buildSection(0, 1, CALL),
                 // Gap: 1,2
-                ParsedCellFactory.buildSection(3, 1, PLAIN_LEAD)
+                GroupingFactory.buildSection(3, 1, PLAIN_LEAD)
         );
 
         Cell mock = mock(Cell.class);
@@ -434,9 +436,9 @@ public class ParsedCellMutatorTest {
     private ParsedCell buildParsedCell() {
 
         HashSet<Section> sections = Sets.newHashSet(
-                ParsedCellFactory.buildSection(0, 2, CALL),
-                ParsedCellFactory.buildSection(2, 1, CALL_MULTIPLIER),
-                ParsedCellFactory.buildSection(3, 3, PLAIN_LEAD));
+                GroupingFactory.buildSection(0, 2, CALL),
+                GroupingFactory.buildSection(2, 1, CALL_MULTIPLIER),
+                GroupingFactory.buildSection(3, 3, PLAIN_LEAD));
 
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(6);

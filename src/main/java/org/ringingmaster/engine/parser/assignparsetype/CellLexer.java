@@ -2,7 +2,8 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellFactory;
-import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.concurrent.Immutable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.SORT_PRIORITY_THEN_REGEX;
 
 /**
  * TODO comments???
@@ -29,14 +30,6 @@ class CellLexer {
 
     private final Logger log = LoggerFactory.getLogger(CellLexer.class);
 
-    private static Comparator<LexerDefinition> SORT_SIZE_THEN_NAME = (o1, o2) -> {
-        int result = (o2.getRegex().length() - o1.getRegex().length());
-        if (result != 0) {
-            return result;
-        }
-        return o1.getRegex().compareTo(o2.getRegex());
-    };
-
     ParsedCell lexCell(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {
         Set<Section> sections = calculateSections(cell, lexerDefinitions, logPreamble);
         return ParsedCellFactory.buildParsedCell(cell, sections);
@@ -47,7 +40,7 @@ class CellLexer {
         Set<Section> sections = new HashSet<>();
 
         List<LexerDefinition> sortedLexerDefinitions = new ArrayList<>(lexerDefinitions);
-        sortedLexerDefinitions.sort(SORT_SIZE_THEN_NAME);
+        sortedLexerDefinitions.sort(SORT_PRIORITY_THEN_REGEX);
 
         sortedLexerDefinitions.forEach((parseing) -> {
             checkState(parseing.getRegex().length() > 0, "Should never have an empty token. Mapped to [{}]", Arrays.toString(parseing.getParseTypes()));
@@ -92,7 +85,7 @@ class CellLexer {
         log.debug("[{}]    looking for room for lexical match [{}] [{},{}]", logPreamble, parseType, start, length);
 
         if (isSectionAvailable(start, length, sections)) {
-            sections.add(ParsedCellFactory.buildSection(start, length, parseType));
+            sections.add(GroupingFactory.buildSection(start, length, parseType));
             log.debug("[{}]     adding section", logPreamble);
         }
         else {

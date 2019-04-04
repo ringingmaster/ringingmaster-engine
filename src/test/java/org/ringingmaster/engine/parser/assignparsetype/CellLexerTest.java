@@ -1,16 +1,20 @@
 package org.ringingmaster.engine.parser.assignparsetype;
 
+import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.cell.CellBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
+import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.PRIORITY_HIGHEST;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
@@ -25,7 +29,9 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPA
  */
 public class CellLexerTest {
 
-    private CellLexer cellLexer = new CellLexer();
+    private final Logger log = LoggerFactory.getLogger(CellLexerTest.class);
+
+    private final CellLexer cellLexer = new CellLexer();
 
     @Test
     public void emptyCellReturnsEmptyParseType() {
@@ -175,7 +181,7 @@ public class CellLexerTest {
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void notUsingRegexGroupsAndSupplyingLessThanOneParseTypeThrows() {
         Set<LexerDefinition> a = Sets.newHashSet();
         a.add(new LexerDefinition("\\["));
@@ -201,7 +207,28 @@ public class CellLexerTest {
         assertParse(parsedCell, valid(CALL), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(WHITESPACE), valid(CALL), valid(VARIANCE_CLOSE));
     }
 
+    @Test
+    public void lexerDefinitionWithHighestPriorityTakesPrecedence() {
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition(PRIORITY_HIGHEST, "a", SPLICE));
+        a.add(new LexerDefinition("dad", CALL));
 
+        Cell cell = buildCell("sdadk");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
+
+        assertParse(parsedCell, unparsed(2), valid(SPLICE), unparsed(2));
+    }
+
+    @Test
+    public void testRange() {
+
+        Range<Integer> range = Range.openClosed(2, 3);
+
+        log.info(range.toString());
+        log.info("2 [{}]",range.contains(2));
+        log.info("3 [{}]",range.contains(3));
+    }
 
 
     private Cell buildCell(String characters) {

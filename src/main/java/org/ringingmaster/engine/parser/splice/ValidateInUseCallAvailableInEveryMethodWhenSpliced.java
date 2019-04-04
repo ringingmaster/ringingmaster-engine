@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
-import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.functions.InUseNamesForParseType;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
@@ -117,7 +117,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
         for (Section section : cell.allSections()) {
             if (section.getParseType() == ParseType.CALL &&
                     invalidCalls.contains(cell.getCharacters(section))) {
-                builder.invalidateGroup(section.getElementStartIndex(), "The call " + cell.getCharacters(section) + " is not defined in all methods");
+                builder.invalidateGroup(section.getStartIndex(), "The call " + cell.getCharacters(section) + " is not defined in all methods");
             }
         }
 

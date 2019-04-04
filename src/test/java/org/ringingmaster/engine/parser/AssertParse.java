@@ -1,9 +1,9 @@
 package org.ringingmaster.engine.parser;
 
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
-import org.ringingmaster.engine.parser.cell.Group;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +96,7 @@ public class AssertParse {
         Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
         assertTrue("Missing Section: " + sectionExpected, sectionAtFirstElementIndex.isPresent());
         assertEquals("Section ParseType wrong: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.parseType, sectionAtFirstElementIndex.get().getParseType());
-        assertEquals("Section length wrong: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.length, sectionAtFirstElementIndex.get().getElementLength());
+        assertEquals("Section length wrong: " + sectionAtFirstElementIndex.get().toString(), sectionExpected.length, sectionAtFirstElementIndex.get().getLength());
 
         for (int sectionIndex = 0; sectionIndex < sectionExpected.length; sectionIndex++) {
             // Checking all Section index's in section point to the same Section

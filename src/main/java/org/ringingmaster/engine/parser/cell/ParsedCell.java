@@ -1,6 +1,9 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
 
 import javax.annotation.concurrent.Immutable;
@@ -26,6 +29,6 @@ public interface ParsedCell extends Cell {
 
     Group getGroupForSection(Section section); //TODO need to test
 
-    String getCharacters(ElementSequence elementSequence);
+    String getCharacters(ElementRange elementRange);
 
 }

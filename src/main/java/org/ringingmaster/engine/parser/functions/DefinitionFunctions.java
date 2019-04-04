@@ -5,7 +5,7 @@ import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
-import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -21,7 +21,7 @@ public class DefinitionFunctions {
                 String characters = originalCell.getCharacters(section);
                 if (invalidDefinitions.contains(characters)) {
                     String message = createErrorMessage.apply(characters);
-                    parsedCellMutator.invalidateGroup(section.getElementStartIndex(), message);
+                    parsedCellMutator.invalidateGroup(section.getStartIndex(), message);
                 }
             }
 

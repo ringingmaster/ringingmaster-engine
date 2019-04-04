@@ -3,6 +3,9 @@ package org.ringingmaster.engine.parser.cell;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import org.pcollections.PSet;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +55,7 @@ public class ParsedCellMutatonAddSectionToExistingGroup implements Function<Pars
                 return setForMerge;
             });
 
-            final Group groupForSection = ParsedCellFactory.buildGroupToMatchSection(sectionGroupEntry.getKey());
+            final Group groupForSection = GroupingFactory.buildGroupToMatchSection(sectionGroupEntry.getKey());
             groups = groups.plus(groupForSection);
             groupSet.add(groupForSection);
         }

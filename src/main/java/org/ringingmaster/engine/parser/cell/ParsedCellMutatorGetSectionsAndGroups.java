@@ -3,6 +3,8 @@ package org.ringingmaster.engine.parser.cell;
 import com.google.common.collect.Sets;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import java.util.Set;
 import java.util.function.Function;

@@ -6,6 +6,7 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
@@ -23,7 +24,6 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITI
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
-import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildSection;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
@@ -151,7 +151,7 @@ public class AssignAndGroupMultiplier implements Function<Parse, Parse> {
     }
 
     private Optional<ParseType> addSectionToExistingGroup(ParsedCellMutator parsedCellMutator, int elementIndex, ParseType parseType) {
-        parsedCellMutator.addSectionIntoExistingGroup(buildSection(elementIndex, 1, parseType), elementIndex + 1);
+        parsedCellMutator.addSectionIntoExistingGroup(GroupingFactory.buildSection(elementIndex, 1, parseType), elementIndex + 1);
         return Optional.of(parseType);
     }
 
@@ -163,7 +163,7 @@ public class AssignAndGroupMultiplier implements Function<Parse, Parse> {
             return Optional.empty();
         }
 
-        parsedCellMutator.addSectionAndGenerateMatchingNewGroup(buildSection(elementIndex, 1, DEFAULT_CALL_MULTIPLIER));
+        parsedCellMutator.addSectionAndGenerateMatchingNewGroup(GroupingFactory.buildSection(elementIndex, 1, DEFAULT_CALL_MULTIPLIER));
 
         if (!hasFullyDefinedDefaultCall) {
             if (splicedPerformance) {

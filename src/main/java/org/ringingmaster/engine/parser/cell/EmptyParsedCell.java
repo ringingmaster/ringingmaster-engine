@@ -1,6 +1,9 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.cell.EmptyCell;
 import org.ringingmaster.engine.touch.element.Element;
@@ -65,7 +68,7 @@ public class EmptyParsedCell implements ParsedCell {
     }
 
     @Override
-    public String getCharacters(ElementSequence elementSequence) {
+    public String getCharacters(ElementRange elementRange) {
         return "";
     }
 

@@ -2,6 +2,9 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.base.Objects;
 import org.pcollections.PSet;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +34,7 @@ public class ParsedCellMutatorMergeGroups implements Function<ParsedCellMutatorS
 
         // Check for non contiguous groups
         for (int i=0;i<candidateForMerge.size()-1;i++) {
-            checkArgument(candidateForMerge.get(i).getElementStartIndex() + candidateForMerge.get(i).getElementLength() == candidateForMerge.get(i+1).getElementStartIndex(),
+            checkArgument(candidateForMerge.get(i).getStartIndex() + candidateForMerge.get(i).getLength() == candidateForMerge.get(i+1).getStartIndex(),
                     "Merging non contiguous blocks [%s], [%s]", candidateForMerge.get(i), candidateForMerge.get(i+1));
         }
 
@@ -40,13 +43,13 @@ public class ParsedCellMutatorMergeGroups implements Function<ParsedCellMutatorS
                 .flatMap(Collection::stream)
                 .forEach(existingMergeMember -> {
                     for (Group potentialGroup : candidateForMerge) {
-                        checkArgument(!Objects.equal(existingMergeMember, potentialGroup.getElementStartIndex()), "[%s] is already in a merge group", potentialGroup);
+                        checkArgument(!Objects.equal(existingMergeMember, potentialGroup.getStartIndex()), "[%s] is already in a merge group", potentialGroup);
                     }
                 });
 
         // Convert to element start position
         final List<Integer> candidateForMergeElementIndex = candidateForMerge.stream()
-                .map(Group::getElementStartIndex)
+                .map(Group::getStartIndex)
                 .collect(Collectors.toList());
 
         mergeGroups.add(candidateForMergeElementIndex);
@@ -62,8 +65,8 @@ public class ParsedCellMutatorMergeGroups implements Function<ParsedCellMutatorS
                 .map((indexes) -> getGroupsForIndexes(source.getGroups(), indexes))
                 .map(mergeGroupList -> {
 
-                    int startIndex = mergeGroupList.get(0).getElementStartIndex();
-                    int elementLength = mergeGroupList.stream().mapToInt(Group::getElementLength).sum();
+                    int startIndex = mergeGroupList.get(0).getStartIndex();
+                    int elementLength = mergeGroupList.stream().mapToInt(Group::getLength).sum();
                     boolean valid = mergeGroupList.stream().allMatch(Group::isValid);
                     String message = mergeGroupList.stream().map(Group::getMessage).filter(Optional::isPresent)
                             .map(Optional::get).collect(Collectors.joining(","));
@@ -71,7 +74,7 @@ public class ParsedCellMutatorMergeGroups implements Function<ParsedCellMutatorS
                             .flatMap(group -> group.getSections().stream())
                             .collect(Collectors.toSet());
 
-                    return ParsedCellFactory.buildGroup(startIndex, elementLength, valid, (message.length() == 0) ? Optional.empty() : Optional.of(message), sectionsForGroup);
+                    return GroupingFactory.buildGroup(startIndex, elementLength, valid, (message.length() == 0) ? Optional.empty() : Optional.of(message), sectionsForGroup);
                 }).collect(Collectors.toSet());
 
         final Set<Group> consumedGroups = mergeGroups.stream()

@@ -26,6 +26,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.PRIORITY_HIGHEST;
+import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.PRIORITY_LOWEST;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
@@ -253,17 +255,17 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
     private void addWhitespaceTokens(Set<LexerDefinition> lexerDefinitions) {
-        lexerDefinitions.add(new LexerDefinition("\\s", ParseType.WHITESPACE));
+        lexerDefinitions.add(new LexerDefinition(PRIORITY_LOWEST,"\\s", ParseType.WHITESPACE));
     }
 
     private void addVarianceTokens(Set<LexerDefinition> lexerDefinitions) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
-        lexerDefinitions.add(new LexerDefinition("(?i)(\\[)((?:[-+])(?:(?:odd|even|[oe])|(?:(?:[0-9]+)(?:[,][0-9]+)*)+))", ParseType.VARIANCE_OPEN, ParseType.VARIANCE_DETAIL));// TODO should these be defined as constants somewhere?
-        lexerDefinitions.add(new LexerDefinition("\\]", ParseType.VARIANCE_CLOSE));
+        lexerDefinitions.add(new LexerDefinition(PRIORITY_HIGHEST, "(?i)(\\[)((?:[-+])(?:(?:odd|even|[oe])|(?:(?:[0-9]+)(?:[,][0-9]+)*)+))", ParseType.VARIANCE_OPEN, ParseType.VARIANCE_DETAIL));// TODO should these be defined as constants somewhere?
+        lexerDefinitions.add(new LexerDefinition(PRIORITY_HIGHEST, "\\]", ParseType.VARIANCE_CLOSE));
     }
 
     private void addMultiplierGroupTokens(Set<LexerDefinition> lexerDefinitions) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
-        lexerDefinitions.add(new LexerDefinition("\\(", ParseType.MULTIPLIER_GROUP_OPEN));// TODO should these be defined as constants somewhere?
-        lexerDefinitions.add(new LexerDefinition("\\)", ParseType.MULTIPLIER_GROUP_CLOSE));
+        lexerDefinitions.add(new LexerDefinition(PRIORITY_HIGHEST,"\\(", ParseType.MULTIPLIER_GROUP_OPEN));// TODO should these be defined as constants somewhere?
+        lexerDefinitions.add(new LexerDefinition(PRIORITY_HIGHEST,"\\)", ParseType.MULTIPLIER_GROUP_CLOSE));
     }
 
 }

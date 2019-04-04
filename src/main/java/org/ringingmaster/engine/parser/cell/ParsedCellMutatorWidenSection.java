@@ -1,8 +1,11 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.Sets;
-
 import org.pcollections.PSet;
+import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.AbstractMap;
@@ -51,9 +54,9 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
                 .map(sectionWidening -> {
                     final Section sectionForIndex = getSectionForIndex(source.getSections(), sectionWidening.sourceSectionElementIndex);
                     checkNotNull(sectionForIndex);
-                    return ParsedCellFactory.buildSection(
-                            sectionWidening.side == Side.LEFT ? sectionForIndex.getElementStartIndex() - sectionWidening.additionalElementCount : sectionForIndex.getElementStartIndex(),
-                            sectionForIndex.getElementLength() + sectionWidening.additionalElementCount,
+                    return GroupingFactory.buildSection(
+                            sectionWidening.side == Side.LEFT ? sectionForIndex.getStartIndex() - sectionWidening.additionalElementCount : sectionForIndex.getStartIndex(),
+                            sectionForIndex.getLength() + sectionWidening.additionalElementCount,
                             sectionForIndex.getParseType());
 
                 })
@@ -71,12 +74,12 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
                 .map(sectionWidening -> getGroupForIndex(source.getGroups(), sectionWidening.sourceSectionElementIndex))
                 .map(group -> {
                     final Set<Section> newSections = group.getSections().stream()
-                            .map(oldSection -> getSectionForIndex(sections, oldSection.getElementStartIndex()))
+                            .map(oldSection -> getSectionForIndex(sections, oldSection.getStartIndex()))
                             .collect(Collectors.toSet());
-                    final OptionalInt startIndex = newSections.stream().mapToInt(ElementSequence::getElementStartIndex).min();
-                    final OptionalInt endIndex = newSections.stream().mapToInt(section -> section.getElementStartIndex() + section.getElementLength()).max();
+                    final OptionalInt startIndex = newSections.stream().mapToInt(ElementRange::getStartIndex).min();
+                    final OptionalInt endIndex = newSections.stream().mapToInt(section -> section.getStartIndex() + section.getLength()).max();
 
-                    return ParsedCellFactory.buildGroup(startIndex.getAsInt(), endIndex.getAsInt()-startIndex.getAsInt(),
+                    return GroupingFactory.buildGroup(startIndex.getAsInt(), endIndex.getAsInt()-startIndex.getAsInt(),
                             group.isValid(), group.getMessage(),  newSections);
                 })
                 .collect(Collectors.toSet());
@@ -138,8 +141,8 @@ public class ParsedCellMutatorWidenSection implements Function<ParsedCellMutator
 
     public boolean fallsWithin(Map.Entry<SectionWidening, Section> entry, SectionWidening wideningToBeMerged) {
         final int elementIndex = wideningToBeMerged.sourceSectionElementIndex;
-        int elementStartIndex = (entry.getKey().side == Side.LEFT)?entry.getValue().getElementStartIndex() - entry.getKey().additionalElementCount: entry.getValue().getElementStartIndex();
-        int elementLength = entry.getKey().additionalElementCount + entry.getValue().getElementLength();
+        int elementStartIndex = (entry.getKey().side == Side.LEFT)?entry.getValue().getStartIndex() - entry.getKey().additionalElementCount: entry.getValue().getStartIndex();
+        int elementLength = entry.getKey().additionalElementCount + entry.getValue().getLength();
         return elementIndex >= elementStartIndex &&
                 elementIndex < elementStartIndex + elementLength;
     }

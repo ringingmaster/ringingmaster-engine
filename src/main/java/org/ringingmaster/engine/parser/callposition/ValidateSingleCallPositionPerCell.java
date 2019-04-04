@@ -8,7 +8,7 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
-import org.ringingmaster.engine.parser.cell.Section;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;
@@ -69,11 +69,11 @@ public class ValidateSingleCallPositionPerCell implements Function<Parse, Parse>
                     seenValidCallingPosition = true;
                 }
                 else {
-                    builder.invalidateGroup(section.getElementStartIndex(), "Only one Calling Position allowed in this cell");
+                    builder.invalidateGroup(section.getStartIndex(), "Only one Calling Position allowed in this cell");
                 }
             }
             else {
-                builder.invalidateGroup(section.getElementStartIndex(), "Only Calling Positions are allowed in this cell");
+                builder.invalidateGroup(section.getStartIndex(), "Only Calling Positions are allowed in this cell");
             }
         }
 

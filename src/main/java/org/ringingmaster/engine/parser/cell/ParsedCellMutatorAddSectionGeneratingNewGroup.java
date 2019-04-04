@@ -1,6 +1,9 @@
 package org.ringingmaster.engine.parser.cell;
 
 import org.pcollections.PSet;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +36,7 @@ public class ParsedCellMutatorAddSectionGeneratingNewGroup implements Function<P
         PSet<Group> groups = source.getGroups();
 
         for (Section section : newSection) {
-            final Group groupForSection = ParsedCellFactory.buildGroupToMatchSection(section);
+            final Group groupForSection = GroupingFactory.buildGroupToMatchSection(section);
             groups = groups.plus(groupForSection);
         }
 

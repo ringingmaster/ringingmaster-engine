@@ -1,6 +1,9 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.element.Element;
 
@@ -76,17 +79,17 @@ class DefaultParsedCell implements ParsedCell {
 
     @Override
     public Group getGroupForSection(Section section) {
-        return getGroupAtElementIndex(section.getElementStartIndex())
+        return getGroupAtElementIndex(section.getStartIndex())
                 .orElseThrow(IllegalStateException::new);
     }
 
     @Override
-    public String getCharacters(ElementSequence elementSequence) {
-        checkNotNull(elementSequence);
-        checkArgument(elementSequence.getElementStartIndex() + elementSequence.getElementLength() <= getElementSize());
+    public String getCharacters(ElementRange elementRange) {
+        checkNotNull(elementRange);
+        checkArgument(elementRange.getStartIndex() + elementRange.getLength() <= getElementSize());
 
         StringBuilder buff = new StringBuilder();
-        for (int index=elementSequence.getElementStartIndex();index<elementSequence.getElementStartIndex() + elementSequence.getElementLength();index++) {
+        for (int index = elementRange.getStartIndex(); index< elementRange.getStartIndex() + elementRange.getLength(); index++) {
             buff.append(getElement(index).getCharacter());
         }
         return buff.toString();
