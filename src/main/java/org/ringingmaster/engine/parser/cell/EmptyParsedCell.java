@@ -73,6 +73,11 @@ public class EmptyParsedCell implements ParsedCell {
     }
 
     @Override
+    public String prettyPrint() {
+        return "<EMPTY>";
+    }
+
+    @Override
     public String toString() {
         return "EmptyParsedCell";
     }

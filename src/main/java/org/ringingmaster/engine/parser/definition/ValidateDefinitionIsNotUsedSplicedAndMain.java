@@ -33,12 +33,12 @@ public class ValidateDefinitionIsNotUsedSplicedAndMain implements Function<Parse
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] should be used in the main body or the splice area, but not both";
 
 
-    public Parse apply(Parse parse) {
-        log.debug("[{}] > definition in spliced or main check", parse.getUnderlyingTouch().getTitle());
+    public Parse apply(Parse input) {
+        log.debug("[{}] > definition in spliced or main check", input.getUnderlyingTouch().getTitle());
 
-        Parse result = doCheck(parse);
+        Parse result = doCheck(input);
 
-        log.debug("[{}] < definition in spliced or main check", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < definition in spliced or main check", input.getUnderlyingTouch().getTitle());
 
         return result;
     }

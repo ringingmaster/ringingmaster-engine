@@ -1,9 +1,9 @@
 package org.ringingmaster.engine.touch.cell;
 
 import com.google.common.collect.ImmutableList;
-import javax.annotation.concurrent.Immutable;
 import org.ringingmaster.engine.touch.element.Element;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @author Lake
  */
 @Immutable
-public class DefaultCell implements Cell {
+class DefaultCell implements Cell {
 
     private final ImmutableList<Element> elements;
     private final String characters;

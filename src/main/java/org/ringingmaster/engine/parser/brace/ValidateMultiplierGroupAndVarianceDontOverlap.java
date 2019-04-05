@@ -29,33 +29,33 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
 
     private final Logger log = LoggerFactory.getLogger(ValidateMultiplierGroupAndVarianceDontOverlap.class);
 
-    public Parse apply(Parse parse) {
+    public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate multiplier group and variance dine overlap", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate multiplier group and variance dine overlap", input.getUnderlyingTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                HashBasedTable.create(parse.allTouchCells().getBackingTable());
+                HashBasedTable.create(input.allTouchCells().getBackingTable());
 
-        parseCells(parse.mainBodyCells(), resultCells, parse.getUnderlyingTouch().getTitle());
-        parseCells(parse.splicedCells(), resultCells, parse.getUnderlyingTouch().getTitle());
+        parseCells(input.mainBodyCells(), resultCells, input.getUnderlyingTouch().getTitle());
+        parseCells(input.splicedCells(), resultCells, input.getUnderlyingTouch().getTitle());
 
         // We parse definitions individually. This is so that any open/close brace in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
-                HashBasedTable.create(parse.definitionDefinitionCells().getBackingTable());
-        final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = parse.definitionDefinitionCells();
+                HashBasedTable.create(input.definitionDefinitionCells().getBackingTable());
+        final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = input.definitionDefinitionCells();
         for(int rowIndex = 0; rowIndex < definitionDefinitionCells.getRowSize();rowIndex++) {
             final ImmutableArrayTable<ParsedCell> cell = definitionDefinitionCells.subTable(rowIndex, rowIndex + 1, 0, 1);
-            parseCells(cell, definitionTableResult, parse.getUnderlyingTouch().getTitle());
+            parseCells(cell, definitionTableResult, input.getUnderlyingTouch().getTitle());
         }
 
         Parse result = new ParseBuilder()
-                .prototypeOf(parse)
+                .prototypeOf(input)
                 .setTouchTableCells(resultCells)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < validate multiplier group and variance dine overlap", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate multiplier group and variance dine overlap", input.getUnderlyingTouch().getTitle());
 
         return result;
 

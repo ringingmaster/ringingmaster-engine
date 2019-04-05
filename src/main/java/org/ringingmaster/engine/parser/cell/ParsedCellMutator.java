@@ -5,7 +5,7 @@ import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import java.util.Set;
 
-public class    ParsedCellMutator {
+public class ParsedCellMutator {
 
     private ParsedCell prototype;
 
@@ -28,7 +28,7 @@ public class    ParsedCellMutator {
                 .apply(prototype);
 
         // rebuild parsed cell
-        return ParsedCellFactory.buildParsedCell(prototype.getParentCell(), sectionsAndGroups.getSections(), sectionsAndGroups.getGroups());
+        return ParsedCellFactory.buildParsedCellFromGroups(prototype.getParentCell(), sectionsAndGroups.getGroups());
     }
 
     public ParsedCellMutator prototypeOf(ParsedCell prototype) {

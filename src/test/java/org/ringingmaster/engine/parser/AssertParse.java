@@ -1,8 +1,9 @@
 package org.ringingmaster.engine.parser;
 
+import com.google.common.base.Predicate;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
-import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,13 +34,16 @@ public class AssertParse {
 
         assertEquals("expected length does not match actual length", Arrays.stream(expecteds).mapToInt(Expected::getLength).sum(), parsedCell.getElementSize());
 
+        long unexpectedGroupCount = Arrays.stream(expecteds).filter((Predicate<Expected>) input -> !(input instanceof UnparsedExpected)).count();
+        assertEquals("expected top level count [" + unexpectedGroupCount + "] does not match group count [" + parsedCell.allGroups() .size() + "]", unexpectedGroupCount, parsedCell.allGroups().size());
+
         int elementIndex = 0;
         for (Expected expected : expecteds) {
 
             if (expected instanceof GroupExpected) {
                 GroupExpected groupExpected = (GroupExpected) expected;
 
-                log.info("Start Group [{}]", elementIndex);
+                log.info("Start Group at index [{}]", elementIndex);
                 if (groupExpected.groupMessage.isPresent()) {
                     assertEquals("Group message", groupExpected.groupMessage, parsedCell.getGroupAtElementIndex(elementIndex).get().getMessage());
                 }
@@ -108,7 +112,9 @@ public class AssertParse {
             // Checking all Groups index's in section bounds point to the same Section
             final Optional<Group> groupAtElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
             assertTrue("Missing Group at element index [" + elementIndex + "]", groupAtElementIndex.isPresent());
-            assertEquals("Mismatch in group indexes Section Index [" + sectionIndex + "], Element Index [" + elementIndex + "], sectionIndexInGroup[" + sectionIndexInGroup + "]",
+            assertTrue("Getting group at element index [" + elementIndex + "], then finding the groups sections does not have a section at index : sectionIndexInGroup[" + sectionIndexInGroup + "]",
+                    sectionIndexInGroup < groupAtElementIndex.get().getSections().size());
+            assertEquals("Mismatch in group indexes: Section Index [" + sectionIndex + "], Element Index [" + elementIndex + "], sectionIndexInGroup[" + sectionIndexInGroup + "]",
                     sectionAtFirstElementIndex.get(), groupAtElementIndex.get().getSections().get(sectionIndexInGroup));
             elementIndex++;
         }

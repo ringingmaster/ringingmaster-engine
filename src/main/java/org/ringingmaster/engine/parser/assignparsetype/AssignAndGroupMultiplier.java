@@ -36,50 +36,50 @@ public class AssignAndGroupMultiplier implements Function<Parse, Parse> {
     private final Logger log = LoggerFactory.getLogger(AssignAndGroupMultiplier.class);
 
     @Override
-    public Parse apply(Parse parse) {
+    public Parse apply(Parse input) {
 
-        log.debug("[{}] > assign and group multiplier", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > assign and group multiplier", input.getUnderlyingTouch().getTitle());
 
-        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(parse.getUnderlyingTouch());
+        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(input.getUnderlyingTouch());
 
         final HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
-                HashBasedTable.create(parse.allTouchCells().getBackingTable());
+                HashBasedTable.create(input.allTouchCells().getBackingTable());
 
-        for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : parse.mainBodyCells()) {
-            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), false, parse.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
+        for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : input.mainBodyCells()) {
+            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), false, input.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
             touchTableResult.put(cellAndLocation.getRow(), cellAndLocation.getCol(), replacementParsedCell);
         }
 
-        for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : parse.splicedCells()) {
-            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), true, parse.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
+        for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : input.splicedCells()) {
+            final ParsedCell replacementParsedCell = parseCellNumbers(cellAndLocation.getValue(), true, input.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
             touchTableResult.put(cellAndLocation.getRow(), cellAndLocation.getCol(), replacementParsedCell);
         }
 
         // NOTE: The callPositionCells do not have any need for multiplier so are not parsed.
-        final Set<String> splicedDefinitionsInUse = new InUseSpliceDefinitionsTransitively().apply(parse);
+        final Set<String> splicedDefinitionsInUse = new InUseSpliceDefinitionsTransitively().apply(input);
 
         final HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
-                HashBasedTable.create(parse.allDefinitionCells().getBackingTable());
+                HashBasedTable.create(input.allDefinitionCells().getBackingTable());
 
-        for (String shorthand : parse.getAllDefinitionShorthands()) {
-            final Optional<ImmutableArrayTable<ParsedCell>> definitionByShorthand = parse.findDefinitionByShorthand(shorthand);
+        for (String shorthand : input.getAllDefinitionShorthands()) {
+            final Optional<ImmutableArrayTable<ParsedCell>> definitionByShorthand = input.findDefinitionByShorthand(shorthand);
 
             if (definitionByShorthand.isPresent()) {
                 boolean splicedCell = splicedDefinitionsInUse.contains(shorthand);
                 final ImmutableArrayTable<ParsedCell> cell = definitionByShorthand.get();
-                final ParsedCell replacementParsedCell = parseCellNumbers(cell.get(0, DEFINITION_COLUMN), splicedCell, parse.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
+                final ParsedCell replacementParsedCell = parseCellNumbers(cell.get(0, DEFINITION_COLUMN), splicedCell, input.getUnderlyingTouch().isSpliced(), hasFullyDefinedDefaultCall);
                 definitionTableResult.put(cell.getBackingRowIndex(0), cell.getBackingColumnIndex(DEFINITION_COLUMN), replacementParsedCell);
             }
         }
 
 
         final Parse result = new ParseBuilder()
-                .prototypeOf(parse)
+                .prototypeOf(input)
                 .setTouchTableCells(touchTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < assign and group multiplier", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < assign and group multiplier", input.getUnderlyingTouch().getTitle());
 
         return result;
     }

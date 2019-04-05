@@ -27,27 +27,27 @@ public class ValidateSingleCallPositionPerCell implements Function<Parse, Parse>
 
     private final Logger log = LoggerFactory.getLogger(ValidateSingleCallPositionPerCell.class);
 
-    public Parse apply(Parse parse) {
+    public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate single call position per cell", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate single call position per cell", input.getUnderlyingTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                HashBasedTable.create(parse.allTouchCells().getBackingTable());
+                HashBasedTable.create(input.allTouchCells().getBackingTable());
 
-        parseCallPositionArea(parse, resultCells);
+        parseCallPositionArea(input, resultCells);
 
         Parse build = new ParseBuilder()
-                .prototypeOf(parse)
+                .prototypeOf(input)
                 .setTouchTableCells(resultCells)
                 .build();
 
-        log.debug("[{}] < validate single call position per cell", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate single call position per cell", input.getUnderlyingTouch().getTitle());
 
         return build;
     }
 
-    private void parseCallPositionArea(Parse originalParse, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {
-        ImmutableArrayTable<ParsedCell> cells = originalParse.callPositionCells();
+    private void parseCallPositionArea(Parse input, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {
+        ImmutableArrayTable<ParsedCell> cells = input.callPositionCells();
 
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : cells) {
 

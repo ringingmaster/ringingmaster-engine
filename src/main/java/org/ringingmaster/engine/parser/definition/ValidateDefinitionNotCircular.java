@@ -31,34 +31,34 @@ public class ValidateDefinitionNotCircular implements Function<Parse, Parse> {
     // TODO can we get the dependency chain in the error message? If so the addition of all shorthands for definitions in use will have to change.
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] forms part of a circular dependency";
 
-    public Parse apply(Parse parse) {
+    public Parse apply(Parse input) {
 
-        log.debug("[{}] > circular definition check", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > circular definition check", input.getUnderlyingTouch().getTitle());
 
-        Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(parse);
+        Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(input);
 
         Set<String> invalidDefinitions = new HashSet<>();
-        for (String shorthand : parse.getAllDefinitionShorthands()) {
+        for (String shorthand : input.getAllDefinitionShorthands()) {
             discoverCircularity(invalidDefinitions, adjacency, ConsPStack.singleton(shorthand));
         }
 
         HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
-                HashBasedTable.create(parse.allTouchCells().getBackingTable());
-        definitionFunctions.markInvalid(parse.mainBodyCells(), invalidDefinitions, touchTableResult, createErrorMessage);
-        definitionFunctions.markInvalid(parse.splicedCells(), invalidDefinitions, touchTableResult, createErrorMessage);
+                HashBasedTable.create(input.allTouchCells().getBackingTable());
+        definitionFunctions.markInvalid(input.mainBodyCells(), invalidDefinitions, touchTableResult, createErrorMessage);
+        definitionFunctions.markInvalid(input.splicedCells(), invalidDefinitions, touchTableResult, createErrorMessage);
 
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
-                HashBasedTable.create(parse.definitionDefinitionCells().getBackingTable());
-        definitionFunctions.markInvalid(parse.definitionDefinitionCells(), invalidDefinitions, definitionTableResult, createErrorMessage);
+                HashBasedTable.create(input.definitionDefinitionCells().getBackingTable());
+        definitionFunctions.markInvalid(input.definitionDefinitionCells(), invalidDefinitions, definitionTableResult, createErrorMessage);
 
 
         Parse result = new ParseBuilder()
-                .prototypeOf(parse)
+                .prototypeOf(input)
                 .setTouchTableCells(touchTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < circular definition check", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < circular definition check", input.getUnderlyingTouch().getTitle());
 
         return result;
     }

@@ -374,7 +374,7 @@ public class ParsedCellMutatorTest {
                 .build();
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void widenSectionLessThan0Throws() {
         ParsedCell parsedCell = buildParsedCellWithGap();
 
@@ -430,7 +430,7 @@ public class ParsedCellMutatorTest {
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(6);
 
-        return ParsedCellFactory.buildParsedCell(mock, sections);
+        return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }
 
     private ParsedCell buildParsedCell() {
@@ -443,7 +443,7 @@ public class ParsedCellMutatorTest {
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(6);
 
-        return ParsedCellFactory.buildParsedCell(mock, sections);
+        return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }
 
 }

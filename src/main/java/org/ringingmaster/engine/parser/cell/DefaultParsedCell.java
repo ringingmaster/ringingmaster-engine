@@ -96,6 +96,49 @@ class DefaultParsedCell implements ParsedCell {
     }
 
     @Override
+    public String prettyPrint() {
+        StringBuilder groupRow = new StringBuilder("|");
+        StringBuilder sectionRow = new StringBuilder("|");
+        StringBuilder parsedTypeRow = new StringBuilder("|");
+
+        for (int groupIndex = 0;groupIndex< allGroups.size();groupIndex++) {
+            Group group = allGroups.get(groupIndex);
+            groupRow.append("[").append(groupIndex).append("]");
+            if (!group.isValid()) groupRow.append("-X");
+
+            for (Section section : group.getSections()) {
+
+                for (int i=0;i<section.getLength();i++) {
+                    addBlockChar(groupRow, parsedTypeRow.length()-groupRow.length(), '-');
+                    addBlockChar(sectionRow, parsedTypeRow.length()-sectionRow.length(), '-');
+
+                    parsedTypeRow.append(" ").append(section.getParseType().toString()).append(" ");
+                    sectionRow.append(" ")
+                            .append(parentCell.getElement(section.getStartIndex() + i).getCharacter())
+                            .append(' ');
+
+                    addBlockChar(groupRow, parsedTypeRow.length()-groupRow.length(), '-');
+                    addBlockChar(sectionRow, parsedTypeRow.length()-sectionRow.length(), '-');
+
+                    parsedTypeRow.append("|");
+                }
+                sectionRow.append("|");
+            }
+            groupRow.append("|");
+        }
+
+        return  groupRow.toString() +
+                System.lineSeparator() + sectionRow.toString() +
+                System.lineSeparator() + parsedTypeRow.toString();
+    }
+
+    private void addBlockChar(StringBuilder builder, int length, char character) {
+        for (int j = 0; j < length; j++) {
+            builder.append(character);
+        }
+    }
+
+    @Override
     public String toString() {
         return "DefaultParsedCell{" +
                 "cell=" + parentCell +

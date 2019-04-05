@@ -1,6 +1,8 @@
 package org.ringingmaster.engine.parser.cell;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
@@ -8,6 +10,7 @@ import org.ringingmaster.engine.touch.cell.Cell;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -19,9 +22,9 @@ import static com.google.common.base.Preconditions.checkElementIndex;
  */
 public class ParsedCellFactory {
 
-    public static ParsedCell buildParsedCell(Cell parentCell, Set<Section> sections) {
+    public static ParsedCell buildParsedCellFromSections(Cell parentCell, Set<Section> sections) {
         Set<Group> groups = buildGroupsToMatchSections(sections);
-        return buildParsedCell(parentCell, sections, groups);
+        return buildParsedCellFromGroups(parentCell, groups);
     }
 
     private static Set<Group> buildGroupsToMatchSections(Set<Section> sections) {
@@ -30,7 +33,15 @@ public class ParsedCellFactory {
                 .collect(Collectors.toSet());
     }
 
-    static ParsedCell buildParsedCell(Cell parentCell, Set<Section> sections, Set<Group> groups) {
+    static ParsedCell buildParsedCellFromGroups(Cell parentCell, Set<Group> groups) {
+        Set<Section> sections = groups.stream().flatMap(new Function<Group, Stream<Section>>() {
+            @Nullable
+            @Override
+            public Stream<Section> apply(@Nullable Group input) {
+                return input.getSections().stream();
+            }
+        }).collect(Collectors.toSet());
+
         Section[] sectionByElementIndex = new Section[parentCell.getElementSize()];
         createSectionIndex(sections, sectionByElementIndex);
 
@@ -46,7 +57,7 @@ public class ParsedCellFactory {
 
     private static void createSectionIndex(Set<Section> sections, Section[] result) {
         for (Section section : sections) {
-            for (int index = section.getStartIndex(); index <= section.getEndIndex() ; index++) {
+            for (int index = section.getStartIndex(); index < section.getEndIndex() ; index++) {
                 checkElementIndex(index, result.length, "Section [" + section + "] outside underlying cell element size.");
                 checkArgument(result[index] == null,
                         "Section [%s] overlaps into section [%s]", section, result[index]);

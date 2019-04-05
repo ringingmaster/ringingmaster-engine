@@ -41,25 +41,25 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
         return response;
     }
 
-    private Parse doCheck(Parse parse) {
-        if (! parse.getUnderlyingTouch().isSpliced()) {
-            log.debug("[{}]  ignore check: not spliced", parse.getUnderlyingTouch().getTitle());
-            return parse;
+    private Parse doCheck(Parse input) {
+        if (! input.getUnderlyingTouch().isSpliced()) {
+            log.debug("[{}]  ignore check: not spliced", input.getUnderlyingTouch().getTitle());
+            return input;
         }
 
-        final PSet<NotationBody> validNotationsInTouch =  parse.getUnderlyingTouch().getAvailableNotations();
+        final PSet<NotationBody> validNotationsInTouch =  input.getUnderlyingTouch().getAvailableNotations();
         if (validNotationsInTouch.size() == 0) {
             // We don't need to do any invalidating because there will have been no parsing of calls going on.
-            return parse;
+            return input;
         }
         if (log.isDebugEnabled()) {
-            log.debug("[{}]  valid notations available in touch {}", parse.getUnderlyingTouch().getTitle(),
+            log.debug("[{}]  valid notations available in touch {}", input.getUnderlyingTouch().getTitle(),
                     validNotationsInTouch.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
-        final Set<String> spliceNamesInUse = Sets.union(new InUseNamesForParseType().apply(parse.splicedCells(), SPLICE),
-                                                   new InUseNamesForParseType().apply(parse.definitionDefinitionCells(), SPLICE));
-        log.debug("[{}]  splice Names in use {}", parse.getUnderlyingTouch().getTitle(),
+        final Set<String> spliceNamesInUse = Sets.union(new InUseNamesForParseType().apply(input.splicedCells(), SPLICE),
+                                                   new InUseNamesForParseType().apply(input.definitionDefinitionCells(), SPLICE));
+        log.debug("[{}]  splice Names in use {}", input.getUnderlyingTouch().getTitle(),
                 spliceNamesInUse)  ;
 
 
@@ -67,42 +67,42 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
                 .filter(notation -> spliceNamesInUse.contains(notation.getSpliceIdentifier()))
                 .collect(Collectors.toSet());
         if (log.isDebugEnabled()) {
-            log.debug("[{}]  notations in use {}", parse.getUnderlyingTouch().getTitle(),
+            log.debug("[{}]  notations in use {}", input.getUnderlyingTouch().getTitle(),
                     notationsInUse.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
         final Set<String> availableCallsFromValidNotations = getAllCalls(validNotationsInTouch);
-        log.debug("[{}]  calls available {}", parse.getUnderlyingTouch().getTitle(),
+        log.debug("[{}]  calls available {}", input.getUnderlyingTouch().getTitle(),
                 spliceNamesInUse)  ;
 
         final Set<String> commonCalls = getCommonCallsFromNotationsInUse(notationsInUse);
-        log.debug("[{}]  calls that are defined in every valid notation {}", parse.getUnderlyingTouch().getTitle(),
+        log.debug("[{}]  calls that are defined in every valid notation {}", input.getUnderlyingTouch().getTitle(),
                 commonCalls)  ;
 
         final Set<String> invalidCalls = Sets.difference(availableCallsFromValidNotations, commonCalls);
-        log.debug("[{}]  calls that cant be used {}", parse.getUnderlyingTouch().getTitle(),
+        log.debug("[{}]  calls that cant be used {}", input.getUnderlyingTouch().getTitle(),
                 invalidCalls)  ;
 
         if (invalidCalls.size() == 0) {
 
-            return parse;
+            return input;
         }
 
         HashBasedTable<Integer, Integer, ParsedCell> touchCells =
-                HashBasedTable.create(parse.allTouchCells().getBackingTable());
+                HashBasedTable.create(input.allTouchCells().getBackingTable());
 
-        for (BackingTableLocationAndValue<ParsedCell> locationAndCell : parse.mainBodyCells()) {
+        for (BackingTableLocationAndValue<ParsedCell> locationAndCell : input.mainBodyCells()) {
             doInvalidation(invalidCalls, touchCells, locationAndCell);
         }
 
          HashBasedTable<Integer, Integer, ParsedCell> definitionCells =
-                HashBasedTable.create(parse.allDefinitionCells().getBackingTable());
-        for (BackingTableLocationAndValue<ParsedCell> locationAndCell : parse.definitionDefinitionCells()) {
+                HashBasedTable.create(input.allDefinitionCells().getBackingTable());
+        for (BackingTableLocationAndValue<ParsedCell> locationAndCell : input.definitionDefinitionCells()) {
             doInvalidation(invalidCalls, definitionCells, locationAndCell);
         }
 
         return new ParseBuilder()
-                .prototypeOf(parse)
+                .prototypeOf(input)
                 .setTouchTableCells(touchCells)
                 .setDefinitionTableCells(definitionCells)
                 .build();

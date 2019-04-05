@@ -32,7 +32,7 @@ class CellLexer {
 
     ParsedCell lexCell(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {
         Set<Section> sections = calculateSections(cell, lexerDefinitions, logPreamble);
-        return ParsedCellFactory.buildParsedCell(cell, sections);
+        return ParsedCellFactory.buildParsedCellFromSections(cell, sections);
     }
 
     private Set<Section> calculateSections(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {

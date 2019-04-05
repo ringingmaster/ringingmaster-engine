@@ -31,4 +31,5 @@ public interface ParsedCell extends Cell {
 
     String getCharacters(ElementRange elementRange);
 
+    String prettyPrint();
 }

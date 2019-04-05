@@ -16,8 +16,8 @@ class DefaultElementRange implements ElementRange {
      * @param startIndex inclusive
      */
     DefaultElementRange(int startIndex, int length) {
-        checkArgument(startIndex >= 0);
-        checkArgument(length > 0);
+        checkArgument(startIndex >= 0, "startIndex must be greater than or equal to 0 [%s]", startIndex);
+        checkArgument(length > 0, "length must be greater than 0 [%s]", length);
 
         this.startIndex = startIndex;
         this.length = length;

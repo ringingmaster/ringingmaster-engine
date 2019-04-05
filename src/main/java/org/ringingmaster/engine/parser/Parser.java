@@ -9,6 +9,7 @@ import org.ringingmaster.engine.parser.brace.ValidateVarianceLogic;
 import org.ringingmaster.engine.parser.callposition.ValidateSingleCallPositionPerCell;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsNotUsedSplicedAndMain;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionNotCircular;
+import org.ringingmaster.engine.parser.observability.PrettyPrintCells;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.splice.ValidateInUseCallAvailableInEveryMethodWhenSpliced;
 import org.ringingmaster.engine.touch.Touch;
@@ -38,6 +39,7 @@ public class Parser implements Function<Touch, Parse> {
     private final ValidateMultiplierGroupAndVarianceDontOverlap validateMultiplierGroupAndVarianceDontOverlap = new ValidateMultiplierGroupAndVarianceDontOverlap();
     private final ValidateDefinitionIsNotUsedSplicedAndMain validateDefinitionIsNotUsedSplicedAndMain = new ValidateDefinitionIsNotUsedSplicedAndMain();
     private final ValidateDefinitionNotCircular validateDefinitionNotCircular = new ValidateDefinitionNotCircular();
+    private final PrettyPrintCells prettyPrintCells = new PrettyPrintCells();
 
 
     @Override
@@ -68,6 +70,10 @@ public class Parser implements Function<Touch, Parse> {
 //TODO		parseSplicedNotBlocks();
                 .andThen(validateDefinitionIsNotUsedSplicedAndMain)
                 .andThen(validateDefinitionNotCircular)
+                .andThen(validateDefinitionNotCircular)
+
+                .andThen(prettyPrintCells)
+
                 .apply(touch);
 
         log.info("[{}] < parsing", touch.getTitle());
