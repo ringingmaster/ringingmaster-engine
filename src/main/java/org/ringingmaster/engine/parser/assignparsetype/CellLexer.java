@@ -66,21 +66,11 @@ class CellLexer {
 
                 if (m.groupCount() == 0) {
                     checkState(parseing.getParseTypes().length == 1, "No regex groups detected - should have 1 parse type, but supplied [%s]", parseing.getParseTypes().length );
-                    addLexicalMatchIfRoom(groups, parseing.getParseTypes()[0], matchStart, matchLength, logPreamble);
+                    addNonGroupedMatchIfRoom(groups, parseing.getParseTypes()[0], matchStart, matchLength, logPreamble);
                 }
                 else {
                     checkState(m.groupCount() == parseing.getParseTypes().length, "Mismatch between parse types count [%s] and regex groups length [%s] ", parseing.getParseTypes().length, m.groupCount());
-                    // We have a lexical match - do we have room?
-                    if (isRangeAvailable(matchStart, matchLength, groups)) {
-                        Set sections = Sets.newHashSet();
-                        int groupStart = matchStart;
-                        for (int group = 1; group <= m.groupCount(); group++) {
-                            int groupLength = m.group(group).length();
-                            sections.add(buildSection(groupStart, groupLength, parseing.getParseTypes()[group - 1]));
-                            groupStart += groupLength;
-                        }
-                        groups.add(buildGroup(matchStart, matchLength, true, Optional.empty(), sections));
-                    }
+                    addGroupedMatchIfRoom(logPreamble, groups, parseing, m, matchStart, matchLength);
                 }
 
                 searchFromIndex = m.start() +1;
@@ -90,7 +80,7 @@ class CellLexer {
         return groups;
     }
 
-    private void addLexicalMatchIfRoom(Set<Group> groups, ParseType parseType, int start, int length, String logPreamble) {
+    private void addNonGroupedMatchIfRoom(Set<Group> groups, ParseType parseType, int start, int length, String logPreamble) {
         log.debug("[{}]    looking for room for lexical match [{}] [{},{}]", logPreamble, parseType, start, length);
 
         if (isRangeAvailable(start, length, groups)) {
@@ -102,10 +92,30 @@ class CellLexer {
         }
     }
 
+    private void addGroupedMatchIfRoom(String logPreamble, Set<Group> groups, LexerDefinition parseing, Matcher m, int matchStart, int matchLength) {
+        // We have a lexical match - do we have room?
+        log.debug("[{}]    looking for room for lexical match [{},{}]", logPreamble, matchStart, matchLength);
+        if (isRangeAvailable(matchStart, matchLength, groups)) {
+            log.debug("[{}]     adding group ", logPreamble);
+            Set sections = Sets.newHashSet();
+            int groupStart = matchStart;
+            for (int group = 1; group <= m.groupCount(); group++) {
+                ParseType parseType = parseing.getParseTypes()[group - 1];
+                log.debug("[{}]      adding section [{}]", logPreamble, parseType);
+                int groupLength = m.group(group).length();
+                sections.add(buildSection(groupStart, groupLength, parseType));
+                groupStart += groupLength;
+            }
+            groups.add(buildGroup(matchStart, matchLength, true, Optional.empty(), sections));
+        }
+        else  {
+            log.debug("[{}]     not adding group", logPreamble);
+        }
+    }
+
     private boolean isRangeAvailable(int start, int length, Set<? extends ElementRange> ranges) {
         for (ElementRange range : ranges) {
-            if (range.fallsWithin(start) ||
-                    range.fallsWithin(start+length-1)) {
+            if (range.intersection(start, length)) {
                 return false;
             }
         }

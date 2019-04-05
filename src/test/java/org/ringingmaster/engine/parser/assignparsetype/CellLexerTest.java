@@ -18,6 +18,7 @@ import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.PRIORITY_HIGHEST;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
@@ -219,6 +220,19 @@ public class CellLexerTest {
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, unparsed(2), valid(SPLICE), unparsed(2));
+    }
+
+    @Test
+    public void lexerDefinitionWithHighestPriorityAndGroupsTakesPrecedence() {
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition(PRIORITY_HIGHEST, "(a)(b)", SPLICE_MULTIPLIER,SPLICE));
+        a.add(new LexerDefinition("dad", CALL));
+
+        Cell cell = buildCell("sdabdk");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
+
+        assertParse(parsedCell, unparsed(2), valid(section(SPLICE_MULTIPLIER), section(SPLICE)), unparsed(2));
     }
 
     @Test

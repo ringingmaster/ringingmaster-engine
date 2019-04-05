@@ -2,7 +2,6 @@ package org.ringingmaster.engine.parser;
 
 import org.ringingmaster.engine.parser.assignparsetype.AssignAndGroupMultiplier;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
-import org.ringingmaster.engine.parser.assignparsetype.GroupTheValidationOpenAndDetailParseTypes;
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupAndVarianceDontOverlap;
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupLogic;
 import org.ringingmaster.engine.parser.brace.ValidateVarianceLogic;
@@ -30,7 +29,6 @@ public class Parser implements Function<Touch, Parse> {
 
     private final AssignParseType assignParseType = new AssignParseType();
     private final AssignAndGroupMultiplier assignAndGroupMultiplier = new AssignAndGroupMultiplier();
-    private final GroupTheValidationOpenAndDetailParseTypes groupTheValidationOpenAndDetailParseTypes = new GroupTheValidationOpenAndDetailParseTypes();
 
     private final ValidateSingleCallPositionPerCell validateSingleCallPositionPerCell = new ValidateSingleCallPositionPerCell();
     private final ValidateInUseCallAvailableInEveryMethodWhenSpliced validateInUseCallAvailableInEveryMethodWhenSpliced = new ValidateInUseCallAvailableInEveryMethodWhenSpliced();
@@ -53,7 +51,6 @@ public class Parser implements Function<Touch, Parse> {
                 // set the parse types
                 assignParseType
                 .andThen(assignAndGroupMultiplier)
-                .andThen(groupTheValidationOpenAndDetailParseTypes)
 
                 // validate
                 .andThen(validateSingleCallPositionPerCell)
