@@ -30,6 +30,9 @@ public class AssertParse {
 
 
     public static void assertParse(ParsedCell parsedCell, Expected... expecteds) {
+
+        log.info("Pretty Print of ParsedCell {}{}", System.lineSeparator(), parsedCell.prettyPrint());
+
         assertNotNull(parsedCell);
 
         assertEquals("expected length does not match actual length", Arrays.stream(expecteds).mapToInt(Expected::getLength).sum(), parsedCell.getElementSize());
@@ -202,9 +205,9 @@ public class AssertParse {
         final boolean validGroup;
         final Optional<String> groupMessage;
 
-        GroupSectionExpected(int length, ParseType parseType, boolean groupVaid, Optional<String> groupMessage) {
+        GroupSectionExpected(int length, ParseType parseType, boolean groupValid, Optional<String> groupMessage) {
             super(length, parseType);
-            this.validGroup = groupVaid;
+            this.validGroup = groupValid;
             this.groupMessage = checkNotNull(groupMessage);
         }
 
@@ -225,8 +228,8 @@ public class AssertParse {
         return new GroupExpected(Optional.empty(), sectionExpecteds);
     }
 
-    public static Expected invalid(String messge, SectionExpected... sectionExpecteds) {
-        return new GroupExpected(Optional.of(messge), sectionExpecteds);
+    public static Expected invalid(String message, SectionExpected... sectionExpecteds) {
+        return new GroupExpected(Optional.of(message), sectionExpecteds);
     }
 
     public static Expected unparsed() {

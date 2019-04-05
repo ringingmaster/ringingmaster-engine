@@ -22,7 +22,6 @@ public class GroupingFactory {
     }
 
     public static Group buildGroup(int elementStartIndex, int elementLength, boolean valid, Optional<String> message, Collection<Section> sections) {
-
         return new DefaultGroup(elementStartIndex, elementLength, valid, message, sections);
     }
 }

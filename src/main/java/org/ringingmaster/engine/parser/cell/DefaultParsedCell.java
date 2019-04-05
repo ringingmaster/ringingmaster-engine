@@ -7,6 +7,8 @@ import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.element.Element;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -100,11 +102,15 @@ class DefaultParsedCell implements ParsedCell {
         StringBuilder groupRow = new StringBuilder("|");
         StringBuilder sectionRow = new StringBuilder("|");
         StringBuilder parsedTypeRow = new StringBuilder("|");
+        Map<Integer, String> messages = new HashMap<>();
 
         for (int groupIndex = 0;groupIndex< allGroups.size();groupIndex++) {
             Group group = allGroups.get(groupIndex);
             groupRow.append("[").append(groupIndex).append("]");
             if (!group.isValid()) groupRow.append("-X");
+            if (group.getMessage().isPresent()){
+                messages.put(groupIndex, group.getMessage().get());
+            }
 
             for (Section section : group.getSections()) {
 
@@ -127,9 +133,20 @@ class DefaultParsedCell implements ParsedCell {
             groupRow.append("|");
         }
 
-        return  groupRow.toString() +
-                System.lineSeparator() + sectionRow.toString() +
-                System.lineSeparator() + parsedTypeRow.toString();
+        StringBuilder result = new StringBuilder();
+
+        result.append(groupRow);
+        result.append(System.lineSeparator()).append(sectionRow);
+        result.append(System.lineSeparator()).append(parsedTypeRow);
+
+        for (Map.Entry<Integer, String> entry : messages.entrySet()) {
+            result.append(System.lineSeparator())
+                    .append(" [").append(entry.getKey()).append("]=")
+                    .append(entry.getValue());
+
+        }
+
+        return result.toString();
     }
 
     private void addBlockChar(StringBuilder builder, int length, char character) {

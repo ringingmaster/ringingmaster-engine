@@ -117,7 +117,7 @@ public class AssignAndGroupMultiplierTest {
                 .andThen(new AssignAndGroupMultiplier())
                 .apply(touch.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_OPEN), valid(2,VARIANCE_DETAIL), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_CLOSE));
+        assertParse(parse.allTouchCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(section(VARIANCE_OPEN), section(2,VARIANCE_DETAIL)), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_CLOSE));
     }
 
     @Test

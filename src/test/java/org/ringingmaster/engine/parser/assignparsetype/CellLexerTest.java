@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
+import static org.ringingmaster.engine.parser.AssertParse.section;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.PRIORITY_HIGHEST;
@@ -158,7 +159,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
-        assertParse(parsedCell, valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), unparsed());
+        assertParse(parsedCell, valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed());
     }
 
     @Test (expected = IllegalStateException.class)
@@ -204,7 +205,7 @@ public class CellLexerTest {
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
-        assertParse(parsedCell, valid(CALL), valid(VARIANCE_OPEN), valid(2, VARIANCE_DETAIL), valid(WHITESPACE), valid(CALL), valid(VARIANCE_CLOSE));
+        assertParse(parsedCell, valid(CALL), valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(WHITESPACE), valid(CALL), valid(VARIANCE_CLOSE));
     }
 
     @Test

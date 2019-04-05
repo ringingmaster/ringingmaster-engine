@@ -74,7 +74,7 @@ public class EmptyParsedCell implements ParsedCell {
 
     @Override
     public String prettyPrint() {
-        return "<EMPTY>";
+        return "<EMPTY_CELL>";
     }
 
     @Override

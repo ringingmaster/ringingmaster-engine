@@ -1,9 +1,9 @@
 package org.ringingmaster.engine.parser.assignparsetype;
 
+import com.google.common.collect.Sets;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.ParsedCellFactory;
-import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
-import org.ringingmaster.engine.parser.cell.grouping.Section;
+import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,12 +13,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
 import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.SORT_PRIORITY_THEN_REGEX;
+import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildParsedCellFromGroups;
+import static org.ringingmaster.engine.parser.cell.grouping.GroupingFactory.buildGroup;
+import static org.ringingmaster.engine.parser.cell.grouping.GroupingFactory.buildGroupToMatchSection;
+import static org.ringingmaster.engine.parser.cell.grouping.GroupingFactory.buildSection;
 
 /**
  * TODO comments???
@@ -31,13 +36,13 @@ class CellLexer {
     private final Logger log = LoggerFactory.getLogger(CellLexer.class);
 
     ParsedCell lexCell(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {
-        Set<Section> sections = calculateSections(cell, lexerDefinitions, logPreamble);
-        return ParsedCellFactory.buildParsedCellFromSections(cell, sections);
+        Set<Group> groups = calculateSections(cell, lexerDefinitions, logPreamble);
+        return buildParsedCellFromGroups(cell, groups);
     }
 
-    private Set<Section> calculateSections(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {
+    private Set<Group> calculateSections(Cell cell, Set<LexerDefinition> lexerDefinitions, String logPreamble) {
         final String cellAsString = cell.getCharacters();
-        Set<Section> sections = new HashSet<>();
+        Set<Group> groups = new HashSet<>();
 
         List<LexerDefinition> sortedLexerDefinitions = new ArrayList<>(lexerDefinitions);
         sortedLexerDefinitions.sort(SORT_PRIORITY_THEN_REGEX);
@@ -53,24 +58,28 @@ class CellLexer {
 
             while (m.find(searchFromIndex)) {
 
-                int start = m.start();
-                int end = m.end();
+                int matchStart = m.start();
+                int matchEnd = m.end();
+                int matchLength = matchEnd-matchStart;
 
-                log.debug("[{}]   starting at index [{}], found match between index [{}-{}] with [{}] groups", logPreamble, searchFromIndex, start, end, m.groupCount());
+                log.debug("[{}]   starting at index [{}], found match between index [{}-{}] with [{}] groups", logPreamble, searchFromIndex, matchStart, matchEnd, m.groupCount());
 
                 if (m.groupCount() == 0) {
                     checkState(parseing.getParseTypes().length == 1, "No regex groups detected - should have 1 parse type, but supplied [%s]", parseing.getParseTypes().length );
-                    addLexicalMatchIfRoom(sections, parseing.getParseTypes()[0], start, end-start, logPreamble);
+                    addLexicalMatchIfRoom(groups, parseing.getParseTypes()[0], matchStart, matchLength, logPreamble);
                 }
                 else {
                     checkState(m.groupCount() == parseing.getParseTypes().length, "Mismatch between parse types count [%s] and regex groups length [%s] ", parseing.getParseTypes().length, m.groupCount());
-                    int groupStart = start;
-                    for (int group = 1; group <= m.groupCount() ; group++) {
-                        // We have a lexical match - do we have room?
-                        int groupLength = m.group(group).length();
-                        addLexicalMatchIfRoom(sections, parseing.getParseTypes()[group-1], groupStart, groupLength, logPreamble);
-                        groupStart += groupLength;
-
+                    // We have a lexical match - do we have room?
+                    if (isRangeAvailable(matchStart, matchLength, groups)) {
+                        Set sections = Sets.newHashSet();
+                        int groupStart = matchStart;
+                        for (int group = 1; group <= m.groupCount(); group++) {
+                            int groupLength = m.group(group).length();
+                            sections.add(buildSection(groupStart, groupLength, parseing.getParseTypes()[group - 1]));
+                            groupStart += groupLength;
+                        }
+                        groups.add(buildGroup(matchStart, matchLength, true, Optional.empty(), sections));
                     }
                 }
 
@@ -78,25 +87,25 @@ class CellLexer {
             }
 
         });
-        return sections;
+        return groups;
     }
 
-    private void addLexicalMatchIfRoom(Set<Section> sections, ParseType parseType, int start, int length, String logPreamble) {
+    private void addLexicalMatchIfRoom(Set<Group> groups, ParseType parseType, int start, int length, String logPreamble) {
         log.debug("[{}]    looking for room for lexical match [{}] [{},{}]", logPreamble, parseType, start, length);
 
-        if (isSectionAvailable(start, length, sections)) {
-            sections.add(GroupingFactory.buildSection(start, length, parseType));
-            log.debug("[{}]     adding section", logPreamble);
+        if (isRangeAvailable(start, length, groups)) {
+            groups.add(buildGroupToMatchSection(buildSection(start, length, parseType)));
+            log.debug("[{}]     adding group with section", logPreamble);
         }
         else {
             log.debug("[{}]     not adding section", logPreamble);
         }
     }
 
-    private boolean isSectionAvailable(int start, int length, Set<Section> sections) {
-        for (Section section : sections) {
-            if (section.fallsWithin(start) ||
-                    section.fallsWithin(start+length-1)) {
+    private boolean isRangeAvailable(int start, int length, Set<? extends ElementRange> ranges) {
+        for (ElementRange range : ranges) {
+            if (range.fallsWithin(start) ||
+                    range.fallsWithin(start+length-1)) {
                 return false;
             }
         }

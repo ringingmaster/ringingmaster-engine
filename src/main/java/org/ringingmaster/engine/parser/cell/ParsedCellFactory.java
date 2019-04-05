@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkElementIndex;
  */
 public class ParsedCellFactory {
 
+    @Deprecated //TODO Deprecated or simply used in tests
     public static ParsedCell buildParsedCellFromSections(Cell parentCell, Set<Section> sections) {
         Set<Group> groups = buildGroupsToMatchSections(sections);
         return buildParsedCellFromGroups(parentCell, groups);
@@ -33,7 +34,7 @@ public class ParsedCellFactory {
                 .collect(Collectors.toSet());
     }
 
-    static ParsedCell buildParsedCellFromGroups(Cell parentCell, Set<Group> groups) {
+    public static ParsedCell buildParsedCellFromGroups(Cell parentCell, Set<Group> groups) {
         Set<Section> sections = groups.stream().flatMap(new Function<Group, Stream<Section>>() {
             @Nullable
             @Override
