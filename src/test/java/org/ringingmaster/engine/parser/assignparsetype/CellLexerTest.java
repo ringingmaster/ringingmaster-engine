@@ -1,6 +1,5 @@
 package org.ringingmaster.engine.parser.assignparsetype;
 
-import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
@@ -15,7 +14,6 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.section;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.PRIORITY_HIGHEST;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
@@ -51,7 +49,7 @@ public class CellLexerTest {
     @Test
     public void parseFailReturnsUnparsed() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("a", CALL));
+        a.add(new LexerDefinition(1,  0,"a", CALL));
         Cell cell = buildCell("zy");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
@@ -62,7 +60,7 @@ public class CellLexerTest {
     @Test
     public void singleCharacterCellReturnsCorrectParseType() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("a", CALL));
+        a.add(new LexerDefinition(1, 0,"a", CALL));
         Cell cell = buildCell("a");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
@@ -73,8 +71,8 @@ public class CellLexerTest {
     @Test
     public void distinguishTwoNonOverlappingParseTypes() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("a", CALL));
-        a.add(new LexerDefinition("b", SPLICE));
+        a.add(new LexerDefinition(1, 0,"a", CALL));
+        a.add(new LexerDefinition(1, 0,"b", SPLICE));
 
         Cell cell = buildCell("ab");
 
@@ -84,10 +82,10 @@ public class CellLexerTest {
     }
 
     @Test
-    public void overlappingTokensUseLongerTokenFirst() {
+    public void overlappingTokensUseHigherPrecedenceFirst() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("ab", CALL));
-        a.add(new LexerDefinition("bcd", SPLICE));
+        a.add(new LexerDefinition(1, 0,"ab", CALL));
+        a.add(new LexerDefinition(2, 0,"bcd", SPLICE));
 
         Cell cell = buildCell("abcd");
 
@@ -97,10 +95,10 @@ public class CellLexerTest {
     }
 
     @Test
-    public void extendedRightTokensUseLongerTokenFirst() {
+    public void extendedRightTokensUseHigherPrecedenceFirst() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("ab", CALL));
-        a.add(new LexerDefinition("abc", SPLICE));
+        a.add(new LexerDefinition(1, 0,"ab", CALL));
+        a.add(new LexerDefinition(2, 0,"abc", SPLICE));
 
         Cell cell = buildCell("abc");
 
@@ -112,8 +110,8 @@ public class CellLexerTest {
     @Test
     public void extendedLeftTokensUseLongerTokenFirst() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("bc", CALL));
-        a.add(new LexerDefinition("abc", SPLICE));
+        a.add(new LexerDefinition(1, 0,"bc", CALL));
+        a.add(new LexerDefinition(1, 0,"abc", SPLICE));
 
         Cell cell = buildCell("abc");
 
@@ -125,8 +123,8 @@ public class CellLexerTest {
     @Test
     public void whitespaceInTokenGetsMarkedAsToken() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("a b", CALL));
-        a.add(new LexerDefinition(" ", WHITESPACE));
+        a.add(new LexerDefinition(2, 0,"a b", CALL));
+        a.add(new LexerDefinition(1, 0," ", WHITESPACE));
 
         Cell cell = buildCell("xa b s");
 
@@ -139,8 +137,8 @@ public class CellLexerTest {
     @Test
     public void backToBackParsingsDoNotResultInGaps() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("-", CALL));
-        a.add(new LexerDefinition(" ", WHITESPACE));
+        a.add(new LexerDefinition(1,  0,"-", CALL));
+        a.add(new LexerDefinition(1, 0," ", WHITESPACE));
 
         Cell cell = buildCell("- ");
 
@@ -154,7 +152,7 @@ public class CellLexerTest {
     @Test
     public void matchingRegexWithMultipleGroupsAddsMultipleGroups() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
+        a.add(new LexerDefinition(1, 0,"(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
 
         Cell cell = buildCell("[-o]");
 
@@ -166,7 +164,7 @@ public class CellLexerTest {
     @Test (expected = IllegalStateException.class)
     public void mismatchBetweenParseTypesCountAndRegexGroupsCountThrows() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN));
+        a.add(new LexerDefinition(1, 0,"(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN));
 
         Cell cell = buildCell("[-o]");
 
@@ -176,7 +174,7 @@ public class CellLexerTest {
     @Test (expected = IllegalStateException.class)
     public void notUsingRegexGroupsAndSupplyingMoreThanOneParseTypeThrows() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("\\[", VARIANCE_OPEN, VARIANCE_DETAIL));
+        a.add(new LexerDefinition(1, 0,"\\[", VARIANCE_OPEN, VARIANCE_DETAIL));
 
         Cell cell = buildCell("[-o]");
 
@@ -186,7 +184,7 @@ public class CellLexerTest {
     @Test (expected = IllegalArgumentException.class)
     public void notUsingRegexGroupsAndSupplyingLessThanOneParseTypeThrows() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("\\["));
+        a.add(new LexerDefinition(1, 0,"\\["));
 
         Cell cell = buildCell("[-o]");
 
@@ -196,11 +194,11 @@ public class CellLexerTest {
     @Test
     public void matchComplexGroupsInsideOtherParsings() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition("(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
-        a.add(new LexerDefinition("\\]", VARIANCE_CLOSE));
-        a.add(new LexerDefinition("-", CALL));
-        a.add(new LexerDefinition("o", CALL));
-        a.add(new LexerDefinition("\\s", WHITESPACE));
+        a.add(new LexerDefinition(5, 0, "(\\[)([-+](?:[0-9,]+|[oiOI]+))", VARIANCE_OPEN, VARIANCE_DETAIL));
+        a.add(new LexerDefinition(4, 0, "\\]", VARIANCE_CLOSE));
+        a.add(new LexerDefinition(3, 0, "-", CALL));
+        a.add(new LexerDefinition(2, 0, "o", CALL));
+        a.add(new LexerDefinition(1, 0, "\\s", WHITESPACE));
 
         Cell cell = buildCell("o[-o -]");
 
@@ -210,10 +208,35 @@ public class CellLexerTest {
     }
 
     @Test
+    public void matchEmptyGroupGivesNoParseGroup() {
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition(1, 0,"(a)(b*)(c)", VARIANCE_OPEN, VARIANCE_DETAIL, VARIANCE_CLOSE));
+
+        Cell cell = buildCell("ac");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
+
+        assertParse(parsedCell, valid(section(VARIANCE_OPEN), section(VARIANCE_CLOSE)));
+    }
+
+    @Test
     public void lexerDefinitionWithHighestPriorityTakesPrecedence() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition(PRIORITY_HIGHEST, "a", SPLICE));
-        a.add(new LexerDefinition("dad", CALL));
+        a.add(new LexerDefinition(10, 5, "a", SPLICE));
+        a.add(new LexerDefinition(5, 10, "dad", CALL));
+
+        Cell cell = buildCell("sdadk");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
+
+        assertParse(parsedCell, unparsed(2), valid(SPLICE), unparsed(2));
+    }
+
+    @Test
+    public void lexerDefinitionWithHighestSubPriorityWithinTakesPrecedence() {
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition(1, 10, "a", SPLICE));
+        a.add(new LexerDefinition(1, 5, "dad", CALL));
 
         Cell cell = buildCell("sdadk");
 
@@ -225,24 +248,14 @@ public class CellLexerTest {
     @Test
     public void lexerDefinitionWithHighestPriorityAndGroupsTakesPrecedence() {
         Set<LexerDefinition> a = Sets.newHashSet();
-        a.add(new LexerDefinition(PRIORITY_HIGHEST, "(a)(b)", SPLICE_MULTIPLIER,SPLICE));
-        a.add(new LexerDefinition("dad", CALL));
+        a.add(new LexerDefinition(10, 0, "(a)(b)", SPLICE_MULTIPLIER,SPLICE));
+        a.add(new LexerDefinition(5, 0, "dad", CALL));
 
         Cell cell = buildCell("sdabdk");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
         assertParse(parsedCell, unparsed(2), valid(section(SPLICE_MULTIPLIER), section(SPLICE)), unparsed(2));
-    }
-
-    @Test
-    public void testRange() {
-
-        Range<Integer> range = Range.openClosed(2, 3);
-
-        log.info(range.toString());
-        log.info("2 [{}]",range.contains(2));
-        log.info("3 [{}]",range.contains(3));
     }
 
 

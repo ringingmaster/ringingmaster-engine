@@ -295,7 +295,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(1, CALL));
+        assertParse(result.allTouchCells().get(0,0), valid( CALL));
         assertParse(result.allTouchCells().get(0,1), valid(SPLICE), valid(SPLICE));
     }
 

@@ -47,6 +47,9 @@ public class AssertParse {
                 GroupExpected groupExpected = (GroupExpected) expected;
 
                 log.info("Start Group at index [{}]", elementIndex);
+
+                assertEquals("Group validity", groupExpected.validGroup, parsedCell.getGroupAtElementIndex(elementIndex).get().isValid());
+
                 if (groupExpected.groupMessage.isPresent()) {
                     assertEquals("Group message", groupExpected.groupMessage, parsedCell.getGroupAtElementIndex(elementIndex).get().getMessage());
                 }
@@ -131,10 +134,12 @@ public class AssertParse {
 
     private static class GroupExpected implements Expected {
 
+        final boolean validGroup;
         final Optional<String> groupMessage;
         final SectionExpected[] sectionExpecteds;
 
-        GroupExpected(Optional<String> groupMessage, SectionExpected... sectionExpecteds) {
+        GroupExpected(boolean validGroup, Optional<String> groupMessage, SectionExpected... sectionExpecteds) {
+            this.validGroup = validGroup;
             this.sectionExpecteds = sectionExpecteds;
             this.groupMessage = groupMessage;
         }
@@ -225,11 +230,15 @@ public class AssertParse {
 
 
     public static Expected valid(SectionExpected... sectionExpecteds) {
-        return new GroupExpected(Optional.empty(), sectionExpecteds);
+        return new GroupExpected(true, Optional.empty(), sectionExpecteds);
+    }
+
+    public static Expected invalid(SectionExpected... sectionExpecteds) {
+        return new GroupExpected(false, Optional.empty(), sectionExpecteds);
     }
 
     public static Expected invalid(String message, SectionExpected... sectionExpecteds) {
-        return new GroupExpected(Optional.of(message), sectionExpecteds);
+        return new GroupExpected(false, Optional.of(message), sectionExpecteds);
     }
 
     public static Expected unparsed() {
@@ -268,5 +277,9 @@ public class AssertParse {
 
     public static Expected invalid(int length, ParseType parseType, String message) {
         return new GroupSectionExpected(length, parseType, false, Optional.of(message));
+    }
+
+    public static Expected invalid(ParseType parseType, String message) {
+        return new GroupSectionExpected(1, parseType, false, Optional.of(message));
     }
 }

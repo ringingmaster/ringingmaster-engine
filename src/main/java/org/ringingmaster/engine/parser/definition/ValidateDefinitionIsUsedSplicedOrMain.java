@@ -22,7 +22,7 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class ValidateDefinitionIsNotUsedSplicedAndMain implements Function<Parse, Parse> {
+public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -34,11 +34,11 @@ public class ValidateDefinitionIsNotUsedSplicedAndMain implements Function<Parse
 
 
     public Parse apply(Parse input) {
-        log.debug("[{}] > definition in spliced or main check", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate definition is used  spliced or main", input.getUnderlyingTouch().getTitle());
 
         Parse result = doCheck(input);
 
-        log.debug("[{}] < definition in spliced or main check", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate definition is used  spliced or main", input.getUnderlyingTouch().getTitle());
 
         return result;
     }

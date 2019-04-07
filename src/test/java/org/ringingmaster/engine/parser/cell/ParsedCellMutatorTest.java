@@ -313,7 +313,7 @@ public class ParsedCellMutatorTest {
                 .widenSectionRight(0, 2)
                 .build();
 
-        assertParse(builtCell, valid(3, CALL), valid(1, PLAIN_LEAD), unparsed(2));
+        assertParse(builtCell, valid(3, CALL), valid( PLAIN_LEAD), unparsed(2));
     }
 
     @Test
@@ -326,7 +326,7 @@ public class ParsedCellMutatorTest {
                 .widenSectionRight(1, 1)
                 .build();
 
-        assertParse(builtCell, valid(3, CALL), valid(1, PLAIN_LEAD), unparsed(2));
+        assertParse(builtCell, valid(3, CALL), valid( PLAIN_LEAD), unparsed(2));
     }
 
     @Test
@@ -338,7 +338,7 @@ public class ParsedCellMutatorTest {
                 .widenSectionLeft(3, 2)
                 .build();
 
-        assertParse(builtCell, valid(1, CALL), valid(3, PLAIN_LEAD), unparsed(2));
+        assertParse(builtCell, valid( CALL), valid(3, PLAIN_LEAD), unparsed(2));
     }
 
     @Test
@@ -351,7 +351,7 @@ public class ParsedCellMutatorTest {
                 .widenSectionLeft(2, 1)
                 .build();
 
-        assertParse(builtCell, valid(1, CALL), valid(3, PLAIN_LEAD), unparsed(2));
+        assertParse(builtCell, valid( CALL), valid(3, PLAIN_LEAD), unparsed(2));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -414,7 +414,7 @@ public class ParsedCellMutatorTest {
                 .invalidateGroup(3, "MESSAGE")
                 .build();
 
-        assertParse(builtCell, valid(1, CALL), invalid(3, PLAIN_LEAD, "MESSAGE"), unparsed(2));
+        assertParse(builtCell, valid( CALL), invalid(3, PLAIN_LEAD, "MESSAGE"), unparsed(2));
     }
 
 //TODO other compound actions

@@ -76,12 +76,15 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
                 else if (section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE) ||
                         section.getParseType().equals(ParseType.VARIANCE_CLOSE)) {
 
-                    final CoordinateAndSection head = openBraces.remove();
+                    if (!openBraces.isEmpty()) {
 
-                    if ((head.section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) && section.getParseType().equals(ParseType.VARIANCE_CLOSE)) ||
-                        (head.section.getParseType().equals(ParseType.VARIANCE_OPEN) && section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE))){
-                        invalidSections.put(head, "Variances and groups can't overlap");
-                        invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "???");
+                        final CoordinateAndSection head = openBraces.remove();
+
+                        if ((head.section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) && section.getParseType().equals(ParseType.VARIANCE_CLOSE)) ||
+                                (head.section.getParseType().equals(ParseType.VARIANCE_OPEN) && section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE))) {
+                            invalidSections.put(head, "Variances and Groups can't overlap");
+                            invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "Variances and Groups can't overlap");
+                        }
                     }
                 }
 

@@ -50,7 +50,7 @@ class CellLexer {
         sortedLexerDefinitions.forEach((parseing) -> {
             checkState(parseing.getRegex().length() > 0, "Should never have an empty token. Mapped to [{}]", Arrays.toString(parseing.getParseTypes()));
 
-            log.debug("[{}]  testing for [{}]", logPreamble, parseing);
+            log.debug("[{}]  testing for [{}] against cell string [{}]", logPreamble, parseing, cellAsString);
 
             Pattern p = Pattern.compile(parseing.getRegex());//. represents single character
             Matcher m = p.matcher(cellAsString);
@@ -62,7 +62,7 @@ class CellLexer {
                 int matchEnd = m.end();
                 int matchLength = matchEnd-matchStart;
 
-                log.debug("[{}]   starting at index [{}], found match between index [{}-{}] with [{}] groups", logPreamble, searchFromIndex, matchStart, matchEnd, m.groupCount());
+                log.debug("[{}]   starting at index [{}], found match between index [{}>{}] with [{}] groups", logPreamble, searchFromIndex, matchStart, matchEnd, m.groupCount());
 
                 if (m.groupCount() == 0) {
                     checkState(parseing.getParseTypes().length == 1, "No regex groups detected - should have 1 parse type, but supplied [%s]", parseing.getParseTypes().length );
@@ -81,7 +81,7 @@ class CellLexer {
     }
 
     private void addNonGroupedMatchIfRoom(Set<Group> groups, ParseType parseType, int start, int length, String logPreamble) {
-        log.debug("[{}]    looking for room for lexical match [{}] [{},{}]", logPreamble, parseType, start, length);
+        log.debug("[{}]    looking for room for lexical match [{}] [{}/{}]", logPreamble, parseType, start, length);
 
         if (isRangeAvailable(start, length, groups)) {
             groups.add(buildGroupToMatchSection(buildSection(start, length, parseType)));
@@ -94,7 +94,7 @@ class CellLexer {
 
     private void addGroupedMatchIfRoom(String logPreamble, Set<Group> groups, LexerDefinition parseing, Matcher m, int matchStart, int matchLength) {
         // We have a lexical match - do we have room?
-        log.debug("[{}]    looking for room for lexical match [{},{}]", logPreamble, matchStart, matchLength);
+        log.debug("[{}]    looking for room for lexical match [{}/{}]", logPreamble, matchStart, matchLength);
         if (isRangeAvailable(matchStart, matchLength, groups)) {
             log.debug("[{}]     adding group ", logPreamble);
             Set sections = Sets.newHashSet();
@@ -103,8 +103,10 @@ class CellLexer {
                 ParseType parseType = parseing.getParseTypes()[group - 1];
                 log.debug("[{}]      adding section [{}]", logPreamble, parseType);
                 int groupLength = m.group(group).length();
-                sections.add(buildSection(groupStart, groupLength, parseType));
-                groupStart += groupLength;
+                if (groupLength > 0) {
+                    sections.add(buildSection(groupStart, groupLength, parseType));
+                    groupStart += groupLength;
+                }
             }
             groups.add(buildGroup(matchStart, matchLength, true, Optional.empty(), sections));
         }

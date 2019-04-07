@@ -23,7 +23,7 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class ValidateDefinitionNotCircular implements Function<Parse, Parse> {
+public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
@@ -33,7 +33,7 @@ public class ValidateDefinitionNotCircular implements Function<Parse, Parse> {
 
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > circular definition check", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate definitions do not form a circular dependency", input.getUnderlyingTouch().getTitle());
 
         Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(input);
 
@@ -58,7 +58,7 @@ public class ValidateDefinitionNotCircular implements Function<Parse, Parse> {
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < circular definition check", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate definitions do not form a circular dependency", input.getUnderlyingTouch().getTitle());
 
         return result;
     }

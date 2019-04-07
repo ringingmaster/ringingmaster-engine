@@ -13,6 +13,7 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
@@ -118,7 +119,7 @@ public class AssignParseTypeDEFINITIONTest {
     }
 
     @Test
-    public void transativeDefinitionInMainBodyParsedAsMainBody() {
+    public void transitiveDefinitionInMainBodyParsedAsMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def3");
         touch.addDefinition("def3", "def2");
         touch.addDefinition("def2", "def1");
@@ -130,7 +131,7 @@ public class AssignParseTypeDEFINITIONTest {
     }
 
     @Test
-    public void transativeDefinitionInSplicedParsedAsSplice() {
+    public void transitiveDefinitionInSplicedParsedAsSplice() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
         touch.addCharacters(TableType.TOUCH_TABLE,0,1,"def3");
         touch.setSpliced(true);
@@ -145,7 +146,7 @@ public class AssignParseTypeDEFINITIONTest {
     }
 
     @Test
-    public void transativeDefinitionInSplicedAndMainBodyParsedAsMainBody() {
+    public void transitiveDefinitionInSplicedAndMainBodyParsedAsMainBody() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def33");
         touch.addCharacters(TableType.TOUCH_TABLE,0,1,"def3");
         touch.setSpliced(true);
@@ -157,6 +158,18 @@ public class AssignParseTypeDEFINITIONTest {
         assertParse(parse.findDefinitionByShorthand("def3").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(4, DEFINITION));
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
+    }
+
+    @Test
+    public void multiplierDoesAddsDefaultCallWhenUsedInSpliceAndMainCells() {
+        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def2");
+        touch.addCharacters(TOUCH_TABLE, 0, 1, "def2");
+        touch.setSpliced(true);
+        touch.addDefinition("def2", "2");
+
+        Parse parse = new AssignParseType().apply(touch.get());
+
+        assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(DEFAULT_CALL_MULTIPLIER));
     }
 
     private NotationBody buildPlainBobMinor() {

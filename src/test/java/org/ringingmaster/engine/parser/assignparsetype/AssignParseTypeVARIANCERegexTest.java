@@ -19,6 +19,7 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.section;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
@@ -49,24 +50,24 @@ public class AssignParseTypeVARIANCERegexTest {
                 { "[+10",                   new Expected[] {valid(section(VARIANCE_OPEN), section(3, VARIANCE_DETAIL))} },
                 { "[+1,2",                  new Expected[] {valid(section(VARIANCE_OPEN), section(4, VARIANCE_DETAIL))} },
                 { "[+11,20,",               new Expected[] {valid(section(VARIANCE_OPEN), section(6, VARIANCE_DETAIL)), unparsed()} },
-                { "[+,1",                   new Expected[] {unparsed(4)} },
-                { "[+,1,",                  new Expected[] {unparsed(5)} },
+                { "[+,1",                   new Expected[] {unparsed(3), valid(DEFAULT_CALL_MULTIPLIER)} },
+                { "[+,1,",                  new Expected[] {unparsed(3), valid(DEFAULT_CALL_MULTIPLIER),unparsed(1)} },
 
-                { "[+o",                    new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL))} },
                 { "[+O",                    new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL))} },
-                { "[+o,",                   new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed()} },
-                { "[+o1",                   new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed()} },
+                { "[+O",                    new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL))} },
+                { "[+O,",                   new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed()} },
+                { "[+O1",                   new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(DEFAULT_CALL_MULTIPLIER)} },
                 { "[++",                    new Expected[] {unparsed(3)} },
 
                 { "[+o",                    new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL))} },
                 { "[+o,",                   new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed()} },
-                { "[+o1",                   new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed()} },
+                { "[+o1",                   new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(DEFAULT_CALL_MULTIPLIER)} },
                 { "[++",                    new Expected[] {unparsed(3)} },
 
                 { "[+odd",                  new Expected[] {valid(section(VARIANCE_OPEN), section(4, VARIANCE_DETAIL))} },
                 { "[+OdD",                  new Expected[] {valid(section(VARIANCE_OPEN), section(4, VARIANCE_DETAIL))} },
                 { "[+1odd",                 new Expected[] {valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed(3)} },
-                { "[+odd1",                 new Expected[] {valid(section(VARIANCE_OPEN), section(4, VARIANCE_DETAIL)), unparsed()} },
+                { "[+odd1",                 new Expected[] {valid(section(VARIANCE_OPEN), section(4, VARIANCE_DETAIL)), valid(DEFAULT_CALL_MULTIPLIER)} },
 
                 { "[+even",                 new Expected[] {valid(section(VARIANCE_OPEN), section(5, VARIANCE_DETAIL))} },
                 { "[+EvEn",                 new Expected[] {valid(section(VARIANCE_OPEN), section(5, VARIANCE_DETAIL))} },

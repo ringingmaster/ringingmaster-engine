@@ -21,14 +21,14 @@ import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
-public class ValidateDefinitionNotCircularTest {
+public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionNotCircular())
+                .andThen(new ValidateDefinitionIsNotCircular())
                 .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
@@ -47,7 +47,7 @@ public class ValidateDefinitionNotCircularTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionNotCircular())
+                .andThen(new ValidateDefinitionIsNotCircular())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -66,7 +66,7 @@ public class ValidateDefinitionNotCircularTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionNotCircular())
+                .andThen(new ValidateDefinitionIsNotCircular())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(5, DEFINITION));
@@ -84,7 +84,7 @@ public class ValidateDefinitionNotCircularTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionNotCircular())
+                .andThen(new ValidateDefinitionIsNotCircular())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(5, DEFINITION));
@@ -99,7 +99,7 @@ public class ValidateDefinitionNotCircularTest {
         touch.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionNotCircular())
+                .andThen(new ValidateDefinitionIsNotCircular())
                 .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
@@ -113,7 +113,7 @@ public class ValidateDefinitionNotCircularTest {
         touch.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionNotCircular())
+                .andThen(new ValidateDefinitionIsNotCircular())
                 .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
@@ -126,7 +126,7 @@ public class ValidateDefinitionNotCircularTest {
         touch.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionNotCircular())
+                .andThen(new ValidateDefinitionIsNotCircular())
                 .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));

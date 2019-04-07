@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author stevelake
  */
-public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
+public abstract class SkeletalMatchingBraceLogic implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -35,7 +35,7 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
     private final String braceTypeName;
     private final int nestingDepth;
 
-    public SkeletalBraceLogic(ParseType openingBrace, ParseType closingBrace, String braceTypeName, int nestingDepth) {
+    public SkeletalMatchingBraceLogic(ParseType openingBrace, ParseType closingBrace, String braceTypeName, int nestingDepth) {
         this.openingBrace = checkNotNull(openingBrace);
         this.closingBrace = checkNotNull(closingBrace);
         this.braceTypeName = checkNotNull(braceTypeName);
@@ -44,7 +44,7 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
     }
 
     public Parse apply(Parse input) {
-        log.debug("[{}] > " + braceTypeName + " check", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate " + braceTypeName + " brace logic", input.getUnderlyingTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(input.allTouchCells().getBackingTable());
@@ -68,7 +68,7 @@ public abstract class SkeletalBraceLogic implements Function<Parse, Parse> {
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < " + braceTypeName + " check", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate " + braceTypeName + " brace logic", input.getUnderlyingTouch().getTitle());
 
         return result;
 

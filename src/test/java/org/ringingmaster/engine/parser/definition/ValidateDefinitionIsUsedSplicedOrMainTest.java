@@ -20,13 +20,13 @@ import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
-public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
+public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
         Parse parse = new AssignParseType().apply(touch.get());
-        Parse result = new ValidateDefinitionIsNotUsedSplicedAndMain().apply(parse);
+        Parse result = new ValidateDefinitionIsUsedSplicedOrMain().apply(parse);
 
         assertEquals(0, result.allTouchCells().getRowSize());
         assertEquals(0, result.allTouchCells().getColumnSize());
@@ -44,7 +44,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -61,7 +61,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
@@ -76,7 +76,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 0,1, "CALL");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
@@ -93,7 +93,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
@@ -111,7 +111,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
@@ -129,7 +129,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN_1");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
@@ -146,7 +146,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 1,1, "IN_SPICE");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
@@ -164,7 +164,7 @@ public class ValidateDefinitionIsNotUsedSplicedAndMainTest {
         touch.addCharacters(TOUCH_TABLE, 1, 1, "IN_SPICE_1");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateDefinitionIsNotUsedSplicedAndMain())
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0, 0), invalid(4, DEFINITION));

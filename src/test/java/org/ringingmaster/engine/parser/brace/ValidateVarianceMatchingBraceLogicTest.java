@@ -24,14 +24,14 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
 import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
-public class ValidateVarianceLogicTest {
+public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
         ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
         assertEquals(0, result.allTouchCells().getRowSize());
@@ -50,7 +50,7 @@ public class ValidateVarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
         assertEquals(3, result.allTouchCells().getRowSize());
@@ -66,10 +66,10 @@ public class ValidateVarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "[-o]");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(1, VARIANCE_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), valid(section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid( VARIANCE_CLOSE));
     }
 
     @Test
@@ -78,10 +78,10 @@ public class ValidateVarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "][-o");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), invalid(1, VARIANCE_CLOSE, "No matching opening variance brace"), invalid("No matching closing variance brace", section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)));
+        assertParse(result.allTouchCells().get(0,0), invalid( VARIANCE_CLOSE, "No matching opening variance brace"), invalid("No matching closing variance brace", section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)));
     }
 
     @Test
@@ -91,10 +91,10 @@ public class ValidateVarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "[-0");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
-        assertParse(result.allTouchCells().get(0,0), invalid(1, VARIANCE_CLOSE));
+        assertParse(result.allTouchCells().get(0,0), invalid( VARIANCE_CLOSE));
         assertParse(result.allTouchCells().get(1,0), invalid("No matching closing variance brace", section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)));
     }
 
@@ -107,7 +107,7 @@ public class ValidateVarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 1,0, "-");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0), unparsed());
@@ -120,7 +120,7 @@ public class ValidateVarianceLogicTest {
         touch.addDefinition("DEF1", "[-e-]");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
         assertParse(result.findDefinitionByShorthand("DEF1").get().get(0, DEFINITION_COLUMN), valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(CALL), valid(VARIANCE_CLOSE));
@@ -132,15 +132,15 @@ public class ValidateVarianceLogicTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "[-o[-e-]]");
 
         Parse result = new AssignParseType()
-                .andThen(new ValidateVarianceLogic())
+                .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
                 valid(section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)),
                     invalid("Nesting depth greater than the 1 allowed for variance", section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)),
-                        valid(1, CALL),
-                    valid(1, VARIANCE_CLOSE),
-                invalid(1, VARIANCE_CLOSE)
+                        valid( CALL),
+                    valid( VARIANCE_CLOSE),
+                invalid( VARIANCE_CLOSE)
         );
     }
 

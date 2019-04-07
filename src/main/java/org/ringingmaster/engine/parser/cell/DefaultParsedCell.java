@@ -106,7 +106,7 @@ class DefaultParsedCell implements ParsedCell {
 
         for (int groupIndex = 0;groupIndex< allGroups.size();groupIndex++) {
             Group group = allGroups.get(groupIndex);
-            groupRow.append("[").append(groupIndex).append("]");
+            groupRow.append("[").append(groupIndex).append("]").append(group.getStartIndex());
             if (!group.isValid()) groupRow.append("-X");
             if (group.getMessage().isPresent()){
                 messages.put(groupIndex, group.getMessage().get());
