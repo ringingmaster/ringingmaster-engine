@@ -60,14 +60,6 @@ public class AssertParse {
                 }
                 log.info("End Group [{}]", elementIndex);
             }
-            else if (expected instanceof GroupSectionExpected) {
-                GroupSectionExpected groupSectionExpected = (GroupSectionExpected) expected;
-
-                log.info("Checking Group/Section [{}, {}]", elementIndex, groupSectionExpected);
-                assertGroupForSingleSection(parsedCell, elementIndex, groupSectionExpected);
-                elementIndex = assertSection(parsedCell, elementIndex, groupSectionExpected,0);
-
-            }
             else if (expected instanceof UnparsedExpected) {
                 UnparsedExpected unparsedExpected = (UnparsedExpected) expected;
 
@@ -84,21 +76,6 @@ public class AssertParse {
             else if (expected instanceof SectionExpected) {
                 throw new IllegalStateException("SectionExpected onlay valid in a GroupExpected");
             }
-        }
-    }
-
-    private static void assertGroupForSingleSection(ParsedCell parsedCell, int elementIndex, GroupSectionExpected groupSectionExpected) {
-        // Assert the group matches the section.
-
-        Optional<Section> sectionAtFirstElementIndex = parsedCell.getSectionAtElementIndex(elementIndex);
-        Optional<Group> groupAtFirstElementIndex = parsedCell.getGroupAtElementIndex(elementIndex);
-        assertTrue("No group at elementIndex [" + elementIndex + "]", groupAtFirstElementIndex.isPresent());
-        assertEquals("Incorrect number of Sections", 1, groupAtFirstElementIndex.get().getSections().size());
-        assertEquals(sectionAtFirstElementIndex.get(), groupAtFirstElementIndex.get().getSections().get(0));
-
-        assertEquals("Group validity", groupSectionExpected.validGroup, groupAtFirstElementIndex.get().isValid());
-        if (groupSectionExpected.groupMessage.isPresent()) {
-            assertEquals("Group message", groupSectionExpected.groupMessage, groupAtFirstElementIndex.get().getMessage());
         }
     }
 
@@ -203,31 +180,7 @@ public class AssertParse {
     }
 
 
-    /**
-     * Used where a section and group align, and specifies both the group and section semantics.
-     */
-    public static class GroupSectionExpected extends SectionExpected {
-        final boolean validGroup;
-        final Optional<String> groupMessage;
-
-        GroupSectionExpected(int length, ParseType parseType, boolean groupValid, Optional<String> groupMessage) {
-            super(length, parseType);
-            this.validGroup = groupValid;
-            this.groupMessage = checkNotNull(groupMessage);
-        }
-
-        @Override
-        public String toString() {
-            return "{" +
-                    length + ", " +
-                    parseType + ", " +
-                    (validGroup ? "valid":"invalid") +
-                    '}';
-        }
-    }
-
-
-
+    // groups
 
     public static Expected valid(SectionExpected... sectionExpecteds) {
         return new GroupExpected(true, Optional.empty(), sectionExpecteds);
@@ -241,14 +194,7 @@ public class AssertParse {
         return new GroupExpected(false, Optional.of(message), sectionExpecteds);
     }
 
-    public static Expected unparsed() {
-        return new UnparsedExpected(1);
-    }
-
-    public static Expected unparsed(int length) {
-        return new UnparsedExpected(length);
-    }
-
+    // sections
 
     public static SectionExpected section(ParseType parseType) {
         return new SectionExpected(1, parseType);
@@ -259,27 +205,38 @@ public class AssertParse {
     }
 
 
+    // groups & section aligns
+
     public static Expected valid(ParseType parseType) {
         return valid(1, parseType);
     }
 
     public static Expected valid(int length, ParseType parseType) {
-        return new GroupSectionExpected(length, parseType, true, Optional.empty());
+        return valid(section(length, parseType));
     }
 
     public static Expected invalid(ParseType parseType) {
-        return new GroupSectionExpected(1, parseType, false, Optional.empty());
+        return invalid(section(parseType));
     }
 
     public static Expected invalid(int length, ParseType parseType) {
-        return new GroupSectionExpected(length, parseType, false, Optional.empty());
+        return invalid(section(length,parseType));
     }
 
     public static Expected invalid(int length, ParseType parseType, String message) {
-        return new GroupSectionExpected(length, parseType, false, Optional.of(message));
+        return invalid(message, section(length,parseType));
     }
 
     public static Expected invalid(ParseType parseType, String message) {
-        return new GroupSectionExpected(1, parseType, false, Optional.of(message));
+        return invalid(message, section(1, parseType));
+    }
+
+
+    public static Expected unparsed() {
+        return new UnparsedExpected(1);
+    }
+
+    public static Expected unparsed(int length) {
+        return new UnparsedExpected(length);
     }
 }
