@@ -4,11 +4,13 @@ import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.touch.element.Element;
 
 import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
@@ -58,6 +60,7 @@ public class ParsedCellFactoryTest {
 
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(3);
+        when(mock.getElement(anyInt())).thenReturn(new Element('c'));
 
         ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }

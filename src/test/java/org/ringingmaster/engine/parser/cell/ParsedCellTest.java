@@ -7,12 +7,14 @@ import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.touch.element.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -73,6 +75,7 @@ public class ParsedCellTest {
 
         Cell mockCell = mock(Cell.class);
         when(mockCell.getElementSize()).thenReturn(10);
+        when(mockCell.getElement(anyInt())).thenReturn(new Element('c'));
 
         ParsedCell parsedCell = ParsedCellFactory.buildParsedCellFromGroups(mockCell, groups);
 

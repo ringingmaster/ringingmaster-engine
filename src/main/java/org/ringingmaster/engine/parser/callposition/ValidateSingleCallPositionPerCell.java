@@ -7,7 +7,7 @@ import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.ParsedCellMutator;
+import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;

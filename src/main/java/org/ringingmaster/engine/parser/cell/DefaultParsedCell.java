@@ -141,7 +141,7 @@ class DefaultParsedCell implements ParsedCell {
 
         for (Map.Entry<Integer, String> entry : messages.entrySet()) {
             result.append(System.lineSeparator())
-                    .append(" [").append(entry.getKey()).append("]=")
+                    .append("[").append(entry.getKey()).append("]=")
                     .append(entry.getValue());
 
         }

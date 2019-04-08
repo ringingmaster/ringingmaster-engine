@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.parser.cell;
+package org.ringingmaster.engine.parser.cell.mutator;
 
 import org.pcollections.PSet;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
