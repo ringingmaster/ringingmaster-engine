@@ -6,8 +6,9 @@ import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
+import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;
@@ -68,26 +69,32 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
         Deque<CoordinateAndSection> openBraces = new ArrayDeque<>();
 
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : originalCells) {
-            for (Section section : locationAndCell.getValue().allSections()) {
-                if (section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) ||
-                        section.getParseType().equals(ParseType.VARIANCE_OPEN)) {
-                    openBraces.addFirst(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section));
-                }
-                else if (section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE) ||
-                        section.getParseType().equals(ParseType.VARIANCE_CLOSE)) {
+            for (Group group : locationAndCell.getValue().allGroups()) {
 
-                    if (!openBraces.isEmpty()) {
+                if (group.isValid()){
 
-                        final CoordinateAndSection head = openBraces.remove();
+                    for (Section section : group.getSections()) {
+                        if (section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) ||
+                                section.getParseType().equals(ParseType.VARIANCE_OPEN)) {
+                            openBraces.addFirst(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section));
+                        }
+                        else if (section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE) ||
+                                section.getParseType().equals(ParseType.VARIANCE_CLOSE)) {
 
-                        if ((head.section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) && section.getParseType().equals(ParseType.VARIANCE_CLOSE)) ||
-                                (head.section.getParseType().equals(ParseType.VARIANCE_OPEN) && section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE))) {
-                            invalidSections.put(head, "Variances and Groups can't overlap");
-                            invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "Variances and Groups can't overlap");
+                            // We may only have an opening brace.
+                            if (!openBraces.isEmpty()) {
+
+                                final CoordinateAndSection head = openBraces.remove();
+
+                                if ((head.section.getParseType().equals(ParseType.MULTIPLIER_GROUP_OPEN) && section.getParseType().equals(ParseType.VARIANCE_CLOSE)) ||
+                                        (head.section.getParseType().equals(ParseType.VARIANCE_OPEN) && section.getParseType().equals(ParseType.MULTIPLIER_GROUP_CLOSE))) {
+                                    invalidSections.put(head, "Variances and Groups can't overlap");
+                                    invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "Variances and Groups can't overlap");
+                                }
+                            }
                         }
                     }
                 }
-
             }
         }
         while (openBraces.peekFirst() != null ) {

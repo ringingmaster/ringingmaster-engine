@@ -132,8 +132,8 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
         touch.addCharacters(TOUCH_TABLE, 0,0, "(])"); //this sequence caused crash
 
         Parse result = new AssignParseType()
+//                this line will pre-invalidate the closing variance brace.
                 .andThen(new ValidateVarianceMatchingBraceLogic())
-                .andThen(new ValidateMultiplierGroupMatchingBrace())
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
                 .apply(touch.get());
 
@@ -154,7 +154,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
                 .apply(touch.get());
 
         assertParse(result.allTouchCells().get(0,0),
-                valid(MULTIPLIER_GROUP_OPEN), invalid(VARIANCE_CLOSE), valid(MULTIPLIER_GROUP_CLOSE), valid(VARIANCE_CLOSE));
+                valid(MULTIPLIER_GROUP_OPEN), invalid(VARIANCE_CLOSE), valid(MULTIPLIER_GROUP_CLOSE), invalid(VARIANCE_CLOSE));
     }
 
     private NotationBody buildPlainBobMinor() {
