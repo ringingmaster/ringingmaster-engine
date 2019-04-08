@@ -6,11 +6,13 @@ import org.junit.Test;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.touch.element.Element;
 
 import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
@@ -427,8 +429,11 @@ public class ParsedCellMutatorTest {
                 GroupingFactory.buildSection(3, 1, PLAIN_LEAD)
         );
 
+        Element e = new Element('c');
+
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(6);
+        when(mock.getElement(anyInt())).thenReturn(e);
 
         return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }
@@ -440,8 +445,11 @@ public class ParsedCellMutatorTest {
                 GroupingFactory.buildSection(2, 1, CALL_MULTIPLIER),
                 GroupingFactory.buildSection(3, 3, PLAIN_LEAD));
 
+        Element e = new Element('c');
+
         Cell mock = mock(Cell.class);
         when(mock.getElementSize()).thenReturn(6);
+        when(mock.getElement(anyInt())).thenReturn(e);
 
         return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }
