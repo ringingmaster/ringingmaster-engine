@@ -1,20 +1,20 @@
 package org.ringingmaster.engine.compilerold.impl;
 
+import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.compilerold.Compiler;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.method.MethodRow;
+import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import org.ringingmaster.engine.compilerold.Compiler;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
-import com.google.common.collect.ImmutableList;
-import javax.annotation.concurrent.ThreadSafe;
-    import org.slf4j.Logger;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Takes a parsed touch, and converts it into a compiled proof. A proof consists of an expanded Method and
- * associated analysis.
+ * Takes a parsed touch, and converts it into a compiled touch. A proof consists of an expanded Method and termination details.
  * This is a 1 shot class. Throw it away when you have finished.
  *
  * @author stephen
@@ -81,7 +80,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 	}
 
 	@Override
-	protected boolean applyNextCall(MaskedNotation maskedNotation, MethodRow currentMethodRow,
+	protected boolean applyNextCall(MaskedNotation maskedNotation, Row currentRow,
 	                                CourseBasedDecomposedCall nextCall, NotationCall call) {
 
 		// Find the method calling position.
@@ -96,7 +95,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 		}
 
 		// Is our designated calling bell on the correct lead (of the tenor)
-		int positionOfCallingBell = currentMethodRow.getPlaceOfBell(callFromBell);
+		int positionOfCallingBell = currentRow.getPlaceOfBell(callFromBell);
 		Integer place = callingPositionToCallBellPlace.get(methodCallingPosition);
 		if (positionOfCallingBell != place) {
 			return false;

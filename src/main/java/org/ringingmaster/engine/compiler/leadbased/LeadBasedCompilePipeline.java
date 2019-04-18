@@ -1,10 +1,12 @@
 package org.ringingmaster.engine.compiler.leadbased;
 
-import org.ringingmaster.engine.compiler.proof.Proof;
-import org.ringingmaster.engine.compiler.proof.impl.BuildProof;
 import org.ringingmaster.engine.compiler.common.ValidTouchCheck;
+import org.ringingmaster.engine.compiler.compiledtouch.BuildCompiledTouch;
+import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.compiler.variance.BuildVarianceLookupByName;
 import org.ringingmaster.engine.parser.parse.Parse;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.function.Function;
 
 /**
@@ -12,26 +14,23 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class LeadBasedCompilePipeline implements Function<Parse, Proof> {
+@Immutable
+public class LeadBasedCompilePipeline implements Function<Parse, CompiledTouch> {
 
-    private final BuildLeadBasedPipelineData buildLeadBasedPipelineData = new BuildLeadBasedPipelineData();
-    private final ValidTouchCheck<LeadBasedCompilePipelineData> validTouchCheck = new ValidTouchCheck<>();
-    private final BuildCallSequence buildCallSequence = new BuildCallSequence();
-    private final BuildCallLookupByName buildCallLookupByName = new BuildCallLookupByName();
-    private final LeadBasedCompile compile = new LeadBasedCompile();
-
-    private final BuildProof<LeadBasedCompilePipelineData> buildProof = new BuildProof<>();
 
     @Override
-    public Proof apply(Parse parse) {
-
-        return buildLeadBasedPipelineData
-                .andThen(validTouchCheck)
-                .andThen(buildCallSequence)
-                .andThen(buildCallLookupByName)
-                .andThen(compile)
-                .andThen(buildProof)
-
-                .apply(parse);
+    public CompiledTouch apply(Parse parse) {
+//TODO Add in early terminate nechanisam
+        return pipeline.apply(parse);
     }
+
+    private static final Function<Parse, CompiledTouch> pipeline =
+            new BuildLeadBasedPipelineData()
+            .andThen(new ValidTouchCheck<>())
+            .andThen(new BuildVarianceLookupByName())
+            .andThen(new BuildCallLookupByName())
+            .andThen(new BuildCallSequence())
+            .andThen(new LeadBasedCompile())
+            .andThen(new BuildCompiledTouch<>());
+
 }

@@ -7,7 +7,7 @@ import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
-import org.ringingmaster.engine.method.MethodRow;
+import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
@@ -43,7 +43,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
     private final String plainLeadToken;
     private final DefinitionTableAccess<Cell> definitionTableCellsDelegate;
 
-    private final MethodRow startChange;
+    private final Row startChange;
     private final int startAtRow;
     private final Stroke startStroke;
     private final Optional<NotationBody> startNotation;
@@ -52,7 +52,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
     private final Optional<Integer> terminationMaxLeads;
     private final Optional<Integer> terminationMaxParts;
     private final int terminationMaxCircularity;
-    private final Optional<MethodRow> terminationChange;
+    private final Optional<Row> terminationChange;
 
     private final TouchTableAccess<Cell> touchTableAccessDelegate;
 
@@ -65,14 +65,14 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
                  Optional<NotationBody> nonSplicedActiveNotation,
                  String plainLeadToken,
                  ImmutableArrayTable<Cell> definitionCells,
-                 MethodRow startChange, int startAtRow,
+                 Row startChange, int startAtRow,
                  Stroke startStroke,
                  Optional<NotationBody> startNotation,
                  int terminationMaxRows,
                  Optional<Integer> terminationMaxLeads,
                  Optional<Integer> terminationMaxParts,
                  int terminationMaxCircularity,
-                 Optional<MethodRow> terminationChange,
+                 Optional<Row> terminationChange,
                  ImmutableArrayTable<Cell> cells) {
         this.title = title;
         this.author = author;
@@ -180,7 +180,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
         return definitionTableCellsDelegate.getAllDefinitionShorthands();
     }
 
-    public MethodRow getStartChange() {
+    public Row getStartChange() {
         return startChange;
     }
 
@@ -212,7 +212,7 @@ public class Touch implements TouchTableAccess<Cell>, DefinitionTableAccess<Cell
         return terminationMaxCircularity;
     }
 
-    public Optional<MethodRow> getTerminationChange() {
+    public Optional<Row> getTerminationChange() {
         return terminationChange;
     }
 

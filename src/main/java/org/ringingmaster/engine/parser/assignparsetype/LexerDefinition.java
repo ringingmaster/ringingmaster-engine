@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 class LexerDefinition {
 
-    static Comparator<LexerDefinition> SORT_PRIORITY_THEN_REGEX =
+    static Comparator<LexerDefinition> SORT_PRIORITY_THEN_SIZE_THEN_REGEX =
             Comparator.comparingInt(LexerDefinition::getPriority).reversed().
                     thenComparing(Comparator.comparingInt(LexerDefinition::getSubPriority).reversed()).
                     thenComparing(LexerDefinition::getRegex);

@@ -44,13 +44,13 @@ public abstract class SkeletalMatchingBraceLogic implements Function<Parse, Pars
     }
 
     public Parse apply(Parse input) {
-        log.debug("[{}] > validate " + braceTypeName + " brace logic", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate " + braceTypeName + " brace logic", input.getTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(input.allTouchCells().getBackingTable());
 
-        parseCells(input.mainBodyCells(), resultCells, input.getUnderlyingTouch().getTitle());
-        parseCells(input.splicedCells(), resultCells, input.getUnderlyingTouch().getTitle());
+        parseCells(input.mainBodyCells(), resultCells, input.getTouch().getTitle());
+        parseCells(input.splicedCells(), resultCells, input.getTouch().getTitle());
 
         // We parse definitions individually. This is so that any open/close brace in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
@@ -59,7 +59,7 @@ public abstract class SkeletalMatchingBraceLogic implements Function<Parse, Pars
         final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = input.definitionDefinitionCells();
         for(int rowIndex = 0; rowIndex < definitionDefinitionCells.getRowSize();rowIndex++) {
             final ImmutableArrayTable<ParsedCell> cell = definitionDefinitionCells.subTable(rowIndex, rowIndex + 1, 0, 1);
-            parseCells(cell,  definitionTableResult, input.getUnderlyingTouch().getTitle());
+            parseCells(cell,  definitionTableResult, input.getTouch().getTitle());
         }
 
         Parse result = new ParseBuilder()
@@ -68,7 +68,7 @@ public abstract class SkeletalMatchingBraceLogic implements Function<Parse, Pars
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < validate " + braceTypeName + " brace logic", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate " + braceTypeName + " brace logic", input.getTouch().getTitle());
 
         return result;
 

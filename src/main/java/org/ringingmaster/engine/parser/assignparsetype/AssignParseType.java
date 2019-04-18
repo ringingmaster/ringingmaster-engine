@@ -26,6 +26,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static org.ringingmaster.engine.compiler.variance.VarianceFactory.ODD_EVEN_REGEX;
+import static org.ringingmaster.engine.compiler.variance.VarianceFactory.OMIT_INCLUDE_REGEX;
+import static org.ringingmaster.engine.compiler.variance.VarianceFactory.SPECIFIED_PARTS_REGEX;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
@@ -83,8 +86,9 @@ public class AssignParseType implements Function<Touch, Parse> {
         parseDefinitionShorthandArea(touch, parsedDefinitionCells);
         parseDefinitionDefinitionArea(touch, parsedDefinitionCells, mainBodyDefinitions, spliceAreaDefinitions);
 
-        
+
         //TODO should we allow variance in definitions?
+        //TODO should we allow variance in splice?
 
 
         Parse parse = new ParseBuilder()
@@ -93,7 +97,7 @@ public class AssignParseType implements Function<Touch, Parse> {
                 .setDefinitionTableCells(parsedDefinitionCells)
                 .build();
 
-        log.debug("[{}] < assign parse type", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < assign parse type", parse.getTouch().getTitle());
 
         return parse;
     }
@@ -296,9 +300,10 @@ public class AssignParseType implements Function<Touch, Parse> {
         }
     }
 
+    //NOTE: This is closely related to the regex in BuildVarianceLookupByName::parseVariance
     private void addVarianceLexerDefinitions(Set<LexerDefinition> lexerDefinitions) { //TODO ensure these chars cant appear anywhere else. i.e.in calls method names Etc
         lexerDefinitions.add(new LexerDefinition(PRECEDENCE_BRACE, 0,
-                "(?i)(\\[)((?:[-+])(?:(?:odd|even|[oe])|(?:(?:[0-9]+)(?:[,][0-9]+)*)+))", ParseType.VARIANCE_OPEN, ParseType.VARIANCE_DETAIL));
+                "(?i)(\\[)((?:" + OMIT_INCLUDE_REGEX + ")(?:" + ODD_EVEN_REGEX + "|"+ SPECIFIED_PARTS_REGEX + "+))", ParseType.VARIANCE_OPEN, ParseType.VARIANCE_DETAIL));
         lexerDefinitions.add(new LexerDefinition(PRECEDENCE_BRACE, 0,
                 "\\]", VARIANCE_CLOSE));
     }

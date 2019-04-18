@@ -20,7 +20,7 @@ public class  PrettyPrintCells implements Function<Parse, Parse> {
     @Nullable
     @Override
     public Parse apply(@Nullable Parse input) {
-        log.debug("[{}] > pretty print cells (trace output only)", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > pretty print cells (trace output only)", input.getTouch().getTitle());
 
         if (log.isTraceEnabled()) {
 
@@ -32,7 +32,7 @@ public class  PrettyPrintCells implements Function<Parse, Parse> {
             }
         }
 
-        log.debug("[{}] < pretty print cells", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < pretty print cells", input.getTouch().getTitle());
 
         return input;
     }

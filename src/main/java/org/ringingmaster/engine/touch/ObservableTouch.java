@@ -14,9 +14,9 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
-import org.ringingmaster.engine.method.MethodRow;
+import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
@@ -131,13 +131,13 @@ public class ObservableTouch {
             touchBuilder.setCallFromBell(numberOfBells.getTenor());
         }
 
-        final MethodRow existingStartChange = currentTouch.getStartChange();
-        final MethodRow newStartChange = MethodBuilder.transformToNewNumberOfBells(existingStartChange, numberOfBells);
+        final Row existingStartChange = currentTouch.getStartChange();
+        final Row newStartChange = MethodBuilder.transformToNewNumberOfBells(existingStartChange, numberOfBells);
         touchBuilder.setStartChange(newStartChange);
 
         if (currentTouch.getTerminationChange().isPresent()) {
-            final MethodRow existingTerminationRow = currentTouch.getTerminationChange().get();
-            final MethodRow newTerminationRow = MethodBuilder.transformToNewNumberOfBells(existingTerminationRow, numberOfBells);
+            final Row existingTerminationRow = currentTouch.getTerminationChange().get();
+            final Row newTerminationRow = MethodBuilder.transformToNewNumberOfBells(existingTerminationRow, numberOfBells);
             touchBuilder.setTerminationChange(Optional.of(newTerminationRow));
         }
 
@@ -473,7 +473,7 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    public void setStartChange(MethodRow startChange) {
+    public void setStartChange(Row startChange) {
         checkNotNull(startChange);
         checkArgument(startChange.getNumberOfBells() == currentTouch.getNumberOfBells());
 
@@ -620,7 +620,7 @@ public class ObservableTouch {
         setCurrentTouch(touchBuilder.build());
     }
 
-    public void setTerminationChange(MethodRow terminationChange) {
+    public void setTerminationChange(Row terminationChange) {
         checkNotNull(terminationChange, "terminationChange cant be null");
         checkArgument(terminationChange.getNumberOfBells().equals(currentTouch.getNumberOfBells()));
 

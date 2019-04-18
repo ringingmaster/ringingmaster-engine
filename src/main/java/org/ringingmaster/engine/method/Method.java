@@ -1,9 +1,10 @@
 package org.ringingmaster.engine.method;
 
 import org.ringingmaster.engine.NumberOfBells;
-import javax.annotation.concurrent.Immutable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Iterator;
+import java.util.Optional;
 
 
 /**
@@ -12,7 +13,7 @@ import java.util.Iterator;
  * @author Stephen Lake
  */
 @Immutable
-public interface Method extends Iterable<MethodLead> {
+public interface Method extends Iterable<Lead> {
 
 	/**
 	 * Get the number of bells for this method.
@@ -36,11 +37,10 @@ public interface Method extends Iterable<MethodLead> {
 	/**
 	 * Get the lead at the passed index.
 	 *
-	 * @param index the index of the MethodLead that is required.
-	 * @return MethodLead
-	 * @throws ArrayIndexOutOfBoundsException
+	 * @param index the index of the Lead that is required.
+	 * @throws IndexOutOfBoundsException when less than 0 or greater than number of leads
 	 */
-	MethodLead getLead(int index);
+	Lead getLead(int index);
 
 	/**
 	 * Get the number of rows in this method.
@@ -49,21 +49,43 @@ public interface Method extends Iterable<MethodLead> {
 	 */
 	int getRowCount();
 
-	MethodRow getRow(int index);
+	/**
+	 * Get the row at the index.
+	 *
+	 * @throws IndexOutOfBoundsException when less than 0 or greater than number of rows
+	 */
+	Row getRow(int index);
 
-	MethodRow getFirstRow();
-	MethodRow getLastRow();
+	/**
+	 * Convienence method to get the first row. Optional not populated when there are no rows.
+	 */
+	Optional<Row> getFirstRow();
+
+	/**
+	 * Convienence method to get the first row. Optional not populated when there are no rows.
+	 */
+	Optional<Row> getLastRow();
+
+	/**
+	 * true when both first and last rowe exist, and they have equalty
+	 * @return
+	 */
+	boolean firstAndLastRowEqual();
 
 	/**
 	 * Return all changes as text, using the system separator between each row. i.e.
 	 * 123456
 	 * 214365
 	 * 241635
-	 *
-	 * @return
 	 */
  	String getAllChangesAsText();
 
-	Iterator<MethodRow> rowIterator();
+	Iterator<Row> rowIterator();
+
+	/**
+	 * Get the underlying row array. Returns a copy.
+	 * @param  includeLastRow The copy will exclude the final row if true
+	 */
+	Row[] getRows(boolean includeLastRow);
 
 }

@@ -1,15 +1,14 @@
 package org.ringingmaster.engine.compilerold.impl;
 
-import org.ringingmaster.engine.analysis.Analysis;
-import org.ringingmaster.engine.analysis.impl.AnalysisBuilder;
+import org.ringingmaster.engine.analyser.proof.Proof;
 import org.ringingmaster.engine.compilerold.Compiler;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
-import org.ringingmaster.engine.compiler.proof.Proof;
+import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.method.MethodLead;
-import org.ringingmaster.engine.method.MethodRow;
+import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationRow;
@@ -52,10 +51,10 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 
 	// outputs
 	private volatile Optional<Method> method = Optional.empty();
-	private volatile Optional<Analysis> analysis = Optional.empty();
+	private volatile Optional<Proof> analysis = Optional.empty();
 	private volatile Optional<CompileTerminationReason> terminationReason = Optional.empty();
 	private volatile Optional<String> terminateNotes = Optional.empty();
-	private volatile Proof proof;
+	private volatile CompiledTouch compiledTouch;
 
 
 	public SkeletalCompiler(Touch touch, String logPreamble) {
@@ -63,7 +62,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		this.logPreamble = checkNotNull(logPreamble);
 	}
 
-	public Proof compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly) {
+	public CompiledTouch compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly) {
 		log.debug("{}> Start compiling [{}]", logPreamble, touch.getTitle());
 		long start = System.currentTimeMillis();
 
@@ -86,10 +85,10 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 				checkTerminateEarly(shouldTerminateEarly);
 			}
 		}
-		long proofTime = System.currentTimeMillis() - start;
-//		proof = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, analysis, proofTime);
-		log.debug("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), proofTime);
-		return proof;
+		long compileTime = System.currentTimeMillis() - start;
+//		compiledTouch = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, proof, compileTime);
+		log.debug("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), compileTime);
+		return compiledTouch;
 	}
 
 	private void checkTerminateEarly(Supplier<Boolean> shouldTerminateEarly) {
@@ -131,18 +130,18 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 			advanceToNextCall();
 		}
 
-		MethodRow startChange = createStartChange();
+		Row startChange = createStartChange();
 
 		MaskedNotation maskedNotation = new MaskedNotation(touch.getNonSplicedActiveNotation().get());
 
-		final List<MethodLead> leads = new ArrayList<>();
+		final List<Lead> leads = new ArrayList<>();
 
 		if (maskedNotation.getRowCount() == 0) {
 			terminate(CompileTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
 		}
 		while (!isTerminated()) {
 			log.debug("{}   - lead [{}]", logPreamble, leads.size());
-			final MethodLead lead = compileLead(maskedNotation, startChange);
+			final Lead lead = compileLead(maskedNotation, startChange);
 			leads.add(lead);
 			startChange = lead.getLastRow();
 			checkTerminationMaxLeads(leads);
@@ -152,8 +151,8 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		log.debug("{} < create touch", logPreamble);
 	}
 
-	private MethodRow createStartChange() {
-		MethodRow startChange = touch.getStartChange();
+	private Row createStartChange() {
+		Row startChange = touch.getStartChange();
 		checkState(startChange.getNumberOfBells() == touch.getNumberOfBells());
 		Stroke startStroke = touch.getStartStroke();
 
@@ -170,43 +169,43 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		return getImmutableCallSequence().size() == 0;
 	}
 
-	private MethodLead compileLead(final MaskedNotation maskedNotation, MethodRow currentMethodRow) {
+	private Lead compileLead(final MaskedNotation maskedNotation, Row currentRow) {
 
-		final List<MethodRow> rows = new ArrayList<>();
+		final List<Row> rows = new ArrayList<>();
 		final List<Integer> leadSeparatorPositions = new ArrayList<>();
 
-		rows.add(currentMethodRow);
+		rows.add(currentRow);
 
 		for (NotationRow notationRow : maskedNotation) {
 
-			currentMethodRow = buildNextRow(notationRow, currentMethodRow);
-			rows.add(currentMethodRow);
+			currentRow = buildNextRow(notationRow, currentRow);
+			rows.add(currentRow);
 
-			checkTerminationChange(currentMethodRow);
-			checkTerminationMaxRows(currentMethodRow);
+			checkTerminationChange(currentRow);
+			checkTerminationMaxRows(currentRow);
 			if (isTerminated()) {
 				break;
 			}
-			tryToMakeACall(maskedNotation, currentMethodRow);
+			tryToMakeACall(maskedNotation, currentRow);
 		}
 
 //TODO		addLeadSeparator(currentNotation, rows, leadSeparatorPositions);
 
-		final MethodLead lead = MethodBuilder.buildLead(touch.getNumberOfBells(), rows, leadSeparatorPositions);
+		final Lead lead = MethodBuilder.buildLead(touch.getNumberOfBells(), rows, leadSeparatorPositions);
 		return lead;
 	}
 
-	private void tryToMakeACall(MaskedNotation maskedNotation, MethodRow currentMethodRow) {
+	private void tryToMakeACall(MaskedNotation maskedNotation, Row currentRow) {
 		if (nextCall != null && maskedNotation.isAtCallPoint()) {
 			NotationCall call = callLookupByName.get(nextCall.getCallName());
-			boolean callConsumed = applyNextCall(maskedNotation, currentMethodRow, nextCall, call);
+			boolean callConsumed = applyNextCall(maskedNotation, currentRow, nextCall, call);
 			if (callConsumed) {
 				advanceToNextCall();
 			}
 		}
 	}
 
-	protected abstract boolean applyNextCall(MaskedNotation maskedNotation, MethodRow currentMethodRow,
+	protected abstract boolean applyNextCall(MaskedNotation maskedNotation, Row currentRow,
 	                                         DCT nextCall, NotationCall call);
 
 	private void advanceToNextCall() {
@@ -228,8 +227,8 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		} while (!nextCall.getVariance().includePart(partIndex));
 	}
 
-	private MethodRow buildNextRow(final NotationRow notationRow, final MethodRow previousRow) {
-		MethodRow nextRow;
+	private Row buildNextRow(final NotationRow notationRow, final Row previousRow) {
+		Row nextRow;
 		if (notationRow.isAllChange()) {
 			nextRow = MethodBuilder.buildAllChangeRow(previousRow);
 		}
@@ -239,7 +238,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		return nextRow;
 	}
 
-	private void addLeadSeparator(NotationBody notationBody, List<MethodRow> rows, List<Integer> leadSeparatorPositions) {
+	private void addLeadSeparator(NotationBody notationBody, List<Row> rows, List<Integer> leadSeparatorPositions) {
 	/*
 	 * TODO this should come from notationBody, and then be checked for being greater than the number of rows.
 	 *  then all this logic must change, as must check that we have one more row that we are wanting a seperator after
@@ -253,20 +252,20 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		}
 	}
 
-	private void checkTerminationMaxLeads(List<MethodLead> leads) {
+	private void checkTerminationMaxLeads(List<Lead> leads) {
 		if (touch.getTerminationMaxLeads().isPresent() &&
 				leads.size() >= touch.getTerminationMaxLeads().get()) {
 			terminate(CompileTerminationReason.LEAD_COUNT, touch.getTerminationMaxLeads().get().toString());
 		}
 	}
 
-	private void checkTerminationMaxRows(MethodRow newRow) {
-		if (newRow.getRowNumber() >= touch.getTerminationMaxRows()) {
+	private void checkTerminationMaxRows(Row newRow) {
+		if (newRow.getRowIndex() >= touch.getTerminationMaxRows()) {
 			terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()));
 		}
 	}
 
-	private void checkTerminationChange(MethodRow newRow) {
+	private void checkTerminationChange(Row newRow) {
 		if (touch.getTerminationChange().isPresent() &&
 				touch.getTerminationChange().get().equals(newRow)) {
 			terminate(CompileTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString());
@@ -289,8 +288,8 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	}
 
 	private void compileAnalysis() {
-		analysis = Optional.of(AnalysisBuilder.buildAnalysisStructure());
-		AnalysisBuilder.falseRowAnalysis(method.get(), analysis.get());
+//		proof = Optional.of(AnalysisBuilder.buildAnalysisStructure());
+//		AnalysisBuilder.falseRowAnalysis(method.get(), proof.get());
 	}
 
 	public String getLogPreamble() {

@@ -1,11 +1,11 @@
 package org.ringingmaster.engine;
 
+import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
-import org.ringingmaster.engine.method.MethodLead;
+import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.LeadHeadCalculator;
 import org.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
-import org.ringingmaster.engine.compiler.proof.Proof;
 import org.ringingmaster.persist.DocumentPersist;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,8 +39,8 @@ public class MethodCorrectnessTest {
 
 					final String leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
 
-					Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
-					MethodLead lead = proof.getMethod().get().getLead(0);
+					CompiledTouch compiledTouch = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
+					Lead lead = compiledTouch.getMethod().get().getLead(0);
 
 					if (!Objects.equals(leadHead, lead.getLastRow().getDisplayString(false))) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
@@ -105,8 +105,8 @@ public class MethodCorrectnessTest {
 							.populateBuilderFromPersistableNotation(persistableNotation)
 							.build();
 
-					Proof proof = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
-					MethodLead lead = proof.getMethod().get().getLead(0);
+					CompiledTouch compiledTouch = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
+					Lead lead = compiledTouch.getMethod().get().getLead(0);
 
 					if (persistableNotation.getLeadLength() != lead.getRowCount() - 1) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",

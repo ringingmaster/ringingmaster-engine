@@ -23,17 +23,17 @@ public abstract class CompilePipelineData<T extends CompilePipelineData> {
 
     private final Parse parse;
     private final String logPreamble;
-    private final Optional<Method> createdMethod;
+    private final Optional<Method> method;
     private final Optional<CompileTerminationReason> terminationReason;
     private final Optional<String> terminateNotes;
 
     protected CompilePipelineData(Parse parse, String logPreamble,
-                                  Optional<Method> createdMethod,
+                                  Optional<Method> method,
                                   Optional<CompileTerminationReason> terminationReason,
                                   Optional<String> terminateNotes) {
         this.parse = checkNotNull(parse);
         this.logPreamble = checkNotNull(logPreamble);
-        this.createdMethod = checkNotNull(createdMethod);
+        this.method = checkNotNull(method);
         this.terminationReason = checkNotNull(terminationReason);
         this.terminateNotes = checkNotNull(terminateNotes);
     }
@@ -46,20 +46,20 @@ public abstract class CompilePipelineData<T extends CompilePipelineData> {
         return logPreamble;
     }
 
-    public T setCreatedMethod(Optional<Method> method) {
-        return build(parse, logPreamble,
+    public T setMethod(Optional<Method> method) {
+        return buildWhenBaseChanges(parse, logPreamble,
                 method,
                 terminationReason, terminateNotes);
     }
 
-    public Optional<Method> getCreatedMethod() {
-        return createdMethod;
+    public Optional<Method> getMethod() {
+        return method;
     }
 
     public T terminate(final CompileTerminationReason terminationReason, String terminateNotes) {
         if (!isTerminated()) {
-            return build(parse, logPreamble,
-                    createdMethod,
+            return buildWhenBaseChanges(parse, logPreamble,
+                    method,
                     Optional.of(terminationReason), Optional.of(terminateNotes));
         }
         else  {
@@ -81,9 +81,9 @@ public abstract class CompilePipelineData<T extends CompilePipelineData> {
     }
 
 
-    protected abstract T build(Parse parse, String logPreamble,
-                               Optional<Method> method,
-                               Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes);
+    protected abstract T buildWhenBaseChanges(Parse parse, String logPreamble,
+                                              Optional<Method> method,
+                                              Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes);
 
 
 

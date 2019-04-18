@@ -2,7 +2,7 @@ package org.ringingmaster.engine.touch;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 

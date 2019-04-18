@@ -1,9 +1,9 @@
 package org.ringingmaster.engine.notation.impl;
 
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.method.MethodLead;
-import org.ringingmaster.engine.method.MethodRow;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.Lead;
+import org.ringingmaster.engine.method.Row;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationPlace;
 import org.ringingmaster.engine.notation.NotationRow;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class LeadHeadCalculator {
 	private final static Logger log = LoggerFactory.getLogger(LeadHeadCalculator.class);
 
     private static List< LeadHeadCodes> orderedLeadHeadCodes = new ArrayList<>();
-    private static Map<MethodRow, LeadHeadCodes> codeLookup = new HashMap<>();
+    private static Map<Row, LeadHeadCodes> codeLookup = new HashMap<>();
 	private static Map<String,  Map<NumberOfBells, String>> rowLookup = new HashMap<>();
 	private static Map<String,  LeadHeadType> typeLookup = new HashMap<>();
 
@@ -58,7 +58,7 @@ public class LeadHeadCalculator {
 		INVALID_LEADHEAD,
 	}
 
-	public static String calculateLeadHeadCode(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
+	public static String calculateLeadHeadCode(Lead plainLead, List<NotationRow> normalisedNotationElements) {
 		Set<NotationPlace> huntBellStartPlace = plainLead.getHuntBellStartPlace();
 
 		if (huntBellStartPlace.size() <= 1) {
@@ -69,10 +69,10 @@ public class LeadHeadCalculator {
 		}
 	}
 
-	private static String getLeadHeadCodeForSingleHunt(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
+	private static String getLeadHeadCodeForSingleHunt(Lead plainLead, List<NotationRow> normalisedNotationElements) {
 		NotationRow leadHeadNotationRow = normalisedNotationElements.get(normalisedNotationElements.size() - 1);
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
-		MethodRow leadHeadRow = plainLead.getLastRow();
+		Row leadHeadRow = plainLead.getLastRow();
 
 		if (!hasLeadEndGotPlainBobPlacesForSingleHunt(numberOfBells, leadHeadNotationRow)) {
 			return leadHeadRow.getDisplayString(false);
@@ -121,10 +121,10 @@ public class LeadHeadCalculator {
 	}
 
 
-	private static String getLeadHeadCodeForTwinHunt(MethodLead plainLead, List<NotationRow> normalisedNotationElements) {
+	private static String getLeadHeadCodeForTwinHunt(Lead plainLead, List<NotationRow> normalisedNotationElements) {
 		NotationRow leadHeadNotationRow = normalisedNotationElements.get(0);
 		NumberOfBells numberOfBells = plainLead.getNumberOfBells();
-		MethodRow leadHeadRow = plainLead.getLastRow();
+		Row leadHeadRow = plainLead.getLastRow();
 
 		if (numberOfBells.isEven()) {
 			if (leadHeadNotationRow.isAllChange()) {
@@ -192,7 +192,7 @@ public class LeadHeadCalculator {
 		return false;
 	}
 
-	protected static String lookupLeadHeadCode(MethodRow row, LeadHeadType type) {
+	protected static String lookupLeadHeadCode(Row row, LeadHeadType type) {
 		checkNotNull(row);
 		LeadHeadCodes leadHeadCode = codeLookup.get(row);
 
@@ -216,7 +216,7 @@ public class LeadHeadCalculator {
 	}
 
 	private static void addLeadHeadCodes(NumberOfBells numberOfBells, String change, LeadHeadCodes leadHeadCodes) {
-		MethodRow row = MethodBuilder.parse(numberOfBells, change);
+		Row row = MethodBuilder.parse(numberOfBells, change);
 		codeLookup.put(row, leadHeadCodes);
 
 		LeadHeadType previousTypeNear = typeLookup.put(leadHeadCodes.near, LeadHeadType.NEAR);

@@ -27,6 +27,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.*;
  * @author stevelake
  */
 @Immutable
+@Deprecated
 public class CallDecomposerIncludingFirstAttemptAtCourseBasedStructures {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());

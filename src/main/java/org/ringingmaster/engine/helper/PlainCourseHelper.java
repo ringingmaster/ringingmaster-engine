@@ -2,9 +2,9 @@ package org.ringingmaster.engine.helper;
 
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.Compiler;
-import org.ringingmaster.engine.compiler.proof.Proof;
+import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
 import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.Parser;
 import org.ringingmaster.engine.touch.ObservableTouch;
@@ -24,26 +24,22 @@ import static org.ringingmaster.engine.touch.ObservableTouch.TERMINATION_MAX_ROW
  */
 public class PlainCourseHelper {
 
-	private static Parser parser = new Parser();
-	private static Compiler compiler = new Compiler();
 	private static AtomicInteger counter = new AtomicInteger();
 
-	public static Proof buildPlainCourse(NotationBody notation, String logPreamble /*TODO How to get this in the pipeline? */, boolean withAnalysis) {
+	public static CompiledTouch buildPlainCourse(NotationBody notation, String logPreamble /*TODO How to get this in the pipeline? */, boolean withAnalysis) {
 
-		Proof proof = buildPlainCourseInstance
-				.andThen(parser)
-				.andThen(compiler)
-				.apply(notation);
 
-		Method createdMethod = proof.getMethod().get();
+		CompiledTouch compiledTouch = pipeline.apply(notation);
+
+		Method createdMethod = compiledTouch.getMethod().get();
 
 		checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
-		checkState(CompileTerminationReason.SPECIFIED_ROW == proof.getTerminationReason(),
+		checkState(CompileTerminationReason.SPECIFIED_ROW == compiledTouch.getTerminationReason(),
 				"Plain course must terminate with row [%s]" +
 						" but actually terminated with [%s]",
-				proof.getParse().getUnderlyingTouch().getTerminationChange().get().getDisplayString(true),
-				proof.getTerminateReasonDisplayString());
-		return proof;
+				compiledTouch.getTouch().getTerminationChange().get().getDisplayString(true),
+				compiledTouch.getTerminateReasonDisplayString());
+		return compiledTouch;
 	}
 
 	/**
@@ -65,4 +61,8 @@ public class PlainCourseHelper {
 		return touch.get();
 	};
 
+	private static Function<NotationBody, CompiledTouch> pipeline =
+			buildPlainCourseInstance
+					.andThen(new Parser())
+					.andThen(new Compiler());
 }

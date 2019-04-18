@@ -1,10 +1,9 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import com.google.common.collect.Lists;
+import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.cell.Cell;
-import org.ringingmaster.engine.touch.variance.Variance;
-import org.ringingmaster.engine.touch.variance.impl.NullVariance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +27,7 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	private final Touch touch;
 	private final String logPreamble;
 	private final Deque<CallGroup> callFIFO = new ArrayDeque<>();
-	private Variance currentVariance = NullVariance.INSTANCE;
+	//private Variance currentVariance = NullVariance.INSTANCE;
 
 	public SkeletalCallDecomposer(Touch touch, String logPreamble) {
 		this.touch = touch;

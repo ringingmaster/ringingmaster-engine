@@ -1,15 +1,18 @@
 package org.ringingmaster.engine.compiler.common;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
+import org.ringingmaster.engine.compiler.variance.Variance;
+import org.ringingmaster.engine.compiler.variance.VarianceFactory;
 import org.ringingmaster.engine.compilerold.impl.LeadBasedDecomposedCall;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
-import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.touch.variance.impl.NullVariance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +28,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
@@ -37,120 +41,124 @@ public class CallDecomposer {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    class State {
+        final Parse parse;
+        final ImmutableMap<String, Variance> varianceLookupByName;
+        final String logPreamble;
+        final Deque<CallSequenceMultiplier> multiplierFIFO = new ArrayDeque<>();
+        Variance currentVariance = VarianceFactory.nullVariance();
+
+        public State(Parse parse, ImmutableMap<String, Variance> varianceLookupByName, String logPreamble) {
+            this.parse = parse;
+            this.varianceLookupByName = varianceLookupByName;
+            this.logPreamble = logPreamble;
+        }
+    }
+
+
 
     // TODO Can this can be a function that turns cells into a call list
     //TODO should flat map / stream this lot?
-    public ImmutableList<LeadBasedDecomposedCall> createCallSequence(Parse parse, String logPreamble) {
+    public ImmutableList<LeadBasedDecomposedCall> createCallSequence(Parse parse, ImmutableMap<String, Variance> varianceLookupByName, String logPreamble) {
         log.debug("{} > create call sequence", logPreamble);
-        final Deque<CallSequenceMultiplier> multiplierFIFO = new ArrayDeque<>();
-        multiplierFIFO.addFirst(new CallSequenceMultiplier(1));
+        State state = new State(parse, varianceLookupByName, logPreamble);
+        state.multiplierFIFO.addFirst(new CallSequenceMultiplier(1));
 
         for (BackingTableLocationAndValue<ParsedCell> cell : parse.mainBodyCells()) {
-            generateCallInstancesForCell(cell.getValue(), cell.getCol(), multiplierFIFO, parse, logPreamble);
+            generateCallInstancesForCell(cell.getValue(), cell.getCol(), state);
         }
 
-        checkState(multiplierFIFO.size() == 1);
-        log.debug("{} < create call sequence {}", logPreamble, multiplierFIFO.getFirst());
-        return ImmutableList.copyOf(multiplierFIFO.removeFirst());
+        checkState(state.multiplierFIFO.size() == 1);
+        log.debug("{} < create call sequence {}", logPreamble, state.multiplierFIFO.getFirst());
+        return ImmutableList.copyOf(state.multiplierFIFO.removeFirst());
     }
 
-    private void generateCallInstancesForCell(ParsedCell cell, int columnIndex,
-                                              final Deque<CallSequenceMultiplier> multiplierFIFO,
-                                              Parse parse,
-                                              String logPreamble) {
+    private void generateCallInstancesForCell(ParsedCell cell, int columnIndex, final State state) {
         final ImmutableList<Group> groups = cell.allGroups();
         for (Group group : groups) {
-            switch (group.getFirstSectionParseType()) {
+            ParseType parseType = group.getFirstSectionParseType();
+            switch (parseType) {
                 case PLAIN_LEAD:
                 case PLAIN_LEAD_MULTIPLIER:
-                    decomposeMultiplierSection(cell, group, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER, multiplierFIFO, logPreamble);
+                    decomposeMultiplierSection(cell, group, columnIndex, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER, state);
                     break;
                 case CALL:
                 case CALL_MULTIPLIER:
-                    decomposeMultiplierSection(cell, group, columnIndex, CALL, CALL_MULTIPLIER, multiplierFIFO, logPreamble);
+                    decomposeMultiplierSection(cell, group, columnIndex, CALL, CALL_MULTIPLIER, state);
                 break;
                 case MULTIPLIER_GROUP_OPEN:
                 case MULTIPLIER_GROUP_OPEN_MULTIPLIER:
-                    openMultiplierGroup(cell, group, multiplierFIFO);
+                    openMultiplierGroup(cell, group, state);
                     break;
                 case MULTIPLIER_GROUP_CLOSE:
-                    closeMultiplierGroup(multiplierFIFO);
+                    closeMultiplierGroup(state);
                     break;
                 case VARIANCE_OPEN:
-//                    openVariance(group);
-                    // TODO: I want the variance definition defined as a normal parse type rather thane being 'special' from both a data and a UI POV
-                    // TODO: i.e. omit odd variances [-O p-p]
-                    // TODO: i.e. include even variances [+even p-p]
-                    // TODO: i.e. omit specific variances [-1,2,5 p-p]
-                    //break;
-                    throw new RuntimeException("TODO Variances");
+                    openVariance(cell, group, state);
+                    break;
                 case VARIANCE_CLOSE:
-//                    closeVariance(group);
+                    closeVariance(group, state);
                     break;
                 case DEFINITION:
-                    insertExpandedDefinition(cell, group, columnIndex, multiplierFIFO, parse, logPreamble);
+                    insertExpandedDefinition(cell, group, columnIndex, state);
                     break;
+                default:
+                    throw new RuntimeException("Unhandled ParseType [" + parseType + "]");
             }
         }
     }
 
     private void decomposeMultiplierSection(final ParsedCell cell, final Group group, final int columnIndex,
-                                            final ParseType parseType, final ParseType multiplierParseType,
-                                            final Deque<CallSequenceMultiplier> multiplierFIFO,
-                                            final String logPreamble) {
+                                            final ParseType parseType, final ParseType multiplierParseType, final State state) {
         MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(cell, group, parseType, multiplierParseType);
 
         log.debug("{}  - Adding call [{}] with multiplier [{}] to group level [{}]",
-                logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), multiplierFIFO.size());
+                state.logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), state.multiplierFIFO.size());
         if (multiplierAndParseContents.getParseContents().length() > 0 ) {
             for (int i = 0; i< multiplierAndParseContents.getMultiplier(); i++) {
-                LeadBasedDecomposedCall decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), columnIndex, parseType);
-                multiplierFIFO.peekFirst().add(decomposedCall);
+                LeadBasedDecomposedCall decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), columnIndex, parseType, state);
+                state.multiplierFIFO.peekFirst().add(decomposedCall);
             }
         }
     }
 
-    private void openMultiplierGroup(final ParsedCell cell, final Group group, final Deque<CallSequenceMultiplier> multiplierFIFO) {
+    private void openMultiplierGroup(final ParsedCell cell, final Group group, final State state) {
         MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(cell, group, ParseType.MULTIPLIER_GROUP_OPEN, ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER);
-        log.debug("Open Group level [{}] with multiplier [{}]", (multiplierFIFO.size() + 1), multiplierAndParseContents.getMultiplier());
-        multiplierFIFO.addFirst(new CallSequenceMultiplier(multiplierAndParseContents.getMultiplier()));
+        log.debug("Open Group level [{}] with multiplier [{}]", (state.multiplierFIFO.size() + 1), multiplierAndParseContents.getMultiplier());
+        state.multiplierFIFO.addFirst(new CallSequenceMultiplier(multiplierAndParseContents.getMultiplier()));
     }
 
-    private void closeMultiplierGroup(final Deque<CallSequenceMultiplier> multiplierFIFO) {
-        CallSequenceMultiplier callSequenceMultiplier = multiplierFIFO.removeFirst();
-        log.debug("Close Group level [{}] with multiplier [{}]", (multiplierFIFO.size() + 1), callSequenceMultiplier.getMultiplier());
+    private void closeMultiplierGroup(final State state) {
+        CallSequenceMultiplier callSequenceMultiplier = state.multiplierFIFO.removeFirst();
+        log.debug("Close Group level [{}] with multiplier [{}]", (state.multiplierFIFO.size() + 1), callSequenceMultiplier.getMultiplier());
         for (int i = 0; i< callSequenceMultiplier.getMultiplier(); i++) {
-            multiplierFIFO.peekFirst().addAll(callSequenceMultiplier);
+            state.multiplierFIFO.peekFirst().addAll(callSequenceMultiplier);
         }
     }
 
-    // TODO
-//    private void openVariance(Group group) {
-//        log.debug("Open variance [{}]", word);
-//        checkArgument(word.getElements().size() == 1, "Open Variance should have a word with a length of 1");
-//        currentVariance = word.getElements().get(0).getVariance();
-//    }
-    // TODO
-//    private void closeVariance(Group group) {
-//        log.debug("Close variance []", word);
-//        checkArgument(word.getElements().size() == 1, "Close Variance should have a word with a length of 1");
-//        currentVariance = NullVariance.INSTANCE;
-//    }
+    private void openVariance(ParsedCell cell, Group group, final State state) {
+        log.debug("Open variance [{}]", group);
+        checkArgument(group.getSections().size() == 2, "Open Variance should have a group with a length of 2 %s", group);
+        Section varianceDetailSection = group.getSections().get(1);
+        checkArgument(varianceDetailSection.getParseType() == VARIANCE_DETAIL);
+        String varianceCharacters = cell.getCharacters(varianceDetailSection);
+        state.currentVariance = state.varianceLookupByName.get(varianceCharacters.toLowerCase());
+    }
 
-    private void insertExpandedDefinition(final ParsedCell cell, final Group group, final int columnIndex,
-                                          final Deque<CallSequenceMultiplier> multiplierFIFO,
-                                          final Parse parse,
-                                          final String logPreamble) {
+    private void closeVariance(Group group, final State state) {
+        log.debug("Close variance [{}]", group);
+        checkArgument(group.getSections().size() == 1, "Open Variance should have a group with a length of 1 %s", group);
+        state.currentVariance = VarianceFactory.nullVariance();
+    }
+
+    private void insertExpandedDefinition(final ParsedCell cell, final Group group, final int columnIndex, final State state) {
         log.debug("Start expand definition [{}]", group);
         String definitionIdentifier = cell.getCharacters(group);
 
-        Optional<ImmutableArrayTable<ParsedCell>> definitionCells = parse.findDefinitionByShorthand(definitionIdentifier);
+        Optional<ImmutableArrayTable<ParsedCell>> definitionCells = state.parse.findDefinitionByShorthand(definitionIdentifier);
         checkState(definitionCells.isPresent(), "No definitionCells found for %s. Check that the parsing is correctly marking as valid definition ", columnIndex);
 
-//        for (BackingTableLocationAndValue<ParsedCell> definitionContentsCell : definitionCells.get()) {
-            generateCallInstancesForCell(definitionCells.get().get(0, DEFINITION_COLUMN), columnIndex, multiplierFIFO, parse, logPreamble);
-//            log.debug(definitionContentsCell.toString());
-//        }
+        generateCallInstancesForCell(definitionCells.get().get(0, DEFINITION_COLUMN), columnIndex, state);
 
         log.debug("Finish expand definition [{}]",group);
     }
@@ -175,8 +183,8 @@ public class CallDecomposer {
     }
 
 
-    protected LeadBasedDecomposedCall buildDecomposedCall(String callName, int columnIndex, ParseType parseType) {
-        return new LeadBasedDecomposedCall(callName, NullVariance.getInstance(), parseType); //TODO remove NullVariance
+    protected LeadBasedDecomposedCall buildDecomposedCall(String callName, int columnIndex, ParseType parseType, State state) {
+        return new LeadBasedDecomposedCall(callName, state.currentVariance, parseType);
     }
 
     private class CallSequenceMultiplier extends ArrayList<LeadBasedDecomposedCall> {

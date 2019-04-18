@@ -22,18 +22,18 @@ public class BuildCallLookupByName implements Function<LeadBasedCompilePipelineD
             return data;
         }
 
-        log.debug("{} > creating call map", data.getLogPreamble());
+        log.debug("{} > creating call lookup by name", data.getLogPreamble());
 
         ImmutableMap.Builder<String, NotationCall> builder = ImmutableMap.builder();
-        if (data.getParse().getUnderlyingTouch().getNonSplicedActiveNotation().isPresent()) {
-            for (NotationCall notationCall : data.getParse().getUnderlyingTouch().getNonSplicedActiveNotation().get().getCalls()) {
+        if (data.getParse().getTouch().getNonSplicedActiveNotation().isPresent()) {
+            for (NotationCall notationCall : data.getParse().getTouch().getNonSplicedActiveNotation().get().getCalls()) {
                 builder.put(notationCall.getName(), notationCall);
                 builder.put(notationCall.getNameShorthand(), notationCall);
             }
         }
 
         ImmutableMap<String, NotationCall> result = builder.build();
-        log.debug("{} < creating call map [{}]", data.getLogPreamble(), result);
+        log.debug("{} < creating call lookup by name [{}]", data.getLogPreamble(), result);
         return data.setLookupByName(result);
     }
 }

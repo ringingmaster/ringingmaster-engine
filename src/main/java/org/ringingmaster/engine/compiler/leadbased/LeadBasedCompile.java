@@ -7,11 +7,11 @@ import org.ringingmaster.engine.compilerold.impl.LeadBasedDecomposedCall;
 import org.ringingmaster.engine.compilerold.impl.MaskedNotation;
 import org.ringingmaster.engine.compilerold.impl.TerminateEarlyException;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
+import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.method.MethodLead;
-import org.ringingmaster.engine.method.MethodRow;
+import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationRow;
 import org.ringingmaster.engine.touch.Touch;
@@ -52,9 +52,9 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         private int callSequenceIndex;
         private int partIndex;
         private LeadBasedDecomposedCall nextCall;
-        private MethodRow currentMethodRow;
+        private Row currentRow;
         private MaskedNotation maskedNotation;
-        private final List<MethodLead> leads = new ArrayList<>();
+        private final List<Lead> leads = new ArrayList<>();
 
         //outputs
         private Optional<Method> method = Optional.empty();
@@ -71,27 +71,32 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     }
 
     @Override
-    public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData data) {
+    public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData input) {
 
-        if (data.isTerminated()) {
-            return data;
+        if (input.isTerminated()) {
+            return input;
         }
+        log.debug("{} > compile lead based touch", input.getLogPreamble());
 
         State state = new State(() -> false,
-                data.getParse().getUnderlyingTouch(),
-                data.getCallSequence(),
-                data.getLookupByName(),
-                data.getLogPreamble());
+                input.getParse().getTouch(),
+                input.getCallSequence(),
+                input.getLookupByName(),
+                input.getLogPreamble());
 
         compileTouch(state);
 
-        return data
+        LeadBasedCompilePipelineData result =
+                input
                 .terminate(state.terminationReason.get(), state.terminateNotes.get())
-                .setCreatedMethod(state.method);
+                .setMethod(state.method);
+
+        log.debug("{} < compile lead based touch", input.getLogPreamble());
+
+        return result;
     }
 
     private void compileTouch(State state) {
-        log.debug("{} > compile lead based touch", state.logPreamble);
         log.debug("{}  - part [{}]", state.logPreamble, state.partIndex);
 
         // This is required here to handle the case when the first parts are omitted, and a check for empty parts are required.
@@ -100,7 +105,7 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
             advanceToNextCall(state);
         }
 
-        state.currentMethodRow = createStartChange(state);
+        state.currentRow = createStartChange(state);
         state.maskedNotation = new MaskedNotation(state.touch.getNonSplicedActiveNotation().get());
 
         if (state.maskedNotation.getRowCount() == 0) {
@@ -108,14 +113,13 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         }
         while (!isTerminated(state)) {
             log.debug("{}   - lead [{}]", state.logPreamble, state.leads.size());
-            final MethodLead lead = compileLead( state);
+            final Lead lead = compileLead( state);
             state.leads.add(lead);
-            state.currentMethodRow = lead.getLastRow();
+            state.currentRow = lead.getLastRow();
             checkTerminationMaxLeads(state);
             checkTerminateEarly(state);
         }
         state.method = Optional.of(MethodBuilder.buildMethod(state.touch.getNumberOfBells(), state.leads));
-        log.debug("{} < compile lead based touch", state.logPreamble);
     }
 
     private boolean isPlainCourse(State state) {
@@ -123,8 +127,8 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         return state.callSequence.size() == 0;
     }
 
-    private MethodRow createStartChange(State state) {
-        MethodRow startChange = state.touch.getStartChange();
+    private Row createStartChange(State state) {
+        Row startChange = state.touch.getStartChange();
         checkState(startChange.getNumberOfBells() == state.touch.getNumberOfBells());
         Stroke startStroke = state.touch.getStartStroke();
 
@@ -133,17 +137,17 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         return startChange;
     }
 
-    private MethodLead compileLead(State state) {
+    private Lead compileLead(State state) {
 
-        final List<MethodRow> rows = new ArrayList<>();
+        final List<Row> rows = new ArrayList<>();
         final List<Integer> leadSeparatorPositions = new ArrayList<>();
 
-        rows.add(state.currentMethodRow);
+        rows.add(state.currentRow);
 
         for (NotationRow notationRow : state.maskedNotation) {
 
             buildNextRow(notationRow, state);
-            rows.add(state.currentMethodRow);
+            rows.add(state.currentRow);
 
             checkTerminationChange(state);
             checkTerminationMaxRows(state);
@@ -155,19 +159,19 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
 
 //TODO		addLeadSeparator(currentNotation, rows, leadSeparatorPositions);
 
-        final MethodLead lead = MethodBuilder.buildLead(state.touch.getNumberOfBells(), rows, leadSeparatorPositions);
+        final Lead lead = MethodBuilder.buildLead(state.touch.getNumberOfBells(), rows, leadSeparatorPositions);
         return lead;
     }
 
     private void buildNextRow(final NotationRow notationRow, State state) {
         if (notationRow.isAllChange()) {
-            state.currentMethodRow = MethodBuilder.buildAllChangeRow(state.currentMethodRow);
+            state.currentRow = MethodBuilder.buildAllChangeRow(state.currentRow);
         }
         else {
-            state.currentMethodRow = MethodBuilder.buildRowWithPlaces(state.currentMethodRow, notationRow);
+            state.currentRow = MethodBuilder.buildRowWithPlaces(state.currentRow, notationRow);
         }
 
-        log.trace( "{} add row [{}]", state.logPreamble, state.currentMethodRow);
+        log.trace( "{} add row [{}]", state.logPreamble, state.currentRow);
     }
 
     private void tryToMakeACall( State state) {
@@ -201,11 +205,11 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     private boolean applyNextCall( State state) {
         if (state.nextCall.getParseType().equals(PLAIN_LEAD)) {
             // No Call, but consume the call.
-            log.debug("{} Apply Plain lead", state.logPreamble);
+            log.debug("{}    Apply Plain lead", state.logPreamble);
         }
         else {
             NotationCall call = state.callLookupByName.get(state.nextCall.getCallName());
-            log.debug("{} Apply call [{}]", state.logPreamble, call);
+            log.debug("{}    Apply call [{}]", state.logPreamble, call);
             state.maskedNotation.applyCall(call, state.logPreamble);
         }
         // We consumed the call
@@ -226,14 +230,14 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     }
 
     private void checkTerminationMaxRows(State state) {
-        if (state.currentMethodRow.getRowNumber() >= state.touch.getTerminationMaxRows()) {
+        if (state.currentRow.getRowIndex() >= state.touch.getTerminationMaxRows()) {
             terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(state.touch.getTerminationMaxRows()), state);
         }
     }
 
     private void checkTerminationChange(State state) {
         if (state.touch.getTerminationChange().isPresent() &&
-                state.touch.getTerminationChange().get().equals(state.currentMethodRow)) {
+                state.touch.getTerminationChange().get().equals(state.currentRow)) {
             terminate(CompileTerminationReason.SPECIFIED_ROW, state.touch.getTerminationChange().get().toString(), state);
         }
     }

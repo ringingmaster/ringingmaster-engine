@@ -6,9 +6,9 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.method.Bell;
-import org.ringingmaster.engine.method.MethodRow;
+import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.touch.cell.Cell;
 import org.ringingmaster.engine.touch.cell.EmptyCell;
@@ -45,7 +45,7 @@ class TouchBuilder {
     private Optional<String> plainLeadToken = Optional.empty();
     private Optional<ImmutableArrayTable<Cell>> definitionCells = Optional.empty();
 
-    private Optional<MethodRow> startChange = Optional.empty();
+    private Optional<Row> startChange = Optional.empty();
     private Optional<Integer> startAtRow = Optional.empty();
     private Optional<Stroke> startStroke = Optional.empty();
     private Optional<Optional<NotationBody>> startNotation = Optional.empty();
@@ -54,7 +54,7 @@ class TouchBuilder {
     private Optional<Optional<Integer>> terminationMaxLeads = Optional.empty();
     private Optional<Optional<Integer>> terminationMaxParts = Optional.empty();
     private Optional<Integer> terminationMaxCircularity = Optional.empty();
-    private Optional<Optional<MethodRow>> terminationChange = Optional.empty();
+    private Optional<Optional<Row>> terminationChange = Optional.empty();
 
     private Optional<ImmutableArrayTable<Cell>> touchCells = Optional.empty();
 
@@ -141,7 +141,7 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setStartChange(MethodRow startChange) {
+    TouchBuilder setStartChange(Row startChange) {
         this.startChange = Optional.of(startChange);
         return this;
     }
@@ -181,7 +181,7 @@ class TouchBuilder {
         return this;
     }
 
-    TouchBuilder setTerminationChange(Optional<MethodRow> terminationChange) {
+    TouchBuilder setTerminationChange(Optional<Row> terminationChange) {
         this.terminationChange = Optional.of(terminationChange);
         return this;
     }

@@ -29,7 +29,7 @@ public class ValidateSingleCallPositionPerCell implements Function<Parse, Parse>
 
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate single call position per cell", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate single call position per cell", input.getTouch().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(input.allTouchCells().getBackingTable());
@@ -41,7 +41,7 @@ public class ValidateSingleCallPositionPerCell implements Function<Parse, Parse>
                 .setTouchTableCells(resultCells)
                 .build();
 
-        log.debug("[{}] < validate single call position per cell", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate single call position per cell", input.getTouch().getTitle());
 
         return build;
     }

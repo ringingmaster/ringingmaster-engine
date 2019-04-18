@@ -1,15 +1,15 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import com.google.common.collect.ImmutableList;
-import javax.annotation.concurrent.ThreadSafe;
-import org.ringingmaster.engine.method.MethodRow;
-import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.compilerold.Compiler;
+import org.ringingmaster.engine.method.Row;
+import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.touch.Touch;
 import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -17,7 +17,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LE
 
 /**
  * Takes a parsed touch, and converts it into a compiled proof. A proof consists of an expanded Method and
- * associated analysis.
+ * associated proof.
  * This is a 1 shot class. Throw it away when you have finished.
  *
  * @author stephen
@@ -50,7 +50,7 @@ public class LeadBasedCompiler extends SkeletalCompiler<LeadBasedDecomposedCall>
 	}
 
 	@Override
-	protected boolean applyNextCall(MaskedNotation maskedNotation, MethodRow currentMethodRow,
+	protected boolean applyNextCall(MaskedNotation maskedNotation, Row currentRow,
 	                                LeadBasedDecomposedCall nextCallMeta, NotationCall call) {
 		if (nextCallMeta.getParseType().equals(PLAIN_LEAD)) {
 			// No Call, but consume the call.

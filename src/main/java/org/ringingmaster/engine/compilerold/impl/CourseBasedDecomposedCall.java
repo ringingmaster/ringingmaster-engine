@@ -2,7 +2,7 @@ package org.ringingmaster.engine.compilerold.impl;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.ringingmaster.engine.touch.variance.Variance;
+import org.ringingmaster.engine.compiler.variance.Variance;
 
 /**
  * TODO comments???

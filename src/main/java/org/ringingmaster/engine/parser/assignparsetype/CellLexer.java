@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.SORT_PRIORITY_THEN_REGEX;
+import static org.ringingmaster.engine.parser.assignparsetype.LexerDefinition.SORT_PRIORITY_THEN_SIZE_THEN_REGEX;
 import static org.ringingmaster.engine.parser.cell.ParsedCellFactory.buildParsedCellFromGroups;
 import static org.ringingmaster.engine.parser.cell.grouping.GroupingFactory.buildGroup;
 import static org.ringingmaster.engine.parser.cell.grouping.GroupingFactory.buildGroupToMatchSection;
@@ -45,14 +45,14 @@ class CellLexer {
         Set<Group> groups = new HashSet<>();
 
         List<LexerDefinition> sortedLexerDefinitions = new ArrayList<>(lexerDefinitions);
-        sortedLexerDefinitions.sort(SORT_PRIORITY_THEN_REGEX);
+        sortedLexerDefinitions.sort(SORT_PRIORITY_THEN_SIZE_THEN_REGEX);
 
         sortedLexerDefinitions.forEach((parseing) -> {
             checkState(parseing.getRegex().length() > 0, "Should never have an empty token. Mapped to [{}]", Arrays.toString(parseing.getParseTypes()));
 
             log.debug("[{}]  testing for [{}] against cell string [{}]", logPreamble, parseing, cellAsString);
 
-            Pattern p = Pattern.compile(parseing.getRegex());//. represents single character
+            Pattern p = Pattern.compile(parseing.getRegex());
             Matcher m = p.matcher(cellAsString);
             int searchFromIndex = 0;
 

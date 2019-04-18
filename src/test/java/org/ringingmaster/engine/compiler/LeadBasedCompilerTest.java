@@ -5,11 +5,13 @@ import com.google.common.io.CharStreams;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.compiler.proof.Proof;
+import org.ringingmaster.engine.analyser.Analyser;
+import org.ringingmaster.engine.analyser.proof.Proof;
+import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.method.MethodRow;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.MethodBuilder;
+import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parser;
@@ -28,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.ringingmaster.engine.compiler.CompileTerminationReason.*;
 
 /**
  * User: Stephen
@@ -38,6 +41,7 @@ public class LeadBasedCompilerTest {
 
 	private static Parser parser = new Parser();
 	private static Compiler compiler = new Compiler();
+	private static Analyser analyser = new Analyser();
 
 	@Test
 	public void canConstructAllChangeLeadWithNoCalls() {
@@ -52,11 +56,11 @@ public class LeadBasedCompilerTest {
 		touch.setNumberOfBells(NumberOfBells.BELLS_8);
 		touch.setTerminationMaxLeads(1);
 
-		Proof proof = parser
+		CompiledTouch compiledTouch = parser
 				.andThen(compiler)
 				.apply(touch.get());
 
-		Method method = proof.getMethod().get();
+		Method method = compiledTouch.getMethod().get();
 
 		assertNotNull("Should return non null Method", method);
 		assertEquals("X should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
@@ -98,7 +102,7 @@ public class LeadBasedCompilerTest {
 //
 //		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
 //		touch.setTerminationMaxLeads(1);
-//		Proof result = new LeadBasedCompiler(touch).compile(false, () -> false);
+//		CompiledTouch result = new LeadBasedCompiler(touch).compile(false, () -> false);
 //		Method method = result.getMethod().get();
 //
 //		assertArrayEquals(new int[]{1}, method.getLead(0).getLeadSeparatorPositions());
@@ -122,12 +126,12 @@ public class LeadBasedCompilerTest {
 
 			touch.setTerminationMaxLeads(i);
 
-			Proof proof = parser
+			CompiledTouch compiledTouch = parser
 					.andThen(compiler)
 					.apply(touch.get());
 
-			assertEquals(i, proof.getMethod().get().getLeadCount());
-			assertEquals(CompileTerminationReason.LEAD_COUNT, proof.getTerminationReason());
+			assertEquals(i, compiledTouch.getMethod().get().getLeadCount());
+			assertEquals(CompileTerminationReason.LEAD_COUNT, compiledTouch.getTerminationReason());
 		}
 	}
 
@@ -149,15 +153,15 @@ public class LeadBasedCompilerTest {
 		for (int i=1; i< 50; i++) {
 			touch.setTerminationMaxRows(i);
 
-			Proof proof = parser
+			CompiledTouch compiledTouch = parser
 					.andThen(compiler)
 					.apply(touch.get());
 
 
-			Method method = proof.getMethod().get();
+			Method method = compiledTouch.getMethod().get();
 
 			assertEquals(i, method.getRowCount());
-			assertEquals(CompileTerminationReason.ROW_COUNT, proof.getTerminationReason());
+			assertEquals(CompileTerminationReason.ROW_COUNT, compiledTouch.getTerminationReason());
 		}
 	}
 
@@ -172,16 +176,16 @@ public class LeadBasedCompilerTest {
 		ObservableTouch touch = new ObservableTouch();
 		touch.setCheckingType(CheckingType.LEAD_BASED);
 		touch.addNotation(notation);
-		final MethodRow roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
+		final Row roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
 		touch.setTerminationChange(roundsRow);
 
-		Proof proof = parser
+		CompiledTouch compiledTouch = parser
 				.andThen(compiler)
 				.apply(touch.get());
 
-		Method method = proof.getMethod().get();
+		Method method = compiledTouch.getMethod().get();
 
-		assertEquals(roundsRow, method.getLastRow());
+		assertEquals(roundsRow, method.getLastRow().get());
 	}
 
 	@Test
@@ -189,16 +193,16 @@ public class LeadBasedCompilerTest {
 
 		Touch touch = PlainCourseHelper.buildPlainCourseInstance.apply(buildPlainBobMinor());
 
-		Proof proof = parser
+		CompiledTouch compiledTouch = parser
 				.andThen(compiler)
 				.apply(touch);
 
 
-		assertTrue( proof.getParse().getUnderlyingTouch().getTitle().startsWith("PLAINCOURSE_"));
-		assertTrue( proof.getParse().getUnderlyingTouch().getTitle().endsWith(":Plain Bob Minor"));
-		assertEquals(60, proof.getMethod().get().getRowCount());
-		assertEquals(5, proof.getMethod().get().getLeadCount());
-		checkAgainstFile(proof.getMethod().get(), "/PlainBobMinor.txt");
+		assertTrue( compiledTouch.getTouch().getTitle().startsWith("PLAINCOURSE_"));
+		assertTrue( compiledTouch.getTouch().getTitle().endsWith(":Plain Bob Minor"));
+		assertEquals(60, compiledTouch.getMethod().get().getRowCount());
+		assertEquals(5, compiledTouch.getMethod().get().getLeadCount());
+		checkAgainstFile(compiledTouch.getMethod().get(), "/PlainBobMinor.txt");
 	}
 
 	@Test
@@ -213,12 +217,12 @@ public class LeadBasedCompilerTest {
 			fail();
 		}
 
-		Proof proof = parser
+		CompiledTouch compiledTouch = parser
 				.andThen(compiler)
 				.apply(touch.get());
 
-		assertEquals(CompileTerminationReason.INVALID_TOUCH, proof.getTerminationReason());
-		assertEquals("No active method", proof.getTerminateReasonDisplayString());
+		assertEquals(CompileTerminationReason.INVALID_TOUCH, compiledTouch.getTerminationReason());
+		assertEquals("No active method", compiledTouch.getTerminateReasonDisplayString());
 	}
 
 	@Test
@@ -253,28 +257,18 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void compileOmitParts() throws IOException {
-		fail();
-//		ObservableTouch touch = buildPlainBobMinorTouchShell();
-//		SpecifiedPartsVariance omitFromPart2 = new SpecifiedPartsVariance(VarianceLogicType.EXCLUDE, Sets.newHashSet(1));
-//		touch.addCharacters(0, 0, 0, '-');
-//		touch.insertCharacter(0, 0, 1, '[').setVariance(omitFromPart2);
-//		touch.insertCharacter(0, 0, 2, 's');
-//		touch.insertCharacter(0, 0, 3, ']');
-//		parser.parseAndAnnotate(touch);
-//		proveAndCheckTouch(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, touch);
+		ObservableTouch touch = buildPlainBobMinorTouchShell();
+		touch.addCharacters(TableType.TOUCH_TABLE, 0, 0, "-[-2s]");
+		proveAndCheckTouch(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, touch.get());
 	}
 
 	@Test
 	public void compileEmptyPartsTerminatedWithEmptyParts() throws IOException {
-		fail();
-//		Touch touch = buildPlainBobMinorTouchShell();
-//		SpecifiedPartsVariance omitFromPart1_2_3 = new SpecifiedPartsVariance(VarianceLogicType.EXCLUDE, Sets.newHashSet(0,1));
-//		touch.insertCharacter(0, 0, 0, '[').setVariance(omitFromPart1_2_3);
-//		touch.insertCharacter(0, 0, 1, '-');
-//		touch.insertCharacter(0, 0, 2, 's');
-//		touch.insertCharacter(0, 0, 3, ']');
-//		parser.parseAndAnnotate(touch);
-//		proveAndCheckTouch(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, CompileTerminationReason.EMPTY_PARTS, touch);
+		ObservableTouch touch = buildPlainBobMinorTouchShell();
+
+		touch.addCharacters(TableType.TOUCH_TABLE, 0, 0, "[-1,2,3-s]");
+
+		proveAndCheckTouch(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, EMPTY_PARTS, touch.get());
 	}
 
 	@Test
@@ -303,13 +297,14 @@ public class LeadBasedCompilerTest {
 	}
 
 	private Proof proveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
-	                                 CompileTerminationReason terminationReason, Touch touch) throws IOException {
+											 CompileTerminationReason terminationReason, Touch touch) throws IOException {
 
-		Proof proof = parser.andThen(compiler).apply(touch);
-		assertEquals(terminationReason, proof.getTerminationReason());
-		assertEquals(expectedLeadCount, proof.getMethod().get().getLeadCount());
-		checkAgainstFile(proof.getMethod().get(), fileName);
-		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
+		Proof proof = parser.andThen(compiler).andThen(analyser).apply(touch);
+		CompiledTouch compiledTouch = proof.getCompiledTouch();
+		assertEquals(terminationReason, compiledTouch.getTerminationReason());
+		assertEquals(expectedLeadCount, compiledTouch.getMethod().get().getLeadCount());
+		checkAgainstFile(compiledTouch.getMethod().get(), fileName);
+		assertEquals(trueTouch, proof.isTrueTouch());
 		return proof;
 	}
 
@@ -330,17 +325,6 @@ public class LeadBasedCompilerTest {
 		text = text.replace("\n", System.lineSeparator());
 		return text;
 	}
-
-
-//	private ObservableTouch buildPlainBobMinorTouchShell() {
-//		ObservableTouch touch = new ObservableTouch();
-//		touch.setNumberOfBells(NumberOfBells.BELLS_6);
-//		touch.setTitle("Test Touch");
-//		touch.addNotation(buildPlainBobMinor());
-//		touch.setCheckingType(CheckingType.COURSE_BASED);
-//		return touch;
-//	}
-
 
 	private NotationBody buildPlainBobMinor() {
 		return NotationBuilder.getInstance()

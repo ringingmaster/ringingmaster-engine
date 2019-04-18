@@ -2,8 +2,8 @@ package org.ringingmaster.engine.notation.impl;
 
 
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.method.MethodRow;
-import org.ringingmaster.engine.method.impl.MethodBuilder;
+import org.ringingmaster.engine.method.Row;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +13,7 @@ public class LeadHeadCalculatorTest  {
 
 	@Test
 	public void lookupLeadHeadFunctions() {
-		MethodRow row = MethodBuilder.parse(NumberOfBells.BELLS_9, "124638597");
+		Row row = MethodBuilder.parse(NumberOfBells.BELLS_9, "124638597");
 		assertEquals("124638597", row.getDisplayString(false));
 		assertEquals("f", LeadHeadCalculator.lookupLeadHeadCode(row, LeadHeadCalculator.LeadHeadType.NEAR));
 		assertEquals("m", LeadHeadCalculator.lookupLeadHeadCode(row, LeadHeadCalculator.LeadHeadType.EXTREME));

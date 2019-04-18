@@ -33,7 +33,7 @@ public class CourseBasedCompilerTest {
 //		touch.setCallFromBell(Bell.BELL_5);
 //		touch.addCharacters(0, 0, "W");
 //		touch.addCharacters(0, 1, "-");
-//		Proof proof = parseProveAndCheckTouch(15
+//		CompiledTouch compiledtouch = parseProveAndCheckTouch(15
 //				, "/PlainBobMinor W - From5.txt", true, CompileTerminationReason.SPECIFIED_ROW, touch);
 	}
 //
@@ -58,16 +58,16 @@ public class CourseBasedCompilerTest {
 //				.build();
 //	}
 //
-//	private Proof parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
+//	private CompiledTouch parseProveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
 //										  CompileTerminationReason terminationReason, Touch touch) throws IOException {
 //        final Parse parse = parser.apply(touch);
 //
-//        Proof proof = new CourseBasedCompiler(touch, "").compile(true, () -> false);
-//		assertEquals(terminationReason, proof.getTerminationReason());
-//		assertEquals(expectedLeadCount, proof.getMethod().get().getLeadCount());
-//		checkAgainstFile(proof.getMethod().get(), fileName);
-//		assertEquals(trueTouch, proof.getAnalysis().get().isTrueTouch());
-//		return proof;
+//        CompiledTouch compiledtouch = new CourseBasedCompiler(touch, "").compile(true, () -> false);
+//		assertEquals(terminationReason, compiledtouch.getTerminationReason());
+//		assertEquals(expectedLeadCount, compiledtouch.getMethod().get().getLeadCount());
+//		checkAgainstFile(compiledtouch.getMethod().get(), fileName);
+//		assertEquals(trueTouch, compiledtouch.getAnalysis().get().isTrueTouch());
+//		return compiledtouch;
 //	}
 //
 //	private void checkAgainstFile(Method method, String fileName) throws IOException {

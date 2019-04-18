@@ -30,15 +30,15 @@ public class ValidateDefaultCallMultiplierFullyDefined implements Function<Parse
     @Override
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate default call is fully defined", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate default call is fully defined", input.getTouch().getTitle());
 
         Parse result = input;
-        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(input.getUnderlyingTouch());
+        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(input.getTouch());
         if (!hasFullyDefinedDefaultCall) {
             HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                     HashBasedTable.create(input.allTouchCells().getBackingTable());
 
-            parseMainBodyArea(input, resultCells,input.getUnderlyingTouch().isSpliced());
+            parseMainBodyArea(input, resultCells,input.getTouch().isSpliced());
 
             result = new ParseBuilder()
                     .prototypeOf(input)
@@ -46,7 +46,7 @@ public class ValidateDefaultCallMultiplierFullyDefined implements Function<Parse
                     .build();
         }
 
-        log.debug("[{}] < validate default call is fully defined", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate default call is fully defined", input.getTouch().getTitle());
 
         return result;
     }

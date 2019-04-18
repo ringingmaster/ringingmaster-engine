@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.touch.element;
 
-import org.ringingmaster.engine.touch.variance.Variance;
+import org.ringingmaster.engine.compiler.variance.Variance;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;

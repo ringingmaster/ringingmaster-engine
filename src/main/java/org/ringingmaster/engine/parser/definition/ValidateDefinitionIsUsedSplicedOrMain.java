@@ -34,11 +34,11 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
 
 
     public Parse apply(Parse input) {
-        log.debug("[{}] > validate definition is used  spliced or main", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate definition is used  spliced or main", input.getTouch().getTitle());
 
         Parse result = doCheck(input);
 
-        log.debug("[{}] < validate definition is used  spliced or main", input.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate definition is used  spliced or main", input.getTouch().getTitle());
 
         return result;
     }
@@ -56,7 +56,7 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
 
         // Step 4: Mark invalid
         if (!invalidDefinitions.isEmpty()) {
-            log.debug("[{}]  marking invalid definitions [{}]", parse.getUnderlyingTouch().getTitle(), invalidDefinitions);
+            log.debug("[{}]  marking invalid definitions [{}]", parse.getTouch().getTitle(), invalidDefinitions);
         }
 
 

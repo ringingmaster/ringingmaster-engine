@@ -1,10 +1,10 @@
 package org.ringingmaster.engine.compilerold.impl;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
+import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.variance.Variance;
+
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Take a touch, and decompose into a List of {@link LeadBasedDecomposedCall}'s

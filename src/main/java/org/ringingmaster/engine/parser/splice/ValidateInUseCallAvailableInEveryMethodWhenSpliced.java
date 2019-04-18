@@ -35,31 +35,31 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
 
     @Override
     public Parse apply(Parse parse) {
-        log.debug("[{}] > validate in use calls available in every method when spliced", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] > validate in use calls available in every method when spliced", parse.getTouch().getTitle());
         Parse response = doCheck(parse);
-        log.debug("[{}] < validate in use calls available in every method when spliced", parse.getUnderlyingTouch().getTitle());
+        log.debug("[{}] < validate in use calls available in every method when spliced", parse.getTouch().getTitle());
         return response;
     }
 
     private Parse doCheck(Parse input) {
-        if (! input.getUnderlyingTouch().isSpliced()) {
-            log.debug("[{}]  ignore check: not spliced", input.getUnderlyingTouch().getTitle());
+        if (! input.getTouch().isSpliced()) {
+            log.debug("[{}]  ignore check: not spliced", input.getTouch().getTitle());
             return input;
         }
 
-        final PSet<NotationBody> validNotationsInTouch =  input.getUnderlyingTouch().getAvailableNotations();
+        final PSet<NotationBody> validNotationsInTouch =  input.getTouch().getAvailableNotations();
         if (validNotationsInTouch.size() == 0) {
             // We don't need to do any invalidating because there will have been no parsing of calls going on.
             return input;
         }
         if (log.isDebugEnabled()) {
-            log.debug("[{}]  valid notations available in touch {}", input.getUnderlyingTouch().getTitle(),
+            log.debug("[{}]  valid notations available in touch {}", input.getTouch().getTitle(),
                     validNotationsInTouch.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
         final Set<String> spliceNamesInUse = Sets.union(new InUseNamesForParseType().apply(input.splicedCells(), SPLICE),
                                                    new InUseNamesForParseType().apply(input.definitionDefinitionCells(), SPLICE));
-        log.debug("[{}]  splice Names in use {}", input.getUnderlyingTouch().getTitle(),
+        log.debug("[{}]  splice Names in use {}", input.getTouch().getTitle(),
                 spliceNamesInUse)  ;
 
 
@@ -67,20 +67,20 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
                 .filter(notation -> spliceNamesInUse.contains(notation.getSpliceIdentifier()))
                 .collect(Collectors.toSet());
         if (log.isDebugEnabled()) {
-            log.debug("[{}]  notations in use {}", input.getUnderlyingTouch().getTitle(),
+            log.debug("[{}]  notations in use {}", input.getTouch().getTitle(),
                     notationsInUse.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
         final Set<String> availableCallsFromValidNotations = getAllCalls(validNotationsInTouch);
-        log.debug("[{}]  calls available {}", input.getUnderlyingTouch().getTitle(),
+        log.debug("[{}]  calls available {}", input.getTouch().getTitle(),
                 spliceNamesInUse)  ;
 
         final Set<String> commonCalls = getCommonCallsFromNotationsInUse(notationsInUse);
-        log.debug("[{}]  calls that are defined in every valid notation {}", input.getUnderlyingTouch().getTitle(),
+        log.debug("[{}]  calls that are defined in every valid notation {}", input.getTouch().getTitle(),
                 commonCalls)  ;
 
         final Set<String> invalidCalls = Sets.difference(availableCallsFromValidNotations, commonCalls);
-        log.debug("[{}]  calls that cant be used {}", input.getUnderlyingTouch().getTitle(),
+        log.debug("[{}]  calls that cant be used {}", input.getTouch().getTitle(),
                 invalidCalls)  ;
 
         if (invalidCalls.size() == 0) {

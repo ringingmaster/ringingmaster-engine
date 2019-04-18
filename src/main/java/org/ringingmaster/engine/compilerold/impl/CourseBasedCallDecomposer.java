@@ -1,9 +1,10 @@
 package org.ringingmaster.engine.compilerold.impl;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.variance.Variance;
+
+import javax.annotation.concurrent.NotThreadSafe;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
