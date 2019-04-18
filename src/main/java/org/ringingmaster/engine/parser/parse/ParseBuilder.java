@@ -60,8 +60,8 @@ public class ParseBuilder {
         return this;
     }
 
-    public ParseBuilder setCompositionTableCells(HashBasedTable<Integer, Integer, ParsedCell> ells) {compositionCells
-        this.compositionCells = Optional.of(checkNotNull(ells));
+    public ParseBuilder setCompositionTableCells(HashBasedTable<Integer, Integer, ParsedCell> compositionCells) {
+        this.compositionCells = Optional.of(checkNotNull(compositionCells));
         return this;
     }
 
