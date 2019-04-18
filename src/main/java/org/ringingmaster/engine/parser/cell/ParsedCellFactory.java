@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.composition.cell.Cell;
 
 import java.util.Set;
 import java.util.stream.Collectors;

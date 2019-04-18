@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.compiler;
 
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.compiler.coursebased.CourseBasedCompilePipeline;
 import org.ringingmaster.engine.compiler.leadbased.LeadBasedCompilePipeline;
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class Compiler implements Function<Parse, CompiledTouch> {
+public class Compiler implements Function<Parse, CompiledComposition> {
 
     private final Logger log = LoggerFactory.getLogger(Compiler.class);
 
@@ -24,27 +24,27 @@ public class Compiler implements Function<Parse, CompiledTouch> {
 
 
     @Override
-    public CompiledTouch apply(Parse parse) {
+    public CompiledComposition apply(Parse parse) {
 
-        log.info("[{}] > compile", parse.getTouch().getTitle());
+        log.info("[{}] > compile", parse.getComposition().getTitle());
 
-        CompiledTouch compiledTouch = getPipeline(parse).apply(parse);
+        CompiledComposition compiledComposition = getPipeline(parse).apply(parse);
 
-        log.info("[{}] < compile", parse.getTouch().getTitle());
+        log.info("[{}] < compile", parse.getComposition().getTitle());
 
-        return compiledTouch;
+        return compiledComposition;
     }
 
-    private Function<Parse, CompiledTouch> getPipeline(Parse parse) {
+    private Function<Parse, CompiledComposition> getPipeline(Parse parse) {
 
-        switch (parse.getTouch().getCheckingType() ) {
+        switch (parse.getComposition().getCheckingType() ) {
 
 //            case COURSE_BASED:
 //                return courseBasedCompilePipeline;
             case LEAD_BASED:
                 return leadBasedCompilePipeline;
             default:
-                throw new RuntimeException("No pipeline for Parse Type [" + parse.getTouch().getCheckingType() + "]");
+                throw new RuntimeException("No pipeline for Parse Type [" + parse.getComposition().getCheckingType() + "]");
         }
     }
 

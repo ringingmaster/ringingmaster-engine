@@ -34,11 +34,11 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
 
 
     public Parse apply(Parse input) {
-        log.debug("[{}] > validate definition is used  spliced or main", input.getTouch().getTitle());
+        log.debug("[{}] > validate definition is used  spliced or main", input.getComposition().getTitle());
 
         Parse result = doCheck(input);
 
-        log.debug("[{}] < validate definition is used  spliced or main", input.getTouch().getTitle());
+        log.debug("[{}] < validate definition is used  spliced or main", input.getComposition().getTitle());
 
         return result;
     }
@@ -56,14 +56,14 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
 
         // Step 4: Mark invalid
         if (!invalidDefinitions.isEmpty()) {
-            log.debug("[{}]  marking invalid definitions [{}]", parse.getTouch().getTitle(), invalidDefinitions);
+            log.debug("[{}]  marking invalid definitions [{}]", parse.getComposition().getTitle(), invalidDefinitions);
         }
 
 
-        HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
-                HashBasedTable.create(parse.allTouchCells().getBackingTable());
-        definitionFunctions.markInvalid(parse.mainBodyCells(), invalidDefinitions, touchTableResult, createErrorMessage);
-        definitionFunctions.markInvalid(parse.splicedCells(), invalidDefinitions, touchTableResult, createErrorMessage);
+        HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult =
+                HashBasedTable.create(parse.allCompositionCells().getBackingTable());
+        definitionFunctions.markInvalid(parse.mainBodyCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
+        definitionFunctions.markInvalid(parse.splicedCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
 
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
                 HashBasedTable.create(parse.definitionDefinitionCells().getBackingTable());
@@ -71,7 +71,7 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
 
         return new ParseBuilder()
                 .prototypeOf(parse)
-                .setTouchTableCells(touchTableResult)
+                .setCompositionTableCells(compositionTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
     }

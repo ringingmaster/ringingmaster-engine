@@ -29,7 +29,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MUL
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
-import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???

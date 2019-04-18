@@ -1,6 +1,6 @@
 package org.ringingmaster.engine;
 
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.notation.NotationBody;
@@ -39,8 +39,8 @@ public class MethodCorrectnessTest {
 
 					final String leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
 
-					CompiledTouch compiledTouch = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
-					Lead lead = compiledTouch.getMethod().get().getLead(0);
+					CompiledComposition compiledComposition = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
+					Lead lead = compiledComposition.getMethod().get().getLead(0);
 
 					if (!Objects.equals(leadHead, lead.getLastRow().getDisplayString(false))) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
@@ -105,8 +105,8 @@ public class MethodCorrectnessTest {
 							.populateBuilderFromPersistableNotation(persistableNotation)
 							.build();
 
-					CompiledTouch compiledTouch = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
-					Lead lead = compiledTouch.getMethod().get().getLead(0);
+					CompiledComposition compiledComposition = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
+					Lead lead = compiledComposition.getMethod().get().getLead(0);
 
 					if (persistableNotation.getLeadLength() != lead.getRowCount() - 1) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",

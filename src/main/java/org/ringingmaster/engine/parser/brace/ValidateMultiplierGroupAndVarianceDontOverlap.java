@@ -32,13 +32,13 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
 
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate multiplier group and variance dine overlap", input.getTouch().getTitle());
+        log.debug("[{}] > validate multiplier group and variance dine overlap", input.getComposition().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                HashBasedTable.create(input.allTouchCells().getBackingTable());
+                HashBasedTable.create(input.allCompositionCells().getBackingTable());
 
-        parseCells(input.mainBodyCells(), resultCells, input.getTouch().getTitle());
-        parseCells(input.splicedCells(), resultCells, input.getTouch().getTitle());
+        parseCells(input.mainBodyCells(), resultCells, input.getComposition().getTitle());
+        parseCells(input.splicedCells(), resultCells, input.getComposition().getTitle());
 
         // We parse definitions individually. This is so that any open/close brace in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
@@ -47,16 +47,16 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
         final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = input.definitionDefinitionCells();
         for(int rowIndex = 0; rowIndex < definitionDefinitionCells.getRowSize();rowIndex++) {
             final ImmutableArrayTable<ParsedCell> cell = definitionDefinitionCells.subTable(rowIndex, rowIndex + 1, 0, 1);
-            parseCells(cell, definitionTableResult, input.getTouch().getTitle());
+            parseCells(cell, definitionTableResult, input.getComposition().getTitle());
         }
 
         Parse result = new ParseBuilder()
                 .prototypeOf(input)
-                .setTouchTableCells(resultCells)
+                .setCompositionTableCells(resultCells)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < validate multiplier group and variance dine overlap", input.getTouch().getTitle());
+        log.debug("[{}] < validate multiplier group and variance dine overlap", input.getComposition().getTitle());
 
         return result;
 

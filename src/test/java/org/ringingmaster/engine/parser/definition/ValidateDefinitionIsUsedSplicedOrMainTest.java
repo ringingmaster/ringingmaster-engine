@@ -2,12 +2,12 @@ package org.ringingmaster.engine.parser.definition;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 
 import java.util.Arrays;
 
@@ -16,159 +16,159 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITI
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
-import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
-import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        Parse parse = new AssignParseType().apply(touch.get());
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        Parse parse = new AssignParseType().apply(composition.get());
         Parse result = new ValidateDefinitionIsUsedSplicedOrMain().apply(parse);
 
-        assertEquals(0, result.allTouchCells().getRowSize());
-        assertEquals(0, result.allTouchCells().getColumnSize());
+        assertEquals(0, result.allCompositionCells().getRowSize());
+        assertEquals(0, result.allCompositionCells().getColumnSize());
     }
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.setCheckingType(COURSE_BASED);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        composition.setCheckingType(COURSE_BASED);
 
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
-        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 2,0, "CALL");// To force the Parse to be replaced
-        touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 2,0, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(MAIN_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertEquals(3, result.allTouchCells().getRowSize());
-        assertEquals(2, result.allTouchCells().getColumnSize());
-        assertEquals("CALL_POSITION", result.allTouchCells().get(0,0).getCharacters());
-        assertEquals("MAIN_BODY", result.allTouchCells().get(1,0).getCharacters());
-        assertEquals("SPLICE", result.allTouchCells().get(1,1).getCharacters());
+        assertEquals(3, result.allCompositionCells().getRowSize());
+        assertEquals(2, result.allCompositionCells().getColumnSize());
+        assertEquals("CALL_POSITION", result.allCompositionCells().get(0,0).getCharacters());
+        assertEquals("MAIN_BODY", result.allCompositionCells().get(1,0).getCharacters());
+        assertEquals("SPLICE", result.allCompositionCells().get(1,1).getCharacters());
     }
 
     @Test
     public void differentDefinitionsValidInMainAndSpliced() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,0), valid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,1), valid(6, DEFINITION));
     }
 
     @Test
     public void usingSameDefinitionInMainAndSplicedSetsBothInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "CALL");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 1,0, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 0,1, "CALL");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(1,0), valid(6, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), invalid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,0), invalid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(1,0), valid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,1), invalid(4, DEFINITION));
     }
 
     @Test
     public void usingSameDefinitionInEitherMainOrSplicedIsValid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 1,0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(1,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
-        assertParse(result.allTouchCells().get(1,1), valid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,0), valid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(1,0), valid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,1), valid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(1,1), valid(6, DEFINITION));
     }
 
     @Test
     public void embeddedDefinitionInMainUsedInSplicedInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_MAIN", "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        composition.addDefinition("IN_MAIN", "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 1,0, "IN_MAIN");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,0), valid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,1), invalid(6, DEFINITION));
         assertParse(result.findDefinitionByShorthand("IN_MAIN").get().get(0, DEFINITION_COLUMN), invalid(6, DEFINITION));
     }
 
     @Test
     public void embeddedDefinitionInMainTransitivelyUsedInSplicedInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_MAIN_1", "IN_MAIN_2");
-        touch.addDefinition("IN_MAIN_2", "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "IN_MAIN_1");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        composition.addDefinition("IN_MAIN_1", "IN_MAIN_2");
+        composition.addDefinition("IN_MAIN_2", "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 1,0, "IN_MAIN_1");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), invalid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,0), valid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,1), invalid(6, DEFINITION));
         assertParse(result.findDefinitionByShorthand("IN_MAIN_2").get().get(0, DEFINITION_COLUMN), invalid(6, DEFINITION));
     }
 
     @Test
     public void embeddedDefinitionInSplicedUsedInMainInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_SPICE", "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1,1, "IN_SPICE");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        composition.addDefinition("IN_SPICE", "CALL");
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 1,1, "IN_SPICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), invalid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0,1), valid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,0), invalid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(0,1), valid(6, DEFINITION));
         assertParse(result.findDefinitionByShorthand("IN_SPICE").get().get(0, DEFINITION_COLUMN), invalid(4, DEFINITION));
     }
 
     @Test
     public void embeddedDefinitionInSplicedTransitivelyUsedInMainInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), buildLittleBobMinor());
-        touch.addDefinition("IN_SPICE_1", "IN_SPICE_2");
-        touch.addDefinition("IN_SPICE_2", "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0, 0, "CALL");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 1, 1, "IN_SPICE_1");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        composition.addDefinition("IN_SPICE_1", "IN_SPICE_2");
+        composition.addDefinition("IN_SPICE_2", "CALL");
+        composition.addCharacters(MAIN_TABLE, 0, 0, "CALL");
+        composition.addCharacters(MAIN_TABLE, 0, 1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 1, 1, "IN_SPICE_1");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0, 0), invalid(4, DEFINITION));
-        assertParse(result.allTouchCells().get(0, 1), valid(6, DEFINITION));
+        assertParse(result.allCompositionCells().get(0, 0), invalid(4, DEFINITION));
+        assertParse(result.allCompositionCells().get(0, 1), valid(6, DEFINITION));
         assertParse(result.findDefinitionByShorthand("IN_SPICE_2").get().get(0, DEFINITION_COLUMN), invalid(4, DEFINITION));
     }
 
@@ -200,15 +200,15 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
                 .build();
     }
 
-    private ObservableTouch buildSingleCellTouch(NotationBody... notations) {
-        ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(notations[0].getNumberOfWorkingBells());
-        Arrays.stream(notations).forEach(touch::addNotation);
-        touch.setCheckingType(CheckingType.LEAD_BASED);
-        touch.setSpliced(true);
-        touch.addDefinition("CALL", "-1-");
-        touch.addDefinition("SPLICE", "P");
-        return touch;
+    private ObservableComposition buildSingleCellComposition(NotationBody... notations) {
+        ObservableComposition composition = new ObservableComposition();
+        composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
+        Arrays.stream(notations).forEach(composition::addNotation);
+        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setSpliced(true);
+        composition.addDefinition("CALL", "-1-");
+        composition.addDefinition("SPLICE", "P");
+        return composition;
     }
 
 }

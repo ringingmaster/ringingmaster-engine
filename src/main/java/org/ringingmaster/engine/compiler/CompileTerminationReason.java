@@ -5,7 +5,7 @@ package org.ringingmaster.engine.compiler;
  * User: Stephen
  */
 public enum CompileTerminationReason {
-	INVALID_TOUCH,
+	INVALID_COMPOSITION,
 	ROW_COUNT,
 	LEAD_COUNT,
 	SPECIFIED_ROW,

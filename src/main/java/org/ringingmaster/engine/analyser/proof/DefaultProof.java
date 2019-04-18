@@ -1,10 +1,10 @@
 package org.ringingmaster.engine.analyser.proof;
 
 import com.google.common.collect.ImmutableList;
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.touch.Touch;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -18,27 +18,27 @@ import static com.google.common.base.Preconditions.checkState;
 class DefaultProof implements Proof {
 
 
-	private final CompiledTouch compiledTouch;
+	private final CompiledComposition compiledComposition;
 	private final ImmutableList<ImmutableList<Row>> falseRowGroups;
 
-	DefaultProof(CompiledTouch compiledTouch, ImmutableList<ImmutableList<Row>> falseRowGroups) {
-		this.compiledTouch = compiledTouch;
+	DefaultProof(CompiledComposition compiledComposition, ImmutableList<ImmutableList<Row>> falseRowGroups) {
+		this.compiledComposition = compiledComposition;
 		this.falseRowGroups = falseRowGroups;
 	}
 
 	@Override
-	public Touch getTouch() {
-		return compiledTouch.getTouch();
+	public Composition getComposition() {
+		return compiledComposition.getComposition();
 	}
 
 	@Override
 	public Parse getParse() {
-		return compiledTouch.getParse();
+		return compiledComposition.getParse();
 	}
 
 	@Override
-	public CompiledTouch getCompiledTouch() {
-		return compiledTouch;
+	public CompiledComposition getCompiledComposition() {
+		return compiledComposition;
 	}
 
 	@Override
@@ -47,9 +47,9 @@ class DefaultProof implements Proof {
 	}
 
 	@Override
-	public boolean isTrueTouch() {
+	public boolean isTrueComposition() {
 		checkState(falseRowGroups != null, "falseRowGroups have not been set yet");
-		boolean trueTouch = (falseRowGroups.size() == 0);
-		return trueTouch;
+		boolean trueComposition = (falseRowGroups.size() == 0);
+		return trueComposition;
 	}
 }

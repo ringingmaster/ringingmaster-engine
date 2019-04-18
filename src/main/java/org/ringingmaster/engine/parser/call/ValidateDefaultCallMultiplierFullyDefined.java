@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
@@ -11,7 +12,6 @@ import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
-import org.ringingmaster.engine.touch.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,23 +30,23 @@ public class ValidateDefaultCallMultiplierFullyDefined implements Function<Parse
     @Override
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate default call is fully defined", input.getTouch().getTitle());
+        log.debug("[{}] > validate default call is fully defined", input.getComposition().getTitle());
 
         Parse result = input;
-        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(input.getTouch());
+        final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(input.getComposition());
         if (!hasFullyDefinedDefaultCall) {
             HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                    HashBasedTable.create(input.allTouchCells().getBackingTable());
+                    HashBasedTable.create(input.allCompositionCells().getBackingTable());
 
-            parseMainBodyArea(input, resultCells,input.getTouch().isSpliced());
+            parseMainBodyArea(input, resultCells,input.getComposition().isSpliced());
 
             result = new ParseBuilder()
                     .prototypeOf(input)
-                    .setTouchTableCells(resultCells)
+                    .setCompositionTableCells(resultCells)
                     .build();
         }
 
-        log.debug("[{}] < validate default call is fully defined", input.getTouch().getTitle());
+        log.debug("[{}] < validate default call is fully defined", input.getComposition().getTitle());
 
         return result;
     }
@@ -81,14 +81,14 @@ public class ValidateDefaultCallMultiplierFullyDefined implements Function<Parse
     }
 
     //TODO we should be able to detect the actual notations being used for spliced, and only check those.
-    private boolean hasFullyDefinedDefaultCall(Touch touch) {
-        for (NotationBody notation : touch.getAvailableNotations()) {
+    private boolean hasFullyDefinedDefaultCall(Composition composition) {
+        for (NotationBody notation : composition.getAvailableNotations()) {
             if (notation.getDefaultCall() == null) {
                 return false;
             }
         }
 
-        if (touch.getAvailableNotations().size() == 0) {
+        if (composition.getAvailableNotations().size() == 0) {
             return false;
         }
         return true;

@@ -7,7 +7,11 @@ import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.analyser.Analyser;
 import org.ringingmaster.engine.analyser.proof.Proof;
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
+import org.ringingmaster.engine.composition.Composition;
+import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.TableType;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
@@ -15,10 +19,6 @@ import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.Parser;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.TableType;
-import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.ringingmaster.engine.compiler.CompileTerminationReason.*;
+import static org.ringingmaster.engine.compiler.CompileTerminationReason.EMPTY_PARTS;
 
 /**
  * User: Stephen
@@ -50,17 +50,17 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("-")
 				.build();
 
-		ObservableTouch touch = new ObservableTouch();
-		touch.addNotation(allChange);
-		touch.setCheckingType(CheckingType.LEAD_BASED);
-		touch.setNumberOfBells(NumberOfBells.BELLS_8);
-		touch.setTerminationMaxLeads(1);
+		ObservableComposition composition = new ObservableComposition();
+		composition.addNotation(allChange);
+		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setNumberOfBells(NumberOfBells.BELLS_8);
+		composition.setTerminationMaxLeads(1);
 
-		CompiledTouch compiledTouch = parser
+		CompiledComposition compiledComposition = parser
 				.andThen(compiler)
-				.apply(touch.get());
+				.apply(composition.get());
 
-		Method method = compiledTouch.getMethod().get();
+		Method method = compiledComposition.getMethod().get();
 
 		assertNotNull("Should return non null Method", method);
 		assertEquals("X should produce an initial rounds row, and a single changed row", 2, method.getLead(0).getRowCount());
@@ -77,14 +77,14 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("14")
 				.build();
 
-		ObservableTouch touch = new ObservableTouch();
-		touch.setCheckingType(CheckingType.LEAD_BASED);
-		touch.addNotation(notation);
-		touch.setTerminationMaxLeads(1);
+		ObservableComposition composition = new ObservableComposition();
+		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.addNotation(notation);
+		composition.setTerminationMaxLeads(1);
 
 		Method method = parser
 				.andThen(compiler)
-				.apply(touch.get())
+				.apply(composition.get())
 				.getMethod().get();
 
 
@@ -100,9 +100,9 @@ public class LeadBasedCompilerTest {
 //				NotationRowHelper.buildNotationRow(NotationPlace.ALL_CHANGE),
 //				NotationRowHelper.buildNotationRow(NotationPlace.PLACE_1, NotationPlace.PLACE_4));
 //
-//		Touch touch = TouchBuilder.buildPlainCourseInstance(mockedNotationBody);
-//		touch.setTerminationMaxLeads(1);
-//		CompiledTouch result = new LeadBasedCompiler(touch).compile(false, () -> false);
+//		Composition composition = CompositionBuilder.buildPlainCourseInstance(mockedNotationBody);
+//		composition.setTerminationMaxLeads(1);
+//		CompiledComposition result = new LeadBasedCompiler(composition).compile(false, () -> false);
 //		Method method = result.getMethod().get();
 //
 //		assertArrayEquals(new int[]{1}, method.getLead(0).getLeadSeparatorPositions());
@@ -116,22 +116,22 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("x.14.x")
 				.build();
 
-		ObservableTouch touch = new ObservableTouch();
-		touch.setCheckingType(CheckingType.LEAD_BASED);
-		touch.addNotation(notation);
-		touch.removeTerminationChange();
+		ObservableComposition composition = new ObservableComposition();
+		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.addNotation(notation);
+		composition.removeTerminationChange();
 
 
 		for (int i=1; i< 10; i++) {
 
-			touch.setTerminationMaxLeads(i);
+			composition.setTerminationMaxLeads(i);
 
-			CompiledTouch compiledTouch = parser
+			CompiledComposition compiledComposition = parser
 					.andThen(compiler)
-					.apply(touch.get());
+					.apply(composition.get());
 
-			assertEquals(i, compiledTouch.getMethod().get().getLeadCount());
-			assertEquals(CompileTerminationReason.LEAD_COUNT, compiledTouch.getTerminationReason());
+			assertEquals(i, compiledComposition.getMethod().get().getLeadCount());
+			assertEquals(CompileTerminationReason.LEAD_COUNT, compiledComposition.getTerminationReason());
 		}
 	}
 
@@ -145,23 +145,23 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("x.14.x.14")
 				.build();
 
-		ObservableTouch touch = new ObservableTouch();
-		touch.setCheckingType(CheckingType.LEAD_BASED);
-		touch.addNotation(notation);
-		touch.removeTerminationChange();
+		ObservableComposition composition = new ObservableComposition();
+		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.addNotation(notation);
+		composition.removeTerminationChange();
 
 		for (int i=1; i< 50; i++) {
-			touch.setTerminationMaxRows(i);
+			composition.setTerminationMaxRows(i);
 
-			CompiledTouch compiledTouch = parser
+			CompiledComposition compiledComposition = parser
 					.andThen(compiler)
-					.apply(touch.get());
+					.apply(composition.get());
 
 
-			Method method = compiledTouch.getMethod().get();
+			Method method = compiledComposition.getMethod().get();
 
 			assertEquals(i, method.getRowCount());
-			assertEquals(CompileTerminationReason.ROW_COUNT, compiledTouch.getTerminationReason());
+			assertEquals(CompileTerminationReason.ROW_COUNT, compiledComposition.getTerminationReason());
 		}
 	}
 
@@ -173,17 +173,17 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("x.16.x.16")
 				.build();
 
-		ObservableTouch touch = new ObservableTouch();
-		touch.setCheckingType(CheckingType.LEAD_BASED);
-		touch.addNotation(notation);
+		ObservableComposition composition = new ObservableComposition();
+		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.addNotation(notation);
 		final Row roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
-		touch.setTerminationChange(roundsRow);
+		composition.setTerminationChange(roundsRow);
 
-		CompiledTouch compiledTouch = parser
+		CompiledComposition compiledComposition = parser
 				.andThen(compiler)
-				.apply(touch.get());
+				.apply(composition.get());
 
-		Method method = compiledTouch.getMethod().get();
+		Method method = compiledComposition.getMethod().get();
 
 		assertEquals(roundsRow, method.getLastRow().get());
 	}
@@ -191,120 +191,120 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void compilePlainCourseOfPlainBobMinor() throws IOException {
 
-		Touch touch = PlainCourseHelper.buildPlainCourseInstance.apply(buildPlainBobMinor());
+		Composition composition = PlainCourseHelper.buildPlainCourseInstance.apply(buildPlainBobMinor());
 
-		CompiledTouch compiledTouch = parser
+		CompiledComposition compiledComposition = parser
 				.andThen(compiler)
-				.apply(touch);
+				.apply(composition);
 
 
-		assertTrue( compiledTouch.getTouch().getTitle().startsWith("PLAINCOURSE_"));
-		assertTrue( compiledTouch.getTouch().getTitle().endsWith(":Plain Bob Minor"));
-		assertEquals(60, compiledTouch.getMethod().get().getRowCount());
-		assertEquals(5, compiledTouch.getMethod().get().getLeadCount());
-		checkAgainstFile(compiledTouch.getMethod().get(), "/PlainBobMinor.txt");
+		assertTrue( compiledComposition.getComposition().getTitle().startsWith("PLAINCOURSE_"));
+		assertTrue( compiledComposition.getComposition().getTitle().endsWith(":Plain Bob Minor"));
+		assertEquals(60, compiledComposition.getMethod().get().getRowCount());
+		assertEquals(5, compiledComposition.getMethod().get().getLeadCount());
+		checkAgainstFile(compiledComposition.getMethod().get(), "/PlainBobMinor.txt");
 	}
 
 	@Test
-	public void compilingTouchWithNoNotationTerminatesWithError() {
+	public void compilingCompositionWithNoNotationTerminatesWithError() {
 
-		ObservableTouch touch = null;
+		ObservableComposition composition = null;
 		try {
-			touch = new ObservableTouch();
-			touch.setCheckingType(CheckingType.LEAD_BASED);
-			touch.setTerminationMaxRows(10);
+			composition = new ObservableComposition();
+			composition.setCheckingType(CheckingType.LEAD_BASED);
+			composition.setTerminationMaxRows(10);
 		} catch (Exception e) {
 			fail();
 		}
 
-		CompiledTouch compiledTouch = parser
+		CompiledComposition compiledComposition = parser
 				.andThen(compiler)
-				.apply(touch.get());
+				.apply(composition.get());
 
-		assertEquals(CompileTerminationReason.INVALID_TOUCH, compiledTouch.getTerminationReason());
-		assertEquals("No active method", compiledTouch.getTerminateReasonDisplayString());
+		assertEquals(CompileTerminationReason.INVALID_COMPOSITION, compiledComposition.getTerminationReason());
+		assertEquals("No active method", compiledComposition.getTerminateReasonDisplayString());
 	}
 
 	@Test
 	public void compileSingleCall() throws IOException {
-		checkSimple1CellPlainBobTouch("-", 3, "/PlainBobMinor - .txt", true);
+		checkSimple1CellPlainBobComposition("-", 3, "/PlainBobMinor - .txt", true);
 	}
 
 	@Test
 	public void compileCallMultiplier() throws IOException {
-		checkSimple1CellPlainBobTouch("2-", 3, "/PlainBobMinor - .txt", true);
+		checkSimple1CellPlainBobComposition("2-", 3, "/PlainBobMinor - .txt", true);
 	}
 
 	@Test
 	public void compileCallAndPlain() throws IOException {
-		checkSimple1CellPlainBobTouch("-p", 10, "/PlainBobMinor -p .txt", true);
+		checkSimple1CellPlainBobComposition("-p", 10, "/PlainBobMinor -p .txt", true);
 	}
 
 	@Test
 	public void compileCallAndPlainMultiplier() throws IOException {
-		checkSimple1CellPlainBobTouch("-2p", 6, "/PlainBobMinor -2p .txt", true);
+		checkSimple1CellPlainBobComposition("-2p", 6, "/PlainBobMinor -2p .txt", true);
 	}
 
 	@Test
 	public void compileGroup() throws IOException {
-		checkSimple1CellPlainBobTouch("2(-p)s", 30, "/PlainBobMinor 2(-p)s .txt", false);
+		checkSimple1CellPlainBobComposition("2(-p)s", 30, "/PlainBobMinor 2(-p)s .txt", false);
 	}
 
 	@Test
 	public void compileEmbeddedGroup() throws IOException {
-		checkSimple1CellPlainBobTouch("2(2(-p)s)-", 22, "/PlainBobMinor 2(2(-p)s) .txt", false);
+		checkSimple1CellPlainBobComposition("2(2(-p)s)-", 22, "/PlainBobMinor 2(2(-p)s) .txt", false);
 	}
 
 	@Test
 	public void compileOmitParts() throws IOException {
-		ObservableTouch touch = buildPlainBobMinorTouchShell();
-		touch.addCharacters(TableType.TOUCH_TABLE, 0, 0, "-[-2s]");
-		proveAndCheckTouch(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, touch.get());
+		ObservableComposition composition = buildPlainBobMinorCompositionShell();
+		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "-[-2s]");
+		proveAndCheckCompositionn(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
 	}
 
 	@Test
 	public void compileEmptyPartsTerminatedWithEmptyParts() throws IOException {
-		ObservableTouch touch = buildPlainBobMinorTouchShell();
+		ObservableComposition composition = buildPlainBobMinorCompositionShell();
 
-		touch.addCharacters(TableType.TOUCH_TABLE, 0, 0, "[-1,2,3-s]");
+		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "[-1,2,3-s]");
 
-		proveAndCheckTouch(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, EMPTY_PARTS, touch.get());
+		proveAndCheckCompositionn(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, EMPTY_PARTS, composition.get());
 	}
 
 	@Test
 	public void compileDefinitionWithGroup() throws IOException {
-		ObservableTouch touch = buildPlainBobMinorTouchShell();
-		touch.addCharacters(TableType.TOUCH_TABLE, 0, 0, "-def-");
-		touch.addDefinition("def", "2(sBob)");
+		ObservableComposition composition = buildPlainBobMinorCompositionShell();
+		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "-def-");
+		composition.addDefinition("def", "2(sBob)");
 
-		proveAndCheckTouch(6, "/PlainBobMinor -def-.txt", false, CompileTerminationReason.SPECIFIED_ROW, touch.get());
+		proveAndCheckCompositionn(6, "/PlainBobMinor -def-.txt", false, CompileTerminationReason.SPECIFIED_ROW, composition.get());
 	}
 
-	Proof checkSimple1CellPlainBobTouch(String touchString, int expectedLeadCount, String fileName, boolean trueTouch) throws IOException {
-		ObservableTouch touch = buildPlainBobMinorTouchShell();
-		touch.addCharacters(TableType.TOUCH_TABLE, 0, 0, touchString);
+	Proof checkSimple1CellPlainBobComposition(String compositionString, int expectedLeadCount, String fileName, boolean trueComposition) throws IOException {
+		ObservableComposition composition = buildPlainBobMinorCompositionShell();
+		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, compositionString);
 
-		return proveAndCheckTouch(expectedLeadCount, fileName, trueTouch, CompileTerminationReason.SPECIFIED_ROW, touch.get());
+		return proveAndCheckCompositionn(expectedLeadCount, fileName, trueComposition, CompileTerminationReason.SPECIFIED_ROW, composition.get());
 	}
 
-	private ObservableTouch buildPlainBobMinorTouchShell() {
-		ObservableTouch touch = new ObservableTouch();
-		touch.addNotation(buildPlainBobMinor());
-		touch.setCheckingType(CheckingType.LEAD_BASED);
-		touch.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
-		touch.setPlainLeadToken("p");
-		return touch;
+	private ObservableComposition buildPlainBobMinorCompositionShell() {
+		ObservableComposition composition = new ObservableComposition();
+		composition.addNotation(buildPlainBobMinor());
+		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+		composition.setPlainLeadToken("p");
+		return composition;
 	}
 
-	private Proof proveAndCheckTouch(int expectedLeadCount, String fileName, boolean trueTouch,
-											 CompileTerminationReason terminationReason, Touch touch) throws IOException {
+	private Proof proveAndCheckCompositionn(int expectedLeadCount, String fileName, boolean trueComposition,
+											CompileTerminationReason terminationReason, Composition composition) throws IOException {
 
-		Proof proof = parser.andThen(compiler).andThen(analyser).apply(touch);
-		CompiledTouch compiledTouch = proof.getCompiledTouch();
-		assertEquals(terminationReason, compiledTouch.getTerminationReason());
-		assertEquals(expectedLeadCount, compiledTouch.getMethod().get().getLeadCount());
-		checkAgainstFile(compiledTouch.getMethod().get(), fileName);
-		assertEquals(trueTouch, proof.isTrueTouch());
+		Proof proof = parser.andThen(compiler).andThen(analyser).apply(composition);
+		CompiledComposition compiledComposition = proof.getCompiledComposition();
+		assertEquals(terminationReason, compiledComposition.getTerminationReason());
+		assertEquals(expectedLeadCount, compiledComposition.getMethod().get().getLeadCount());
+		checkAgainstFile(compiledComposition.getMethod().get(), fileName);
+		assertEquals(trueComposition, proof.isTrueComposition());
 		return proof;
 	}
 

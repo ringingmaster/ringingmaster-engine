@@ -3,9 +3,9 @@ package org.ringingmaster.engine.parser.parse;
 import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.parser.cell.EmptyParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.Touch;
 
 import java.util.Optional;
 
@@ -19,27 +19,27 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class ParseBuilder {
 
-    private Optional<Touch> prototypeTouch = Optional.empty();
+    private Optional<Composition> prototypeComposition = Optional.empty();
     private Optional<Parse> prototypeParse = Optional.empty();
-    private Optional<HashBasedTable<Integer, Integer, ParsedCell>> touchCells = Optional.empty();;
+    private Optional<HashBasedTable<Integer, Integer, ParsedCell>> compositionCells = Optional.empty();;
     private Optional<HashBasedTable<Integer, Integer, ParsedCell>> definitionCells = Optional.empty();;
 
     public Parse build() {
 
-        if (prototypeTouch.isPresent()) {
-            checkState(touchCells.isPresent());
+        if (prototypeComposition.isPresent()) {
+            checkState(compositionCells.isPresent());
             checkState(definitionCells.isPresent());
 
             return new DefaultParse(
-                    prototypeTouch.get(),
-                    new TableBackedImmutableArrayTable<>(touchCells.get(), () -> EmptyParsedCell.INSTANCE),
+                    prototypeComposition.get(),
+                    new TableBackedImmutableArrayTable<>(compositionCells.get(), () -> EmptyParsedCell.INSTANCE),
                     new TableBackedImmutableArrayTable<>(definitionCells.get(), () -> EmptyParsedCell.INSTANCE));
         }
         else if (prototypeParse.isPresent()) {
             return new DefaultParse(
-                    prototypeParse.get().getTouch(),
-                    touchCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
-                            .orElse(prototypeParse.get().allTouchCells()),
+                    prototypeParse.get().getComposition(),
+                    compositionCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
+                            .orElse(prototypeParse.get().allCompositionCells()),
                     definitionCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
                             .orElse(prototypeParse.get().allDefinitionCells()));
         }
@@ -48,20 +48,20 @@ public class ParseBuilder {
         }
     }
 
-    public ParseBuilder prototypeOf(Touch prototypeTouch) {
+    public ParseBuilder prototypeOf(Composition prototypeComposition) {
         checkState(!prototypeParse.isPresent());
-        this.prototypeTouch = Optional.of(checkNotNull(prototypeTouch));
+        this.prototypeComposition = Optional.of(checkNotNull(prototypeComposition));
         return this;
     }
 
     public ParseBuilder prototypeOf(Parse prototypeParse) {
-        checkState(!prototypeTouch.isPresent());
+        checkState(!prototypeComposition.isPresent());
         this.prototypeParse = Optional.of(checkNotNull(prototypeParse));
         return this;
     }
 
-    public ParseBuilder setTouchTableCells(HashBasedTable<Integer, Integer, ParsedCell> touchCells) {
-        this.touchCells = Optional.of(checkNotNull(touchCells));
+    public ParseBuilder setCompositionTableCells(HashBasedTable<Integer, Integer, ParsedCell> ells) {compositionCells
+        this.compositionCells = Optional.of(checkNotNull(ells));
         return this;
     }
 

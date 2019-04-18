@@ -1,9 +1,10 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import org.ringingmaster.engine.analyser.proof.Proof;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.compilerold.Compiler;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.Row;
@@ -12,7 +13,6 @@ import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationRow;
-import org.ringingmaster.engine.touch.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	public static final int EMPTY_PART_TOLERANCE = 2;
 
 	// inputs
-	private final Touch touch;
+	private final Composition composition;
 	private final String logPreamble;
 
 	// internal data.
@@ -54,30 +54,30 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	private volatile Optional<Proof> analysis = Optional.empty();
 	private volatile Optional<CompileTerminationReason> terminationReason = Optional.empty();
 	private volatile Optional<String> terminateNotes = Optional.empty();
-	private volatile CompiledTouch compiledTouch;
+	private volatile CompiledComposition compiledComposition;
 
 
-	public SkeletalCompiler(Touch touch, String logPreamble) {
-		this.touch = checkNotNull(touch);
+	public SkeletalCompiler(Composition composition, String logPreamble) {
+		this.composition = checkNotNull(composition);
 		this.logPreamble = checkNotNull(logPreamble);
 	}
 
-	public CompiledTouch compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly) {
-		log.debug("{}> Start compiling [{}]", logPreamble, touch.getTitle());
+	public CompiledComposition compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly) {
+		log.debug("{}> Start compiling [{}]", logPreamble, composition.getTitle());
 		long start = System.currentTimeMillis();
 
-		final Optional<String> invalidTouch = checkInvalidTouch(touch);
+		final Optional<String> invalidComposition = checkInvalidComposition(composition);
 
-		if (invalidTouch.isPresent()) {
-			terminate(CompileTerminationReason.INVALID_TOUCH, invalidTouch.get());
+		if (invalidComposition.isPresent()) {
+			terminate(CompileTerminationReason.INVALID_COMPOSITION, invalidComposition.get());
 		}
-		else { preCompile(touch);
+		else { preCompile(composition);
 			checkTerminateEarly(shouldTerminateEarly);
 
 			buildCallLookupByName();
 			checkTerminateEarly(shouldTerminateEarly);
 
-			compileTouch(shouldTerminateEarly);
+			compileComposition(shouldTerminateEarly);
 			checkTerminateEarly(shouldTerminateEarly);
 
 			if (withAnalysis) {
@@ -86,9 +86,9 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 			}
 		}
 		long compileTime = System.currentTimeMillis() - start;
-//		compiledTouch = new DefaultProof(touch, terminationReason.get(), terminateNotes, method, proof, compileTime);
-		log.debug("{}< Finished compiling [{}] in [{}]ms", logPreamble, touch.getTitle(), compileTime);
-		return compiledTouch;
+//		compiledComposition = new DefaultProof(composition, terminationReason.get(), terminateNotes, method, proof, compileTime);
+		log.debug("{}< Finished compiling [{}] in [{}]ms", logPreamble, composition.getTitle(), compileTime);
+		return compiledComposition;
 	}
 
 	private void checkTerminateEarly(Supplier<Boolean> shouldTerminateEarly) {
@@ -97,14 +97,14 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		}
 	}
 
-	private Optional<String> checkInvalidTouch(Touch touch) {
-		if (touch.isSpliced()) {
-			if (touch.getAvailableNotations().size() == 0) {
-				return Optional.of("Spliced touch has no valid methods");
+	private Optional<String> checkInvalidComposition(Composition composition) {
+		if (composition.isSpliced()) {
+			if (composition.getAvailableNotations().size() == 0) {
+				return Optional.of("Spliced composition has no valid methods");
 			}
 		}
 		else { // Not Spliced
-			if (touch.getNonSplicedActiveNotation() == null) {
+			if (composition.getNonSplicedActiveNotation() == null) {
 				return Optional.of("No active method");
 			}
 		}
@@ -112,16 +112,16 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 		return Optional.empty();
 	}
 
-	protected abstract void preCompile(Touch touch);
+	protected abstract void preCompile(Composition composition);
 
 	protected abstract List<DCT> getImmutableCallSequence();
 
 	private void buildCallLookupByName() {
-		callLookupByName = new CallMapBuilder(touch, logPreamble).createCallMap();
+		callLookupByName = new CallMapBuilder(composition, logPreamble).createCallMap();
 	}
 
-	private void compileTouch(Supplier<Boolean> shouldTerminateEarly) {
-		log.debug("{} > create touch", logPreamble);
+	private void compileComposition(Supplier<Boolean> shouldTerminateEarly) {
+		log.debug("{} > create composition", logPreamble);
 		log.debug("{}  - part [{}]", logPreamble, partIndex);
 		partIndex = 0;
 		// This is required here to handle the case when the first parts are omitted, and a check for empty parts are required.
@@ -132,12 +132,12 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 
 		Row startChange = createStartChange();
 
-		MaskedNotation maskedNotation = new MaskedNotation(touch.getNonSplicedActiveNotation().get());
+		MaskedNotation maskedNotation = new MaskedNotation(composition.getNonSplicedActiveNotation().get());
 
 		final List<Lead> leads = new ArrayList<>();
 
 		if (maskedNotation.getRowCount() == 0) {
-			terminate(CompileTerminationReason.INVALID_TOUCH, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
+			terminate(CompileTerminationReason.INVALID_COMPOSITION, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
 		}
 		while (!isTerminated()) {
 			log.debug("{}   - lead [{}]", logPreamble, leads.size());
@@ -147,14 +147,14 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 			checkTerminationMaxLeads(leads);
 			checkTerminateEarly(shouldTerminateEarly);
 		}
-		method = Optional.of(MethodBuilder.buildMethod(touch.getNumberOfBells(), leads));
-		log.debug("{} < create touch", logPreamble);
+		method = Optional.of(MethodBuilder.buildMethod(composition.getNumberOfBells(), leads));
+		log.debug("{} < create composition", logPreamble);
 	}
 
 	private Row createStartChange() {
-		Row startChange = touch.getStartChange();
-		checkState(startChange.getNumberOfBells() == touch.getNumberOfBells());
-		Stroke startStroke = touch.getStartStroke();
+		Row startChange = composition.getStartChange();
+		checkState(startChange.getNumberOfBells() == composition.getNumberOfBells());
+		Stroke startStroke = composition.getStartStroke();
 
 		startChange = startChange.setStroke(startStroke);
 
@@ -191,7 +191,7 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 
 //TODO		addLeadSeparator(currentNotation, rows, leadSeparatorPositions);
 
-		final Lead lead = MethodBuilder.buildLead(touch.getNumberOfBells(), rows, leadSeparatorPositions);
+		final Lead lead = MethodBuilder.buildLead(composition.getNumberOfBells(), rows, leadSeparatorPositions);
 		return lead;
 	}
 
@@ -253,22 +253,22 @@ public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Co
 	}
 
 	private void checkTerminationMaxLeads(List<Lead> leads) {
-		if (touch.getTerminationMaxLeads().isPresent() &&
-				leads.size() >= touch.getTerminationMaxLeads().get()) {
-			terminate(CompileTerminationReason.LEAD_COUNT, touch.getTerminationMaxLeads().get().toString());
+		if (composition.getTerminationMaxLeads().isPresent() &&
+				leads.size() >= composition.getTerminationMaxLeads().get()) {
+			terminate(CompileTerminationReason.LEAD_COUNT, composition.getTerminationMaxLeads().get().toString());
 		}
 	}
 
 	private void checkTerminationMaxRows(Row newRow) {
-		if (newRow.getRowIndex() >= touch.getTerminationMaxRows()) {
-			terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(touch.getTerminationMaxRows()));
+		if (newRow.getRowIndex() >= composition.getTerminationMaxRows()) {
+			terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(composition.getTerminationMaxRows()));
 		}
 	}
 
 	private void checkTerminationChange(Row newRow) {
-		if (touch.getTerminationChange().isPresent() &&
-				touch.getTerminationChange().get().equals(newRow)) {
-			terminate(CompileTerminationReason.SPECIFIED_ROW, touch.getTerminationChange().get().toString());
+		if (composition.getTerminationChange().isPresent() &&
+				composition.getTerminationChange().get().equals(newRow)) {
+			terminate(CompileTerminationReason.SPECIFIED_ROW, composition.getTerminationChange().get().toString());
 		}
 	}
 

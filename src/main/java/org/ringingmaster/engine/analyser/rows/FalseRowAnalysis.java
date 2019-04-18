@@ -31,11 +31,11 @@ public class FalseRowAnalysis implements Function<AnalysisPipelineData, Analysis
 	}
 
 	private AnalysisPipelineData analise(AnalysisPipelineData input) {
-		if (!input.getCompiledTouch().getMethod().isPresent()) {
+		if (!input.getCompiledComposition().getMethod().isPresent()) {
 			return input;
 		}
 
-		Method method = input.getCompiledTouch().getMethod().get();
+		Method method = input.getCompiledComposition().getMethod().get();
 		if (!method.getFirstRow().isPresent()) {
 			return input;
 		}

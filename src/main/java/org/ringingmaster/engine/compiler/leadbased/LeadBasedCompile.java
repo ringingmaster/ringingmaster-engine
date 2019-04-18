@@ -7,6 +7,7 @@ import org.ringingmaster.engine.compilerold.impl.LeadBasedDecomposedCall;
 import org.ringingmaster.engine.compilerold.impl.MaskedNotation;
 import org.ringingmaster.engine.compilerold.impl.TerminateEarlyException;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.Row;
@@ -14,7 +15,6 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationRow;
-import org.ringingmaster.engine.touch.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
 
         // inputs
         private final Supplier<Boolean> allowTerminateEarly;
-        private final Touch touch;
+        private final Composition composition;
         private final ImmutableList<LeadBasedDecomposedCall> callSequence;
         private final ImmutableMap<String, NotationCall> callLookupByName;
         private final String logPreamble;
@@ -61,9 +61,9 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         private Optional<CompileTerminationReason> terminationReason = Optional.empty();
         private Optional<String> terminateNotes = Optional.empty();
 
-        State(Supplier<Boolean> allowTerminateEarly, Touch touch, ImmutableList<LeadBasedDecomposedCall> callSequence, ImmutableMap<String, NotationCall> callLookupByName, String logPreamble)  {
+        State(Supplier<Boolean> allowTerminateEarly, Composition composition, ImmutableList<LeadBasedDecomposedCall> callSequence, ImmutableMap<String, NotationCall> callLookupByName, String logPreamble)  {
             this.allowTerminateEarly = checkNotNull(allowTerminateEarly);
-            this.touch = checkNotNull(touch);
+            this.composition = checkNotNull(composition);
             this.callSequence = checkNotNull(callSequence);
             this.callLookupByName = checkNotNull(callLookupByName);
             this.logPreamble = checkNotNull(logPreamble);
@@ -76,27 +76,27 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         if (input.isTerminated()) {
             return input;
         }
-        log.debug("{} > compile lead based touch", input.getLogPreamble());
+        log.debug("{} > compile lead based composition", input.getLogPreamble());
 
         State state = new State(() -> false,
-                input.getParse().getTouch(),
+                input.getParse().getComposition(),
                 input.getCallSequence(),
                 input.getLookupByName(),
                 input.getLogPreamble());
 
-        compileTouch(state);
+        compileComposition(state);
 
         LeadBasedCompilePipelineData result =
                 input
                 .terminate(state.terminationReason.get(), state.terminateNotes.get())
                 .setMethod(state.method);
 
-        log.debug("{} < compile lead based touch", input.getLogPreamble());
+        log.debug("{} < compile lead based composition", input.getLogPreamble());
 
         return result;
     }
 
-    private void compileTouch(State state) {
+    private void compileComposition(State state) {
         log.debug("{}  - part [{}]", state.logPreamble, state.partIndex);
 
         // This is required here to handle the case when the first parts are omitted, and a check for empty parts are required.
@@ -106,10 +106,10 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         }
 
         state.currentRow = createStartChange(state);
-        state.maskedNotation = new MaskedNotation(state.touch.getNonSplicedActiveNotation().get());
+        state.maskedNotation = new MaskedNotation(state.composition.getNonSplicedActiveNotation().get());
 
         if (state.maskedNotation.getRowCount() == 0) {
-            terminate(CompileTerminationReason.INVALID_TOUCH, "Notation [" + state.maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", state);
+            terminate(CompileTerminationReason.INVALID_COMPOSITION, "Notation [" + state.maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", state);
         }
         while (!isTerminated(state)) {
             log.debug("{}   - lead [{}]", state.logPreamble, state.leads.size());
@@ -119,7 +119,7 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
             checkTerminationMaxLeads(state);
             checkTerminateEarly(state);
         }
-        state.method = Optional.of(MethodBuilder.buildMethod(state.touch.getNumberOfBells(), state.leads));
+        state.method = Optional.of(MethodBuilder.buildMethod(state.composition.getNumberOfBells(), state.leads));
     }
 
     private boolean isPlainCourse(State state) {
@@ -128,9 +128,9 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     }
 
     private Row createStartChange(State state) {
-        Row startChange = state.touch.getStartChange();
-        checkState(startChange.getNumberOfBells() == state.touch.getNumberOfBells());
-        Stroke startStroke = state.touch.getStartStroke();
+        Row startChange = state.composition.getStartChange();
+        checkState(startChange.getNumberOfBells() == state.composition.getNumberOfBells());
+        Stroke startStroke = state.composition.getStartStroke();
 
         startChange = startChange.setStroke(startStroke);
 
@@ -159,7 +159,7 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
 
 //TODO		addLeadSeparator(currentNotation, rows, leadSeparatorPositions);
 
-        final Lead lead = MethodBuilder.buildLead(state.touch.getNumberOfBells(), rows, leadSeparatorPositions);
+        final Lead lead = MethodBuilder.buildLead(state.composition.getNumberOfBells(), rows, leadSeparatorPositions);
         return lead;
     }
 
@@ -217,9 +217,9 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     }
 
     private void checkTerminationMaxLeads(State state) {
-        if (state.touch.getTerminationMaxLeads().isPresent() &&
-                state.leads.size() >= state.touch.getTerminationMaxLeads().get()) {
-            terminate(CompileTerminationReason.LEAD_COUNT, state.touch.getTerminationMaxLeads().get().toString(), state);
+        if (state.composition.getTerminationMaxLeads().isPresent() &&
+                state.leads.size() >= state.composition.getTerminationMaxLeads().get()) {
+            terminate(CompileTerminationReason.LEAD_COUNT, state.composition.getTerminationMaxLeads().get().toString(), state);
         }
     }
 
@@ -230,15 +230,15 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     }
 
     private void checkTerminationMaxRows(State state) {
-        if (state.currentRow.getRowIndex() >= state.touch.getTerminationMaxRows()) {
-            terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(state.touch.getTerminationMaxRows()), state);
+        if (state.currentRow.getRowIndex() >= state.composition.getTerminationMaxRows()) {
+            terminate(CompileTerminationReason.ROW_COUNT, Integer.toString(state.composition.getTerminationMaxRows()), state);
         }
     }
 
     private void checkTerminationChange(State state) {
-        if (state.touch.getTerminationChange().isPresent() &&
-                state.touch.getTerminationChange().get().equals(state.currentRow)) {
-            terminate(CompileTerminationReason.SPECIFIED_ROW, state.touch.getTerminationChange().get().toString(), state);
+        if (state.composition.getTerminationChange().isPresent() &&
+                state.composition.getTerminationChange().get().equals(state.currentRow)) {
+            terminate(CompileTerminationReason.SPECIFIED_ROW, state.composition.getTerminationChange().get().toString(), state);
         }
     }
 

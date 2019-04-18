@@ -2,8 +2,8 @@ package org.ringingmaster.engine.compilerold.impl;
 
 import com.google.common.collect.Lists;
 import org.ringingmaster.engine.compiler.variance.Variance;
-import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.composition.Composition;
+import org.ringingmaster.engine.composition.cell.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +24,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private final Touch touch;
+	private final Composition composition;
 	private final String logPreamble;
 	private final Deque<CallGroup> callFIFO = new ArrayDeque<>();
 	//private Variance currentVariance = NullVariance.INSTANCE;
 
-	public SkeletalCallDecomposer(Touch touch, String logPreamble) {
-		this.touch = touch;
+	public SkeletalCallDecomposer(Composition composition, String logPreamble) {
+		this.composition = composition;
 		this.logPreamble = logPreamble;
 	}
 
@@ -41,12 +41,12 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //		callFIFO.clear();
 //		callFIFO.addFirst(new CallGroup(1));
 //
-//		preGenerate(touch);
+//		preGenerate(composition);
 //
-//		Grid<TouchCell> mainBodyCells = touch.mainBodyView();
+//		Grid<CompositionCell> mainBodyCells = composition.mainBodyView();
 //		for (int rowIndex=0;rowIndex<mainBodyCells.getRowCount();rowIndex++) {
 //			for (int columnIndex=0;columnIndex<mainBodyCells.getColumnCount();columnIndex++) {
-//				TouchCell cell = mainBodyCells.getCell(columnIndex, rowIndex);
+//				CompositionCell cell = mainBodyCells.getCell(columnIndex, rowIndex);
 //				generateCallInstancesForCell(cell, columnIndex);
 //			}
 //		}
@@ -56,12 +56,12 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //		return Collections.unmodifiableList(callFIFO.removeFirst());
 	}
 
-	protected abstract void preGenerate(Touch touch);
+	protected abstract void preGenerate(Composition composition);
 
 	private void generateCallInstancesForCell(Cell cell, int columnIndex) {
 		//TODO
-//		final List<TouchWord> words = cell.words();
-//		for (TouchWord word : words) {
+//		final List<CompositionWord> words = cell.words();
+//		for (CompositionWord word : words) {
 //			switch (word.getFirstParseType()) {
 //				case CALL:
 //				case CALL_MULTIPLIER:
@@ -91,7 +91,7 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //		}
 	}
 
-//	private void decomposeWord(TouchWord word, int columnIndex,
+//	private void decomposeWord(CompositionWord word, int columnIndex,
 //	                           ParseType parseType,ParseType multiplierParseType) {
 //		MultiplierAndCall multiplierAndCall = getMultiplierAndCall(word, parseType, multiplierParseType);
 //
@@ -107,13 +107,13 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //
 //	protected abstract DC buildDecomposedCall(String callName, Variance variance, int columnIndex, ParseType parseType);
 //
-//	MultiplierAndCall getMultiplierAndCall(TouchWord word,
+//	MultiplierAndCall getMultiplierAndCall(CompositionWord word,
 //	                                       ParseType parseType,ParseType multiplierParseType) {
-//		List<TouchElement> elementsInWord = word.getElements();
+//		List<CompositionElement> elementsInWord = word.getElements();
 //		StringBuilder parseTypeBuff = new StringBuilder(elementsInWord.size());
 //		StringBuilder multiplierBuff = new StringBuilder(elementsInWord.size());
 //		boolean finishedMultiplier = false;
-//		for (TouchElement element : elementsInWord) {
+//		for (CompositionElement element : elementsInWord) {
 //			if (!finishedMultiplier && element.getParseType().equals(multiplierParseType)) {
 //				multiplierBuff.append(element.getCharacter());
 //			}
@@ -131,7 +131,7 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //		return new MultiplierAndCall(multiplier, parseTypeBuff.toString(), currentVariance);
 //	}
 //
-//	private void openMultiplierGroup(TouchWord word) {
+//	private void openMultiplierGroup(CompositionWord word) {
 //		MultiplierAndCall multiplierAndCall = getMultiplierAndCall(word, ParseType.MULTIPLIER_GROUP_OPEN, ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER);
 //		log.debug("Open Group level [{}] with multiplier [{}]", (callFIFO.size() + 1), multiplierAndCall.getMultiplier());
 //		callFIFO.addFirst(new CallGroup(multiplierAndCall.getMultiplier()));
@@ -145,22 +145,22 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 //		}
 //	}
 //
-//	private void openVariance(TouchWord word) {
+//	private void openVariance(CompositionWord word) {
 //		log.debug("Open variance [{}]", word);
 //		checkArgument(word.getElements().size() == 1, "Open Variance should have a word with a length of 1");
 //		currentVariance = word.getElements().get(0).getVariance();
 //	}
 //
-//	private void closeVariance(TouchWord word) {
+//	private void closeVariance(CompositionWord word) {
 //		log.debug("Close variance []", word);
 //		checkArgument(word.getElements().size() == 1, "Close Variance should have a word with a length of 1");
 //		currentVariance = NullVariance.INSTANCE;
 //	}
 
-//	private void insertDefinition(TouchWord word, int columnIndex) {
+//	private void insertDefinition(CompositionWord word, int columnIndex) {
 //		log.debug("Start definition [{}]", word);
 //		String elementsAsString = word.getElementsAsString();
-//		Optional<DefinitionCell> definitionByShorthand = touch.findDefinitionByShorthand(elementsAsString);
+//		Optional<DefinitionCell> definitionByShorthand = composition.findDefinitionByShorthand(elementsAsString);
 //		if (definitionByShorthand.isPresent()) {
 //			generateCallInstancesForCell(definitionByShorthand.get(), columnIndex);
 //		}

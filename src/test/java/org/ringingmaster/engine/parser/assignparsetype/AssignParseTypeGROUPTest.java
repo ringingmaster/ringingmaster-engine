@@ -5,8 +5,8 @@ import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
@@ -14,9 +14,9 @@ import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_OPEN;
-import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
-import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
-import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???
@@ -27,78 +27,78 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupIgnoredInCallingPoitionArea() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "()");
-        touch.setCheckingType(COURSE_BASED);
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "()");
+        composition.setCheckingType(COURSE_BASED);
+        composition.setSpliced(true);
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), unparsed(2));
+        Parse parse = new AssignParseType().apply(composition.get());
+        assertParse(parse.allCompositionCells().get(0, 0), unparsed(2));
     }
 
     @Test
     public void groupParsedInMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "()");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "()");
+        composition.setSpliced(true);
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
+        Parse parse = new AssignParseType().apply(composition.get());
+        assertParse(parse.allCompositionCells().get(0, 0), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void groupUnparsedInSplice() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE,0,1,"()");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        composition.addCharacters(MAIN_TABLE,0,1,"()");
+        composition.setSpliced(true);
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 1), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
+        Parse parse = new AssignParseType().apply(composition.get());
+        assertParse(parse.allCompositionCells().get(0, 1), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void groupParsedInUnusedDefinition() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
 
-        Parse parse = new AssignParseType().apply(touch.get());
+        Parse parse = new AssignParseType().apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void groupParsedInDefinitionUsedInMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
 
-        Parse parse = new AssignParseType().apply(touch.get());
+        Parse parse = new AssignParseType().apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void groupUnparsedInDefinitionUsedInSplice() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE,0,1, "def1");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.setSpliced(true);
 
-        Parse parse = new AssignParseType().apply(touch.get());
+        Parse parse = new AssignParseType().apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void groupParsedInDefinitionUsedInSpliceAnMainBody() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def1");
-        touch.addCharacters(TOUCH_TABLE,0,1, "def1");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.setSpliced(true);
 
-        Parse parse = new AssignParseType().apply(touch.get());
+        Parse parse = new AssignParseType().apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(MULTIPLIER_GROUP_OPEN), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void correctlyIdentifiesGroup() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "(-)s");
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0,0), valid(MULTIPLIER_GROUP_OPEN), valid(CALL), valid(MULTIPLIER_GROUP_CLOSE), valid(CALL));
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "(-)s");
+        Parse parse = new AssignParseType().apply(composition.get());
+        assertParse(parse.allCompositionCells().get(0,0), valid(MULTIPLIER_GROUP_OPEN), valid(CALL), valid(MULTIPLIER_GROUP_CLOSE), valid(CALL));
     }
 
     private NotationBody buildPlainBobMinor() {
@@ -115,17 +115,17 @@ public class AssignParseTypeGROUPTest {
                 .build();
     }
 
-    private ObservableTouch buildSingleCellTouch(NotationBody notationBody, String characters) {
-        ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+    private ObservableComposition buildSingleCellComposition(NotationBody notationBody, String characters) {
+        ObservableComposition composition = new ObservableComposition();
+        composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         if (characters != null) {
-            touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
+            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
-        touch.addNotation(notationBody);
-        touch.setCheckingType(CheckingType.LEAD_BASED);
-        touch.setSpliced(false);
-        touch.addDefinition("def1", "()");
-        return touch;
+        composition.addNotation(notationBody);
+        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setSpliced(false);
+        composition.addDefinition("def1", "()");
+        return composition;
     }
 
 }

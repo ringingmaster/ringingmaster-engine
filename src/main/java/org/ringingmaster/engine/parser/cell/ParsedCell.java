@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.composition.cell.Cell;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;

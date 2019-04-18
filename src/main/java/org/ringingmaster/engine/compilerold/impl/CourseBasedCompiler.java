@@ -2,6 +2,7 @@ package org.ringingmaster.engine.compilerold.impl;
 
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.compilerold.Compiler;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Method;
@@ -9,8 +10,7 @@ import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
-import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Takes a parsed touch, and converts it into a compiled touch. A proof consists of an expanded Method and termination details.
+ * Takes a parsed composition, and converts it into a compiled composition. A proof consists of an expanded Method and termination details.
  * This is a 1 shot class. Throw it away when you have finished.
  *
  * @author stephen
@@ -37,26 +37,26 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 	private volatile List<CourseBasedDecomposedCall> immutableCallSequence;
 	private volatile Map<NotationMethodCallingPosition, Integer> callingPositionToCallBellPlace;
 
-	CourseBasedCompiler(Touch touch, String logPreamble) {
-		super(touch, logPreamble);
-		checkArgument(touch.getCheckingType() == CheckingType.COURSE_BASED, "Course based compiler must use a COURSE_BASED touch. Is actually [" + touch.getCheckingType() + "]");
-		callFromBell = touch.getCallFromBell();
+	CourseBasedCompiler(Composition composition, String logPreamble) {
+		super(composition, logPreamble);
+		checkArgument(composition.getCheckingType() == CheckingType.COURSE_BASED, "Course based compiler must use a COURSE_BASED composition. Is actually [" + composition.getCheckingType() + "]");
+		callFromBell = composition.getCallFromBell();
 	}
 
 	@Override
-	protected void preCompile(Touch touch) {
-		immutableCallSequence = buildImmutableCallSequence(touch);
-		callingPositionToCallBellPlace = buildCallingPositionLookup(touch);
+	protected void preCompile(Composition composition) {
+		immutableCallSequence = buildImmutableCallSequence(composition);
+		callingPositionToCallBellPlace = buildCallingPositionLookup(composition);
 	}
 
-	private ImmutableList<CourseBasedDecomposedCall> buildImmutableCallSequence(Touch touch) {
-		return ImmutableList.copyOf(new CourseBasedCallDecomposer(touch, getLogPreamble()).createCallSequence());
+	private ImmutableList<CourseBasedDecomposedCall> buildImmutableCallSequence(Composition composition) {
+		return ImmutableList.copyOf(new CourseBasedCallDecomposer(composition, getLogPreamble()).createCallSequence());
 	}
 
-	private Map<NotationMethodCallingPosition, Integer> buildCallingPositionLookup(Touch touch) {
+	private Map<NotationMethodCallingPosition, Integer> buildCallingPositionLookup(Composition composition) {
 		log.info("{} > Build calling bell positions",getLogPreamble());
 		// Build a plain course.
-		NotationBody activeNotation = touch.getNonSplicedActiveNotation().get();
+		NotationBody activeNotation = composition.getNonSplicedActiveNotation().get();
 		Method plainCourse = PlainCourseHelper.buildPlainCourse(activeNotation, getLogPreamble() +  "  | ",false).getMethod().get();
 
 		// build the map.
@@ -66,7 +66,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 			Integer place = plainCourse
 					.getLead(methodCallingPosition.getLeadOfTenor())
 					.getRow(methodCallingPosition.getCallInitiationRow())
-					.getPlaceOfBell(touch.getNumberOfBells().getTenor());
+					.getPlaceOfBell(composition.getNumberOfBells().getTenor());
 			callingPositionMap.put(methodCallingPosition, place);
 		}
 

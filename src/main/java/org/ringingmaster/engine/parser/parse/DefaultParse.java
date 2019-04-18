@@ -2,12 +2,12 @@ package org.ringingmaster.engine.parser.parse;
 
 import com.google.common.collect.ImmutableSet;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.tableaccess.DefaultDefinitionTableAccess;
-import org.ringingmaster.engine.touch.tableaccess.DefaultTouchTableAccess;
-import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
-import org.ringingmaster.engine.touch.tableaccess.TouchTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefaultCompositionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.CompositionTableAccess;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
@@ -20,39 +20,39 @@ import java.util.Optional;
 @Immutable
 class DefaultParse implements Parse {
 
-    private final Touch touch;
-    private final TouchTableAccess<ParsedCell> touchTableAccessDelegate;
+    private final Composition composition;
+    private final CompositionTableAccess<ParsedCell> compositionTableAccessDelegate;
     private final DefinitionTableAccess<ParsedCell> definitionTableAccessDelegate;
 
-    DefaultParse(Touch touch, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells) {
-        this.touch = touch;
-        this.touchTableAccessDelegate = new DefaultTouchTableAccess<>(mainTableCells, touch.getCheckingType(), touch.isSpliced());
+    DefaultParse(Composition composition, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells) {
+        this.composition = composition;
+        this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(mainTableCells, composition.getCheckingType(), composition.isSpliced());
         this.definitionTableAccessDelegate = new DefaultDefinitionTableAccess<>(definitionCells);
     }
 
     @Override
-    public Touch getTouch() {
-        return touch;
+    public Composition getComposition() {
+        return composition;
     }
 
     @Override
-    public ImmutableArrayTable<ParsedCell> allTouchCells() {
-        return touchTableAccessDelegate.allTouchCells();
+    public ImmutableArrayTable<ParsedCell> allCompositionCells() {
+        return compositionTableAccessDelegate.allCompositionCells();
     }
 
     @Override
     public ImmutableArrayTable<ParsedCell> mainBodyCells() {
-        return touchTableAccessDelegate.mainBodyCells();
+        return compositionTableAccessDelegate.mainBodyCells();
     }
 
     @Override
     public ImmutableArrayTable<ParsedCell> callPositionCells() {
-        return touchTableAccessDelegate.callPositionCells();
+        return compositionTableAccessDelegate.callPositionCells();
     }
 
     @Override
     public ImmutableArrayTable<ParsedCell> splicedCells() {
-        return touchTableAccessDelegate.splicedCells();
+        return compositionTableAccessDelegate.splicedCells();
     }
 
 
@@ -84,8 +84,8 @@ class DefaultParse implements Parse {
     @Override
     public String toString() {
         return "DefaultParse{" +
-                "touch=" + touch +
-                ", touchTableAccess=" + touchTableAccessDelegate +
+                "composition=" + composition +
+                ", CompositionTableAccess=" + compositionTableAccessDelegate +
                 ", definitionTableAccess=" + definitionTableAccessDelegate +
                 '}';
     }

@@ -2,11 +2,11 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 
 import static org.junit.Assert.assertEquals;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
@@ -29,9 +29,9 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
-import static org.ringingmaster.engine.touch.checkingtype.CheckingType.COURSE_BASED;
-import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???
@@ -42,224 +42,224 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), null);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertEquals(0, parse.allTouchCells().getRowSize());
-        assertEquals(0, parse.allTouchCells().getColumnSize());
+        assertEquals(0, parse.allCompositionCells().getRowSize());
+        assertEquals(0, parse.allCompositionCells().getColumnSize());
     }
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), null);
-        touch.setCheckingType(COURSE_BASED);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
+        composition.setCheckingType(COURSE_BASED);
 
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
-        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
-        touch.addCharacters(TOUCH_TABLE, 2,0, "CALL");// To force the Parse to be replaced
-        touch.addCharacters(TOUCH_TABLE, 2,1, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 2,0, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(MAIN_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse parse = new AssignParseType()
  
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertEquals(3, parse.allTouchCells().getRowSize());
-        assertEquals(2, parse.allTouchCells().getColumnSize());
-        assertEquals("CALL_POSITION", parse.allTouchCells().get(0,0).getCharacters());
-        assertEquals("MAIN_BODY", parse.allTouchCells().get(1,0).getCharacters());
-        assertEquals("SPLICE", parse.allTouchCells().get(1,1).getCharacters());
+        assertEquals(3, parse.allCompositionCells().getRowSize());
+        assertEquals(2, parse.allCompositionCells().getColumnSize());
+        assertEquals("CALL_POSITION", parse.allCompositionCells().get(0,0).getCharacters());
+        assertEquals("MAIN_BODY", parse.allCompositionCells().get(1,0).getCharacters());
+        assertEquals("SPLICE", parse.allCompositionCells().get(1,1).getCharacters());
     }
 
 
     @Test
 	public void correctlyParseSingleDefaultCallMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-2");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-2");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(CALL), valid(DEFAULT_CALL_MULTIPLIER));
+        assertParse(parse.allCompositionCells().get(0,0), valid(CALL), valid(DEFAULT_CALL_MULTIPLIER));
 	}
 
 	@Test
 	public void correctlyParseMultiDefaultCallMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-22");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-22");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(CALL), valid(2,DEFAULT_CALL_MULTIPLIER));
+        assertParse(parse.allCompositionCells().get(0,0), valid(CALL), valid(2,DEFAULT_CALL_MULTIPLIER));
 	}
 
     @Test
     public void correctlyParseDefaultCallMultiplierBeforeWhitespace() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2 ");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2 ");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(WHITESPACE));
+        assertParse(parse.allCompositionCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(WHITESPACE));
     }
 
     @Test
     public void correctlyParseDefaultCallMultiplierBeforeVariance() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "6[-o7]");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "6[-o7]");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(section(VARIANCE_OPEN), section(2,VARIANCE_DETAIL)), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_CLOSE));
+        assertParse(parse.allCompositionCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(section(VARIANCE_OPEN), section(2,VARIANCE_DETAIL)), valid(DEFAULT_CALL_MULTIPLIER), valid(VARIANCE_CLOSE));
     }
 
     @Test
     public void correctlyParseCallMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2-");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2-");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(CALL_MULTIPLIER), section(CALL)));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(CALL_MULTIPLIER), section(CALL)));
     }
 
     @Test
     public void correctlyParseMultiCallMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "28-");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "28-");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(2,CALL_MULTIPLIER), section(CALL)));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(2,CALL_MULTIPLIER), section(CALL)));
     }
 
     @Test
     public void correctlyParseGroupMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "6(7)");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "6(7)");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)), valid(DEFAULT_CALL_MULTIPLIER), valid(MULTIPLIER_GROUP_CLOSE));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)), valid(DEFAULT_CALL_MULTIPLIER), valid(MULTIPLIER_GROUP_CLOSE));
     }
 
     @Test
     public void correctlyParseMultiGroupMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "624(");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "624(");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(3, MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(3, MULTIPLIER_GROUP_OPEN_MULTIPLIER), section(MULTIPLIER_GROUP_OPEN)));
     }
 
     @Test
     public void correctlyParsePlainLeadMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "3p");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "3p");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(PLAIN_LEAD_MULTIPLIER), section(PLAIN_LEAD)));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(PLAIN_LEAD_MULTIPLIER), section(PLAIN_LEAD)));
     }
 
     @Test
     public void correctlyParseMultiPlainLeadMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "434p");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "434p");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(3, PLAIN_LEAD_MULTIPLIER), section(PLAIN_LEAD)));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(3, PLAIN_LEAD_MULTIPLIER), section(PLAIN_LEAD)));
     }
 
     @Test
     public void correctlyParseDefinitionMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2def1");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2def1");
 
         Parse parse = new AssignParseType()
  
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(1, DEFINITION_MULTIPLIER), section(4, DEFINITION)));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(1, DEFINITION_MULTIPLIER), section(4, DEFINITION)));
     }
 
     @Test
     public void correctlyParseMultiDefinitionMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "243def1");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "243def1");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), valid(section(3, DEFINITION_MULTIPLIER), section(4, DEFINITION)));
+        assertParse(parse.allCompositionCells().get(0,0), valid(section(3, DEFINITION_MULTIPLIER), section(4, DEFINITION)));
     }
 
     @Test
     public void correctlyParseSpliceMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "DUMMY");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "2p");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
+        composition.addCharacters(MAIN_TABLE, 0, 1, "2p");
+        composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,1), valid(section(1, SPLICE_MULTIPLIER), section(SPLICE)));
+        assertParse(parse.allCompositionCells().get(0,1), valid(section(1, SPLICE_MULTIPLIER), section(SPLICE)));
     }
 
     @Test
     public void correctlyParseMultiSpliceMultiplier() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "DUMMY");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "392p");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
+        composition.addCharacters(MAIN_TABLE, 0, 1, "392p");
+        composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,1), valid(section(3, SPLICE_MULTIPLIER), section(SPLICE)));
+        assertParse(parse.allCompositionCells().get(0,1), valid(section(3, SPLICE_MULTIPLIER), section(SPLICE)));
     }
 
     @Test
     public void standAloneNumbersInSplicedUnparsed() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "DUMMY");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "392-");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
+        composition.addCharacters(MAIN_TABLE, 0, 1, "392-");
+        composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,1), unparsed(4));
+        assertParse(parse.allCompositionCells().get(0,1), unparsed(4));
     }
 
     @Test
     public void multiplierWorksInDefinition() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def2");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0,DEFINITION_COLUMN), valid(DEFAULT_CALL_MULTIPLIER));
     }
 
     @Test
     public void multiplierDoesNotAddDefaultCallWhenUsedOnlyInSpliceInDefinition() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "def2");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        composition.addCharacters(MAIN_TABLE, 0, 1, "def2");
+        composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0,DEFINITION_COLUMN), unparsed());
     }
 
     @Test
     public void multiplierDoesAddDefaultCallWhenUsedInMainCellsInDefinition() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "def2");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "-");
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
+        composition.addCharacters(MAIN_TABLE, 0, 1, "-");
+        composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
-                .apply(touch.get());
+                .apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0,DEFINITION_COLUMN), valid(DEFAULT_CALL_MULTIPLIER));
     }
@@ -292,18 +292,18 @@ public class AssignParseTypeMULTIPLIERTest {
                 .build();
     }
 
-    private ObservableTouch buildSingleCellTouch(NotationBody notationBody, String characters) {
-        ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+    private ObservableComposition buildSingleCellComposition(NotationBody notationBody, String characters) {
+        ObservableComposition composition = new ObservableComposition();
+        composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         if (characters != null) {
-            touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
+            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
-        touch.addNotation(notationBody);
-        touch.setCheckingType(CheckingType.LEAD_BASED);
-        touch.setSpliced(false);
-        touch.addDefinition("def1", "-P");
-        touch.addDefinition("def2", "2");
-        return touch;
+        composition.addNotation(notationBody);
+        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setSpliced(false);
+        composition.addDefinition("def1", "-P");
+        composition.addDefinition("def2", "2");
+        return composition;
     }
 
 }

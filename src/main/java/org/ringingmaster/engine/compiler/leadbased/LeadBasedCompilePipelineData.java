@@ -33,7 +33,7 @@ public class LeadBasedCompilePipelineData extends CompilePipelineData<LeadBasedC
 
 
     LeadBasedCompilePipelineData(Parse parse) {
-        this(parse, "[" + parse.getTouch().getTitle() + "]",
+        this(parse, "[" + parse.getComposition().getTitle() + "]",
                 Optional.empty(),
                 Optional.empty(), Optional.empty(),
                 ImmutableList.of(), ImmutableMap.of(), ImmutableMap.of());

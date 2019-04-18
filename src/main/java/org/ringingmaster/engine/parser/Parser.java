@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.parser;
 
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupAndVarianceDontOverlap;
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupMatchingBrace;
@@ -11,7 +12,6 @@ import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsNotCircula
 import org.ringingmaster.engine.parser.observability.PrettyPrintCells;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.splice.ValidateInUseCallAvailableInEveryMethodWhenSpliced;
-import org.ringingmaster.engine.touch.Touch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,23 +23,23 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class Parser implements Function<Touch, Parse> {
+public class Parser implements Function<Composition, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(Parser.class);
 
 
     @Override
-    public Parse apply(Touch touch) {
+    public Parse apply(Composition composition) {
 
-        log.info("[{}] > parsing", touch.getTitle());
+        log.info("[{}] > parsing", composition.getTitle());
 
-        Parse parse = pipeline.apply(touch);
+        Parse parse = pipeline.apply(composition);
 
-        log.info("[{}] < parsing", touch.getTitle());
+        log.info("[{}] < parsing", composition.getTitle());
         return parse;
     }
 
-    private static Function<Touch, Parse> pipeline =
+    private static Function<Composition, Parse> pipeline =
             // set the parse types
             new AssignParseType()
                     //TODO think very care fully about what parts of each parser needs applying to definitions,

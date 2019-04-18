@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
-import org.ringingmaster.engine.touch.cell.Cell;
+import org.ringingmaster.engine.composition.cell.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

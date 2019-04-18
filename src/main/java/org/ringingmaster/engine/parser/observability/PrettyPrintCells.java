@@ -20,19 +20,19 @@ public class  PrettyPrintCells implements Function<Parse, Parse> {
     @Nullable
     @Override
     public Parse apply(@Nullable Parse input) {
-        log.debug("[{}] > pretty print cells (trace output only)", input.getTouch().getTitle());
+        log.debug("[{}] > pretty print cells (trace output only)", input.getComposition().getTitle());
 
         if (log.isTraceEnabled()) {
 
-            for (BackingTableLocationAndValue<ParsedCell> cell : input.allTouchCells()) {
-                log.trace("Touch Cell [{}/{}] = {}{}", cell.getCol(),cell.getRow(), System.lineSeparator(), cell.getValue().prettyPrint());
+            for (BackingTableLocationAndValue<ParsedCell> cell : input.allCompositionCells()) {
+                log.trace("Composition Cell [{}/{}] = {}{}", cell.getCol(),cell.getRow(), System.lineSeparator(), cell.getValue().prettyPrint());
             }
             for (BackingTableLocationAndValue<ParsedCell> cell : input.allDefinitionCells()) {
                 log.trace("Definition Cell [{}/{}] = {}{}", cell.getCol(),cell.getRow(), System.lineSeparator(), cell.getValue().prettyPrint());
             }
         }
 
-        log.debug("[{}] < pretty print cells", input.getTouch().getTitle());
+        log.debug("[{}] < pretty print cells", input.getComposition().getTitle());
 
         return input;
     }

@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.compiler.leadbased;
 
-import org.ringingmaster.engine.compiler.common.ValidTouchCheck;
-import org.ringingmaster.engine.compiler.compiledtouch.BuildCompiledTouch;
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.compiler.common.ValidCompositionCheck;
+import org.ringingmaster.engine.compiler.compiledcomposition.BuildCompiledComposition;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.compiler.variance.BuildVarianceLookupByName;
 import org.ringingmaster.engine.parser.parse.Parse;
 
@@ -15,22 +15,22 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class LeadBasedCompilePipeline implements Function<Parse, CompiledTouch> {
+public class LeadBasedCompilePipeline implements Function<Parse, CompiledComposition> {
 
 
     @Override
-    public CompiledTouch apply(Parse parse) {
+    public CompiledComposition apply(Parse parse) {
 //TODO Add in early terminate nechanisam
         return pipeline.apply(parse);
     }
 
-    private static final Function<Parse, CompiledTouch> pipeline =
+    private static final Function<Parse, CompiledComposition> pipeline =
             new BuildLeadBasedPipelineData()
-            .andThen(new ValidTouchCheck<>())
+            .andThen(new ValidCompositionCheck<>())
             .andThen(new BuildVarianceLookupByName())
             .andThen(new BuildCallLookupByName())
             .andThen(new BuildCallSequence())
             .andThen(new LeadBasedCompile())
-            .andThen(new BuildCompiledTouch<>());
+            .andThen(new BuildCompiledComposition<>());
 
 }

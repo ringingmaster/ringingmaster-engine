@@ -1,16 +1,16 @@
 package org.ringingmaster.engine.compilerold;
 
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.function.Supplier;
 
 /**
- * Compile Touch into a CompiledTouch
+ * Compile Composition into a CompiledComposition
  * User: Stephen
  */
 @ThreadSafe
 public interface Compiler {
 
-	CompiledTouch compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly);
+	CompiledComposition compile(boolean withAnalysis, Supplier<Boolean> shouldTerminateEarly);
 }

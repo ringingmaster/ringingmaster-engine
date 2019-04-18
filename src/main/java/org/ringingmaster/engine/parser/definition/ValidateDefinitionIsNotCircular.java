@@ -33,7 +33,7 @@ public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
 
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate definitions do not form a circular dependency", input.getTouch().getTitle());
+        log.debug("[{}] > validate definitions do not form a circular dependency", input.getComposition().getTitle());
 
         Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(input);
 
@@ -42,10 +42,10 @@ public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
             discoverCircularity(invalidDefinitions, adjacency, ConsPStack.singleton(shorthand));
         }
 
-        HashBasedTable<Integer, Integer, ParsedCell> touchTableResult =
-                HashBasedTable.create(input.allTouchCells().getBackingTable());
-        definitionFunctions.markInvalid(input.mainBodyCells(), invalidDefinitions, touchTableResult, createErrorMessage);
-        definitionFunctions.markInvalid(input.splicedCells(), invalidDefinitions, touchTableResult, createErrorMessage);
+        HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult =
+                HashBasedTable.create(input.allCompositionCells().getBackingTable());
+        definitionFunctions.markInvalid(input.mainBodyCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
+        definitionFunctions.markInvalid(input.splicedCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
 
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
                 HashBasedTable.create(input.definitionDefinitionCells().getBackingTable());
@@ -54,11 +54,11 @@ public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
 
         Parse result = new ParseBuilder()
                 .prototypeOf(input)
-                .setTouchTableCells(touchTableResult)
+                .setCompositionTableCells(compositionTableResult)
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < validate definitions do not form a circular dependency", input.getTouch().getTitle());
+        log.debug("[{}] < validate definitions do not form a circular dependency", input.getComposition().getTitle());
 
         return result;
     }

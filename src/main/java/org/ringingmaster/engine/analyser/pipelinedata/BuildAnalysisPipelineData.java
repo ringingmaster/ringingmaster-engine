@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.analyser.pipelinedata;
 
-import org.ringingmaster.engine.compiler.compiledtouch.CompiledTouch;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 
 import java.util.function.Function;
 
@@ -9,11 +9,11 @@ import java.util.function.Function;
  *
  * @author Steve Lake
  */
-public class BuildAnalysisPipelineData implements Function<CompiledTouch, AnalysisPipelineData> {
+public class BuildAnalysisPipelineData implements Function<CompiledComposition, AnalysisPipelineData> {
 
 
     @Override
-    public AnalysisPipelineData apply(CompiledTouch compiledTouch) {
-        return new AnalysisPipelineData(compiledTouch);
+    public AnalysisPipelineData apply(CompiledComposition compiledComposition) {
+        return new AnalysisPipelineData(compiledComposition);
     }
 }

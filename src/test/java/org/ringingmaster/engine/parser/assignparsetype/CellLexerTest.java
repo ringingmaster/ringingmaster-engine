@@ -3,8 +3,8 @@ package org.ringingmaster.engine.parser.assignparsetype;
 import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.cell.Cell;
-import org.ringingmaster.engine.touch.cell.CellBuilder;
+import org.ringingmaster.engine.composition.cell.Cell;
+import org.ringingmaster.engine.composition.cell.CellBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

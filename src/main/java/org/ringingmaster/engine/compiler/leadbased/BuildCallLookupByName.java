@@ -25,8 +25,8 @@ public class BuildCallLookupByName implements Function<LeadBasedCompilePipelineD
         log.debug("{} > creating call lookup by name", data.getLogPreamble());
 
         ImmutableMap.Builder<String, NotationCall> builder = ImmutableMap.builder();
-        if (data.getParse().getTouch().getNonSplicedActiveNotation().isPresent()) {
-            for (NotationCall notationCall : data.getParse().getTouch().getNonSplicedActiveNotation().get().getCalls()) {
+        if (data.getParse().getComposition().getNonSplicedActiveNotation().isPresent()) {
+            for (NotationCall notationCall : data.getParse().getComposition().getNonSplicedActiveNotation().get().getCalls()) {
                 builder.put(notationCall.getName(), notationCall);
                 builder.put(notationCall.getNameShorthand(), notationCall);
             }

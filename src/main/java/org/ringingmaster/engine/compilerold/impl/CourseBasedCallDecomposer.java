@@ -2,7 +2,7 @@ package org.ringingmaster.engine.compilerold.impl;
 
 import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
-import org.ringingmaster.engine.touch.Touch;
+import org.ringingmaster.engine.composition.Composition;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -18,26 +18,26 @@ public class CourseBasedCallDecomposer extends SkeletalCallDecomposer<CourseBase
 
 	private String[] callPositionNames;
 
-	public CourseBasedCallDecomposer(Touch touch, String logPreamble) {
-		super(touch, logPreamble);
+	public CourseBasedCallDecomposer(Composition composition, String logPreamble) {
+		super(composition, logPreamble);
 	}
 
 	@Override
-	protected void preGenerate(Touch touch) {
-//TODO		Grid<TouchCell> callPositionCells = touch.callPositionView();
+	protected void preGenerate(Composition composition) {
+//TODO		Grid<CompositionCell> callPositionCells = composition.callPositionView();
 //		checkState(callPositionCells.getRowCount() == 1);
 //
 //		callPositionNames = new String[callPositionCells.getColumnCount()];
 //
 //		for (int columnIndex=0;columnIndex<callPositionCells.getColumnCount();columnIndex++) {
-//			TouchCell cell = callPositionCells.getCell(columnIndex, 0);
+//			CompositionCell cell = callPositionCells.getCell(columnIndex, 0);
 //			callPositionNames[columnIndex] = getCallPositionFromCell(cell);
 //		}
 	}
 
-//	private String getCallPositionFromCell(TouchCell cell) {
-//		final List<TouchWord> words = cell.words();
-//		for (TouchWord word : words) {
+//	private String getCallPositionFromCell(CompositionCell cell) {
+//		final List<CompositionWord> words = cell.words();
+//		for (CompositionWord word : words) {
 //			switch (word.getFirstParseType()) {
 //				case CALLING_POSITION:
 //					if (word.isValid()) {

@@ -6,8 +6,8 @@ import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.touch.cell.Cell;
-import org.ringingmaster.engine.touch.element.Element;
+import org.ringingmaster.engine.composition.cell.Cell;
+import org.ringingmaster.engine.composition.element.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

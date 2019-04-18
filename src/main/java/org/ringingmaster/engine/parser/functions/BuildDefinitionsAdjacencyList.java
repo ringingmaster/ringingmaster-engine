@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.functions;
 
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess;
 
 import java.util.Map;
 import java.util.Optional;

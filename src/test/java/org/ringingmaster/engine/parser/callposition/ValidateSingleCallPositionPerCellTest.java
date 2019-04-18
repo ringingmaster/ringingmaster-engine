@@ -6,8 +6,8 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
-import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 
 public class ValidateSingleCallPositionPerCellTest {
 
@@ -25,61 +25,61 @@ public class ValidateSingleCallPositionPerCellTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallPositionPerCell())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertEquals(0, result.allTouchCells().getRowSize());
-        assertEquals(0, result.allTouchCells().getColumnSize());
+        assertEquals(0, result.allCompositionCells().getRowSize());
+        assertEquals(0, result.allCompositionCells().getColumnSize());
     }
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        composition.setSpliced(true);
 
-        touch.addCharacters(TOUCH_TABLE, 0,0, "CALL_POSITION");
-        touch.addCharacters(TOUCH_TABLE, 1,0, "MAIN_BODY");
-        touch.addCharacters(TOUCH_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallPositionPerCell())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertEquals(2, result.allTouchCells().getRowSize());
-        assertEquals(2, result.allTouchCells().getColumnSize());
-        assertEquals("CALL_POSITION", result.allTouchCells().get(0,0).getCharacters());
-        assertEquals("MAIN_BODY", result.allTouchCells().get(1,0).getCharacters());
-        assertEquals("SPLICE", result.allTouchCells().get(1,1).getCharacters());
+        assertEquals(2, result.allCompositionCells().getRowSize());
+        assertEquals(2, result.allCompositionCells().getColumnSize());
+        assertEquals("CALL_POSITION", result.allCompositionCells().get(0,0).getCharacters());
+        assertEquals("MAIN_BODY", result.allCompositionCells().get(1,0).getCharacters());
+        assertEquals("SPLICE", result.allCompositionCells().get(1,1).getCharacters());
     }
 
     @Test
     public void parsingGoodCallPositionTakesNoAction() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "W");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "H");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        composition.addCharacters(MAIN_TABLE, 0,0, "W");
+        composition.addCharacters(MAIN_TABLE, 0,1, "H");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallPositionPerCell())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
-        assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION));
+        assertParse(result.allCompositionCells().get(0,0), valid(CALLING_POSITION));
+        assertParse(result.allCompositionCells().get(0,0), valid(CALLING_POSITION));
     }
 
     @Test
     public void parsingDuplicateMarksSeconsAsInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor());
-        touch.addCharacters(TOUCH_TABLE, 0,0, "WH");
-        touch.addCharacters(TOUCH_TABLE, 0,1, "-HW");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        composition.addCharacters(MAIN_TABLE, 0,0, "WH");
+        composition.addCharacters(MAIN_TABLE, 0,1, "-HW");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallPositionPerCell())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(result.allTouchCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));
-        assertParse(result.allTouchCells().get(0,1), unparsed() ,valid(CALLING_POSITION), invalid(CALLING_POSITION));
+        assertParse(result.allCompositionCells().get(0,0), valid(CALLING_POSITION), invalid(CALLING_POSITION));
+        assertParse(result.allCompositionCells().get(0,1), unparsed() ,valid(CALLING_POSITION), invalid(CALLING_POSITION));
     }
 
     private NotationBody buildPlainBobMinor() {
@@ -96,13 +96,13 @@ public class ValidateSingleCallPositionPerCellTest {
                 .build();
     }
 
-    private ObservableTouch buildSingleCellTouch(NotationBody notationBody) {
-        ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
-        touch.addNotation(notationBody);
-        touch.setCheckingType(CheckingType.COURSE_BASED);
-        touch.setSpliced(false);
-        return touch;
+    private ObservableComposition buildSingleCellComposition(NotationBody notationBody) {
+        ObservableComposition composition = new ObservableComposition();
+        composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+        composition.addNotation(notationBody);
+        composition.setCheckingType(CheckingType.COURSE_BASED);
+        composition.setSpliced(false);
+        return composition;
     }
 
 }

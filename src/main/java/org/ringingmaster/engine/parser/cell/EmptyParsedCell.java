@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.touch.cell.Cell;
-import org.ringingmaster.engine.touch.cell.EmptyCell;
-import org.ringingmaster.engine.touch.element.Element;
+import org.ringingmaster.engine.composition.cell.Cell;
+import org.ringingmaster.engine.composition.cell.EmptyCell;
+import org.ringingmaster.engine.composition.element.Element;
 
 import java.util.Optional;
 

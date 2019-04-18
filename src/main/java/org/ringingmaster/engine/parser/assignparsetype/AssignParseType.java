@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
@@ -12,9 +13,8 @@ import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
 import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
-import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.cell.Cell;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.cell.Cell;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +44,8 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.touch.checkingtype.CheckingType.LEAD_BASED;
-import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
+import static org.ringingmaster.engine.composition.checkingtype.CheckingType.LEAD_BASED;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * Parses all cells and assigns a parse type where possible.
@@ -54,7 +54,7 @@ import static org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess.D
  * @author stevelake
  */
 @Immutable
-public class AssignParseType implements Function<Touch, Parse> {
+public class AssignParseType implements Function<Composition, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(AssignParseType.class);
 
@@ -71,20 +71,20 @@ public class AssignParseType implements Function<Touch, Parse> {
 
     private final CellLexer lexer = new CellLexer();
 
-    public Parse apply(Touch touch) {
+    public Parse apply(Composition composition) {
 
-        log.debug("[{}] > assign parse type", touch.getTitle());
+        log.debug("[{}] > assign parse type", composition.getTitle());
 
-        final HashBasedTable<Integer, Integer, ParsedCell> parsedTouchCells = HashBasedTable.create();
-        parseCallPositionArea(touch, parsedTouchCells);
+        final HashBasedTable<Integer, Integer, ParsedCell> parsedCompositionCells = HashBasedTable.create();
+        parseCallPositionArea(composition, parsedCompositionCells);
         final Set<String> mainBodyDefinitions =
-                parseMainBodyArea(touch, parsedTouchCells);
+                parseMainBodyArea(composition, parsedCompositionCells);
         final Set<String> spliceAreaDefinitions =
-                parseSpliceArea(touch, parsedTouchCells);
+                parseSpliceArea(composition, parsedCompositionCells);
 
         final HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells = HashBasedTable.create();
-        parseDefinitionShorthandArea(touch, parsedDefinitionCells);
-        parseDefinitionDefinitionArea(touch, parsedDefinitionCells, mainBodyDefinitions, spliceAreaDefinitions);
+        parseDefinitionShorthandArea(composition, parsedDefinitionCells);
+        parseDefinitionDefinitionArea(composition, parsedDefinitionCells, mainBodyDefinitions, spliceAreaDefinitions);
 
 
         //TODO should we allow variance in definitions?
@@ -92,124 +92,124 @@ public class AssignParseType implements Function<Touch, Parse> {
 
 
         Parse parse = new ParseBuilder()
-                .prototypeOf(touch)
-                .setTouchTableCells(parsedTouchCells)
+                .prototypeOf(composition)
+                .setCompositionTableCells(parsedCompositionCells)
                 .setDefinitionTableCells(parsedDefinitionCells)
                 .build();
 
-        log.debug("[{}] < assign parse type", parse.getTouch().getTitle());
+        log.debug("[{}] < assign parse type", parse.getComposition().getTitle());
 
         return parse;
     }
 
-    private void parseDefinitionShorthandArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {
-        log.debug("[{}] Parse definition shorthand area", touch.getTitle());
+    private void parseDefinitionShorthandArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {
+        log.debug("[{}] Parse definition shorthand area", composition.getTitle());
 
         // This is a special parse - we just take trimmed versions of every definition and add it as a parse
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
-        addDefinitionLexerDefinitions(touch, lexerDefinitions);
+        addDefinitionLexerDefinitions(composition, lexerDefinitions);
         addWhitespaceLexerDefinitions(lexerDefinitions);
 
-        parse(parsedDefinitionCells, lexerDefinitions, touch.definitionShorthandCells(), (parsedCell) -> {}, touch.getTitle());
+        parse(parsedDefinitionCells, lexerDefinitions, composition.definitionShorthandCells(), (parsedCell) -> {}, composition.getTitle());
     }
 
-    private void parseCallPositionArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        if (touch.getCheckingType() != CheckingType.COURSE_BASED) {
+    private void parseCallPositionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
+        if (composition.getCheckingType() != CheckingType.COURSE_BASED) {
             return;
         }
 
-        log.debug("[{}] Parse call position area", touch.getTitle());
+        log.debug("[{}] Parse call position area", composition.getTitle());
 
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
-        addCallingPositionLexerDefinitions(touch, lexerDefinitions);
+        addCallingPositionLexerDefinitions(composition, lexerDefinitions);
         addWhitespaceLexerDefinitions(lexerDefinitions);
 
-        parse(parsedCells, lexerDefinitions, touch.callPositionCells(), (parsedCell) -> {}, touch.getTitle());
+        parse(parsedCells, lexerDefinitions, composition.callPositionCells(), (parsedCell) -> {}, composition.getTitle());
     }
 
-    private Set<String> parseMainBodyArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        log.debug("[{}] Parse main body area", touch.getTitle());
+    private Set<String> parseMainBodyArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
+        log.debug("[{}] Parse main body area", composition.getTitle());
 
-        Set<LexerDefinition> lexerDefinitions = buildMainBodyParseTokenMap(touch);
+        Set<LexerDefinition> lexerDefinitions = buildMainBodyParseTokenMap(composition);
 
         Set<String> definitionsInUse = new HashSet<>();
-        parse(parsedCells, lexerDefinitions, touch.mainBodyCells(), (parsedCell) ->
+        parse(parsedCells, lexerDefinitions, composition.mainBodyCells(), (parsedCell) ->
                 parsedCell.allSections().stream()
                         .filter(section -> section.getParseType().equals(DEFINITION))
                         .map(parsedCell::getCharacters)
                         .forEach(definitionsInUse::add),
-                touch.getTitle()
+                composition.getTitle()
         );
 
         return definitionsInUse;
     }
 
-    private Set<LexerDefinition> buildMainBodyParseTokenMap(Touch touch) {
+    private Set<LexerDefinition> buildMainBodyParseTokenMap(Composition composition) {
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
-        addCallLexerDefinitions(touch, lexerDefinitions);
-        addPlainLeadLexerDefinitions(touch, lexerDefinitions);
+        addCallLexerDefinitions(composition, lexerDefinitions);
+        addPlainLeadLexerDefinitions(composition, lexerDefinitions);
         addVarianceLexerDefinitions(lexerDefinitions);
         addMultiplierGroupLexerDefinitions(lexerDefinitions);
         addDefaultCallLexerDefinitions(lexerDefinitions);
         addWhitespaceLexerDefinitions(lexerDefinitions);
 
-        addDefinitionLexerDefinitions(touch, lexerDefinitions);
+        addDefinitionLexerDefinitions(composition, lexerDefinitions);
         return lexerDefinitions;
     }
 
-    private Set<String> parseSpliceArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        if (!touch.isSpliced()) {
+    private Set<String> parseSpliceArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
+        if (!composition.isSpliced()) {
             return Collections.emptySet();
         }
 
-        log.debug("[{}] Parse splice area", touch.getTitle());
-        Set<LexerDefinition> lexerDefinitions = buildSpliceAreaParseTokenMap(touch);
+        log.debug("[{}] Parse splice area", composition.getTitle());
+        Set<LexerDefinition> lexerDefinitions = buildSpliceAreaParseTokenMap(composition);
 
 
         Set<String> definitionsInUse = new HashSet<>();
-        parse(parsedCells, lexerDefinitions, touch.splicedCells(), (parsedCell) ->
+        parse(parsedCells, lexerDefinitions, composition.splicedCells(), (parsedCell) ->
                 parsedCell.allSections().stream()
                     .filter(section -> section.getParseType().equals(DEFINITION))
                     .map(parsedCell::getCharacters)
                     .forEach(definitionsInUse::add),
-                            touch.getTitle()
+                            composition.getTitle()
         );
 
         return definitionsInUse;
     }
 
-    private Set<LexerDefinition> buildSpliceAreaParseTokenMap(Touch touch) {
+    private Set<LexerDefinition> buildSpliceAreaParseTokenMap(Composition composition) {
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
-        addSpliceLexerDefinitions(touch, lexerDefinitions);
+        addSpliceLexerDefinitions(composition, lexerDefinitions);
         addMultiplierGroupLexerDefinitions(lexerDefinitions);
-        addDefinitionLexerDefinitions(touch, lexerDefinitions);
+        addDefinitionLexerDefinitions(composition, lexerDefinitions);
         addWhitespaceLexerDefinitions(lexerDefinitions);
-        addDefinitionLexerDefinitions(touch, lexerDefinitions);
+        addDefinitionLexerDefinitions(composition, lexerDefinitions);
         return lexerDefinitions;
     }
 
-    private void parseDefinitionDefinitionArea(Touch touch, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells, Set<String> mainBodyDefinitions, Set<String> spliceAreaDefinitions) {
+    private void parseDefinitionDefinitionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells, Set<String> mainBodyDefinitions, Set<String> spliceAreaDefinitions) {
 
-        if (touch.getAllDefinitionShorthands().size() == 0) {
+        if (composition.getAllDefinitionShorthands().size() == 0) {
             return;
         }
 
         // Pass 1 - parse definitions
-        Set<LexerDefinition> definitionMappings = buildDefinitionDefinitionTokenMap(touch);
-        for (String shorthand : touch.getAllDefinitionShorthands()) {
-            touch.findDefinitionByShorthand(shorthand).ifPresent(
+        Set<LexerDefinition> definitionMappings = buildDefinitionDefinitionTokenMap(composition);
+        for (String shorthand : composition.getAllDefinitionShorthands()) {
+            composition.findDefinitionByShorthand(shorthand).ifPresent(
                     (definitionTable) -> {
-                        log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", touch.getTitle(), shorthand);
+                        log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", composition.getTitle(), shorthand);
                         final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
-                        parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {}, touch.getTitle());
+                        parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
                     }
             );
         }
 
         // Pass 2 - find transative definitions
         final Parse tempParseToFindAdjacensyList = new ParseBuilder()
-                .prototypeOf(touch)
-                .setTouchTableCells(HashBasedTable.create())
+                .prototypeOf(composition)
+                .setCompositionTableCells(HashBasedTable.create())
                 .setDefinitionTableCells(parsedDefinitionCells)
                 .build();
         final Map<String, Set<String>> adjencency = new BuildDefinitionsAdjacencyList().apply(tempParseToFindAdjacensyList);
@@ -218,28 +218,28 @@ public class AssignParseType implements Function<Touch, Parse> {
         Set<String> spliceAreaDefinitionsWithTransative = new FollowTransitiveDefinitions().apply(spliceAreaDefinitions, adjencency);
 
         // Pass 3 - parse other values
-        Set<LexerDefinition> mainBodyParseTokenMappings = buildMainBodyParseTokenMap(touch);
-        Set<LexerDefinition> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(touch);
+        Set<LexerDefinition> mainBodyParseTokenMappings = buildMainBodyParseTokenMap(composition);
+        Set<LexerDefinition> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(composition);
 
-        for (String shorthand : touch.getAllDefinitionShorthands()) {
-            touch.findDefinitionByShorthand(shorthand).ifPresent(
+        for (String shorthand : composition.getAllDefinitionShorthands()) {
+            composition.findDefinitionByShorthand(shorthand).ifPresent(
                     (definitionTable) -> {
-                        log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", touch.getTitle(), shorthand);
+                        log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", composition.getTitle(), shorthand);
 
                         final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
                         // We only use splices mappings when token is not in main body but is in spliced.
                         Set<LexerDefinition> chosenMappings = (!mainBodyDefinitionsWithTransative.contains(shorthand))&&
                                 spliceAreaDefinitionsWithTransative.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
-                        parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {}, touch.getTitle());
+                        parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
                     }
             );
         }
 
     }
 
-    private Set<LexerDefinition> buildDefinitionDefinitionTokenMap(Touch touch) {
+    private Set<LexerDefinition> buildDefinitionDefinitionTokenMap(Composition composition) {
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
-        addDefinitionLexerDefinitions(touch, lexerDefinitions);
+        addDefinitionLexerDefinitions(composition, lexerDefinitions);
         return lexerDefinitions;
     }
 
@@ -253,8 +253,8 @@ public class AssignParseType implements Function<Touch, Parse> {
     }
 
 
-    private void addCallingPositionLexerDefinitions(Touch touch, Set<LexerDefinition> lexerDefinitions) {
-        for (NotationBody notation : touch.getAvailableNotations()) {
+    private void addCallingPositionLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
+        for (NotationBody notation : composition.getAvailableNotations()) {
             for (NotationMethodCallingPosition callingPosition : notation.getMethodBasedCallingPositions()) {
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, callingPosition.getName().length(),
                         callingPosition.getName(), CALLING_POSITION));
@@ -262,15 +262,15 @@ public class AssignParseType implements Function<Touch, Parse> {
         }
     }
 
-    private void addPlainLeadLexerDefinitions(Touch touch, Set<LexerDefinition> lexerDefinitions) {
-        if (touch.getCheckingType() == LEAD_BASED) {
-            lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, touch.getPlainLeadToken().length(),
-                    "(\\d*)(" + touch.getPlainLeadToken() + ")", PLAIN_LEAD_MULTIPLIER, PLAIN_LEAD));
+    private void addPlainLeadLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
+        if (composition.getCheckingType() == LEAD_BASED) {
+            lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, composition.getPlainLeadToken().length(),
+                    "(\\d*)(" + composition.getPlainLeadToken() + ")", PLAIN_LEAD_MULTIPLIER, PLAIN_LEAD));
         }
     }
 
-    private void addCallLexerDefinitions(Touch touch, Set<LexerDefinition> lexerDefinitions) {
-        for (NotationBody notation : touch.getAvailableNotations()) {
+    private void addCallLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
+        for (NotationBody notation : composition.getAvailableNotations()) {
             for (NotationCall notationCall : notation.getCalls()) {
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notationCall.getNameShorthand().length(),
                         "(\\d*)(" + notationCall.getNameShorthand() + ")", CALL_MULTIPLIER, CALL));
@@ -280,8 +280,8 @@ public class AssignParseType implements Function<Touch, Parse> {
         }
     }
 
-    private void addSpliceLexerDefinitions(Touch touch, Set<LexerDefinition> lexerDefinitions) {
-        for (NotationBody notation : touch.getAvailableNotations()) {
+    private void addSpliceLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
+        for (NotationBody notation : composition.getAvailableNotations()) {
             if (!Strings.isNullOrEmpty(notation.getSpliceIdentifier())){
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notation.getSpliceIdentifier().length(),
                         "(\\d*)(" + notation.getSpliceIdentifier() + ")", SPLICE_MULTIPLIER, SPLICE));
@@ -293,8 +293,8 @@ public class AssignParseType implements Function<Touch, Parse> {
         }
     }
 
-    private void addDefinitionLexerDefinitions(Touch touch, Set<LexerDefinition> lexerDefinitions) {
-        for (String shorthand : touch.getAllDefinitionShorthands()) {
+    private void addDefinitionLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
+        for (String shorthand : composition.getAllDefinitionShorthands()) {
             lexerDefinitions.add(new LexerDefinition(PRECEDENCE_DEFINITION, shorthand.length(),
                     "(\\d*)(" + shorthand + ")", DEFINITION_MULTIPLIER, DEFINITION));
         }

@@ -7,8 +7,8 @@ import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellFactory;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.touch.cell.Cell;
-import org.ringingmaster.engine.touch.element.Element;
+import org.ringingmaster.engine.composition.cell.Cell;
+import org.ringingmaster.engine.composition.element.Element;
 
 import java.util.HashSet;
 

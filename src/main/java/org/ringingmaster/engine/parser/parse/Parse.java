@@ -1,9 +1,9 @@
 package org.ringingmaster.engine.parser.parse;
 
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.touch.Touch;
-import org.ringingmaster.engine.touch.tableaccess.DefinitionTableAccess;
-import org.ringingmaster.engine.touch.tableaccess.TouchTableAccess;
+import org.ringingmaster.engine.composition.Composition;
+import org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.CompositionTableAccess;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -13,8 +13,8 @@ import javax.annotation.concurrent.Immutable;
  * @author stevelake
  */
 @Immutable
-public interface Parse extends TouchTableAccess<ParsedCell>, DefinitionTableAccess<ParsedCell>  {
+public interface Parse extends CompositionTableAccess<ParsedCell>, DefinitionTableAccess<ParsedCell>  {
 
-    Touch getTouch();
+    Composition getComposition();
 
 }

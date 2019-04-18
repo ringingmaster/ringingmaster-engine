@@ -29,19 +29,19 @@ public class ValidateSingleCallPositionPerCell implements Function<Parse, Parse>
 
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate single call position per cell", input.getTouch().getTitle());
+        log.debug("[{}] > validate single call position per cell", input.getComposition().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
-                HashBasedTable.create(input.allTouchCells().getBackingTable());
+                HashBasedTable.create(input.allCompositionCells().getBackingTable());
 
         parseCallPositionArea(input, resultCells);
 
         Parse build = new ParseBuilder()
                 .prototypeOf(input)
-                .setTouchTableCells(resultCells)
+                .setCompositionTableCells(resultCells)
                 .build();
 
-        log.debug("[{}] < validate single call position per cell", input.getTouch().getTitle());
+        log.debug("[{}] < validate single call position per cell", input.getComposition().getTitle());
 
         return build;
     }

@@ -13,7 +13,7 @@ public class BuildProof implements Function<AnalysisPipelineData, Proof> {
 
     @Override
     public Proof apply(AnalysisPipelineData input) {
-        return new DefaultProof(input.getCompiledTouch(),
+        return new DefaultProof(input.getCompiledComposition(),
                 input.getFalseRowGroups());
     }
 }

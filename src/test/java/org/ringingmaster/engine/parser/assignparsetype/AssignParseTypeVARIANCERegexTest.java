@@ -4,12 +4,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.AssertParse.Expected;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 
 /**
  * TODO comments???
@@ -89,15 +89,15 @@ public class AssignParseTypeVARIANCERegexTest {
     public void validStringParsesAll() {
 
         log.info("Test Value  {}", testValue);
-        ObservableTouch touch = new ObservableTouch();
-        touch.addNotation(buildPlainBobMinor());
-        touch.setCheckingType(CheckingType.LEAD_BASED);
-        touch.setSpliced(false);
-        touch.addCharacters(TOUCH_TABLE,0,0,testValue);
+        ObservableComposition composition = new ObservableComposition();
+        composition.addNotation(buildPlainBobMinor());
+        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setSpliced(false);
+        composition.addCharacters(MAIN_TABLE,0,0,testValue);
 
-        Parse parse = new AssignParseType().apply(touch.get());
+        Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0, 0), expecteds);
+        assertParse(parse.allCompositionCells().get(0, 0), expecteds);
     }
 
     private NotationBody buildPlainBobMinor() {
@@ -114,17 +114,17 @@ public class AssignParseTypeVARIANCERegexTest {
                 .build();
     }
 
-    private ObservableTouch buildSingleCellTouch(NotationBody notationBody, String characters) {
-        ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+    private ObservableComposition buildSingleCellComposition(NotationBody notationBody, String characters) {
+        ObservableComposition composition = new ObservableComposition();
+        composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         if (characters != null) {
-            touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
+            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
-        touch.addNotation(notationBody);
-        touch.setCheckingType(CheckingType.LEAD_BASED);
-        touch.setSpliced(false);
-        touch.addDefinition("def1", "[-o]");
-        return touch;
+        composition.addNotation(notationBody);
+        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setSpliced(false);
+        composition.addDefinition("def1", "[-o]");
+        return composition;
     }
 }
 

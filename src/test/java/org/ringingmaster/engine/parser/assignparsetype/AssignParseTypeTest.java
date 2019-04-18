@@ -2,11 +2,11 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
-import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 
 /**
  * TODO comments???
@@ -27,27 +27,27 @@ public class AssignParseTypeTest {
 
     @Test
     public void correctlyRetrievesAndParsesFromNotation() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "-s");
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(CALL), valid(CALL));
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-s");
+        Parse parse = new AssignParseType().apply(composition.get());
+        assertParse(parse.allCompositionCells().get(0, 0), valid(CALL), valid(CALL));
     }
 
     @Test
     public void correctlyAllocatedOverlappingParsings() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "Bob");
-        touch.setPlainLeadToken("b");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "Bob");
+        composition.setPlainLeadToken("b");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(3, CALL));
+        Parse parse = new AssignParseType().apply(composition.get());
+        assertParse(parse.allCompositionCells().get(0, 0), valid(3, CALL));
     }
 
     @Test
     public void correctlyAllocatedAdjacentParsings() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "Bobb");
-        touch.setPlainLeadToken("b");
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "Bobb");
+        composition.setPlainLeadToken("b");
 
-        Parse parse = new AssignParseType().apply(touch.get());
-        assertParse(parse.allTouchCells().get(0, 0), valid(3, CALL), valid(PLAIN_LEAD));
+        Parse parse = new AssignParseType().apply(composition.get());
+        assertParse(parse.allCompositionCells().get(0, 0), valid(3, CALL), valid(PLAIN_LEAD));
     }
 
     private NotationBody buildPlainBobMinor() {
@@ -64,17 +64,17 @@ public class AssignParseTypeTest {
                 .build();
     }
 
-    private ObservableTouch buildSingleCellTouch(NotationBody notationBody, String characters) {
-        ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+    private ObservableComposition buildSingleCellComposition(NotationBody notationBody, String characters) {
+        ObservableComposition composition = new ObservableComposition();
+        composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         if (characters != null) {
-            touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
+            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
-        touch.addNotation(notationBody);
-        touch.setCheckingType(CheckingType.LEAD_BASED);
-        touch.setSpliced(false);
-        touch.addDefinition("def1", "-P");
-        return touch;
+        composition.addNotation(notationBody);
+        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setSpliced(false);
+        composition.addDefinition("def1", "-P");
+        return composition;
     }
 
 

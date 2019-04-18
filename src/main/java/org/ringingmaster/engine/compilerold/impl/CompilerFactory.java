@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import org.ringingmaster.engine.compilerold.Compiler;
-import org.ringingmaster.engine.touch.Touch;
+import org.ringingmaster.engine.composition.Composition;
 
 /**
  * TODO comments.
@@ -10,18 +10,18 @@ import org.ringingmaster.engine.touch.Touch;
  */
 public class CompilerFactory {
 
-	public static Compiler getInstance(Touch touch) {
-		return getInstance(touch, "");
+	public static Compiler getInstance(Composition composition) {
+		return getInstance(composition, "");
 	}
 
-	public static Compiler getInstance(Touch touch, String logPreamble) {
-		switch (touch.getCheckingType()) {
+	public static Compiler getInstance(Composition composition, String logPreamble) {
+		switch (composition.getCheckingType()) {
 			case LEAD_BASED:
-				return new LeadBasedCompiler(touch, logPreamble);
+				return new LeadBasedCompiler(composition, logPreamble);
 			case COURSE_BASED:
-				return new CourseBasedCompiler(touch, logPreamble);
+				return new CourseBasedCompiler(composition, logPreamble);
 			default:
-				throw new IllegalStateException("Cant build Compiler for [" + touch + "]");
+				throw new IllegalStateException("Cant build Compiler for [" + composition + "]");
 		}
 	}
 }

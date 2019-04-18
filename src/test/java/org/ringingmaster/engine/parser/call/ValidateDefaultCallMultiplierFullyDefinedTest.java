@@ -3,17 +3,17 @@ package org.ringingmaster.engine.parser.call;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.touch.ObservableTouch;
-import org.ringingmaster.engine.touch.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
-import static org.ringingmaster.engine.touch.TableType.TOUCH_TABLE;
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 
 /**
  * TODO comments???
@@ -24,28 +24,28 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
 
     @Test
     public void defaultCallNotDefinedInAllMethodsInSplicedSetsInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2");
-        touch.addCharacters(TOUCH_TABLE, 0, 1, "DUMMY");
-        touch.addNotation(buildLittleBobMinorWithNoDefaultCall());
-        touch.setSpliced(true);
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2");
+        composition.addCharacters(MAIN_TABLE, 0, 1, "DUMMY");
+        composition.addNotation(buildLittleBobMinorWithNoDefaultCall());
+        composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
                 .andThen(new ValidateDefaultCallMultiplierFullyDefined())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), invalid(DEFAULT_CALL_MULTIPLIER));
+        assertParse(parse.allCompositionCells().get(0,0), invalid(DEFAULT_CALL_MULTIPLIER));
     }
 
     @Test
     public void defaultCallNotDefinedInChosenMethodSetsInvalid() {
-        ObservableTouch touch = buildSingleCellTouch(buildPlainBobMinor(), "2");
-        touch.removeNotation(Iterables.getOnlyElement(touch.get().getAllNotations()));
+        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2");
+        composition.removeNotation(Iterables.getOnlyElement(composition.get().getAllNotations()));
 
         Parse parse = new AssignParseType()
                 .andThen(new ValidateDefaultCallMultiplierFullyDefined())
-                .apply(touch.get());
+                .apply(composition.get());
 
-        assertParse(parse.allTouchCells().get(0,0), invalid( DEFAULT_CALL_MULTIPLIER, "No default call defined"));
+        assertParse(parse.allCompositionCells().get(0,0), invalid( DEFAULT_CALL_MULTIPLIER, "No default call defined"));
     }
 
 
@@ -75,18 +75,18 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
                 .build();
     }
 
-    private ObservableTouch buildSingleCellTouch(NotationBody notationBody, String characters) {
-        ObservableTouch touch = new ObservableTouch();
-        touch.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+    private ObservableComposition buildSingleCellComposition(NotationBody notationBody, String characters) {
+        ObservableComposition composition = new ObservableComposition();
+        composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         if (characters != null) {
-            touch.addCharacters(TOUCH_TABLE, 0, 0, characters);
+            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
-        touch.addNotation(notationBody);
-        touch.setCheckingType(CheckingType.LEAD_BASED);
-        touch.setSpliced(false);
-        touch.addDefinition("def1", "-P");
-        touch.addDefinition("def2", "2");
-        return touch;
+        composition.addNotation(notationBody);
+        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setSpliced(false);
+        composition.addDefinition("def1", "-P");
+        composition.addDefinition("def2", "2");
+        return composition;
     }
 
 
