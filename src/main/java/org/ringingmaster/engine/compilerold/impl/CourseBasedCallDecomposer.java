@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.compilerold.impl;
 
+import org.ringingmaster.engine.compiler.coursebased.CourseBasedDenormalisedCall;
 import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.composition.Composition;
@@ -14,7 +15,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
  * User: Stephen
  */
 @NotThreadSafe
-public class CourseBasedCallDecomposer extends SkeletalCallDecomposer<CourseBasedDecomposedCall> {
+public class CourseBasedCallDecomposer extends SkeletalCallDecomposer<CourseBasedDenormalisedCall> {
 
 	private String[] callPositionNames;
 
@@ -48,11 +49,11 @@ public class CourseBasedCallDecomposer extends SkeletalCallDecomposer<CourseBase
 //		return null;
 //	}
 
-	protected CourseBasedDecomposedCall buildDecomposedCall(String callName, Variance variance, int columnIndex, ParseType parseType) {
+	protected CourseBasedDenormalisedCall buildDecomposedCall(String callName, Variance variance, int columnIndex, ParseType parseType) {
 		checkPositionIndex(columnIndex, callPositionNames.length, "column index out of bounds");
 		String callPositionName = callPositionNames[columnIndex];
 		checkNotNull(callPositionName, "callPositionName is null. Check that the parsing is correctly excluding columns with no valid call position");
-		return new CourseBasedDecomposedCall(callName, variance, callPositionName);
+		return new CourseBasedDenormalisedCall(callName, variance, callPositionName);
 	}
 
 }

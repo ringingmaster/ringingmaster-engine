@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import com.google.common.collect.Lists;
+import org.ringingmaster.engine.compiler.common.DenormalisedCall;
 import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.composition.cell.Cell;
@@ -21,7 +22,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * User: Stephen
  */
 @NotThreadSafe
-public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
+public abstract class SkeletalCallDecomposer<DC extends DenormalisedCall> {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final Composition composition;
@@ -181,7 +182,7 @@ public abstract class SkeletalCallDecomposer<DC extends DecomposedCall> {
 	}
 
 	@Immutable
-	private class MultiplierAndCall extends DecomposedCall {
+	private class MultiplierAndCall extends DenormalisedCall {
 		private final int multiplier;
 
 		public MultiplierAndCall(int multiplier, String callName, Variance variance) {

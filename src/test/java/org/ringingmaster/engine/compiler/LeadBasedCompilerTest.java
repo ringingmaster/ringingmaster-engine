@@ -236,8 +236,18 @@ public class LeadBasedCompilerTest {
 	}
 
 	@Test
+	public void compileDefaultCallMultiplier() throws IOException {
+		checkSimple1CellPlainBobComposition("2", 3, "/PlainBobMinor - .txt", true);
+	}
+
+	@Test
 	public void compileCallAndPlain() throws IOException {
 		checkSimple1CellPlainBobComposition("-p", 10, "/PlainBobMinor -p .txt", true);
+	}
+
+	@Test
+	public void compileCallAndPlainWithWhitespace() throws IOException {
+		checkSimple1CellPlainBobComposition("- p", 10, "/PlainBobMinor -p .txt", true);
 	}
 
 	@Test

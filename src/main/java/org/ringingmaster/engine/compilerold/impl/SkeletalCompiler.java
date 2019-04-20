@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import org.ringingmaster.engine.analyser.proof.Proof;
+import org.ringingmaster.engine.compiler.common.DenormalisedCall;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.compilerold.Compiler;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkState;
  * User: Stephen
  */
 @ThreadSafe
-public abstract class SkeletalCompiler<DCT extends DecomposedCall> implements Compiler {
+public abstract class SkeletalCompiler<DCT extends DenormalisedCall> implements Compiler {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 

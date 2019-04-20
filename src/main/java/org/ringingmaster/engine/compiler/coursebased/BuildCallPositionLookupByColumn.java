@@ -2,10 +2,12 @@ package org.ringingmaster.engine.compiler.coursebased;
 
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
+import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.parser.parse.Parse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -18,13 +20,25 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_
  *
  * @author stevelake
  */
-public class BuildCallPositionNames implements Function<CourseBasedCompilePipelineData, CourseBasedCompilePipelineData> {
+public class BuildCallPositionLookupByColumn implements Function<CourseBasedCompilePipelineData, CourseBasedCompilePipelineData> {
+
+    private final Logger log = LoggerFactory.getLogger(BuildCallPositionLookupByColumn.class);
 
     @Override
-    public CourseBasedCompilePipelineData apply(CourseBasedCompilePipelineData data) {
+    public CourseBasedCompilePipelineData apply(CourseBasedCompilePipelineData input) {
 
-        final ImmutableList<Optional<String>> callPositionNames = buildCallPositionNames(data.getParse());
-        return data.setCallPositionNames(callPositionNames);
+        if (input.isTerminated()) {
+            return input;
+        }
+
+        log.debug("{} > creating call position lookup by column", input.getLogPreamble());
+
+        final ImmutableList<Optional<String>> callPositionLookupByColumn = buildCallPositionNames(input.getParse());
+        CourseBasedCompilePipelineData result = input.setCallPositionLookupByColumn(callPositionLookupByColumn);
+
+        log.debug("{} > creating call position lookup by column", input.getLogPreamble());
+
+        return result;
     }
 
     private ImmutableList<Optional<String>> buildCallPositionNames(Parse parse) {

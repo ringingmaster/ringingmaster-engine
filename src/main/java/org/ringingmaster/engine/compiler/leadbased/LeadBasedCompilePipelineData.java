@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.common.CompilePipelineData;
-import org.ringingmaster.engine.compilerold.impl.LeadBasedDecomposedCall;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.parser.parse.Parse;
@@ -23,11 +22,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Lake
  */
 @Immutable
-public class LeadBasedCompilePipelineData extends CompilePipelineData<LeadBasedCompilePipelineData> {
+class LeadBasedCompilePipelineData extends CompilePipelineData<LeadBasedCompilePipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final ImmutableList<LeadBasedDecomposedCall> callSequence;
+    private final ImmutableList<LeadBasedDenormalisedCall> callSequence;
     private final ImmutableMap<String, NotationCall> callLookupByName; //TODO should this be in the super class?
     private final ImmutableMap<String, Variance> varianceLookupByName; //TODO should this be in the super class?
 
@@ -42,18 +41,18 @@ public class LeadBasedCompilePipelineData extends CompilePipelineData<LeadBasedC
     private LeadBasedCompilePipelineData(Parse parse, String logPreamble,
                                          Optional<Method> method,
                                          Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
-                                         ImmutableList<LeadBasedDecomposedCall> callSequence, ImmutableMap<String, NotationCall> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName) {
+                                         ImmutableList<LeadBasedDenormalisedCall> callSequence, ImmutableMap<String, NotationCall> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName) {
         super(parse, logPreamble, method, terminationReason, terminateNotes);
         this.callSequence = checkNotNull(callSequence);
         this.callLookupByName = checkNotNull(callLookupByName);
         this.varianceLookupByName = checkNotNull(varianceLookupByName);
     }
 
-    public ImmutableList<LeadBasedDecomposedCall> getCallSequence() {
+    public ImmutableList<LeadBasedDenormalisedCall> getCallSequence() {
         return callSequence;
     }
 
-    public LeadBasedCompilePipelineData setCallSequence(ImmutableList<LeadBasedDecomposedCall> callSequence) {
+    public LeadBasedCompilePipelineData setCallSequence(ImmutableList<LeadBasedDenormalisedCall> callSequence) {
         return new LeadBasedCompilePipelineData(getParse(), getLogPreamble(),
                 getMethod(),
                 getTerminationReason(), getTerminateNotes(),

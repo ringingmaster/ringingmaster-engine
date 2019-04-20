@@ -3,7 +3,7 @@ package org.ringingmaster.engine.compiler.common;
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
-import org.ringingmaster.engine.compilerold.impl.CourseBasedDecomposedCall;
+import org.ringingmaster.engine.compiler.coursebased.CourseBasedDenormalisedCall;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
@@ -35,7 +35,7 @@ public class CallDecomposerIncludingFirstAttemptAtCourseBasedStructures {
 
     // TODO Can this can be a function that turns cells into a call list
     //TODO should flat map / stream this lot?
-    public ImmutableList<CourseBasedDecomposedCall> createCallSequence(Parse parse, ImmutableList<Optional<String>> callPositionNames, String logPreamble) {
+    public ImmutableList<CourseBasedDenormalisedCall> createCallSequence(Parse parse, ImmutableList<Optional<String>> callPositionNames, String logPreamble) {
         log.debug("{} > create call sequence", logPreamble);
         final Deque<CallSequenceMultiplier> multiplierFIFO = new ArrayDeque<>();
         multiplierFIFO.addFirst(new CallSequenceMultiplier(1));
@@ -101,7 +101,7 @@ public class CallDecomposerIncludingFirstAttemptAtCourseBasedStructures {
                 logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), multiplierFIFO.size());
         if (multiplierAndParseContents.getParseContents().length() > 0 ) {
             for (int i = 0; i< multiplierAndParseContents.getMultiplier(); i++) {
-                CourseBasedDecomposedCall decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), callPositionNames, columnIndex, parseType);
+                CourseBasedDenormalisedCall decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), callPositionNames, columnIndex, parseType);
                 multiplierFIFO.peekFirst().add(decomposedCall);
             }
         }
@@ -171,14 +171,14 @@ public class CallDecomposerIncludingFirstAttemptAtCourseBasedStructures {
         return new MultiplierAndParseContents(multiplierValue, parseContents);
     }
 
-    protected CourseBasedDecomposedCall buildDecomposedCall(String callName, ImmutableList<Optional<String>> callPositionNames, int columnIndex, ParseType parseType) {
+    protected CourseBasedDenormalisedCall buildDecomposedCall(String callName, ImmutableList<Optional<String>> callPositionNames, int columnIndex, ParseType parseType) {
         checkPositionIndex(columnIndex, callPositionNames.size(), "column index out of bounds");
         Optional<String> callPositionName = callPositionNames.get(columnIndex);
         checkState(callPositionName.isPresent(), "No callPositionName for %s. Check that the parsing is correctly excluding columns with no valid call position", columnIndex);
-        return new CourseBasedDecomposedCall(callName, null, callPositionName.get()); //TODO Variance
+        return new CourseBasedDenormalisedCall(callName, null, callPositionName.get()); //TODO Variance
     }
 
-    private class CallSequenceMultiplier extends ArrayList<CourseBasedDecomposedCall> {
+    private class CallSequenceMultiplier extends ArrayList<CourseBasedDenormalisedCall> {
 
         private final int multiplier;
 

@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.compilerold.impl;
+package org.ringingmaster.engine.compiler.common;
 
 import org.ringingmaster.engine.compiler.variance.Variance;
 
@@ -11,11 +11,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * User: Stephen
  */
 @Immutable
-public abstract class DecomposedCall {
+public abstract class DenormalisedCall {
 	private final String callName;
 	private final Variance variance;
 
-	public DecomposedCall(String callName, Variance variance) {
+	public DenormalisedCall(String callName, Variance variance) {
 		this.callName = checkNotNull(callName, "callName must not be null");
 		this.variance = checkNotNull(variance, "variance must not be null");
 	}

@@ -3,21 +3,21 @@ package org.ringingmaster.engine.compiler.leadbased;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.ringingmaster.engine.compilerold.impl.LeadBasedDecomposedCall;
+import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compilerold.impl.MaskedNotation;
 import org.ringingmaster.engine.compilerold.impl.TerminateEarlyException;
-import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.method.Method;
+import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.notation.NotationRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,14 +26,14 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
 
 /**
  * TODO comments???
  *
  * @author Steve Lake
  */
-public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, LeadBasedCompilePipelineData> {
+@ThreadSafe
+class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, LeadBasedCompilePipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(LeadBasedCompile.class);
 
@@ -44,14 +44,14 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         // inputs
         private final Supplier<Boolean> allowTerminateEarly;
         private final Composition composition;
-        private final ImmutableList<LeadBasedDecomposedCall> callSequence;
+        private final ImmutableList<LeadBasedDenormalisedCall> callSequence;
         private final ImmutableMap<String, NotationCall> callLookupByName;
         private final String logPreamble;
 
         // internal data.
         private int callSequenceIndex;
         private int partIndex;
-        private LeadBasedDecomposedCall nextCall;
+        private LeadBasedDenormalisedCall nextCall;
         private Row currentRow;
         private MaskedNotation maskedNotation;
         private final List<Lead> leads = new ArrayList<>();
@@ -61,7 +61,7 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
         private Optional<CompileTerminationReason> terminationReason = Optional.empty();
         private Optional<String> terminateNotes = Optional.empty();
 
-        State(Supplier<Boolean> allowTerminateEarly, Composition composition, ImmutableList<LeadBasedDecomposedCall> callSequence, ImmutableMap<String, NotationCall> callLookupByName, String logPreamble)  {
+        State(Supplier<Boolean> allowTerminateEarly, Composition composition, ImmutableList<LeadBasedDenormalisedCall> callSequence, ImmutableMap<String, NotationCall> callLookupByName, String logPreamble)  {
             this.allowTerminateEarly = checkNotNull(allowTerminateEarly);
             this.composition = checkNotNull(composition);
             this.callSequence = checkNotNull(callSequence);
@@ -203,7 +203,7 @@ public class LeadBasedCompile implements Function<LeadBasedCompilePipelineData, 
     }
 
     private boolean applyNextCall( State state) {
-        if (state.nextCall.getParseType().equals(PLAIN_LEAD)) {
+        if (state.nextCall.isPlainLead()) {
             // No Call, but consume the call.
             log.debug("{}    Apply Plain lead", state.logPreamble);
         }

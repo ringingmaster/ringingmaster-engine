@@ -3,7 +3,6 @@ package org.ringingmaster.engine.compiler.coursebased;
 import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.common.CompilePipelineData;
-import org.ringingmaster.engine.compilerold.impl.CourseBasedDecomposedCall;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.slf4j.Logger;
@@ -22,8 +21,8 @@ public class CourseBasedCompilePipelineData extends CompilePipelineData<CourseBa
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final ImmutableList<Optional<String>> callPositionNames;
-    private final ImmutableList<CourseBasedDecomposedCall> callSequence;
+    private final ImmutableList<Optional<String>> callPositionLookupByColumn;
+    private final ImmutableList<CourseBasedDenormalisedCall> callSequence;
 
 
     public CourseBasedCompilePipelineData(Parse parse) {
@@ -37,10 +36,10 @@ public class CourseBasedCompilePipelineData extends CompilePipelineData<CourseBa
     private CourseBasedCompilePipelineData(Parse parse, String logPreamble,
                                            Optional<Method> method,
                                            Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
-                                           ImmutableList<Optional<String>> callPositionNames,
-                                           ImmutableList<CourseBasedDecomposedCall> callSequence) {
+                                           ImmutableList<Optional<String>> callPositionLookupByColumn,
+                                           ImmutableList<CourseBasedDenormalisedCall> callSequence) {
         super(parse, logPreamble, method, terminationReason, terminateNotes);
-        this.callPositionNames = callPositionNames;
+        this.callPositionLookupByColumn = callPositionLookupByColumn;
         this.callSequence = callSequence;
     }
 
@@ -51,29 +50,29 @@ public class CourseBasedCompilePipelineData extends CompilePipelineData<CourseBa
         return new CourseBasedCompilePipelineData(parse, logPreamble,
                 method,
                 terminationReason, terminateNotes,
-                callPositionNames, callSequence);
+                callPositionLookupByColumn, callSequence);
     }
 
-    public CourseBasedCompilePipelineData setCallSequence(ImmutableList<CourseBasedDecomposedCall> callSequence) {
+    public CourseBasedCompilePipelineData setCallSequence(ImmutableList<CourseBasedDenormalisedCall> callSequence) {
         return new CourseBasedCompilePipelineData(getParse(), getLogPreamble(),
                 getMethod(),
                 getTerminationReason(), getTerminateNotes(),
                 getCallPositionNames(), callSequence);
     }
 
-    public ImmutableList<CourseBasedDecomposedCall> getCallSequence() {
+    public ImmutableList<CourseBasedDenormalisedCall> getCallPositionLookupByColumn() {
         return callSequence;
     }
 
-    public CourseBasedCompilePipelineData setCallPositionNames(ImmutableList<Optional<String>> callPositionNames) {
+    public CourseBasedCompilePipelineData setCallPositionLookupByColumn(ImmutableList<Optional<String>> callPositionNames) {
         return new CourseBasedCompilePipelineData(getParse(), getLogPreamble(),
                 getMethod(),
                 getTerminationReason(), getTerminateNotes(),
-                callPositionNames, getCallSequence());
+                callPositionNames, getCallPositionLookupByColumn());
     }
 
     public ImmutableList<Optional<String>> getCallPositionNames() {
-        return callPositionNames;
+        return callPositionLookupByColumn;
     }
 }
 

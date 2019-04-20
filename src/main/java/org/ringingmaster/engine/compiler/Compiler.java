@@ -39,12 +39,12 @@ public class Compiler implements Function<Parse, CompiledComposition> {
 
         switch (parse.getComposition().getCheckingType() ) {
 
-//            case COURSE_BASED:
-//                return courseBasedCompilePipeline;
+            case COURSE_BASED:
+                return courseBasedCompilePipeline;
             case LEAD_BASED:
                 return leadBasedCompilePipeline;
             default:
-                throw new RuntimeException("No pipeline for Parse Type [" + parse.getComposition().getCheckingType() + "]");
+                throw new RuntimeException("No pipeline for Checking Type [" + parse.getComposition().getCheckingType() + "]");
         }
     }
 

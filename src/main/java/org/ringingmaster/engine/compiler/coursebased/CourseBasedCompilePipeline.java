@@ -1,9 +1,8 @@
 package org.ringingmaster.engine.compiler.coursebased;
 
 import org.ringingmaster.engine.compiler.common.ValidCompositionCheck;
-import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
-import org.ringingmaster.engine.compiler.leadbased.BuildCallSequence;
 import org.ringingmaster.engine.compiler.compiledcomposition.BuildCompiledComposition;
+import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.function.Function;
@@ -15,24 +14,18 @@ import java.util.function.Function;
  */
 public class CourseBasedCompilePipeline implements Function<Parse, CompiledComposition> {
 
-    //TODO copy style of lead - with static pipeline
-
-    private final BuildCourseBasedCompolePipelineData buildCourseBasedCompolePipelineData = new BuildCourseBasedCompolePipelineData();
-    private final ValidCompositionCheck<CourseBasedCompilePipelineData> validCompositionCheck = new ValidCompositionCheck<>();
-    private final BuildCallPositionNames buildCallPositionNames = new BuildCallPositionNames();
-    private final BuildCallSequence buildCallSequence = new BuildCallSequence();
-
-    private final BuildCompiledComposition<CourseBasedCompilePipelineData> buildCompiledComposition = new BuildCompiledComposition();
-
     @Override
     public CompiledComposition apply(Parse parse) {
-        return this.buildCourseBasedCompolePipelineData
-                .andThen(validCompositionCheck)
-                .andThen(buildCallPositionNames)
+//TODO Add in early terminate nechanisam
+        return pipeline.apply(parse);
+    }
+
+
+    private static final Function<Parse, CompiledComposition> pipeline =
+        new BuildCourseBasedCompolePipelineData()
+                .andThen(new ValidCompositionCheck<>())
+                .andThen(new BuildCallPositionLookupByColumn())
                 //TODO add back in when common between lead and course. .andThen(buildCallSequence)
                 
-                .andThen(buildCompiledComposition)
-
-                .apply(parse);
-    }
+                .andThen(new BuildCompiledComposition<>());
 }

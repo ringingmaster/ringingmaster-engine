@@ -1,19 +1,20 @@
-package org.ringingmaster.engine.compilerold.impl;
+package org.ringingmaster.engine.compiler.coursebased;
+
+import org.ringingmaster.engine.compiler.common.DenormalisedCall;
+import org.ringingmaster.engine.compiler.variance.Variance;
 
 import javax.annotation.concurrent.Immutable;
-
-import org.ringingmaster.engine.compiler.variance.Variance;
 
 /**
  * TODO comments???
  * User: Stephen
  */
 @Immutable
-public class CourseBasedDecomposedCall extends DecomposedCall {
+public class CourseBasedDenormalisedCall extends DenormalisedCall {
 
 	private final String callingPositionName;
 
-	public CourseBasedDecomposedCall(String callName, Variance variance, String callingPositionName) {
+	public CourseBasedDenormalisedCall(String callName, Variance variance, String callingPositionName) {
 		super(callName, variance);
 		this.callingPositionName = callingPositionName;
 	}

@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.compiler.coursebased.CourseBasedDenormalisedCall;
 import org.ringingmaster.engine.compilerold.Compiler;
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
@@ -29,12 +30,12 @@ import static com.google.common.base.Preconditions.checkState;
  * @author stephen
  */
 @ThreadSafe
-public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedCall> implements Compiler {
+public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDenormalisedCall> implements Compiler {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final Bell callFromBell;
-	private volatile List<CourseBasedDecomposedCall> immutableCallSequence;
+	private volatile List<CourseBasedDenormalisedCall> immutableCallSequence;
 	private volatile Map<NotationMethodCallingPosition, Integer> callingPositionToCallBellPlace;
 
 	CourseBasedCompiler(Composition composition, String logPreamble) {
@@ -49,7 +50,7 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 		callingPositionToCallBellPlace = buildCallingPositionLookup(composition);
 	}
 
-	private ImmutableList<CourseBasedDecomposedCall> buildImmutableCallSequence(Composition composition) {
+	private ImmutableList<CourseBasedDenormalisedCall> buildImmutableCallSequence(Composition composition) {
 		return ImmutableList.copyOf(new CourseBasedCallDecomposer(composition, getLogPreamble()).createCallSequence());
 	}
 
@@ -75,13 +76,13 @@ public class CourseBasedCompiler extends SkeletalCompiler<CourseBasedDecomposedC
 	}
 
 	@Override
-	protected List<CourseBasedDecomposedCall> getImmutableCallSequence() {
+	protected List<CourseBasedDenormalisedCall> getImmutableCallSequence() {
 		return immutableCallSequence;
 	}
 
 	@Override
 	protected boolean applyNextCall(MaskedNotation maskedNotation, Row currentRow,
-	                                CourseBasedDecomposedCall nextCall, NotationCall call) {
+                                    CourseBasedDenormalisedCall nextCall, NotationCall call) {
 
 		// Find the method calling position.
 		String callingPositionName = nextCall.getCallingPositionName();
