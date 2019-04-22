@@ -1,7 +1,8 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import org.ringingmaster.engine.analyser.proof.Proof;
-import org.ringingmaster.engine.compiler.common.DenormalisedCall;
+import org.ringingmaster.engine.compiler.compile.MaskedNotation;
+import org.ringingmaster.engine.compiler.denormaliser.DenormalisedCall;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.compilerold.Compiler;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;

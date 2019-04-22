@@ -2,7 +2,7 @@ package org.ringingmaster.engine.composition.tableaccess;
 
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -17,12 +17,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class DefaultCompositionTableAccess<T extends Cell> implements CompositionTableAccess<T> {
 
     private final ImmutableArrayTable<T> cells;
-    private final CheckingType checkingType;
+    private final CompositionType compositionType;
     private final boolean isSpliced;
 
-    public DefaultCompositionTableAccess(ImmutableArrayTable<T> cells, CheckingType checkingType, boolean isSpliced) {
+    public DefaultCompositionTableAccess(ImmutableArrayTable<T> cells, CompositionType compositionType, boolean isSpliced) {
         this.cells = checkNotNull(cells);
-        this.checkingType = checkNotNull(checkingType);
+        this.compositionType = checkNotNull(compositionType);
         this.isSpliced = isSpliced;
     }
 
@@ -39,18 +39,18 @@ public class DefaultCompositionTableAccess<T extends Cell> implements Compositio
         if (cells.getColumnSize() == 0 || cells.getRowSize() == 0 ) {
             return cells.subTable(0, 0, 0, 0);
         }
-        if (cells.getRowSize() < 2 && checkingType == CheckingType.COURSE_BASED) {
+        if (cells.getRowSize() < 2 && compositionType == CompositionType.COURSE_BASED) {
             return cells.subTable(0, 0, 0, 0);
         }
         if (cells.getColumnSize() < 2 && isSpliced) {
             return cells.subTable(
-                    (checkingType == CheckingType.COURSE_BASED ? 1:0),
+                    (compositionType == CompositionType.COURSE_BASED ? 1:0),
                     cells.getRowSize(),
                     0,
                     cells.getColumnSize());
         }
         return cells.subTable(
-                (checkingType == CheckingType.COURSE_BASED ? 1:0),
+                (compositionType == CompositionType.COURSE_BASED ? 1:0),
                 cells.getRowSize(),
                 0,
                 cells.getColumnSize() - (isSpliced ? 1:0));
@@ -58,7 +58,7 @@ public class DefaultCompositionTableAccess<T extends Cell> implements Compositio
 
     @Override
     public ImmutableArrayTable<T> callPositionCells() { //TODO pre-calculate???
-        if (checkingType != CheckingType.COURSE_BASED) {
+        if (compositionType != CompositionType.COURSE_BASED) {
             return cells.subTable(0, 0, 0, 0);
         }
         if (cells.getRowSize() == 0 ) {
@@ -75,14 +75,14 @@ public class DefaultCompositionTableAccess<T extends Cell> implements Compositio
         if (!isSpliced) {
             return cells.subTable(0, 0, 0, 0);
         }
-        if (cells.getRowSize() < 2 && checkingType == CheckingType.COURSE_BASED) {
+        if (cells.getRowSize() < 2 && compositionType == CompositionType.COURSE_BASED) {
             return cells.subTable(0, 0, 0, 0);
         }
         if (cells.getColumnSize() < 2) {
             return cells.subTable(0, 0, 0, 0);
         }
         return cells.subTable(
-                (checkingType == CheckingType.COURSE_BASED ? 1 : 0),
+                (compositionType == CompositionType.COURSE_BASED ? 1 : 0),
                 cells.getRowSize(),
                 cells.getColumnSize() - 1,
                 cells.getColumnSize());
@@ -92,7 +92,7 @@ public class DefaultCompositionTableAccess<T extends Cell> implements Compositio
     public String toString() {
         return "DefaultCompositionTableAccess{" +
                 "cells=" + cells +
-                ", checkingType=" + checkingType +
+                ", compositionType=" + compositionType +
                 ", isSpliced=" + isSpliced +
                 '}';
     }

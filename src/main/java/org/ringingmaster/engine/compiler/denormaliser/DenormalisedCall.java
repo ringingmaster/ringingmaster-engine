@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.compiler.common;
+package org.ringingmaster.engine.compiler.denormaliser;
 
 import org.ringingmaster.engine.compiler.variance.Variance;
 

@@ -20,12 +20,12 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_
  *
  * @author stevelake
  */
-public class BuildCallPositionLookupByColumn implements Function<CourseBasedCompilePipelineData, CourseBasedCompilePipelineData> {
+public class BuildCallPositionLookupByColumn implements Function<CourseBasedCompilerPipelineData, CourseBasedCompilerPipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(BuildCallPositionLookupByColumn.class);
 
     @Override
-    public CourseBasedCompilePipelineData apply(CourseBasedCompilePipelineData input) {
+    public CourseBasedCompilerPipelineData apply(CourseBasedCompilerPipelineData input) {
 
         if (input.isTerminated()) {
             return input;
@@ -34,7 +34,7 @@ public class BuildCallPositionLookupByColumn implements Function<CourseBasedComp
         log.debug("{} > creating call position lookup by column", input.getLogPreamble());
 
         final ImmutableList<Optional<String>> callPositionLookupByColumn = buildCallPositionNames(input.getParse());
-        CourseBasedCompilePipelineData result = input.setCallPositionLookupByColumn(callPositionLookupByColumn);
+        CourseBasedCompilerPipelineData result = input.setCallPositionLookupByColumn(callPositionLookupByColumn);
 
         log.debug("{} > creating call position lookup by column", input.getLogPreamble());
 

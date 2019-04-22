@@ -4,12 +4,12 @@ import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.Compiler;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.parser.Parser;
 import org.ringingmaster.engine.composition.Composition;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -53,7 +53,7 @@ public class PlainCourseHelper {
 		composition.setTitle("PLAINCOURSE_" + counter.getAndIncrement() + ":" + notationBody.getNameIncludingNumberOfBells());
 		composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
 		composition.addNotation(notationBody);
-		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setCheckingType(CompositionType.LEAD_BASED);
 		composition.setTerminationChange(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
 		composition.setTerminationMaxLeads(TERMINATION_MAX_LEADS_MAX);
 		composition.setTerminationMaxRows(TERMINATION_MAX_ROWS_MAX);

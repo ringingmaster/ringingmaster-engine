@@ -37,7 +37,7 @@ public class SpecifiedPartsVarianceTest {
 
 	@Test
 	public void includeEvenParts() {
-		Variance variance = new OddEvenVariance(VarianceLogicType.INCLUDE, OddEvenVarianceType.EVEN);
+		Variance variance = new OddEvenVariance(VarianceLogicType.INCLUDE, OddEvenVariance.OddEvenVarianceType.EVEN);
 		assertTrue(variance.includePart(0));
 		assertFalse(variance.includePart(1));
 		assertTrue(variance.includePart(2));
@@ -46,7 +46,7 @@ public class SpecifiedPartsVarianceTest {
 
 	@Test
 	public void excludEvenParts() {
-		Variance variance = new OddEvenVariance(VarianceLogicType.OMIT, OddEvenVarianceType.EVEN);
+		Variance variance = new OddEvenVariance(VarianceLogicType.OMIT, OddEvenVariance.OddEvenVarianceType.EVEN);
 		assertFalse(variance.includePart(0));
 		assertTrue(variance.includePart(1));
 		assertFalse(variance.includePart(2));
@@ -55,7 +55,7 @@ public class SpecifiedPartsVarianceTest {
 
 	@Test
 	public void includeOddParts() {
-		Variance variance = new OddEvenVariance(VarianceLogicType.INCLUDE, OddEvenVarianceType.ODD);
+		Variance variance = new OddEvenVariance(VarianceLogicType.INCLUDE, OddEvenVariance.OddEvenVarianceType.ODD);
 		assertFalse(variance.includePart(0));
 		assertTrue(variance.includePart(1));
 		assertFalse(variance.includePart(2));
@@ -64,7 +64,7 @@ public class SpecifiedPartsVarianceTest {
 
 	@Test
 	public void excludeOddParts() {
-		Variance variance = new OddEvenVariance(VarianceLogicType.OMIT, OddEvenVarianceType.ODD);
+		Variance variance = new OddEvenVariance(VarianceLogicType.OMIT, OddEvenVariance.OddEvenVarianceType.ODD);
 		assertTrue(variance.includePart(0));
 		assertFalse(variance.includePart(1));
 		assertTrue(variance.includePart(2));

@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compiler.leadbased;
 
-import org.ringingmaster.engine.compiler.common.DenormalisedCall;
+import org.ringingmaster.engine.compiler.denormaliser.DenormalisedCall;
 import org.ringingmaster.engine.compiler.variance.Variance;
 
 import javax.annotation.concurrent.Immutable;
@@ -10,7 +10,7 @@ import javax.annotation.concurrent.Immutable;
  * User: Stephen
  */
 @Immutable
-public class LeadBasedDenormalisedCall extends DenormalisedCall {
+class LeadBasedDenormalisedCall extends DenormalisedCall {
 
 	private final boolean plainLead;
 

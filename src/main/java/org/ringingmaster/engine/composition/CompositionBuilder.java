@@ -12,7 +12,7 @@ import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import java.util.Optional;
 
@@ -37,7 +37,7 @@ class CompositionBuilder {
     private Optional<String> author = Optional.empty();
 
     private Optional<NumberOfBells> numberOfBells = Optional.empty();
-    private Optional<CheckingType> compositionCheckingType = Optional.empty();
+    private Optional<CompositionType> checkingType = Optional.empty();
 
     private Optional<Bell> callFromBell = Optional.empty();
     private Optional<PSet<NotationBody>> allNotations = Optional.empty();
@@ -72,7 +72,7 @@ class CompositionBuilder {
         setAuthor("");
 
         setNumberOfBells(NumberOfBells.BELLS_6);
-        setCompositionCheckingType(CheckingType.COURSE_BASED);
+        setCheckingType(CompositionType.COURSE_BASED);
 
         setCallFromBell(numberOfBells.get().getTenor());
         setAllNotations(HashTreePSet.empty());
@@ -116,8 +116,8 @@ class CompositionBuilder {
         return this;
     }
 
-    CompositionBuilder setCompositionCheckingType(CheckingType checkingType) {
-        this.compositionCheckingType = Optional.of(checkingType);
+    CompositionBuilder setCheckingType(CompositionType compositionType) {
+        this.checkingType = Optional.of(compositionType);
         return this;
     }
 
@@ -207,7 +207,7 @@ class CompositionBuilder {
                 author.orElseGet(()->prototype.getAuthor()),
 
                 numberOfBells.orElseGet(()->prototype.getNumberOfBells()),
-                compositionCheckingType.orElseGet(()->prototype.getCheckingType()),
+                checkingType.orElseGet(()->prototype.getCompositionType()),
 
                 callFromBell.orElseGet(()->prototype.getCallFromBell()),
                 allNotations.orElseGet(()->prototype.getAllNotations()),
@@ -237,7 +237,7 @@ class CompositionBuilder {
                 ", title=" + title +
                 ", author=" + author +
                 ", numberOfBells=" + numberOfBells +
-                ", compositionCheckingType=" + compositionCheckingType +
+                ", checkingType=" + checkingType +
                 ", callFromBell=" + callFromBell +
                 ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +

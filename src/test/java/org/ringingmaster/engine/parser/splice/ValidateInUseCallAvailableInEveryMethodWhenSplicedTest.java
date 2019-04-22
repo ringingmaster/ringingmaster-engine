@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 import org.ringingmaster.engine.composition.TableType;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import java.util.Arrays;
 
@@ -21,7 +21,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
-import static org.ringingmaster.engine.composition.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 
 /**
  * TODO comments???
@@ -355,7 +355,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
-        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
         composition.setSpliced(true);
         composition.addDefinition("CALL", "-1-");
         composition.addDefinition("SPLICE", "P");

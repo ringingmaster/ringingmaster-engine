@@ -7,7 +7,7 @@ import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 import org.ringingmaster.engine.composition.ObservableComposition;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +100,7 @@ public class ValidateSingleCallPositionPerCellTest {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
         composition.addNotation(notationBody);
-        composition.setCheckingType(CheckingType.COURSE_BASED);
+        composition.setCheckingType(CompositionType.COURSE_BASED);
         composition.setSpliced(false);
         return composition;
     }

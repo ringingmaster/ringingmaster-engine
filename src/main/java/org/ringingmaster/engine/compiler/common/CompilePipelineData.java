@@ -1,7 +1,10 @@
 package org.ringingmaster.engine.compiler.common;
 
+import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
+import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.method.Method;
+import org.ringingmaster.engine.notation.NotationCall;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,18 +24,28 @@ public abstract class CompilePipelineData<T extends CompilePipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    // inputs
     private final Parse parse;
     private final String logPreamble;
+
+    // internal
+    private final ImmutableMap<String, NotationCall> callLookupByName;
+    private final ImmutableMap<String, Variance> varianceLookupByName;
+
+    // outputs
     private final Optional<Method> method;
     private final Optional<CompileTerminationReason> terminationReason;
     private final Optional<String> terminateNotes;
 
     protected CompilePipelineData(Parse parse, String logPreamble,
-                                  Optional<Method> method,
-                                  Optional<CompileTerminationReason> terminationReason,
-                                  Optional<String> terminateNotes) {
+                                  ImmutableMap<String, NotationCall> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
+                                  Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes) {
         this.parse = checkNotNull(parse);
         this.logPreamble = checkNotNull(logPreamble);
+
+        this.callLookupByName = checkNotNull(callLookupByName);
+        this.varianceLookupByName = checkNotNull(varianceLookupByName);
+
         this.method = checkNotNull(method);
         this.terminationReason = checkNotNull(terminationReason);
         this.terminateNotes = checkNotNull(terminateNotes);
@@ -46,26 +59,35 @@ public abstract class CompilePipelineData<T extends CompilePipelineData> {
         return logPreamble;
     }
 
-    public T setMethod(Optional<Method> method) {
-        return buildWhenBaseChanges(parse, logPreamble,
-                method,
-                terminationReason, terminateNotes);
+
+    public ImmutableMap<String, NotationCall> getCallLookupByName() {
+        return callLookupByName;
     }
+
+    public T setLookupByName(ImmutableMap<String, NotationCall> callLookupByName) {
+        return buildWhenBaseChanges(parse, logPreamble,
+                callLookupByName, varianceLookupByName,
+                method, terminationReason, terminateNotes);
+    }
+
+    public ImmutableMap<String, Variance> getVarianceLookupByName() {
+        return varianceLookupByName;
+    }
+
+    public T setVarianceLookupByName(ImmutableMap<String, Variance> varianceLookupByName) {
+        return buildWhenBaseChanges(parse, logPreamble,
+                callLookupByName, varianceLookupByName,
+                method, terminationReason, terminateNotes);    }
+
 
     public Optional<Method> getMethod() {
         return method;
     }
 
-    public T terminate(final CompileTerminationReason terminationReason, String terminateNotes) {
-        if (!isTerminated()) {
-            return buildWhenBaseChanges(parse, logPreamble,
-                    method,
-                    Optional.of(terminationReason), Optional.of(terminateNotes));
-        }
-        else  {
-            log.warn("Requesting second terminate [{}]{}", terminationReason, terminateNotes);
-            return (T)this;
-        }
+    public T setMethod(Optional<Method> method) {
+        return buildWhenBaseChanges(parse, logPreamble,
+                callLookupByName, varianceLookupByName,
+                method, terminationReason, terminateNotes);
     }
 
     public Optional<CompileTerminationReason> getTerminationReason() {
@@ -80,10 +102,22 @@ public abstract class CompilePipelineData<T extends CompilePipelineData> {
         return terminationReason.isPresent();
     }
 
+    public T terminate(final CompileTerminationReason terminationReason, String terminateNotes) {
+        if (!isTerminated()) {
+            return buildWhenBaseChanges(parse, logPreamble,
+                    callLookupByName, varianceLookupByName,
+                    method, Optional.of(terminationReason), Optional.of(terminateNotes));
+        }
+        else  {
+            log.warn("Requesting second terminate [{}]{}", terminationReason, terminateNotes);
+            return (T)this;
+        }
+    }
+
 
     protected abstract T buildWhenBaseChanges(Parse parse, String logPreamble,
-                                              Optional<Method> method,
-                                              Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes);
+                                              ImmutableMap<String, NotationCall> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
+                                              Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes);
 
 
 

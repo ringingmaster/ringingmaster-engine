@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.compiler.common;
+package org.ringingmaster.engine.compiler.denormaliser;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -36,7 +36,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
  * @author stevelake
  */
 @Immutable
-public abstract class CallDenormaliser<T extends DenormalisedCall> {
+public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -66,13 +66,17 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
         public Variance getCurrentVariance() {
             return currentVariance;
         }
+
+        public int getColumnIndex() {
+            return columnIndex;
+        }
     }
 
 
 
     // TODO Can this can be a function that turns cells into a call list
     //TODO should flat map / stream this lot?
-    public ImmutableList<T> createCallSequence(Parse parse, ImmutableMap<String, Variance> varianceLookupByName, String logPreamble) {
+    public ImmutableList<T> createCallSequence(Parse parse, ImmutableMap<String, Variance> varianceLookupByName, String logPreamble, PASSTHROUGH passthrough) {
         log.debug("{} > decomposing call sequence", logPreamble);
         log.debug("{} Open level [0]", logPreamble);
         final State state = new State(parse, varianceLookupByName, logPreamble + "  ");
@@ -80,7 +84,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
         for (BackingTableLocationAndValue<ParsedCell> cell : parse.mainBodyCells()) {
             state.cell = cell.getValue();
             state.columnIndex = cell.getCol();
-            generateCallInstancesForCell(state);
+            generateCallInstancesForCell(state, passthrough);
         }
 
         checkState(state.callSequenceNested.size() == 1);
@@ -89,7 +93,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
         return ImmutableList.copyOf(state.callSequenceNested.removeFirst());
     }
 
-    private void generateCallInstancesForCell(final State state) {
+    private void generateCallInstancesForCell(final State state, PASSTHROUGH passthrough) {
         final ImmutableList<Group> groups = state.cell.allGroups();
         for (Group group : groups) {
             state.group = group;
@@ -97,11 +101,11 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
             switch (parseType) {
                 case PLAIN_LEAD:
                 case PLAIN_LEAD_MULTIPLIER:
-                    decomposeMultiplierSection(state, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER);
+                    decomposeMultiplierSection(state, PLAIN_LEAD, PLAIN_LEAD_MULTIPLIER, passthrough);
                     break;
                 case CALL:
                 case CALL_MULTIPLIER:
-                    decomposeMultiplierSection(state, CALL, CALL_MULTIPLIER);
+                    decomposeMultiplierSection(state, CALL, CALL_MULTIPLIER, passthrough);
                 break;
                 case MULTIPLIER_GROUP_OPEN:
                 case MULTIPLIER_GROUP_OPEN_MULTIPLIER:
@@ -117,7 +121,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
                     closeVariance(state);
                     break;
                 case DEFINITION:
-                    insertExpandedDefinition(state);
+                    insertExpandedDefinition(state, passthrough);
                     break;
                 default:
                     throw new RuntimeException("Unhandled ParseType [" + parseType + "]");
@@ -125,14 +129,14 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
         }
     }
 
-    private void decomposeMultiplierSection(final State state, final ParseType parseType, final ParseType multiplierParseType) {
+    private void decomposeMultiplierSection(final State state, final ParseType parseType, final ParseType multiplierParseType, PASSTHROUGH passthrough) {
         MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(state, parseType, multiplierParseType);
 
         log.debug("{} Add call [{}] with multiplier [{}], variance [{}]",
                 state.logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), state.currentVariance);
 
         if (multiplierAndParseContents.getParseContents().length() > 0 ) {
-            T decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), parseType, state);
+            T decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), parseType, state, passthrough);
             for (int i = 0; i< multiplierAndParseContents.getMultiplier(); i++) {
                 state.callSequenceNested.peekFirst().add(decomposedCall);
             }
@@ -172,16 +176,17 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
         state.currentVariance = VarianceFactory.nullVariance();
     }
 
-    private void insertExpandedDefinition(final State state) {
+    private void insertExpandedDefinition(final State state, PASSTHROUGH passthrough) {
         log.debug("{} Start expand definition [{}]", state.logPreamble, state.group);
         String definitionIdentifier = state.cell.getCharacters(state.group);
 
         Optional<ImmutableArrayTable<ParsedCell>> definitionCells = state.parse.findDefinitionByShorthand(definitionIdentifier);
         checkState(definitionCells.isPresent(), "No definitionCells found for %s. Check that the parsing is correctly marking as valid definition ", state.columnIndex);
 
+        // This allows a recursion without having a queue of ParsedCell's
         ParsedCell originalCell = state.cell;
         state.cell = definitionCells.get().get(0, DEFINITION_COLUMN);
-        generateCallInstancesForCell(state);
+        generateCallInstancesForCell(state, passthrough);
         state.cell = originalCell;
 
         log.debug("{} Finish expand definition [{}]", state.logPreamble,state.group);
@@ -207,7 +212,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall> {
     }
 
 
-    protected abstract T buildDecomposedCall(String callName, ParseType parseType, State state);
+    protected abstract T buildDecomposedCall(String callName, ParseType parseType, State state, PASSTHROUGH passthrough);
 
     private class CallSequence extends ArrayList<T> {
 

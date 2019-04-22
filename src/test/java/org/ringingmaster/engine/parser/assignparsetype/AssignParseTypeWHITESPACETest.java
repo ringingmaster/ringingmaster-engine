@@ -7,7 +7,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.composition.TableType;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
@@ -32,7 +32,7 @@ public class AssignParseTypeWHITESPACETest {
     @Test
     public void correctlyParsesWhitespaceInCallingArea() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "W H");
-        composition.setCheckingType(CheckingType.COURSE_BASED);
+        composition.setCheckingType(CompositionType.COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -130,7 +130,7 @@ public class AssignParseTypeWHITESPACETest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notationBody);
-        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "- -");
         return composition;

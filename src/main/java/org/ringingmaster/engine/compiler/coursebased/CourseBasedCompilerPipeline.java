@@ -12,7 +12,7 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class CourseBasedCompilePipeline implements Function<Parse, CompiledComposition> {
+public class CourseBasedCompilerPipeline implements Function<Parse, CompiledComposition> {
 
     @Override
     public CompiledComposition apply(Parse parse) {
@@ -22,10 +22,14 @@ public class CourseBasedCompilePipeline implements Function<Parse, CompiledCompo
 
 
     private static final Function<Parse, CompiledComposition> pipeline =
-        new BuildCourseBasedCompolePipelineData()
+        new CourseBasedBuildCompilerPipelineData()
                 .andThen(new ValidCompositionCheck<>())
                 .andThen(new BuildCallPositionLookupByColumn())
-                //TODO add back in when common between lead and course. .andThen(buildCallSequence)
+
+//                .andThen(new BuildVarianceLookupByName<>())
+//                .andThen(new BuildCallLookupByName())
+                .andThen(new CourseBasedBuildCallSequence())
+//                .andThen(new LeadBasedCompile())
                 
                 .andThen(new BuildCompiledComposition<>());
 }

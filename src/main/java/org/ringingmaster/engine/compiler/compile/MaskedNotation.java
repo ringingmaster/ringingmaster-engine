@@ -1,4 +1,4 @@
-package org.ringingmaster.engine.compilerold.impl;
+package org.ringingmaster.engine.compiler.compile;
 
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.notation.NotationBody;
@@ -21,9 +21,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * over the current notation.
  * NOTE: Only one iterator should be in use at any one time.
  *
- * User: Stephen
+ * User: Steve Lake
  */
-public class MaskedNotation implements NotationBody {
+public class MaskedNotation implements NotationBody { //TODO compleatly lacking any testing
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 

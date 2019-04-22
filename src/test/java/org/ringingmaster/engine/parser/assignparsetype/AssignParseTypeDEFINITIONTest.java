@@ -3,11 +3,11 @@ package org.ringingmaster.engine.parser.assignparsetype;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.composition.TableType;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
@@ -17,7 +17,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
-import static org.ringingmaster.engine.composition.checkingtype.CheckingType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
@@ -193,7 +193,7 @@ public class AssignParseTypeDEFINITIONTest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notationBody);
-        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "-P");
         return composition;

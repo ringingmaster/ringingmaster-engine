@@ -9,7 +9,7 @@ import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.AssertParse.Expected;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +91,7 @@ public class AssignParseTypeVARIANCERegexTest {
         log.info("Test Value  {}", testValue);
         ObservableComposition composition = new ObservableComposition();
         composition.addNotation(buildPlainBobMinor());
-        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addCharacters(MAIN_TABLE,0,0,testValue);
 
@@ -121,7 +121,7 @@ public class AssignParseTypeVARIANCERegexTest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notationBody);
-        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "[-o]");
         return composition;

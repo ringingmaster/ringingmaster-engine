@@ -11,7 +11,7 @@ import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.composition.TableType;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
@@ -52,7 +52,7 @@ public class LeadBasedCompilerTest {
 
 		ObservableComposition composition = new ObservableComposition();
 		composition.addNotation(allChange);
-		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setCheckingType(CompositionType.LEAD_BASED);
 		composition.setNumberOfBells(NumberOfBells.BELLS_8);
 		composition.setTerminationMaxLeads(1);
 
@@ -78,7 +78,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setCheckingType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.setTerminationMaxLeads(1);
 
@@ -117,7 +117,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setCheckingType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.removeTerminationChange();
 
@@ -146,7 +146,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setCheckingType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.removeTerminationChange();
 
@@ -174,7 +174,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setCheckingType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		final Row roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
 		composition.setTerminationChange(roundsRow);
@@ -211,7 +211,7 @@ public class LeadBasedCompilerTest {
 		ObservableComposition composition = null;
 		try {
 			composition = new ObservableComposition();
-			composition.setCheckingType(CheckingType.LEAD_BASED);
+			composition.setCheckingType(CompositionType.LEAD_BASED);
 			composition.setTerminationMaxRows(10);
 		} catch (Exception e) {
 			fail();
@@ -300,7 +300,7 @@ public class LeadBasedCompilerTest {
 	private ObservableComposition buildPlainBobMinorCompositionShell() {
 		ObservableComposition composition = new ObservableComposition();
 		composition.addNotation(buildPlainBobMinor());
-		composition.setCheckingType(CheckingType.LEAD_BASED);
+		composition.setCheckingType(CompositionType.LEAD_BASED);
 		composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
 		composition.setPlainLeadToken("p");
 		return composition;

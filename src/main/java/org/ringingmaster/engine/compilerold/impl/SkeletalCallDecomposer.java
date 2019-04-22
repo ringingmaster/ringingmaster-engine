@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import com.google.common.collect.Lists;
-import org.ringingmaster.engine.compiler.common.DenormalisedCall;
+import org.ringingmaster.engine.compiler.denormaliser.DenormalisedCall;
 import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.composition.cell.Cell;

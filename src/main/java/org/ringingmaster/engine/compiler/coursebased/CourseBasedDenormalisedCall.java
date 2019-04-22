@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compiler.coursebased;
 
-import org.ringingmaster.engine.compiler.common.DenormalisedCall;
+import org.ringingmaster.engine.compiler.denormaliser.DenormalisedCall;
 import org.ringingmaster.engine.compiler.variance.Variance;
 
 import javax.annotation.concurrent.Immutable;
@@ -10,7 +10,7 @@ import javax.annotation.concurrent.Immutable;
  * User: Stephen
  */
 @Immutable
-public class CourseBasedDenormalisedCall extends DenormalisedCall {
+class CourseBasedDenormalisedCall extends DenormalisedCall {
 
 	private final String callingPositionName;
 

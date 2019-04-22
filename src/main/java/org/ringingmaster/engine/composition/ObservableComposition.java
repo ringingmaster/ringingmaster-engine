@@ -13,6 +13,7 @@ import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
@@ -23,7 +24,6 @@ import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.CellBuilder;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
 import org.ringingmaster.engine.composition.tableaccess.DefaultCompositionTableAccess;
 import org.ringingmaster.util.smartcompare.SmartCompare;
@@ -166,15 +166,15 @@ public class ObservableComposition {
 
     //TODO need a checkNumberOfBells to drive UI
 
-    public void setCheckingType(CheckingType checkingType) {
-        checkNotNull(checkingType);
+    public void setCheckingType(CompositionType compositionType) {
+        checkNotNull(compositionType);
 
-        if (Objects.equals(currentComposition.getCheckingType(), checkingType)) {
+        if (Objects.equals(currentComposition.getCompositionType(), compositionType)) {
             return;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
-                .setCompositionCheckingType(checkingType);
+                .setCheckingType(compositionType);
 
         setCurrentComposition(compositionBuilder.build());
     }

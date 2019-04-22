@@ -9,7 +9,7 @@ import org.ringingmaster.engine.analyser.proof.Proof;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.composition.ObservableComposition;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
@@ -60,7 +60,7 @@ public class CourseBasedCompilerTest {
 		composition.setNumberOfBells(NumberOfBells.BELLS_6);
 		composition.setTitle("Test Composition");
 		composition.addNotation(buildPlainBobMinor());
-		composition.setCheckingType(CheckingType.COURSE_BASED);
+		composition.setCheckingType(CompositionType.COURSE_BASED);
 		return composition;
 	}
 

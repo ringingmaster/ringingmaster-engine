@@ -3,11 +3,11 @@ package org.ringingmaster.engine.parser.brace;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
 
 import java.util.Arrays;
 
@@ -101,7 +101,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
     @Test
     public void variancesWithinCourseBasedInvalid() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.setCheckingType(CheckingType.COURSE_BASED);
+        composition.setCheckingType(CompositionType.COURSE_BASED);
         composition.addCharacters(MAIN_TABLE, 0,0, "[");
         composition.addCharacters(MAIN_TABLE, 0,1, "]");
         composition.addCharacters(MAIN_TABLE, 1,0, "-");
@@ -162,7 +162,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
-        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         return composition;
     }

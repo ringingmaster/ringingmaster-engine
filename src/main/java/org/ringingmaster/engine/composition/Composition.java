@@ -13,7 +13,7 @@ import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.notation.NotationBody;
 import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
 import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
 import org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess;
 import org.ringingmaster.engine.composition.tableaccess.CompositionTableAccess;
@@ -35,7 +35,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     private final String author;
 
     private final NumberOfBells numberOfBells;
-    private final CheckingType checkingType;
+    private final CompositionType compositionType;
 
     private final Bell callFromBell;
     private final PSet<NotationBody> allNotations;
@@ -59,7 +59,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     public Composition(String title,
                        String author,
                        NumberOfBells numberOfBells,
-                       CheckingType checkingType,
+                       CompositionType compositionType,
                        Bell callFromBell,
                        PSet<NotationBody> allNotations,
                        Optional<NotationBody> nonSplicedActiveNotation,
@@ -78,7 +78,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         this.author = author;
 
         this.numberOfBells = numberOfBells;
-        this.checkingType = checkingType;
+        this.compositionType = compositionType;
 
         this.callFromBell = callFromBell;
         this.allNotations = allNotations;
@@ -97,7 +97,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         this.terminationMaxCircularity = terminationMaxCircularity;
         this.terminationChange = terminationChange;
 
-        this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(cells, checkingType, isSpliced());
+        this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(cells, compositionType, isSpliced());
     }
 
 
@@ -113,8 +113,8 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         return numberOfBells;
     }
 
-    public CheckingType getCheckingType() {
-        return checkingType;
+    public CompositionType getCompositionType() {
+        return compositionType;
     }
 
     public Bell getCallFromBell() {
@@ -243,7 +243,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
                 "title='" + title + '\'' +
                 ", author=" + author +
                 ", numberOfBells='" + numberOfBells + '\'' +
-                ", checkingType=" + checkingType +
+                ", compositionType=" + compositionType +
                 ", callFromBell='" + callFromBell + '\'' +
                 ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +

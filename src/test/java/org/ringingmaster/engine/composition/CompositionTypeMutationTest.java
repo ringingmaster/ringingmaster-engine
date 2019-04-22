@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.composition;
 
 import org.junit.Test;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,22 +10,22 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Lake
  */
-public class CheckingTypeMutationTest {
+public class CompositionTypeMutationTest {
 
     @Test
     public void hasCorrectDefault() throws Exception {
 
         ObservableComposition composition = new ObservableComposition();
 
-        assertEquals(CheckingType.COURSE_BASED, composition.get().getCheckingType());
+        assertEquals(CompositionType.COURSE_BASED, composition.get().getCompositionType());
     }
 
     @Test
     public void changeIsReflected() throws Exception {
 
         ObservableComposition composition = new ObservableComposition();
-        composition.setCheckingType(CheckingType.LEAD_BASED);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
 
-        assertEquals(CheckingType.LEAD_BASED, composition.get().getCheckingType());
+        assertEquals(CompositionType.LEAD_BASED, composition.get().getCompositionType());
     }
 }

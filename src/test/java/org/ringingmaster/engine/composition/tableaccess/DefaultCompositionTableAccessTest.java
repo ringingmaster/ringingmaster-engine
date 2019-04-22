@@ -15,13 +15,13 @@ import org.ringingmaster.engine.notation.impl.NotationBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.CellBuilder;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.composition.checkingtype.CheckingType.COURSE_BASED;
-import static org.ringingmaster.engine.composition.checkingtype.CheckingType.LEAD_BASED;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.LEAD_BASED;
 
 /**
  * TODO comments???
@@ -35,7 +35,7 @@ public class DefaultCompositionTableAccessTest {
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
 
-                //R, C, CheckingType,   spliced,   mainSize, spliceSize, callPosSize, mainRoot,  spliceRoot, callPosRoot
+                //R, C, CompositionType,   spliced,   mainSize, spliceSize, callPosSize, mainRoot,  spliceRoot, callPosRoot
                 { 0, 0, LEAD_BASED,     true,      0,0,      0,0,        0,0,         null,      null,       null},   //0
                 { 0, 0, COURSE_BASED,   true,      0,0,      0,0,        0,0,         null,      null,       null},
                 { 0, 0, LEAD_BASED,     false,     0,0,      0,0,        0,0,         null,      null,       null},
@@ -73,7 +73,7 @@ public class DefaultCompositionTableAccessTest {
     @Parameter(1)
     public int cols;
     @Parameter(2)
-    public CheckingType checkingType;
+    public CompositionType compositionType;
     @Parameter(3)
     public boolean spliced;
 
@@ -111,37 +111,37 @@ public class DefaultCompositionTableAccessTest {
 
     @Test
     public void mainBodyTableDimensions() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
         assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, defaultCompositionTableAccess.mainBodyCells());
     }
 
     @Test
     public void mainBodyRoot() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
         assertRoot(expectedMainRoot, defaultCompositionTableAccess.mainBodyCells());
     }
 
     @Test
     public void spliceTableDimensions() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
         assertDimensions(expectedSplicedRows, expectedSplicedColumns, defaultCompositionTableAccess.splicedCells());
     }
 
     @Test
     public void spliceRoot() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
         assertRoot(expectedSplicedRoot, defaultCompositionTableAccess.splicedCells());
     }
 
     @Test
     public void callPositionTableDimensions() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
         assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, defaultCompositionTableAccess.callPositionCells());
     }
 
     @Test
     public void callPositionRoot() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, checkingType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
         assertRoot(expectedCallPositionRoot, defaultCompositionTableAccess.callPositionCells());
     }
 
@@ -159,7 +159,7 @@ public class DefaultCompositionTableAccessTest {
         }
     }
 
-    private DefaultCompositionTableAccess<Cell> buildCells1(int rows, int cols, CheckingType checkingType, boolean spliced) {
+    private DefaultCompositionTableAccess<Cell> buildCells1(int rows, int cols, CompositionType compositionType, boolean spliced) {
         Table<Integer, Integer, Cell> cells = HashBasedTable.create();
 
         for (int row = 0; row < rows; row++) {
@@ -173,7 +173,7 @@ public class DefaultCompositionTableAccessTest {
             }
         }
 
-        return new DefaultCompositionTableAccess<>(new TableBackedImmutableArrayTable<>(cells, EmptyCell::new), checkingType, spliced);
+        return new DefaultCompositionTableAccess<>(new TableBackedImmutableArrayTable<>(cells, EmptyCell::new), compositionType, spliced);
     }
 
     class Pair {

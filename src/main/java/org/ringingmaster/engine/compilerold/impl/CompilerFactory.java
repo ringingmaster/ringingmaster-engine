@@ -15,11 +15,11 @@ public class CompilerFactory {
 	}
 
 	public static Compiler getInstance(Composition composition, String logPreamble) {
-		switch (composition.getCheckingType()) {
-			case LEAD_BASED:
-				return new LeadBasedCompiler(composition, logPreamble);
-			case COURSE_BASED:
-				return new CourseBasedCompiler(composition, logPreamble);
+		switch (composition.getCompositionType()) {
+//			case LEAD_BASED:
+//				return new LeadBasedCompiler(composition, logPreamble);
+//			case COURSE_BASED:
+//				return new CourseBasedCompiler(composition, logPreamble);
 			default:
 				throw new IllegalStateException("Cant build Compiler for [" + composition + "]");
 		}

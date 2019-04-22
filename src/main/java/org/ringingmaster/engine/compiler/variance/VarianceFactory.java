@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.compiler.variance.OddEvenVarianceType.EVEN;
-import static org.ringingmaster.engine.compiler.variance.OddEvenVarianceType.ODD;
+import static org.ringingmaster.engine.compiler.variance.OddEvenVariance.OddEvenVarianceType.EVEN;
+import static org.ringingmaster.engine.compiler.variance.OddEvenVariance.OddEvenVarianceType.ODD;
 import static org.ringingmaster.engine.compiler.variance.VarianceLogicType.INCLUDE;
 import static org.ringingmaster.engine.compiler.variance.VarianceLogicType.OMIT;
 
@@ -89,7 +89,7 @@ public class VarianceFactory {
         }
     }
 
-    static OddEvenVarianceType parseOddEven(String oddEven) {
+    static OddEvenVariance.OddEvenVarianceType parseOddEven(String oddEven) {
 
         switch (oddEven) {
             case "odd":

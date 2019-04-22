@@ -4,8 +4,8 @@ import javax.annotation.concurrent.Immutable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.ringingmaster.engine.compiler.variance.OddEvenVarianceType.EVEN;
-import static org.ringingmaster.engine.compiler.variance.OddEvenVarianceType.ODD;
+import static org.ringingmaster.engine.compiler.variance.OddEvenVariance.OddEvenVarianceType.EVEN;
+import static org.ringingmaster.engine.compiler.variance.OddEvenVariance.OddEvenVarianceType.ODD;
 import static org.ringingmaster.engine.compiler.variance.VarianceLogicType.INCLUDE;
 
 /**
@@ -14,6 +14,11 @@ import static org.ringingmaster.engine.compiler.variance.VarianceLogicType.INCLU
  */
 @Immutable
 class OddEvenVariance implements Variance {
+
+	enum OddEvenVarianceType {
+		ODD,
+		EVEN
+	}
 
 	private final OddEvenVarianceType oddEvenVarianceType;
 	private final VarianceLogicType varianceLogicType;

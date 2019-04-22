@@ -14,7 +14,7 @@ import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.checkingtype.CheckingType;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
-import static org.ringingmaster.engine.composition.checkingtype.CheckingType.LEAD_BASED;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.LEAD_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
@@ -114,7 +114,7 @@ public class AssignParseType implements Function<Composition, Parse> {
     }
 
     private void parseCallPositionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        if (composition.getCheckingType() != CheckingType.COURSE_BASED) {
+        if (composition.getCompositionType() != CompositionType.COURSE_BASED) {
             return;
         }
 
@@ -263,7 +263,7 @@ public class AssignParseType implements Function<Composition, Parse> {
     }
 
     private void addPlainLeadLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
-        if (composition.getCheckingType() == LEAD_BASED) {
+        if (composition.getCompositionType() == LEAD_BASED) {
             lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, composition.getPlainLeadToken().length(),
                     "(\\d*)(" + composition.getPlainLeadToken() + ")", PLAIN_LEAD_MULTIPLIER, PLAIN_LEAD));
         }

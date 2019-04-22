@@ -12,12 +12,12 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class BuildCallLookupByName implements Function<LeadBasedCompilePipelineData, LeadBasedCompilePipelineData> {
+public class BuildCallLookupByName implements Function<LeadBasedCompilerPipelineData, LeadBasedCompilerPipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(BuildCallLookupByName.class);
 
     @Override
-    public LeadBasedCompilePipelineData apply(LeadBasedCompilePipelineData data) {
+    public LeadBasedCompilerPipelineData apply(LeadBasedCompilerPipelineData data) {
         if (data.isTerminated()) {
             return data;
         }

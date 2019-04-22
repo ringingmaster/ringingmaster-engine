@@ -15,21 +15,21 @@ import java.util.function.Function;
  * @author stevelake
  */
 @Immutable
-public class LeadBasedCompilePipeline implements Function<Parse, CompiledComposition> {
+public class LeadBasedCompilerPipeline implements Function<Parse, CompiledComposition> {
 
 
     @Override
     public CompiledComposition apply(Parse parse) {
-//TODO Add in early terminate nechanisam
+//TODO Add in early terminate mechanism
         return pipeline.apply(parse);
     }
 
     private static final Function<Parse, CompiledComposition> pipeline =
-            new BuildLeadBasedPipelineData()
+            new LeadBasedBuildCompilerPipelineData()
             .andThen(new ValidCompositionCheck<>())
-            .andThen(new BuildVarianceLookupByName())
+            .andThen(new BuildVarianceLookupByName<>())
             .andThen(new BuildCallLookupByName())
-            .andThen(new BuildCallSequence())
+            .andThen(new LeadBasedBuildCallSequence())
             .andThen(new LeadBasedCompile())
             .andThen(new BuildCompiledComposition<>());
 

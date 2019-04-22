@@ -26,7 +26,7 @@ class DefaultParse implements Parse {
 
     DefaultParse(Composition composition, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells) {
         this.composition = composition;
-        this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(mainTableCells, composition.getCheckingType(), composition.isSpliced());
+        this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(mainTableCells, composition.getCompositionType(), composition.isSpliced());
         this.definitionTableAccessDelegate = new DefaultDefinitionTableAccess<>(definitionCells);
     }
 

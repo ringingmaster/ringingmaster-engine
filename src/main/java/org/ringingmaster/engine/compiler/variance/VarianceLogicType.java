@@ -4,7 +4,7 @@ package org.ringingmaster.engine.compiler.variance;
  * TODO comments???
  * User: Stephen
  */
-public enum VarianceLogicType {
+enum VarianceLogicType {
 	OMIT,
 	INCLUDE
 }
