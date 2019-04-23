@@ -9,7 +9,7 @@ import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.MethodBuilder;
-import org.ringingmaster.engine.notation.NotationBody;
+import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
@@ -40,15 +40,15 @@ class CompositionBuilder {
     private Optional<CompositionType> checkingType = Optional.empty();
 
     private Optional<Bell> callFromBell = Optional.empty();
-    private Optional<PSet<NotationBody>> allNotations = Optional.empty();
-    private Optional<Optional<NotationBody>> nonSplicedActiveNotation = Optional.empty();
+    private Optional<PSet<Notation>> allNotations = Optional.empty();
+    private Optional<Optional<Notation>> nonSplicedActiveNotation = Optional.empty();
     private Optional<String> plainLeadToken = Optional.empty();
     private Optional<ImmutableArrayTable<Cell>> definitionCells = Optional.empty();
 
     private Optional<Row> startChange = Optional.empty();
     private Optional<Integer> startAtRow = Optional.empty();
     private Optional<Stroke> startStroke = Optional.empty();
-    private Optional<Optional<NotationBody>> startNotation = Optional.empty();
+    private Optional<Optional<Notation>> startNotation = Optional.empty();
 
     private Optional<Integer> terminationMaxRows = Optional.empty();
     private Optional<Optional<Integer>> terminationMaxLeads = Optional.empty();
@@ -126,12 +126,12 @@ class CompositionBuilder {
         return this;
     }
 
-    CompositionBuilder setAllNotations(PSet<NotationBody> allNotations) {
+    CompositionBuilder setAllNotations(PSet<Notation> allNotations) {
         this.allNotations = Optional.of(allNotations);
         return this;
     }
 
-    CompositionBuilder setNonSplicedActiveNotation(Optional<NotationBody> nonSplicedActiveNotation) {
+    CompositionBuilder setNonSplicedActiveNotation(Optional<Notation> nonSplicedActiveNotation) {
         this.nonSplicedActiveNotation = Optional.of(nonSplicedActiveNotation);
         return this;
     }
@@ -156,7 +156,7 @@ class CompositionBuilder {
         return this;
     }
 
-    CompositionBuilder setStartNotation(Optional<NotationBody> startNotation) {
+    CompositionBuilder setStartNotation(Optional<Notation> startNotation) {
         this.startNotation = Optional.of(startNotation);
         return this;
     }

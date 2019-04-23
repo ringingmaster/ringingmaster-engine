@@ -19,8 +19,8 @@ import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.notation.Notation;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.notation.PlaceSetSequence;
+import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.CellBuilder;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
@@ -144,17 +144,17 @@ public class ObservableComposition {
         if (!currentComposition.isSpliced() &&
                 currentComposition.getNonSplicedActiveNotation().isPresent() &&
                 currentComposition.getNonSplicedActiveNotation().get().getNumberOfWorkingBells().toInt() > numberOfBells.toInt()) {
-            Optional<NotationBody> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(currentComposition.getNonSplicedActiveNotation().get());
+            Optional<Notation> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(currentComposition.getNonSplicedActiveNotation().get());
             compositionBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
         }
 
         if (currentComposition.getStartNotation().isPresent()) {
             final String originalNotation = currentComposition.getStartNotation().get().getNotationDisplayString(false);
-            NotationBody builtNotation = NotationBuilder.getInstance()
+            Notation builtNotation = NotationBuilder.getInstance()
                     .setNumberOfWorkingBells(numberOfBells)
                     .setUnfoldedNotationShorthand(originalNotation)
                     .build();
-            if (builtNotation.getRowCount() == 0) {
+            if (builtNotation.size() == 0) {
                 compositionBuilder.setStartNotation(Optional.empty());
             } else {
                 compositionBuilder.setStartNotation(Optional.of(builtNotation));
@@ -193,8 +193,8 @@ public class ObservableComposition {
         setCurrentComposition(compositionBuilder.build());
     }
 
-    private Optional<NotationBody> findNextBestNonSplicedActiveNotation(NotationBody previousNotation) {
-        final List<NotationBody> validNotations = Lists.newArrayList(currentComposition.getValidNotations());
+    private Optional<Notation> findNextBestNonSplicedActiveNotation(Notation previousNotation) {
+        final List<Notation> validNotations = Lists.newArrayList(currentComposition.getValidNotations());
         validNotations.remove(previousNotation);
 
         Comparator<NumberOfBells> byDistanceFromPassedNumberOfBells = (o1, o2) -> ComparisonChain.start()
@@ -205,7 +205,7 @@ public class ObservableComposition {
 
         // from the validNotations, find all number of bells in use, sorted by distance from passed number of bells.
         Optional<NumberOfBells> bestNumberOfBells = validNotations.stream()
-                .map(Notation::getNumberOfWorkingBells)
+                .map(PlaceSetSequence::getNumberOfWorkingBells)
                 .sorted(byDistanceFromPassedNumberOfBells)
                 .findFirst();
 
@@ -214,20 +214,20 @@ public class ObservableComposition {
         }
 
         // Try notations that are lexicographically the same or higher
-        Optional<NotationBody> lexicographicallyHigher = validNotations.stream()
+        Optional<Notation> lexicographicallyHigher = validNotations.stream()
                 .filter(notation -> notation.getNumberOfWorkingBells() == bestNumberOfBells.get())
                 .filter(notation -> notation.getName().compareTo(previousNotation.getName()) >= 0)
-                .sorted(Notation.BY_NAME)
+                .sorted(PlaceSetSequence.BY_NAME)
                 .findFirst();
         if (lexicographicallyHigher.isPresent()) {
             return lexicographicallyHigher;
         }
 
         // Try notations that are lexicographically lower
-        Optional<NotationBody> lexicographicallyLower = validNotations.stream()
+        Optional<Notation> lexicographicallyLower = validNotations.stream()
                 .filter(notation -> notation.getNumberOfWorkingBells() == bestNumberOfBells.get())
                 .filter(notation -> notation.getName().compareTo(previousNotation.getName()) < 0)
-                .sorted(Notation.BY_NAME.reversed())
+                .sorted(PlaceSetSequence.BY_NAME.reversed())
                 .findFirst();
         if (lexicographicallyLower.isPresent()) {
             return lexicographicallyLower;
@@ -236,7 +236,7 @@ public class ObservableComposition {
         return Optional.empty();
     }
 
-    public void addNotation(NotationBody notationToAdd) {
+    public void addNotation(Notation notationToAdd) {
         checkNotNull(notationToAdd, "notation must not be null");
 
         List<String> messages = checkAddNotation(notationToAdd);
@@ -254,7 +254,7 @@ public class ObservableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition);
 
 
-        PSet<NotationBody> withAddedNotation = currentComposition.getAllNotations().plus(notationToAdd);
+        PSet<Notation> withAddedNotation = currentComposition.getAllNotations().plus(notationToAdd);
         compositionBuilder.setAllNotations(withAddedNotation);
 
 //TODO what if the number of bells is wrong?
@@ -265,16 +265,16 @@ public class ObservableComposition {
         setCurrentComposition(compositionBuilder.build());
     }
 
-    public List<String> checkAddNotation(NotationBody notationToAdd) {
+    public List<String> checkAddNotation(Notation notationToAdd) {
         return checkPotentialNewNotation(notationToAdd, Collections.emptySet());
     }
 
-    private List<String> checkPotentialNewNotation(NotationBody notationToCheck, Set<NotationBody> notationsToExclude) {
+    private List<String> checkPotentialNewNotation(Notation notationToCheck, Set<Notation> notationsToExclude) {
         checkNotNull(notationToCheck);
         checkNotNull(notationsToExclude);
 
         List<String> messages = new ArrayList<>();
-        PSet<NotationBody> allNotationsWithExclusions = currentComposition.getAllNotations().minusAll(notationsToExclude);
+        PSet<Notation> allNotationsWithExclusions = currentComposition.getAllNotations().minusAll(notationsToExclude);
 
         messages.addAll(allNotationsWithExclusions.stream()
                 .filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToCheck.getNumberOfWorkingBells()) &&
@@ -296,33 +296,33 @@ public class ObservableComposition {
         return messages;
     }
 
-    public void removeNotation(NotationBody notationForRemoval) {
+    public void removeNotation(Notation notationForRemoval) {
         checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 
-        PSet<NotationBody> allNotations = currentComposition.getAllNotations();
+        PSet<Notation> allNotations = currentComposition.getAllNotations();
         checkState(allNotations.contains(notationForRemoval));
 
-        PSet<NotationBody> withRemovedNotation = allNotations.minus(notationForRemoval);
+        PSet<Notation> withRemovedNotation = allNotations.minus(notationForRemoval);
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setAllNotations(withRemovedNotation);
 
         // Sort out the next notation if it is the active notation
         if (currentComposition.getNonSplicedActiveNotation().isPresent() &&
                 notationForRemoval.equals(currentComposition.getNonSplicedActiveNotation().get())) {
-            Optional<NotationBody> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(notationForRemoval);
+            Optional<Notation> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(notationForRemoval);
             compositionBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
         }
 
         setCurrentComposition(compositionBuilder.build());
     }
 
-    public void exchangeNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+    public void exchangeNotation(Notation originalNotation, Notation replacementNotation) {
         checkNotNull(originalNotation, "originalNotation must not be null");
         checkNotNull(replacementNotation, "replacementNotation must not be null");
         checkArgument(originalNotation != replacementNotation);
 
 
-        PSet<NotationBody> allNotations = currentComposition.getAllNotations();
+        PSet<Notation> allNotations = currentComposition.getAllNotations();
         checkState(allNotations.contains(originalNotation));
 
         List<String> messages = checkUpdateNotation(originalNotation, replacementNotation);
@@ -341,7 +341,7 @@ public class ObservableComposition {
         if (currentComposition.getNonSplicedActiveNotation().isPresent() &&
                 currentComposition.getNonSplicedActiveNotation().get() == originalNotation) {
             if (replacementNotation.getNumberOfWorkingBells().toInt() > currentComposition.getNumberOfBells().toInt()) {
-                Optional<NotationBody> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(replacementNotation);
+                Optional<Notation> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(replacementNotation);
                 compositionBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
             } else {
                 compositionBuilder.setNonSplicedActiveNotation(Optional.of(replacementNotation));
@@ -351,14 +351,14 @@ public class ObservableComposition {
     }
 
     //TODO rename exchangeNotation
-    public List<String> checkUpdateNotation(NotationBody originalNotation, NotationBody replacementNotation) {
+    public List<String> checkUpdateNotation(Notation originalNotation, Notation replacementNotation) {
         checkNotNull(originalNotation);
         checkNotNull(replacementNotation);
 
-        return checkPotentialNewNotation(replacementNotation, Sets.<NotationBody>newHashSet(originalNotation));
+        return checkPotentialNewNotation(replacementNotation, Sets.<Notation>newHashSet(originalNotation));
     }
 
-    public void setNonSplicedActiveNotation(NotationBody nonSplicedActiveNotation) {
+    public void setNonSplicedActiveNotation(Notation nonSplicedActiveNotation) {
         checkNotNull(nonSplicedActiveNotation);
         checkState(currentComposition.getAllNotations().contains(nonSplicedActiveNotation), "Can't set NonSplicedActiveNotation to notation not part of composition.");
 
@@ -386,11 +386,11 @@ public class ObservableComposition {
             compositionBuilder.setNonSplicedActiveNotation(Optional.empty());
         }
         else {
-            final Set<NotationBody> validNotations = currentComposition.getValidNotations();
+            final Set<Notation> validNotations = currentComposition.getValidNotations();
 
             if (validNotations.size() > 0) {
-                Optional<NotationBody> firstByName = validNotations.stream()
-                        .sorted(NotationBody.BY_NAME)
+                Optional<Notation> firstByName = validNotations.stream()
+                        .sorted(Notation.BY_NAME)
                         .findFirst();
                 compositionBuilder.setNonSplicedActiveNotation(firstByName);
             }
@@ -515,7 +515,7 @@ public class ObservableComposition {
         setCurrentComposition(compositionBuilder.build());
     }
 
-    public void setStartNotation(NotationBody startNotation) {
+    public void setStartNotation(Notation startNotation) {
         checkNotNull(startNotation);
         checkState(startNotation.getNumberOfWorkingBells() == currentComposition.getNumberOfBells(), "Start Notation number of bells must match composition number of bells");
 

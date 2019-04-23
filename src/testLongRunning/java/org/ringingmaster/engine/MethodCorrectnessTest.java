@@ -3,8 +3,8 @@ package org.ringingmaster.engine;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Lead;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.LeadHeadCalculator;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.LeadHeadCalculator;
 import org.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
 import org.ringingmaster.persist.DocumentPersist;
 import org.junit.Assert;
@@ -33,19 +33,19 @@ public class MethodCorrectnessTest {
 		long problemNotationCount = new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
-					NotationBody notationBody = PersistableNotationTransformer
+					Notation notation = PersistableNotationTransformer
 							.populateBuilderFromPersistableNotation(persistableNotation)
 							.build();
 
 					final String leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
 
-					CompiledComposition compiledComposition = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
+					CompiledComposition compiledComposition = PlainCourseHelper.buildPlainCourse(notation, "");
 					Lead lead = compiledComposition.getMethod().get().getLead(0);
 
 					if (!Objects.equals(leadHead, lead.getLastRow().getDisplayString(false))) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notationBody.getNumberOfWorkingBells().toInt(), notationBody.getNameIncludingNumberOfBells(),
-								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notationBody.toString());
+								notation.getNumberOfWorkingBells().toInt(), notation.getNameIncludingNumberOfBells(),
+								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notation.toString());
 						return true;
 					}
 					return false;
@@ -64,16 +64,16 @@ public class MethodCorrectnessTest {
 		long problemNotationCount = new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
-					NotationBody notationBody = PersistableNotationTransformer
+					Notation notation = PersistableNotationTransformer
 							.populateBuilderFromPersistableNotation(persistableNotation)
 							.build();
 					String ccLeadHead = persistableNotation.getLeadHead();
-					String calculatedLeadHead = notationBody.getLeadHeadCode();
+					String calculatedLeadHead = notation.getLeadHeadCode();
 					if (!Objects.equals(ccLeadHead, calculatedLeadHead)) {
 						String msg = String.format("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notationBody.getNumberOfWorkingBells().toInt(), notationBody.getNameIncludingNumberOfBells(),
-								ccLeadHead, calculatedLeadHead, notationBody.toString());
-						if (problemNotations.contains(notationBody.getNameIncludingNumberOfBells())) {
+								notation.getNumberOfWorkingBells().toInt(), notation.getNameIncludingNumberOfBells(),
+								ccLeadHead, calculatedLeadHead, notation.toString());
+						if (problemNotations.contains(notation.getNameIncludingNumberOfBells())) {
 							log.info("Ignoring known issue for: [{}]", msg);
 						}
 						else {
@@ -101,17 +101,17 @@ public class MethodCorrectnessTest {
 		long problemNotationCount = new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
-					NotationBody notationBody = PersistableNotationTransformer
+					Notation notation = PersistableNotationTransformer
 							.populateBuilderFromPersistableNotation(persistableNotation)
 							.build();
 
-					CompiledComposition compiledComposition = PlainCourseHelper.buildPlainCourse(notationBody, "", false);
+					CompiledComposition compiledComposition = PlainCourseHelper.buildPlainCourse(notation, "");
 					Lead lead = compiledComposition.getMethod().get().getLead(0);
 
 					if (persistableNotation.getLeadLength() != lead.getRowCount() - 1) {
 						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notationBody.getNumberOfWorkingBells().toInt(), notationBody.getNameIncludingNumberOfBells(),
-								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notationBody.toString());
+								notation.getNumberOfWorkingBells().toInt(), notation.getNameIncludingNumberOfBells(),
+								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notation.toString());
 						return true;
 					}
 					return false;

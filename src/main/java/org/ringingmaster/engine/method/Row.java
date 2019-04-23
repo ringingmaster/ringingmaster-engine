@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.method;
 
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.notation.NotationPlace;
+import org.ringingmaster.engine.notation.Place;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -40,7 +40,7 @@ public interface Row extends Iterable<Bell>, Comparable<Row> {
 	 * @return Bell
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	Bell getBellInPlace(NotationPlace place);
+	Bell getBellInPlace(Place place);
 
 	/**
 	 * For a given bell, indicate the place it is in.

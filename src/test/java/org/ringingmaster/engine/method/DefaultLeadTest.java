@@ -4,7 +4,7 @@ import com.google.common.collect.Iterators;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.notation.NotationPlace;
+import org.ringingmaster.engine.notation.Place;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +89,7 @@ public class DefaultLeadTest {
 		final Lead lead = new DefaultLead(NumberOfBells.BELLS_4, rows, empty);
 
 		assertEquals(1, lead.getHuntBellStartPlace().size());
-		Assert.assertEquals(NotationPlace.PLACE_1, Iterators.getOnlyElement(lead.getHuntBellStartPlace().iterator()));
+		Assert.assertEquals(Place.PLACE_1, Iterators.getOnlyElement(lead.getHuntBellStartPlace().iterator()));
 	}
 
 	@Test

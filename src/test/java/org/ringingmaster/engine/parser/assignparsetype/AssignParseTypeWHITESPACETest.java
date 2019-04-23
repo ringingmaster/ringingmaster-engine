@@ -3,8 +3,8 @@ package org.ringingmaster.engine.parser.assignparsetype;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.composition.ObservableComposition;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.composition.TableType;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
@@ -109,7 +109,7 @@ public class AssignParseTypeWHITESPACETest {
         assertParse(parse.findDefinitionByShorthand("de f2").get().get(0, SHORTHAND_COLUMN), valid(WHITESPACE), valid(5, DEFINITION), valid(WHITESPACE));
     }
 
-    private NotationBody buildPlainBobMinor() {
+    private Notation buildPlainBobMinor() {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
                 .setName("Plain Bob")
@@ -123,13 +123,13 @@ public class AssignParseTypeWHITESPACETest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(NotationBody notationBody, String characters) {
+    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
         ObservableComposition composition = new ObservableComposition();
-        composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
+        composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
-        composition.addNotation(notationBody);
+        composition.addNotation(notation);
         composition.setCheckingType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "- -");

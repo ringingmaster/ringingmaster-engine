@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.compiler.compile;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.denormaliser.DenormalisedCall;
 import org.ringingmaster.engine.compilerold.impl.TerminateEarlyException;
@@ -10,7 +11,8 @@ import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.notation.NotationRow;
+import org.ringingmaster.engine.notation.Call;
+import org.ringingmaster.engine.notation.PlaceSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +29,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author Steve Lake
  */
-public abstract class Compile<T extends DenormalisedCall> {
+public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
 
     private final Logger log = LoggerFactory.getLogger(Compile.class);
 
@@ -46,12 +48,14 @@ public abstract class Compile<T extends DenormalisedCall> {
         private final Supplier<Boolean> allowTerminateEarly;
         private final Composition composition;
         private final ImmutableList<T> denormalisedCallSequence;
+        private final ImmutableMap<String, Call> callLookupByName;
         private final String logPreamble;
+        private final PASS_THROUGH passthrough;
 
         // internal data.
         private int callSequenceIndex;
         private int partIndex;
-        private T nextCall;
+        private T nextDenormalisedCall;
         private Row currentRow;
         private MaskedNotation maskedNotation;
         private final List<Lead> leads = new ArrayList<>();
@@ -62,11 +66,14 @@ public abstract class Compile<T extends DenormalisedCall> {
         private Optional<String> terminateNotes = Optional.empty();
 
 
-        State(Supplier<Boolean> allowTerminateEarly, Composition composition, ImmutableList<T> denormalisedCallSequence, String logPreamble)  {
+        State(Supplier<Boolean> allowTerminateEarly, Composition composition, ImmutableList<T> denormalisedCallSequence,
+              ImmutableMap<String, Call> callLookupByName, String logPreamble, PASS_THROUGH passthrough)  {
             this.allowTerminateEarly = checkNotNull(allowTerminateEarly);
             this.composition = checkNotNull(composition);
             this.denormalisedCallSequence = checkNotNull(denormalisedCallSequence);
+            this.callLookupByName = checkNotNull(callLookupByName);
             this.logPreamble = checkNotNull(logPreamble);
+            this.passthrough = passthrough;
         }
 
         @Override
@@ -84,23 +91,42 @@ public abstract class Compile<T extends DenormalisedCall> {
             return terminateNotes.get();
         }
 
-        public T getNextCall() {
-            return nextCall;
+        public T getNextDenormalisedCall() {
+            return nextDenormalisedCall;
+        }
+
+        public MaskedNotation getMaskedNotation() {
+            return maskedNotation;
         }
 
         public String getLogPreamble() {
             return logPreamble;
         }
+
+        public PASS_THROUGH getPassthrough() {
+            return passthrough;
+        }
+
+        public ImmutableMap<String, Call> getCallLookupByName() {
+            return callLookupByName;
+        }
+
+        public Composition getComposition() {
+            return composition;
+        }
+
+        public Row getCurrentRow() {
+            return currentRow;
+        }
     }
 
 
     public Result compileComposition(Composition composition, ImmutableList<T> denormalisedCallSequence,
-                                     String logPreamble) {
+                                     ImmutableMap<String, Call> callLookupByName, String logPreamble, PASS_THROUGH passthrough) {
 
         State state = new State(() -> false,
-                composition,
-                denormalisedCallSequence,
-                logPreamble);
+                composition, denormalisedCallSequence,
+                callLookupByName, logPreamble, passthrough);
 
         log.debug("{}  - part [{}]", state.logPreamble, state.partIndex);
 
@@ -113,7 +139,7 @@ public abstract class Compile<T extends DenormalisedCall> {
         state.currentRow = createStartChange(state);
         state.maskedNotation = new MaskedNotation(state.composition.getNonSplicedActiveNotation().get());
 
-        if (state.maskedNotation.getRowCount() == 0) {
+        if (state.maskedNotation.size() == 0) {
             terminate(CompileTerminationReason.INVALID_COMPOSITION, "Notation [" + state.maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", state);
         }
         while (!isTerminated(state)) {
@@ -151,9 +177,9 @@ public abstract class Compile<T extends DenormalisedCall> {
 
         rows.add(state.currentRow);
 
-        for (NotationRow notationRow : state.maskedNotation) {
+        for (PlaceSet placeSet : state.maskedNotation) {
 
-            buildNextRow(notationRow, state);
+            buildNextRow(placeSet, state);
             rows.add(state.currentRow);
 
             checkTerminationChange(state);
@@ -170,25 +196,28 @@ public abstract class Compile<T extends DenormalisedCall> {
         return lead;
     }
 
-    private void buildNextRow(final NotationRow notationRow, State state) {
-        if (notationRow.isAllChange()) {
+    private void buildNextRow(final PlaceSet placeSet, State state) {
+        if (placeSet.isAllChange()) {
             state.currentRow = MethodBuilder.buildAllChangeRow(state.currentRow);
         }
         else {
-            state.currentRow = MethodBuilder.buildRowWithPlaces(state.currentRow, notationRow);
+            state.currentRow = MethodBuilder.buildRowWithPlaces(state.currentRow, placeSet);
         }
 
         log.trace( "{} add row [{}]", state.logPreamble, state.currentRow);
     }
 
-    private void tryToMakeACall( State state) {
-        if (state.nextCall != null && state.maskedNotation.isAtCallPoint()) {
+    private void tryToMakeACall(State state) {
+        if (state.nextDenormalisedCall != null && state.maskedNotation.isAtCallPoint()) {
+
             boolean callConsumed = applyNextCall(state);
             if (callConsumed) {
                 advanceToNextCall(state);
             }
         }
     }
+
+    protected abstract boolean applyNextCall(State state) ;
 
     private void advanceToNextCall(State state) {
         int enteringPartIndex = state.partIndex;
@@ -204,12 +233,10 @@ public abstract class Compile<T extends DenormalisedCall> {
                 log.debug("{}  - part [{}]", state.logPreamble, state.partIndex);
                 state.callSequenceIndex = 0;
             }
-            state.nextCall = state.denormalisedCallSequence.get(state.callSequenceIndex);
+            state.nextDenormalisedCall = state.denormalisedCallSequence.get(state.callSequenceIndex);
 
-        } while (!state.nextCall.getVariance().includePart(state.partIndex));
+        } while (!state.nextDenormalisedCall.getVariance().includePart(state.partIndex));
     }
-
-    protected abstract boolean applyNextCall( State state) ;
 
 
     private void checkTerminationMaxLeads(State state) {

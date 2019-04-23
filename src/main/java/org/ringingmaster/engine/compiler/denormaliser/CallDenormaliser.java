@@ -132,12 +132,13 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
     private void decomposeMultiplierSection(final State state, final ParseType parseType, final ParseType multiplierParseType, PASSTHROUGH passthrough) {
         MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(state, parseType, multiplierParseType);
 
-        log.debug("{} Add call [{}] with multiplier [{}], variance [{}]",
+        log.debug("{} Adding call [{}] with multiplier [{}], variance [{}]",
                 state.logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), state.currentVariance);
 
         if (multiplierAndParseContents.getParseContents().length() > 0 ) {
             T decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), parseType, state, passthrough);
             for (int i = 0; i< multiplierAndParseContents.getMultiplier(); i++) {
+                log.debug("{}   Add [{}]", state.logPreamble, decomposedCall);
                 state.callSequenceNested.peekFirst().add(decomposedCall);
             }
         }

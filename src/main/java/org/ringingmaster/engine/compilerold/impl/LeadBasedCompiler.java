@@ -32,7 +32,7 @@ package org.ringingmaster.engine.compilerold.impl;
 //
 //	@Override
 //	protected boolean applyNextCall(MaskedNotation maskedNotation, Row currentRow,
-//                                    LeadBasedDenormalisedCall nextCallMeta, NotationCall call) {
+//                                    LeadBasedDenormalisedCall nextCallMeta, Call call) {
 //		if (nextCallMeta.isPlainLead()) {
 //			// No Call, but consume the call.
 //			log.debug("{} Apply Plain lead", getLogPreamble());

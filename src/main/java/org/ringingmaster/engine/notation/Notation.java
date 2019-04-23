@@ -1,76 +1,75 @@
 package org.ringingmaster.engine.notation;
 
-import org.ringingmaster.engine.NumberOfBells;
-import com.google.common.collect.ComparisonChain;
-
 import javax.annotation.concurrent.Immutable;
-import java.util.Comparator;
+import java.util.Set;
+import java.util.SortedSet;
 
 /**
- * Base interface for all notations, a Notation being the shorthand for a method.
+ * Contains the verified notation elements for the different types of
+ * place notation. Use the Notation Builder to construct a new notation.
+ * Can iterate over the rows.
+ * <br/>
  *
- * User: Stephen
+ * @author Stephen Lake
  */
+
 @Immutable
-public interface Notation extends Iterable<NotationRow> {
+public interface Notation extends PlaceSetSequence {
 
-	String ROW_SEPARATOR = ".";
+    /**
+     * Is the notation has folded palindrome symmetry. When true, the place notation shorthand
+     * will be used in reverse after being used forward.
+     * i.e.
+     * when true 'x.14' becomes 'x.14.14.x'
+     * when false 'x.14' becomes 'x.14'
+     * <p>
+     * Defaults to false.
+     *
+     * @return boolean, true if folded palindrome symmetry
+     */
+    boolean isFoldedPalindrome();
 
-	Comparator<Notation> BY_NAME = (o1, o2) -> ComparisonChain.start()
-			.compare(o1.getName(), o2.getName())
-			.result();
+    /**
+     * Get the calculated lead head code
+     */
+    String getLeadHeadCode();
 
-	Comparator<Notation> BY_NUMBER_THEN_NAME = (o1, o2) -> ComparisonChain.start()
-			.compare(o1.getNumberOfWorkingBells(),o2.getNumberOfWorkingBells())
-			.compare(o1.getName(), o2.getName())
-			.result();
+    /**
+     * return true if the calls are generated.
+     */
+    boolean isCannedCalls();
 
-	/**
-	 * Get the name of the method, excluding the Number of bells
-	 * name. i.e. Plain Bob.
-	 */
-	String getName();
+    /**
+     * Get all the the calls attached to this notation.
+     */
+    Set<Call> getCalls();
 
-	/**
-	 * Get the number of bells the method is working over, excluding any
-	 * covering bells.
-	 *
-	 * @return int, Number of bells
-	 */
-	NumberOfBells getNumberOfWorkingBells();
+    /**
+     * The call that is used when no call is specified.
+     */
+    Call getDefaultCall();
 
-	/**
-	 * Get the number of rows in this notations plain course. Where the
-	 * notation is folded palindrome symmetry, this returns the total unfolded number of rows.
-	 *
-	 * 'X.14.X' will return 3
-	 * 'X.14.X.14 le:14 will return 8
-	 *
-	 * @return int, number of rows in the notation
-	 */
-	int getRowCount();
+    /**
+     * Get the splice identifier.
+     */
+    String getSpliceIdentifier();
 
-	/**
-	 * Get the NotationRow at the index position. This is a rows worth
-	 * of NotationPlace's.
-	 * @param index the row number of the notation to get.
-	 * @return NotationRow, all the elements for a row
-	 * @throws IndexOutOfBoundsException if the index is greater than the number of rows
-	 */
-	NotationRow getRow(int index);
+    /**
+     * Get the position that a call can be started on any lead
+     */
+    SortedSet<Integer> getCallInitiationRows();
 
-	/**
-	 * Get the notation as a normalized string. By normalized, we mean that
-	 * all the places, and all change are capitalized, and the separator dots are
-	 * applied consistently. When the boolean 'concise' is set to true, it
-	 * will produce a consise version of the string
-	 * i.e.
-	 * concise =  -12-1T.12,12
-	 * not concise =  -.12.-.1T.12,12
-	 * @param concise
-	 * @return
-	 */
-	String getNotationDisplayString(boolean concise);
+    /**
+     * Get the lead and position that a call can be started.
+     */
+    SortedSet<CallingPosition> getMethodBasedCallingPositions();
 
+    /**
+     * Find the {@link CallingPosition} for the passed name, otherwise null.
+     */
+    CallingPosition findMethodBasedCallingPositionByName(String callingPositionName);
+
+
+    String getRawNotationDisplayString(int notationIndex, boolean concise);
 
 }

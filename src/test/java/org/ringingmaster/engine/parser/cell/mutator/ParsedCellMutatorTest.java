@@ -433,7 +433,7 @@ public class ParsedCellMutatorTest {
 //
 //        Cell mock = mock(Cell.class);
 //        when(mock.getElementSize()).thenReturn(6);
-//        when(mock.getElement(anyInt())).thenReturn(e);
+//        when(mock.get(anyInt())).thenReturn(e);
 //
 //        return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
 //    }

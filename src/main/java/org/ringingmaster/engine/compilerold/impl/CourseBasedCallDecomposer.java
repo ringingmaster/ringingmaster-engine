@@ -7,7 +7,7 @@ package org.ringingmaster.engine.compilerold.impl;
 //@NotThreadSafe
 //public class CourseBasedCallDecomposer extends SkeletalCallDecomposer<CourseBasedDenormalisedCall> {
 //
-//	private String[] callPositionNames;
+//	private String[] callingPositionNames;
 //
 //	public CourseBasedCallDecomposer(Composition composition, String logPreamble) {
 //		super(composition, logPreamble);
@@ -15,18 +15,18 @@ package org.ringingmaster.engine.compilerold.impl;
 //
 //	@Override
 //	protected void preGenerate(Composition composition) {
-////TODO		Grid<CompositionCell> callPositionCells = composition.callPositionView();
-////		checkState(callPositionCells.getRowCount() == 1);
+////TODO		Grid<CompositionCell> callingPositionCells = composition.callingPositionView();
+////		checkState(callingPositionCells.getRowCount() == 1);
 ////
-////		callPositionNames = new String[callPositionCells.getColumnCount()];
+////		callingPositionNames = new String[callingPositionCells.getColumnCount()];
 ////
-////		for (int columnIndex=0;columnIndex<callPositionCells.getColumnCount();columnIndex++) {
-////			CompositionCell cell = callPositionCells.getCell(columnIndex, 0);
-////			callPositionNames[columnIndex] = getCallPositionFromCell(cell);
+////		for (int columnIndex=0;columnIndex<callingPositionCells.getColumnCount();columnIndex++) {
+////			CompositionCell cell = callingPositionCells.getCell(columnIndex, 0);
+////			callingPositionNames[columnIndex] = getCallingPositionFromCell(cell);
 ////		}
 //	}
 //
-////	private String getCallPositionFromCell(CompositionCell cell) {
+////	private String getCallingPositionFromCell(CompositionCell cell) {
 ////		final List<CompositionWord> words = cell.words();
 ////		for (CompositionWord word : words) {
 ////			switch (word.getFirstParseType()) {
@@ -40,10 +40,10 @@ package org.ringingmaster.engine.compilerold.impl;
 ////	}
 //
 //	protected CourseBasedDenormalisedCall buildDecomposedCall(String callName, Variance variance, int columnIndex, ParseType parseType) {
-//		checkPositionIndex(columnIndex, callPositionNames.length, "column index out of bounds");
-//		String callPositionName = callPositionNames[columnIndex];
-//		checkNotNull(callPositionName, "callPositionName is null. Check that the parsing is correctly excluding columns with no valid call position");
-//		return new CourseBasedDenormalisedCall(callName, variance, callPositionName);
+//		checkPositionIndex(columnIndex, callingPositionNames.length, "column index out of bounds");
+//		String callingPositionName = callingPositionNames[columnIndex];
+//		checkNotNull(callingPositionName, "callingPositionName is null. Check that the parsing is correctly excluding columns with no valid call position");
+//		return new CourseBasedDenormalisedCall(callName, variance, callingPositionName);
 //	}
 //
 //}

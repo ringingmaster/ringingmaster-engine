@@ -4,7 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Sets;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
-import org.ringingmaster.engine.notation.NotationBody;
+import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
@@ -47,14 +47,14 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
             return input;
         }
 
-        final PSet<NotationBody> validNotationsInComposition =  input.getComposition().getAvailableNotations();
+        final PSet<Notation> validNotationsInComposition =  input.getComposition().getAvailableNotations();
         if (validNotationsInComposition.size() == 0) {
             // We don't need to do any invalidating because there will have been no parsing of calls going on.
             return input;
         }
         if (log.isDebugEnabled()) {
             log.debug("[{}]  valid notations available in composition {}", input.getComposition().getTitle(),
-                    validNotationsInComposition.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
+                    validNotationsInComposition.stream().map(Notation::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
         final Set<String> spliceNamesInUse = Sets.union(new InUseNamesForParseType().apply(input.splicedCells(), SPLICE),
@@ -63,12 +63,12 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
                 spliceNamesInUse)  ;
 
 
-        final Set<NotationBody> notationsInUse = validNotationsInComposition.stream()
+        final Set<Notation> notationsInUse = validNotationsInComposition.stream()
                 .filter(notation -> spliceNamesInUse.contains(notation.getSpliceIdentifier()))
                 .collect(Collectors.toSet());
         if (log.isDebugEnabled()) {
             log.debug("[{}]  notations in use {}", input.getComposition().getTitle(),
-                    notationsInUse.stream().map(NotationBody::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
+                    notationsInUse.stream().map(Notation::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
         final Set<String> availableCallsFromValidNotations = getAllCalls(validNotationsInComposition);
@@ -124,22 +124,22 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
         cells.put(locationAndCell.getRow(), locationAndCell.getCol(), builder.build());
     }
 
-    private Set<String> getAllCalls(Set<NotationBody> notations) {
+    private Set<String> getAllCalls(Set<Notation> notations) {
         return notations.stream()
-                .map(NotationBody::getCalls)
+                .map(Notation::getCalls)
                 .flatMap(Collection::stream)
                 .flatMap(p -> Stream.of(p.getNameShorthand(), p.getName()))
                 .collect(Collectors.toSet());
     }
 
-    private Set<String> getCommonCallsFromNotationsInUse(Set<NotationBody> inUseNotations) {
+    private Set<String> getCommonCallsFromNotationsInUse(Set<Notation> inUseNotations) {
         if (inUseNotations.size() == 0) {
             return Collections.emptySet();
         }
 
         Set<String> commonCalls = null;
 
-        for (NotationBody notation : inUseNotations) {
+        for (Notation notation : inUseNotations) {
             if (commonCalls == null) {
                 commonCalls = getCalls(notation);
             }
@@ -151,7 +151,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
         return commonCalls;
     }
 
-    private Set<String> getCalls(NotationBody notation) {
+    private Set<String> getCalls(Notation notation) {
         return notation.getCalls().stream()
                 .flatMap(call -> Stream.of(call.getNameShorthand(), call.getName()))
                 .collect(Collectors.toSet());

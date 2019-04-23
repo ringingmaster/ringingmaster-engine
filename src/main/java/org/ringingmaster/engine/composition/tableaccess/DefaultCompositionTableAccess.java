@@ -57,7 +57,7 @@ public class DefaultCompositionTableAccess<T extends Cell> implements Compositio
     }
 
     @Override
-    public ImmutableArrayTable<T> callPositionCells() { //TODO pre-calculate???
+    public ImmutableArrayTable<T> callingPositionCells() { //TODO pre-calculate???
         if (compositionType != CompositionType.COURSE_BASED) {
             return cells.subTable(0, 0, 0, 0);
         }

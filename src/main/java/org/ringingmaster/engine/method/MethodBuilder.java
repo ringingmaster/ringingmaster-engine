@@ -1,8 +1,8 @@
 package org.ringingmaster.engine.method;
 
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.notation.NotationPlace;
-import org.ringingmaster.engine.notation.NotationRow;
+import org.ringingmaster.engine.notation.Place;
+import org.ringingmaster.engine.notation.PlaceSet;
 
 import java.util.HashSet;
 import java.util.List;
@@ -130,17 +130,17 @@ public class MethodBuilder {
 	 * 13246587
 	 *
 	 * @param previousRow not null
-	 * @param notationRow not null
+	 * @param placeSet not null
 	 * @return
 	 */
-	public static Row buildRowWithPlaces(final Row previousRow, final NotationRow notationRow) {
-		checkNotNull(previousRow, "notationRow cant be null");
-		checkNotNull(notationRow, "notationRow cant be null");
+	public static Row buildRowWithPlaces(final Row previousRow, final PlaceSet placeSet) {
+		checkNotNull(previousRow, "placeSet cant be null");
+		checkNotNull(placeSet, "placeSet cant be null");
 
 		final Bell[] bells = new Bell[previousRow.getNumberOfBells().toInt()];
 		for (int zeroBasedPlace = 0; zeroBasedPlace<previousRow.getNumberOfBells().toInt(); zeroBasedPlace++) {
-			NotationPlace notationPlace = NotationPlace.valueOf(zeroBasedPlace);
-			if (notationRow.makesPlace(notationPlace)) {
+			Place place = Place.valueOf(zeroBasedPlace);
+			if (placeSet.makesPlace(place)) {
 				//Make the place
 				bells[zeroBasedPlace] = previousRow.getBellInPlace(zeroBasedPlace);
 			}

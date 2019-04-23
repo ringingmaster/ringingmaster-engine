@@ -6,9 +6,9 @@ import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupAndVarianceD
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupMatchingBrace;
 import org.ringingmaster.engine.parser.brace.ValidateVarianceMatchingBraceLogic;
 import org.ringingmaster.engine.parser.call.ValidateDefaultCallMultiplierFullyDefined;
-import org.ringingmaster.engine.parser.callposition.ValidateSingleCallPositionPerCell;
-import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsUsedSplicedOrMain;
+import org.ringingmaster.engine.parser.callingposition.ValidateSingleCallingPositionPerCell;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsNotCircular;
+import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsUsedSplicedOrMain;
 import org.ringingmaster.engine.parser.observability.PrettyPrintCells;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.splice.ValidateInUseCallAvailableInEveryMethodWhenSpliced;
@@ -45,7 +45,7 @@ public class Parser implements Function<Composition, Parse> {
                     //TODO think very care fully about what parts of each parser needs applying to definitions,
 
             // validate
-            .andThen(new ValidateSingleCallPositionPerCell())
+            .andThen(new ValidateSingleCallingPositionPerCell())
             .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
         //TODO		parseSplicedCallPosMethodNotDefinedInEachMethod();
         //TODO		parseSplicedCallPosAgregateNotDefinedInEachMethod();

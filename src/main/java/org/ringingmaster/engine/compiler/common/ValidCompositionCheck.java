@@ -12,7 +12,7 @@ import java.util.function.Function;
  *
  * @author stevelake
  */
-public class ValidCompositionCheck<T extends CompilePipelineData<T>> implements Function<T, T> {
+public class ValidCompositionCheck<T extends CompilerPipelineData<T>> implements Function<T, T> {
 
     private final Logger log = LoggerFactory.getLogger(ValidCompositionCheck.class);
 

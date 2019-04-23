@@ -2,7 +2,7 @@ package org.ringingmaster.engine.method;
 
 import com.google.common.collect.Iterators;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.notation.NotationPlace;
+import org.ringingmaster.engine.notation.Place;
 import javax.annotation.concurrent.Immutable;
 
 import java.util.Arrays;
@@ -55,7 +55,7 @@ class DefaultRow implements Row {
 	}
 
 	@Override
-	public Bell getBellInPlace(final NotationPlace place) {
+	public Bell getBellInPlace(final Place place) {
 		return getBellInPlace(place.getZeroBasedPlace());
 	}
 

@@ -12,22 +12,22 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 class CourseBasedDenormalisedCall extends DenormalisedCall {
 
-	private final String callingPositionName;
+    private final String callingPositionName;
 
-	public CourseBasedDenormalisedCall(String callName, Variance variance, String callingPositionName) {
-		super(callName, variance);
-		this.callingPositionName = callingPositionName;
-	}
+    public CourseBasedDenormalisedCall(String callName, Variance variance, String callingPositionName) {
+        super(callName, variance);
+        this.callingPositionName = callingPositionName;
+    }
 
-	public String getCallingPositionName() {
-		return callingPositionName;
-	}
+    public String getCallingPositionName() {
+        return callingPositionName;
+    }
 
-	@Override
-	public String toString() {
-		String varianceToString = getVariance().toString();
-		return "{" + getCallName() + "@" + callingPositionName +
-				((varianceToString.length() > 0)?(", " + varianceToString ):"") +
-				'}';
-	}
+    @Override
+    public String toString() {
+        String varianceToString = getVariance().toString();
+        return "{" + getCallName() + "@" + callingPositionName +
+                ((varianceToString.length() > 0) ? (", " + varianceToString) : "") +
+                '}';
+    }
 }

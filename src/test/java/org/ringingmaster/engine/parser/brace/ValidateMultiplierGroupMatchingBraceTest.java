@@ -4,8 +4,8 @@ import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 
@@ -237,7 +237,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
         );
     }
 
-    private NotationBody buildPlainBobMinor() {
+    private Notation buildPlainBobMinor() {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
                 .setName("Plain Bob")
@@ -251,7 +251,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(NotationBody... notations) {
+    private ObservableComposition buildSingleCellComposition(Notation... notations) {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);

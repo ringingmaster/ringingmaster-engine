@@ -12,9 +12,9 @@ import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
 import org.ringingmaster.engine.method.MethodBuilder;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.NotationCall;
-import org.ringingmaster.engine.notation.NotationRow;
+import org.ringingmaster.engine.notation.Call;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.PlaceSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public abstract class SkeletalCompiler<DCT extends DenormalisedCall> implements 
 	private DCT nextCall;
 	private int callSequenceIndex;
 	private int partIndex;
-	private Map<String, NotationCall> callLookupByName;
+	private Map<String, Call> callLookupByName;
 
 	// outputs
 	private volatile Optional<Method> method = Optional.empty();
@@ -138,7 +138,7 @@ public abstract class SkeletalCompiler<DCT extends DenormalisedCall> implements 
 
 		final List<Lead> leads = new ArrayList<>();
 
-		if (maskedNotation.getRowCount() == 0) {
+		if (maskedNotation.size() == 0) {
 			terminate(CompileTerminationReason.INVALID_COMPOSITION, "Notation [" + maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.");
 		}
 		while (!isTerminated()) {
@@ -178,9 +178,9 @@ public abstract class SkeletalCompiler<DCT extends DenormalisedCall> implements 
 
 		rows.add(currentRow);
 
-		for (NotationRow notationRow : maskedNotation) {
+		for (PlaceSet placeSet : maskedNotation) {
 
-			currentRow = buildNextRow(notationRow, currentRow);
+			currentRow = buildNextRow(placeSet, currentRow);
 			rows.add(currentRow);
 
 			checkTerminationChange(currentRow);
@@ -199,7 +199,7 @@ public abstract class SkeletalCompiler<DCT extends DenormalisedCall> implements 
 
 	private void tryToMakeACall(MaskedNotation maskedNotation, Row currentRow) {
 		if (nextCall != null && maskedNotation.isAtCallPoint()) {
-			NotationCall call = callLookupByName.get(nextCall.getCallName());
+			Call call = callLookupByName.get(nextCall.getCallName());
 			boolean callConsumed = applyNextCall(maskedNotation, currentRow, nextCall, call);
 			if (callConsumed) {
 				advanceToNextCall();
@@ -208,7 +208,7 @@ public abstract class SkeletalCompiler<DCT extends DenormalisedCall> implements 
 	}
 
 	protected abstract boolean applyNextCall(MaskedNotation maskedNotation, Row currentRow,
-	                                         DCT nextCall, NotationCall call);
+	                                         DCT nextCall, Call call);
 
 	private void advanceToNextCall() {
 		int enteringPartIndex = partIndex;
@@ -229,25 +229,25 @@ public abstract class SkeletalCompiler<DCT extends DenormalisedCall> implements 
 		} while (!nextCall.getVariance().includePart(partIndex));
 	}
 
-	private Row buildNextRow(final NotationRow notationRow, final Row previousRow) {
+	private Row buildNextRow(final PlaceSet placeSet, final Row previousRow) {
 		Row nextRow;
-		if (notationRow.isAllChange()) {
+		if (placeSet.isAllChange()) {
 			nextRow = MethodBuilder.buildAllChangeRow(previousRow);
 		}
 		else {
-			nextRow = MethodBuilder.buildRowWithPlaces(previousRow, notationRow);
+			nextRow = MethodBuilder.buildRowWithPlaces(previousRow, placeSet);
 		}
 		return nextRow;
 	}
 
-	private void addLeadSeparator(NotationBody notationBody, List<Row> rows, List<Integer> leadSeparatorPositions) {
+	private void addLeadSeparator(Notation notation, List<Row> rows, List<Integer> leadSeparatorPositions) {
 	/*
-	 * TODO this should come from notationBody, and then be checked for being greater than the number of rows.
+	 * TODO this should come from notation, and then be checked for being greater than the number of rows.
 	 *  then all this logic must change, as must check that we have one more row that we are wanting a seperator after
 	 *  otherwise it will be drawn in free space.
 	 */
 		// calculate lead separator positions.
-		final int expectedChangesInLead = notationBody.getRowCount();
+		final int expectedChangesInLead = notation.size();
 		// do we have a full lead? -  if so, then add the seperator
 		if ((rows.size()-1) == expectedChangesInLead) {
 			leadSeparatorPositions.add(expectedChangesInLead - 1);

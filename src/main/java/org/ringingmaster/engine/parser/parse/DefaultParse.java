@@ -46,8 +46,8 @@ class DefaultParse implements Parse {
     }
 
     @Override
-    public ImmutableArrayTable<ParsedCell> callPositionCells() {
-        return compositionTableAccessDelegate.callPositionCells();
+    public ImmutableArrayTable<ParsedCell> callingPositionCells() {
+        return compositionTableAccessDelegate.callingPositionCells();
     }
 
     @Override

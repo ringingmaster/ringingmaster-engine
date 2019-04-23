@@ -7,7 +7,7 @@ import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
-import org.ringingmaster.engine.notation.NotationBody;
+import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.parser.Parser;
 import org.ringingmaster.engine.composition.Composition;
 
@@ -24,45 +24,44 @@ import static org.ringingmaster.engine.composition.ObservableComposition.TERMINA
  */
 public class PlainCourseHelper {
 
-	private static AtomicInteger counter = new AtomicInteger();
+    private static AtomicInteger counter = new AtomicInteger();
 
-	public static CompiledComposition buildPlainCourse(NotationBody notation, String logPreamble /*TODO How to get this in the pipeline? */, boolean withAnalysis) {
+    public static CompiledComposition buildPlainCourse(Notation notation, String logPreamble) {
 
+        CompiledComposition compiledComposition = pipeline.apply(new PlainCourseNotation(notation, logPreamble));
 
-		CompiledComposition compiledComposition = pipeline.apply(notation);
+        Method createdMethod = compiledComposition.getMethod().get();
 
-		Method createdMethod = compiledComposition.getMethod().get();
+        checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
+        checkState(CompileTerminationReason.SPECIFIED_ROW == compiledComposition.getTerminationReason(),
+                "Plain course must terminate with row [%s]" +
+                        " but actually terminated with [%s]",
+                compiledComposition.getComposition().getTerminationChange().get().getDisplayString(true),
+                compiledComposition.getTerminateReasonDisplayString());
+        return compiledComposition;
+    }
 
-		checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
-		checkState(CompileTerminationReason.SPECIFIED_ROW == compiledComposition.getTerminationReason(),
-				"Plain course must terminate with row [%s]" +
-						" but actually terminated with [%s]",
-				compiledComposition.getComposition().getTerminationChange().get().getDisplayString(true),
-				compiledComposition.getTerminateReasonDisplayString());
-		return compiledComposition;
-	}
+    /**
+     * Shortcut to build a composition for a single notation plain course.
+     *
+     * @param notationBody
+     * @return
+     */
+    public static Function<Notation, Composition> buildPlainCourseComposition = notation -> {
+        final ObservableComposition composition = new ObservableComposition();
+        composition.setTitle(" " + notation.getNameIncludingNumberOfBells() + ":" + " PLAINCOURSE_" + counter.getAndIncrement());
+        composition.setNumberOfBells(notation.getNumberOfWorkingBells());
+        composition.addNotation(notation);
+        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setTerminationChange(MethodBuilder.buildRoundsRow(notation.getNumberOfWorkingBells()));
+        composition.setTerminationMaxLeads(TERMINATION_MAX_LEADS_MAX);
+        composition.setTerminationMaxRows(TERMINATION_MAX_ROWS_MAX);
 
-	/**
-	 * Shortcut to build a composition for a single notation plain course.
-	 *
-	 * @param notationBody
-	 * @return
-	 */
-	public static Function<NotationBody, Composition> buildPlainCourseInstance = notationBody -> {
-		final ObservableComposition composition = new ObservableComposition();
-		composition.setTitle("PLAINCOURSE_" + counter.getAndIncrement() + ":" + notationBody.getNameIncludingNumberOfBells());
-		composition.setNumberOfBells(notationBody.getNumberOfWorkingBells());
-		composition.addNotation(notationBody);
-		composition.setCheckingType(CompositionType.LEAD_BASED);
-		composition.setTerminationChange(MethodBuilder.buildRoundsRow(notationBody.getNumberOfWorkingBells()));
-		composition.setTerminationMaxLeads(TERMINATION_MAX_LEADS_MAX);
-		composition.setTerminationMaxRows(TERMINATION_MAX_ROWS_MAX);
+        return composition.get();
+    };
 
-		return composition.get();
-	};
-
-	private static Function<NotationBody, CompiledComposition> pipeline =
-			buildPlainCourseInstance
-					.andThen(new Parser())
-					.andThen(new Compiler());
+    private static Function<Notation, CompiledComposition> pipeline =
+            buildPlainCourseComposition
+                    .andThen(new Parser())
+                    .andThen(new Compiler());
 }

@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.method;
 
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.notation.NotationPlace;
+import org.ringingmaster.engine.notation.Place;
 import javax.annotation.concurrent.Immutable;
 
 import java.util.List;
@@ -75,13 +75,13 @@ public interface Lead extends Iterable<Row> {
 	 * 
 	 * @param bell
 	 */
-	NotationPlace getStartPlace(Bell bell);
+	Place getStartPlace(Bell bell);
 
 	/**
 	 * Return the places that are in the hunt.
 	 * @return
 	 */
-	Set<NotationPlace> getHuntBellStartPlace();
+	Set<Place> getHuntBellStartPlace();
 
 	/**
 	 * Return all changes as text, using the system separator between each row. i.e.

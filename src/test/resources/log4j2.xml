@@ -8,7 +8,7 @@
 
 	<Loggers>
 
-		<logger name="org.ringingmaster.engine.parser" level="trace"/>
+		<logger name="org.ringingmaster.engine.parser" level="debug"/>
 		<logger name="org.ringingmaster.engine.compiler" level="debug"/>
 
 		<Root level="info">

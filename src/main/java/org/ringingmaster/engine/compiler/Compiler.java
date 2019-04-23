@@ -26,7 +26,7 @@ public class Compiler implements Function<Parse, CompiledComposition> {
     @Override
     public CompiledComposition apply(Parse parse) {
 
-        log.info("[{}] > compile", parse.getComposition().getTitle());
+        log.info("[{}] > compile [{}] ", parse.getComposition().getTitle(), parse.getComposition().getCompositionType());
 
         CompiledComposition compiledComposition = getPipeline(parse).apply(parse);
 

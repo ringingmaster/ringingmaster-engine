@@ -13,7 +13,7 @@ package org.ringingmaster.engine.compilerold.impl;
 //
 //	private final Bell callFromBell;
 //	private volatile List<CourseBasedDenormalisedCall> immutableCallSequence;
-//	private volatile Map<NotationMethodCallingPosition, Integer> callingPositionToCallBellPlace;
+//	private volatile Map<CallingPosition, Integer> callingPositionToCallBellPlace;
 //
 //	CourseBasedCompiler(Composition composition, String logPreamble) {
 //		super(composition, logPreamble);
@@ -31,19 +31,19 @@ package org.ringingmaster.engine.compilerold.impl;
 //		return ImmutableList.copyOf(new CourseBasedCallDecomposer(composition, getLogPreamble()).createCallSequence());
 //	}
 //
-//	private Map<NotationMethodCallingPosition, Integer> buildCallingPositionLookup(Composition composition) {
+//	private Map<CallingPosition, Integer> buildCallingPositionLookup(Composition composition) {
 //		log.info("{} > Build calling bell positions",getLogPreamble());
 //		// Build a plain course.
-//		NotationBody activeNotation = composition.getNonSplicedActiveNotation().get();
+//		Notation activeNotation = composition.getNonSplicedActiveNotation().get();
 //		Method plainCourse = PlainCourseHelper.buildPlainCourse(activeNotation, getLogPreamble() +  "  | ",false).getMethod().get();
 //
 //		// build the map.
-//		Map<NotationMethodCallingPosition, Integer> callingPositionMap = new HashMap<>();
+//		Map<CallingPosition, Integer> callingPositionMap = new HashMap<>();
 //
-//		for (NotationMethodCallingPosition methodCallingPosition: activeNotation.getMethodBasedCallingPositions()) {
+//		for (CallingPosition methodCallingPosition: activeNotation.getMethodBasedCallingPositions()) {
 //			Integer place = plainCourse
 //					.getLead(methodCallingPosition.getLeadOfTenor())
-//					.getRow(methodCallingPosition.getCallInitiationRow())
+//					get(methodCallingPosition.getCallInitiationRow())
 //					.getPlaceOfBell(composition.getNumberOfBells().getTenor());
 //			callingPositionMap.put(methodCallingPosition, place);
 //		}
@@ -59,11 +59,11 @@ package org.ringingmaster.engine.compilerold.impl;
 //
 //	@Override
 //	protected boolean applyNextCall(MaskedNotation maskedNotation, Row currentRow,
-//                                    CourseBasedDenormalisedCall nextCall, NotationCall call) {
+//                                    CourseBasedDenormalisedCall nextCall, Call call) {
 //
 //		// Find the method calling position.
 //		String callingPositionName = nextCall.getCallingPositionName();
-//		NotationMethodCallingPosition methodCallingPosition = maskedNotation.findMethodBasedCallingPositionByName(callingPositionName);
+//		CallingPosition methodCallingPosition = maskedNotation.findMethodBasedCallingPositionByName(callingPositionName);
 //		checkState(methodCallingPosition != null, "Can't find calling position [" + callingPositionName + "] " +
 //				"in notation [" + maskedNotation.getName() + "]");
 //

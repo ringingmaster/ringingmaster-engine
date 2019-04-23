@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.compilerold.impl;
 
 import org.ringingmaster.engine.composition.Composition;
-import org.ringingmaster.engine.notation.NotationCall;
+import org.ringingmaster.engine.notation.Call;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +24,13 @@ public class CallMapBuilder {
 	}
 
 
-	public Map<String, NotationCall> createCallMap() {
+	public Map<String, Call> createCallMap() {
 		log.debug("{} > creating call map", logPreamble);
-		Map<String, NotationCall> callNameToCall = new HashMap<>();
+		Map<String, Call> callNameToCall = new HashMap<>();
 		if (composition.getNonSplicedActiveNotation() != null) {
-			for (NotationCall notationCall : composition.getNonSplicedActiveNotation().get().getCalls()) {
-				callNameToCall.put(notationCall.getName(), notationCall);
-				callNameToCall.put(notationCall.getNameShorthand(), notationCall);
+			for (Call call : composition.getNonSplicedActiveNotation().get().getCalls()) {
+				callNameToCall.put(call.getName(), call);
+				callNameToCall.put(call.getNameShorthand(), call);
 			}
 		}
 		log.debug("{} < creating call map [{}]", logPreamble, callNameToCall);

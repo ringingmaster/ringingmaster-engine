@@ -3,9 +3,9 @@ package org.ringingmaster.engine.compiler.leadbased;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
-import org.ringingmaster.engine.compiler.common.CompilePipelineData;
+import org.ringingmaster.engine.compiler.common.CompilerPipelineData;
 import org.ringingmaster.engine.method.Method;
-import org.ringingmaster.engine.notation.NotationCall;
+import org.ringingmaster.engine.notation.Call;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.compiler.variance.Variance;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Lake
  */
 @Immutable
-class LeadBasedCompilerPipelineData extends CompilePipelineData<LeadBasedCompilerPipelineData> {
+class LeadBasedCompilerPipelineData extends CompilerPipelineData<LeadBasedCompilerPipelineData> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -37,7 +37,7 @@ class LeadBasedCompilerPipelineData extends CompilePipelineData<LeadBasedCompile
     }
 
     private LeadBasedCompilerPipelineData(Parse parse, String logPreamble,
-                                          ImmutableMap<String, NotationCall> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
+                                          ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
                                           Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
                                           ImmutableList<LeadBasedDenormalisedCall> denormalisedCallSequence) {
         super(parse, logPreamble,
@@ -60,7 +60,7 @@ class LeadBasedCompilerPipelineData extends CompilePipelineData<LeadBasedCompile
 
     @Override
     protected LeadBasedCompilerPipelineData buildWhenBaseChanges(Parse parse, String logPreamble,
-                                                                 ImmutableMap<String, NotationCall> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
+                                                                 ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
                                                                  Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes) {
         return new LeadBasedCompilerPipelineData(parse, logPreamble,
                 callLookupByName, varianceLookupByName,

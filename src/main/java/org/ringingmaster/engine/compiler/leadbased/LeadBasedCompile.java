@@ -3,7 +3,7 @@ package org.ringingmaster.engine.compiler.leadbased;
 
 import org.ringingmaster.engine.compiler.compile.Compile;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
-import org.ringingmaster.engine.notation.NotationCall;
+import org.ringingmaster.engine.notation.Call;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,18 +22,18 @@ class LeadBasedCompile implements Function<LeadBasedCompilerPipelineData, LeadBa
 
     private final Logger log = LoggerFactory.getLogger(LeadBasedCompile.class);
 
-    private final Compile<LeadBasedDenormalisedCall> compile = new Compile<>() {
+    private final Compile<LeadBasedDenormalisedCall, LeadBasedCompilerPipelineData> compile = new Compile<>() {
 
         @Override
         protected boolean applyNextCall(State state) {
-            if (state.getNextCall().isPlainLead()) {
+            if (state.getNextDenormalisedCall().isPlainLead()) {
                 // No Call, but consume the call.
                 log.debug("{}    Apply Plain lead", state.getLogPreamble());
             }
             else {
-                NotationCall call = state.callLookupByName.get(state.nextCall.getCallName());
-                log.debug("{}    Apply call [{}]", state.logPreamble, call);
-                state.maskedNotation.applyCall(call, state.logPreamble);
+                Call call = state.getCallLookupByName().get(state.getNextDenormalisedCall().getCallName());
+                log.debug("{}    Apply call [{}]", state.getLogPreamble(), call);
+                state.getMaskedNotation().applyCall(call, state.getLogPreamble());
             }
             // We consumed the call
             return true;
@@ -54,7 +54,8 @@ class LeadBasedCompile implements Function<LeadBasedCompilerPipelineData, LeadBa
                 input.getParse().getComposition(),
                 input.getDenormalisedCallSequence(),
                 input.getCallLookupByName(),
-                input.getLogPreamble());
+                input.getLogPreamble(),
+                input);
 
         LeadBasedCompilerPipelineData result = input
                 .terminate(compileResult.getTerminateReason(), compileResult.getTerminateNotes())

@@ -3,7 +3,7 @@ package org.ringingmaster.engine.method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.notation.NotationPlace;
+import org.ringingmaster.engine.notation.Place;
 import org.ringingmaster.util.conversion.ConvertionUtil;
 
 import javax.annotation.concurrent.Immutable;
@@ -141,28 +141,28 @@ class DefaultLead implements Lead {
 	}
 
 	@Override
-	public NotationPlace getStartPlace(final Bell bell) {
+	public Place getStartPlace(final Bell bell) {
 		checkNotNull(bell);
 
-		NotationPlace startPlace = null;
+		Place startPlace = null;
 		//find the first row
 		if (rows.length > 0) {
 			final Row firstRow = rows[0];
 			final Integer place = firstRow.getPlaceOfBell(bell);
-			startPlace = NotationPlace.valueOf(place);
+			startPlace = Place.valueOf(place);
 		}
 		return startPlace;
 	}
 
 	@Override
-	public Set<NotationPlace> getHuntBellStartPlace() {
+	public Set<Place> getHuntBellStartPlace() {
 
-		Set<NotationPlace> huntBellPlaces = new HashSet<>();
+		Set<Place> huntBellPlaces = new HashSet<>();
 
 		Row firstRow = getFirstRow();
 		Row lastRow = getLastRow();
 
-		for (NotationPlace place : numberOfBells) {
+		for (Place place : numberOfBells) {
 			if(firstRow.getBellInPlace(place) == lastRow.getBellInPlace(place)) {
 				huntBellPlaces.add(place);
 			}

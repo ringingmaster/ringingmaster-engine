@@ -27,13 +27,13 @@ public class CourseBasedBuildCallSequence implements Function<CourseBasedCompile
         @Override
         protected CourseBasedDenormalisedCall buildDecomposedCall(String callName, ParseType parseType, State state, CourseBasedCompilerPipelineData input) {
 
-            ImmutableList<Optional<String>> callPositionLookupByColumn = input.getCallPositionLookupByColumn();
+            ImmutableList<Optional<String>> callingPositionLookupByColumn = input.getCallingPositionNameLookupByColumn();
 
-            checkPositionIndex(state.getColumnIndex(), callPositionLookupByColumn.size(), "column index out of bounds");
-            Optional<String> callPositionName = callPositionLookupByColumn.get(state.getColumnIndex());
-            checkState(callPositionName.isPresent(), "callPositionName is missing. Check that the parsing is correctly excluding columns with no valid call position");
+            checkPositionIndex(state.getColumnIndex(), callingPositionLookupByColumn.size(), "column index out of bounds");
+            Optional<String> callingPositionName = callingPositionLookupByColumn.get(state.getColumnIndex());
+            checkState(callingPositionName.isPresent(), "callingPositionName is missing. Check that the parsing is correctly excluding columns with no valid call position");
 
-            return new CourseBasedDenormalisedCall(callName, state.getCurrentVariance(), callPositionName.get());
+            return new CourseBasedDenormalisedCall(callName, state.getCurrentVariance(), callingPositionName.get());
         }
     };
 

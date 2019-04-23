@@ -3,8 +3,8 @@ package org.ringingmaster.engine.parser.splice;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.composition.ObservableComposition;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 import org.ringingmaster.engine.composition.TableType;
@@ -66,7 +66,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void nonSplicedIgnoresUnusedProblematicNotation() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.setSpliced(false);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
@@ -84,7 +84,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallNameWhenCallNameNotAvailableInAllInUseNotations() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
@@ -100,7 +100,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallShorthandWhenCallShorthandNotAvailableInAllInUseNotations() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
@@ -116,7 +116,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedUsesCallNameWhenCallNameNotAvailableInAllInUnusedNotations() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
@@ -132,7 +132,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedUsesCallShorthandWhenCallShorthandNotAvailableInAllInUnusedNotations() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
@@ -149,7 +149,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallNameWhenCallNameNotAvailableInOnlyUsedNotation() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
@@ -165,7 +165,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallShorthandWhenCallShorthandNotAvailableInOnlyUsedNotation() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
@@ -181,7 +181,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallNameWhenCallShorthandNotAvailableInNotationWithTooManyBells() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildCambridgeMajorNoCalls());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
@@ -197,7 +197,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallShorthandWhenCallShorthandNotAvailableInNotationWithTooManyBells() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildCambridgeMajorNoCalls());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
@@ -213,7 +213,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallNameWhenSpliceWithoutCallUsedInDefinition() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
@@ -231,7 +231,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallShorthandWhenSpliceWithoutCallUsedInDefinition() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
@@ -249,7 +249,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallShorthandInDefinition() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "DEF1");
@@ -267,7 +267,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void splicedInvalidatesCallNameInDefinition() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "DEF1");
@@ -285,7 +285,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
 
     @Test
     public void callShorthandDefinedInAllMethodsIsValid() {
-        final NotationBody plainBobMinor = buildPlainBobMinor();
+        final Notation plainBobMinor = buildPlainBobMinor();
         ObservableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildDoublePlainBobMinor());
         composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
@@ -299,7 +299,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         assertParse(result.allCompositionCells().get(0,1), valid(SPLICE), valid(SPLICE));
     }
 
-    private NotationBody buildPlainBobMinor() {
+    private Notation buildPlainBobMinor() {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
                 .setName("Plain Bob")
@@ -313,7 +313,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
                 .build();
     }
 
-    private NotationBody buildDoublePlainBobMinor() {
+    private Notation buildDoublePlainBobMinor() {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
                 .setName("Double Bob")
@@ -327,7 +327,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
                 .build();
     }
 
-    private NotationBody buildCambridgeMajorNoCalls() {
+    private Notation buildCambridgeMajorNoCalls() {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_8)
                 .setName("Cambridge")
@@ -351,7 +351,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
                 .setSpliceIdentifier("L");
     }
 
-    private ObservableComposition buildSingleCellComposition(NotationBody... notations) {
+    private ObservableComposition buildSingleCellComposition(Notation... notations) {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);

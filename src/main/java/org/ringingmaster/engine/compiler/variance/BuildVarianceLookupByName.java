@@ -2,7 +2,7 @@ package org.ringingmaster.engine.compiler.variance;
 
 import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
-import org.ringingmaster.engine.compiler.common.CompilePipelineData;
+import org.ringingmaster.engine.compiler.common.CompilerPipelineData;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
  *
  * @author stevelake
  */
-public class BuildVarianceLookupByName<T extends CompilePipelineData<T>> implements Function<T, T> {
+public class BuildVarianceLookupByName<T extends CompilerPipelineData<T>> implements Function<T, T> {
     private final Logger log = LoggerFactory.getLogger(BuildVarianceLookupByName.class);
 
     @Override

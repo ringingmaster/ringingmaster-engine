@@ -16,8 +16,8 @@ import org.ringingmaster.engine.helper.PlainCourseHelper;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
 import org.ringingmaster.engine.method.Row;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void canConstructAllChangeLeadWithNoCalls() {
-		final NotationBody allChange = NotationBuilder.getInstance()
+		final Notation allChange = NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.setUnfoldedNotationShorthand("-")
 				.build();
@@ -72,7 +72,7 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void canConstructChangePlaceLead() {
-		final NotationBody notation = NotationBuilder.getInstance()
+		final Notation notation = NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.setUnfoldedNotationShorthand("14")
 				.build();
@@ -96,11 +96,11 @@ public class LeadBasedCompilerTest {
 	@Ignore
 	@Test
 	public void leadSeparatorPositionsCorrect() {
-//		final NotationBody mockedNotationBody = mockNotation(NumberOfBells.BELLS_8,
-//				NotationRowHelper.buildNotationRow(NotationPlace.ALL_CHANGE),
-//				NotationRowHelper.buildNotationRow(NotationPlace.PLACE_1, NotationPlace.PLACE_4));
+//		final Notation mockedNotationBody = mockNotation(NumberOfBells.BELLS_8,
+//				NotationRowHelper.buildNotationRow(Place.ALL_CHANGE),
+//				NotationRowHelper.buildNotationRow(Place.PLACE_1, Place.PLACE_4));
 //
-//		Composition composition = CompositionBuilder.buildPlainCourseInstance(mockedNotationBody);
+//		Composition composition = CompositionBuilder.buildPlainCourseComposition(mockedNotationBody);
 //		composition.setTerminationMaxLeads(1);
 //		CompiledComposition result = new LeadBasedCompiler(composition).compile(false, () -> false);
 //		Method method = result.getMethod().get();
@@ -111,7 +111,7 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void leadCountTerminationCorrectlyCountsLeads() {
 
-		final NotationBody notation = NotationBuilder.getInstance()
+		final Notation notation = NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.setUnfoldedNotationShorthand("x.14.x")
 				.build();
@@ -140,7 +140,7 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void rowCountTerminationCorrectlyCountsRows() {
 
-		final NotationBody notation = NotationBuilder.getInstance()
+		final Notation notation = NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_8)
 				.setUnfoldedNotationShorthand("x.14.x.14")
 				.build();
@@ -168,7 +168,7 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void rowTerminationCorrectlyStopsAtRounds() {
 
-		final NotationBody notation = NotationBuilder.getInstance()
+		final Notation notation = NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
 				.setUnfoldedNotationShorthand("x.16.x.16")
 				.build();
@@ -191,7 +191,7 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void compilePlainCourseOfPlainBobMinor() throws IOException {
 
-		Composition composition = PlainCourseHelper.buildPlainCourseInstance.apply(buildPlainBobMinor());
+		Composition composition = PlainCourseHelper.buildPlainCourseComposition.apply(buildPlainBobMinor());
 
 		CompiledComposition compiledComposition = parser
 				.andThen(compiler)
@@ -336,7 +336,7 @@ public class LeadBasedCompilerTest {
 		return text;
 	}
 
-	private NotationBody buildPlainBobMinor() {
+	private Notation buildPlainBobMinor() {
 		return NotationBuilder.getInstance()
 				.setNumberOfWorkingBells(NumberOfBells.BELLS_6)
 				.setName("Plain Bob")

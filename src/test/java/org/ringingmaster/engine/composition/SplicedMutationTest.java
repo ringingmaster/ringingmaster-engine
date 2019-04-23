@@ -2,8 +2,8 @@ package org.ringingmaster.engine.composition;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,10 +16,10 @@ import static org.junit.Assert.assertTrue;
  */
 public class SplicedMutationTest {
 
-    public static final NotationBody METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
-    public static final NotationBody METHOD_B_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD B", "14");
+    public static final Notation METHOD_A_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD A", "12");
+    public static final Notation METHOD_B_6_BELL = buildNotation(NumberOfBells.BELLS_6, "METHOD B", "14");
 
-    private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
+    private static Notation buildNotation(NumberOfBells bells, String name, String notation1) {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(bells)
                 .setName(name)

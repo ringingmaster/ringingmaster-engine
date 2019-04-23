@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.composition.Composition;
-import org.ringingmaster.engine.notation.NotationBody;
+import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
@@ -82,7 +82,7 @@ public class ValidateDefaultCallMultiplierFullyDefined implements Function<Parse
 
     //TODO we should be able to detect the actual notations being used for spliced, and only check those.
     private boolean hasFullyDefinedDefaultCall(Composition composition) {
-        for (NotationBody notation : composition.getAvailableNotations()) {
+        for (Notation notation : composition.getAvailableNotations()) {
             if (notation.getDefaultCall() == null) {
                 return false;
             }

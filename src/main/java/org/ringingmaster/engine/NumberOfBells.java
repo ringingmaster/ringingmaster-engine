@@ -1,7 +1,7 @@
 package org.ringingmaster.engine; //TODO where should this live?
 
 import org.ringingmaster.engine.method.Bell;
-import org.ringingmaster.engine.notation.NotationPlace;
+import org.ringingmaster.engine.notation.Place;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author Stephen Lake
  *
  */
-public enum NumberOfBells implements Iterable<NotationPlace> {
+public enum NumberOfBells implements Iterable<Place> {
 
 	BELLS_3(3, "Singles"),
 	BELLS_4(4, "Minimus"),
@@ -59,7 +59,7 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 	private final String displayString;
 	private final int bellCount;
 	private final Bell tenor;
-	private final NotationPlace tenorPlace;
+	private final Place tenorPlace;
 
 	NumberOfBells(final int bellCount, final String name) {
 		checkArgument(bellCount > 0);
@@ -67,7 +67,7 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 		checkArgument(name.length() > 0);
 		this.bellCount = bellCount;
 		this.tenor = Bell.valueOf(bellCount-1);
-		this.tenorPlace = NotationPlace.valueOf(bellCount-1);
+		this.tenorPlace = Place.valueOf(bellCount-1);
 		this.displayString = name + " (" + bellCount + ")";
 	}
 
@@ -83,7 +83,7 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 		return tenor;
 	}
 
-	public NotationPlace getTenorPlace() {
+	public Place getTenorPlace() {
 		return tenorPlace;
 	}
 
@@ -104,8 +104,8 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 	}
 
 	@Override
-	public Iterator<NotationPlace> iterator() {
-		return new Iterator<NotationPlace>() {
+	public Iterator<Place> iterator() {
+		return new Iterator<Place>() {
 
 			int notationPlaceIndex = 0;
 
@@ -115,8 +115,8 @@ public enum NumberOfBells implements Iterable<NotationPlace> {
 			}
 
 			@Override
-			public NotationPlace next() {
-				return NotationPlace.valueOf(notationPlaceIndex++);
+			public Place next() {
+				return Place.valueOf(notationPlaceIndex++);
 			}
 
 			@Override

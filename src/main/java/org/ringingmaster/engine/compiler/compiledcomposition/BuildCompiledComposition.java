@@ -1,6 +1,6 @@
 package org.ringingmaster.engine.compiler.compiledcomposition;
 
-import org.ringingmaster.engine.compiler.common.CompilePipelineData;
+import org.ringingmaster.engine.compiler.common.CompilerPipelineData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author stevelake
  */
-public class BuildCompiledComposition<T extends CompilePipelineData<T>> implements Function<T, CompiledComposition> {
+public class BuildCompiledComposition<T extends CompilerPipelineData<T>> implements Function<T, CompiledComposition> {
 
     private final Logger log = LoggerFactory.getLogger(BuildCompiledComposition.class);
 

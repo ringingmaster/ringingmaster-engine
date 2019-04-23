@@ -5,9 +5,9 @@ import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.composition.Composition;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.NotationCall;
-import org.ringingmaster.engine.notation.NotationMethodCallingPosition;
+import org.ringingmaster.engine.notation.Call;
+import org.ringingmaster.engine.notation.CallingPosition;
+import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
 import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
@@ -76,7 +76,7 @@ public class AssignParseType implements Function<Composition, Parse> {
         log.debug("[{}] > assign parse type", composition.getTitle());
 
         final HashBasedTable<Integer, Integer, ParsedCell> parsedCompositionCells = HashBasedTable.create();
-        parseCallPositionArea(composition, parsedCompositionCells);
+        parseCallingPositionArea(composition, parsedCompositionCells);
         final Set<String> mainBodyDefinitions =
                 parseMainBodyArea(composition, parsedCompositionCells);
         final Set<String> spliceAreaDefinitions =
@@ -113,7 +113,7 @@ public class AssignParseType implements Function<Composition, Parse> {
         parse(parsedDefinitionCells, lexerDefinitions, composition.definitionShorthandCells(), (parsedCell) -> {}, composition.getTitle());
     }
 
-    private void parseCallPositionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
+    private void parseCallingPositionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
         if (composition.getCompositionType() != CompositionType.COURSE_BASED) {
             return;
         }
@@ -124,7 +124,7 @@ public class AssignParseType implements Function<Composition, Parse> {
         addCallingPositionLexerDefinitions(composition, lexerDefinitions);
         addWhitespaceLexerDefinitions(lexerDefinitions);
 
-        parse(parsedCells, lexerDefinitions, composition.callPositionCells(), (parsedCell) -> {}, composition.getTitle());
+        parse(parsedCells, lexerDefinitions, composition.callingPositionCells(), (parsedCell) -> {}, composition.getTitle());
     }
 
     private Set<String> parseMainBodyArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
@@ -254,8 +254,8 @@ public class AssignParseType implements Function<Composition, Parse> {
 
 
     private void addCallingPositionLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
-        for (NotationBody notation : composition.getAvailableNotations()) {
-            for (NotationMethodCallingPosition callingPosition : notation.getMethodBasedCallingPositions()) {
+        for (Notation notation : composition.getAvailableNotations()) {
+            for (CallingPosition callingPosition : notation.getMethodBasedCallingPositions()) {
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, callingPosition.getName().length(),
                         callingPosition.getName(), CALLING_POSITION));
             }
@@ -270,18 +270,18 @@ public class AssignParseType implements Function<Composition, Parse> {
     }
 
     private void addCallLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
-        for (NotationBody notation : composition.getAvailableNotations()) {
-            for (NotationCall notationCall : notation.getCalls()) {
-                lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notationCall.getNameShorthand().length(),
-                        "(\\d*)(" + notationCall.getNameShorthand() + ")", CALL_MULTIPLIER, CALL));
-                lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notationCall.getName().length(),
-                        "(\\d*)(" + notationCall.getName() + ")", CALL_MULTIPLIER, CALL));
+        for (Notation notation : composition.getAvailableNotations()) {
+            for (Call call : notation.getCalls()) {
+                lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, call.getNameShorthand().length(),
+                        "(\\d*)(" + call.getNameShorthand() + ")", CALL_MULTIPLIER, CALL));
+                lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, call.getName().length(),
+                        "(\\d*)(" + call.getName() + ")", CALL_MULTIPLIER, CALL));
             }
         }
     }
 
     private void addSpliceLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
-        for (NotationBody notation : composition.getAvailableNotations()) {
+        for (Notation notation : composition.getAvailableNotations()) {
             if (!Strings.isNullOrEmpty(notation.getSpliceIdentifier())){
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notation.getSpliceIdentifier().length(),
                         "(\\d*)(" + notation.getSpliceIdentifier() + ")", SPLICE_MULTIPLIER, SPLICE));

@@ -10,8 +10,8 @@ import org.junit.runners.Parameterized.Parameters;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilder;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.CellBuilder;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
@@ -89,19 +89,19 @@ public class DefaultCompositionTableAccessTest {
     public int expectedSplicedColumns;
 
     @Parameter(8)
-    public int expectedCallPositionRows;
+    public int expectedCallingPositionRows;
     @Parameter(9)
-    public int expectedCallPositionColumns;
+    public int expectedCallingPositionColumns;
 
     @Parameter(10)
     public String expectedMainRoot;
     @Parameter(11)
     public String expectedSplicedRoot;
     @Parameter(12)
-    public String expectedCallPositionRoot;
+    public String expectedCallingPositionRoot;
 
 
-    private static NotationBody buildNotation(NumberOfBells bells, String name, String notation1) {
+    private static Notation buildNotation(NumberOfBells bells, String name, String notation1) {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(bells)
                 .setName(name)
@@ -134,15 +134,15 @@ public class DefaultCompositionTableAccessTest {
     }
 
     @Test
-    public void callPositionTableDimensions() {
+    public void callingPositionTableDimensions() {
         DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
-        assertDimensions(expectedCallPositionRows, expectedCallPositionColumns, defaultCompositionTableAccess.callPositionCells());
+        assertDimensions(expectedCallingPositionRows, expectedCallingPositionColumns, defaultCompositionTableAccess.callingPositionCells());
     }
 
     @Test
-    public void callPositionRoot() {
+    public void callingPositionRoot() {
         DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
-        assertRoot(expectedCallPositionRoot, defaultCompositionTableAccess.callPositionCells());
+        assertRoot(expectedCallingPositionRoot, defaultCompositionTableAccess.callingPositionCells());
     }
 
     private void assertDimensions(int expectedRowSize, int expectedColumnSize, ImmutableArrayTable<Cell> cells) {

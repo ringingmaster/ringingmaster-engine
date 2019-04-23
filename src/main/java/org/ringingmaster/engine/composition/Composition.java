@@ -10,8 +10,8 @@ import org.ringingmaster.engine.composition.tableaccess.DefaultCompositionTableA
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Row;
 import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.notation.NotationBody;
-import org.ringingmaster.engine.notation.impl.NotationBuilderHelper;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilderHelper;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
@@ -38,15 +38,15 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     private final CompositionType compositionType;
 
     private final Bell callFromBell;
-    private final PSet<NotationBody> allNotations;
-    private final Optional<NotationBody> nonSplicedActiveNotation;
+    private final PSet<Notation> allNotations;
+    private final Optional<Notation> nonSplicedActiveNotation;
     private final String plainLeadToken;
     private final DefinitionTableAccess<Cell> definitionTableCellsDelegate;
 
     private final Row startChange;
     private final int startAtRow;
     private final Stroke startStroke;
-    private final Optional<NotationBody> startNotation;
+    private final Optional<Notation> startNotation;
 
     private final int terminationMaxRows;
     private final Optional<Integer> terminationMaxLeads;
@@ -61,13 +61,13 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
                        NumberOfBells numberOfBells,
                        CompositionType compositionType,
                        Bell callFromBell,
-                       PSet<NotationBody> allNotations,
-                       Optional<NotationBody> nonSplicedActiveNotation,
+                       PSet<Notation> allNotations,
+                       Optional<Notation> nonSplicedActiveNotation,
                        String plainLeadToken,
                        ImmutableArrayTable<Cell> definitionCells,
                        Row startChange, int startAtRow,
                        Stroke startStroke,
-                       Optional<NotationBody> startNotation,
+                       Optional<Notation> startNotation,
                        int terminationMaxRows,
                        Optional<Integer> terminationMaxLeads,
                        Optional<Integer> terminationMaxParts,
@@ -121,16 +121,16 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         return callFromBell;
     }
 
-    public PSet<NotationBody> getAllNotations() {
+    public PSet<Notation> getAllNotations() {
         return allNotations;
     }
 
-    public PSet<NotationBody> getValidNotations() {
+    public PSet<Notation> getValidNotations() {
         //TODO precalculate
         return NotationBuilderHelper.filterNotationsUptoNumberOfBells(allNotations, numberOfBells);
     }
 
-    public PSet<NotationBody> getAvailableNotations() {
+    public PSet<Notation> getAvailableNotations() {
         //TODO precalculate
         if (isSpliced()) {
             return getValidNotations();
@@ -141,7 +141,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         }
     }
 
-    public Optional<NotationBody> getNonSplicedActiveNotation() {
+    public Optional<Notation> getNonSplicedActiveNotation() {
         return nonSplicedActiveNotation;
     }
 
@@ -192,7 +192,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         return startStroke;
     }
 
-    public Optional<NotationBody> getStartNotation() {
+    public Optional<Notation> getStartNotation() {
         return startNotation;
     }
 
@@ -227,8 +227,8 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     }
 
     @Override
-    public ImmutableArrayTable<Cell> callPositionCells() {
-        return compositionTableAccessDelegate.callPositionCells();
+    public ImmutableArrayTable<Cell> callingPositionCells() {
+        return compositionTableAccessDelegate.callingPositionCells();
     }
 
     @Override

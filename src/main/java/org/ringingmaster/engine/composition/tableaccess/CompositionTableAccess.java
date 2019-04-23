@@ -12,6 +12,6 @@ public interface CompositionTableAccess<T extends Cell> {
 
     ImmutableArrayTable<T> allCompositionCells();
     ImmutableArrayTable<T> mainBodyCells();
-    ImmutableArrayTable<T> callPositionCells();
+    ImmutableArrayTable<T> callingPositionCells();
     ImmutableArrayTable<T> splicedCells();
 }
