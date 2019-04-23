@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.denormaliser.DenormalisedCall;
-import org.ringingmaster.engine.compilerold.impl.TerminateEarlyException;
+import org.ringingmaster.engine.compiler.TerminateEarlyException;
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.method.Method;
