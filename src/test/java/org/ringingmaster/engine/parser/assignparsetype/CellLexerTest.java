@@ -20,7 +20,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_M
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
+
 
 /**
  * TODO comments???
@@ -124,13 +124,12 @@ public class CellLexerTest {
     public void whitespaceInTokenGetsMarkedAsToken() {
         Set<LexerDefinition> a = Sets.newHashSet();
         a.add(new LexerDefinition(2, 0,"a b", CALL));
-        a.add(new LexerDefinition(1, 0," ", WHITESPACE));
 
         Cell cell = buildCell("xa b s");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
-        assertParse(parsedCell, unparsed(1), valid(3, CALL), valid(WHITESPACE), unparsed(1));
+        assertParse(parsedCell, unparsed(1), valid(3, CALL), unparsed(2));
 
     }
 
@@ -138,13 +137,12 @@ public class CellLexerTest {
     public void backToBackParsingsDoNotResultInGaps() {
         Set<LexerDefinition> a = Sets.newHashSet();
         a.add(new LexerDefinition(1,  0,"-", CALL));
-        a.add(new LexerDefinition(1, 0," ", WHITESPACE));
 
         Cell cell = buildCell("- ");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
-        assertParse(parsedCell, valid(CALL), valid(WHITESPACE));
+        assertParse(parsedCell, valid(CALL), unparsed());
 
     }
 
@@ -198,13 +196,12 @@ public class CellLexerTest {
         a.add(new LexerDefinition(4, 0, "\\]", VARIANCE_CLOSE));
         a.add(new LexerDefinition(3, 0, "-", CALL));
         a.add(new LexerDefinition(2, 0, "o", CALL));
-        a.add(new LexerDefinition(1, 0, "\\s", WHITESPACE));
 
         Cell cell = buildCell("o[-o -]");
 
         ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
 
-        assertParse(parsedCell, valid(CALL), valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(WHITESPACE), valid(CALL), valid(VARIANCE_CLOSE));
+        assertParse(parsedCell, valid(CALL), valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), unparsed(), valid(CALL), valid(VARIANCE_CLOSE));
     }
 
     @Test

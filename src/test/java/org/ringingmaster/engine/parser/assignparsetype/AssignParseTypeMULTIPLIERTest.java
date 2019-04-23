@@ -28,7 +28,6 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_M
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
 import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -100,7 +99,7 @@ public class AssignParseTypeMULTIPLIERTest {
         Parse parse = new AssignParseType()
                 .apply(composition.get());
 
-        assertParse(parse.allCompositionCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), valid(WHITESPACE));
+        assertParse(parse.allCompositionCells().get(0,0), valid(DEFAULT_CALL_MULTIPLIER), unparsed(1));
     }
 
     @Test

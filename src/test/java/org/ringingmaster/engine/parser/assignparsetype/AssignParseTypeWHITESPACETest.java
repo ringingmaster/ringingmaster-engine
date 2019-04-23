@@ -16,7 +16,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
+
 import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
 import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -36,7 +36,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.allCompositionCells().get(0, 0), valid(CALLING_POSITION), valid(WHITESPACE), valid(CALLING_POSITION));
+        assertParse(parse.allCompositionCells().get(0, 0), valid(CALLING_POSITION), unparsed(1), valid(CALLING_POSITION));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.allCompositionCells().get(0, 0), valid(CALL), valid(WHITESPACE), valid(3, CALL));
+        assertParse(parse.allCompositionCells().get(0, 0), valid(CALL), unparsed(1), valid(3, CALL));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.allCompositionCells().get(0, 1), valid(SPLICE), valid(WHITESPACE), valid(SPLICE), valid(WHITESPACE));
+        assertParse(parse.allCompositionCells().get(0, 1), valid(SPLICE), unparsed(1), valid(SPLICE), unparsed(1));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(WHITESPACE), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed(1), valid(CALL));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(WHITESPACE), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed(1), valid(CALL));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), valid(WHITESPACE), unparsed());
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed(), unparsed(1), unparsed());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), valid(WHITESPACE), valid(CALL));
+        assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed(1), valid(CALL));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class AssignParseTypeWHITESPACETest {
 
         Parse parse = new AssignParseType().apply(composition.get());
 
-        assertParse(parse.findDefinitionByShorthand("de f2").get().get(0, SHORTHAND_COLUMN), valid(WHITESPACE), valid(5, DEFINITION), valid(WHITESPACE));
+        assertParse(parse.findDefinitionByShorthand("de f2").get().get(0, SHORTHAND_COLUMN), unparsed(1), valid(5, DEFINITION), unparsed(1));
     }
 
     private Notation buildPlainBobMinor() {

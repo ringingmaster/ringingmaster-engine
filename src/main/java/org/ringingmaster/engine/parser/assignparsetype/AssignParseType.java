@@ -43,7 +43,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LE
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
-import static org.ringingmaster.engine.parser.assignparsetype.ParseType.WHITESPACE;
+
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.LEAD_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
@@ -108,7 +108,6 @@ public class AssignParseType implements Function<Composition, Parse> {
         // This is a special parse - we just take trimmed versions of every definition and add it as a parse
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
         addDefinitionLexerDefinitions(composition, lexerDefinitions);
-        addWhitespaceLexerDefinitions(lexerDefinitions);
 
         parse(parsedDefinitionCells, lexerDefinitions, composition.definitionShorthandCells(), (parsedCell) -> {}, composition.getTitle());
     }
@@ -122,7 +121,6 @@ public class AssignParseType implements Function<Composition, Parse> {
 
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
         addCallingPositionLexerDefinitions(composition, lexerDefinitions);
-        addWhitespaceLexerDefinitions(lexerDefinitions);
 
         parse(parsedCells, lexerDefinitions, composition.callingPositionCells(), (parsedCell) -> {}, composition.getTitle());
     }
@@ -151,7 +149,6 @@ public class AssignParseType implements Function<Composition, Parse> {
         addVarianceLexerDefinitions(lexerDefinitions);
         addMultiplierGroupLexerDefinitions(lexerDefinitions);
         addDefaultCallLexerDefinitions(lexerDefinitions);
-        addWhitespaceLexerDefinitions(lexerDefinitions);
 
         addDefinitionLexerDefinitions(composition, lexerDefinitions);
         return lexerDefinitions;
@@ -183,7 +180,6 @@ public class AssignParseType implements Function<Composition, Parse> {
         addSpliceLexerDefinitions(composition, lexerDefinitions);
         addMultiplierGroupLexerDefinitions(lexerDefinitions);
         addDefinitionLexerDefinitions(composition, lexerDefinitions);
-        addWhitespaceLexerDefinitions(lexerDefinitions);
         addDefinitionLexerDefinitions(composition, lexerDefinitions);
         return lexerDefinitions;
     }
@@ -319,10 +315,5 @@ public class AssignParseType implements Function<Composition, Parse> {
     private void addDefaultCallLexerDefinitions(Set<LexerDefinition> lexerDefinitions) {
         lexerDefinitions.add(new LexerDefinition(PRECEDENCE_LOWEST, 0,
                 "\\d+", DEFAULT_CALL_MULTIPLIER));
-    }
-
-    private void addWhitespaceLexerDefinitions(Set<LexerDefinition> lexerDefinitions) {
-        lexerDefinitions.add(new LexerDefinition(PRECEDENCE_LOWEST, 0,
-                "\\s", WHITESPACE));
     }
 }

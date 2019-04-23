@@ -25,6 +25,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
@@ -78,7 +79,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
     //TODO should flat map / stream this lot?
     public ImmutableList<T> createCallSequence(Parse parse, ImmutableMap<String, Variance> varianceLookupByName, String logPreamble, PASSTHROUGH passthrough) {
         log.debug("{} > decomposing call sequence", logPreamble);
-        log.debug("{} Open level [0]", logPreamble);
+        log.debug("{} - open level [0]", logPreamble);
         final State state = new State(parse, varianceLookupByName, logPreamble + "  ");
 
         for (BackingTableLocationAndValue<ParsedCell> cell : parse.mainBodyCells()) {
@@ -88,7 +89,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
         }
 
         checkState(state.callSequenceNested.size() == 1);
-        log.debug("{} Close level [0]", logPreamble);
+        log.debug("{} - close level [0]", logPreamble);
         log.debug("{} < decomposing call sequence. result: {}", logPreamble, state.callSequenceNested.getFirst());
         return ImmutableList.copyOf(state.callSequenceNested.removeFirst());
     }
@@ -123,6 +124,13 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
                 case DEFINITION:
                     insertExpandedDefinition(state, passthrough);
                     break;
+                case DEFAULT_CALL_MULTIPLIER:
+//                    MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(state, null, DEFAULT_CALL_MULTIPLIER);
+//                    T decomposedCall = buildDecomposedCall("", parseType, state, passthrough);
+
+                    decomposeMultiplierSection(state, DEFAULT_CALL_MULTIPLIER, DEFAULT_CALL_MULTIPLIER, passthrough);
+
+                    break;
                 default:
                     throw new RuntimeException("Unhandled ParseType [" + parseType + "]");
             }
@@ -132,13 +140,13 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
     private void decomposeMultiplierSection(final State state, final ParseType parseType, final ParseType multiplierParseType, PASSTHROUGH passthrough) {
         MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(state, parseType, multiplierParseType);
 
-        log.debug("{} Adding call [{}] with multiplier [{}], variance [{}]",
-                state.logPreamble, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), state.currentVariance);
+        log.debug("{} adding [{},{}] [{}] with multiplier [{}], variance [{}]",
+                state.logPreamble, parseType, multiplierParseType, multiplierAndParseContents.getParseContents(), multiplierAndParseContents.getMultiplier(), state.currentVariance);
 
         if (multiplierAndParseContents.getParseContents().length() > 0 ) {
             T decomposedCall = buildDecomposedCall(multiplierAndParseContents.getParseContents(), parseType, state, passthrough);
             for (int i = 0; i< multiplierAndParseContents.getMultiplier(); i++) {
-                log.debug("{}   Add [{}]", state.logPreamble, decomposedCall);
+                log.debug("{}   add [{}]", state.logPreamble, decomposedCall);
                 state.callSequenceNested.peekFirst().add(decomposedCall);
             }
         }
@@ -146,7 +154,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
 
     private void openMultiplierGroup(final State state) {
         MultiplierAndParseContents multiplierAndParseContents = getMultiplierAndCall(state, ParseType.MULTIPLIER_GROUP_OPEN, ParseType.MULTIPLIER_GROUP_OPEN_MULTIPLIER);
-        log.debug("{} Open level [{}], multiplier [{}]", state.logPreamble, (state.callSequenceNested.size() ), multiplierAndParseContents.getMultiplier());
+        log.debug("{} open level [{}], multiplier [{}]", state.logPreamble, (state.callSequenceNested.size() ), multiplierAndParseContents.getMultiplier());
         state.logPreamble += "  ";
         state.callSequenceNested.addFirst(new CallSequence(multiplierAndParseContents.getMultiplier()));
     }
@@ -154,10 +162,10 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
     private void closeMultiplierGroup(final State state) {
         CallSequence callSequence = state.callSequenceNested.removeFirst();
         state.logPreamble = state.logPreamble.substring(0,state.logPreamble.length()-2); //remove log indentation
-        log.debug("{} Close level [{}], multiplier [{}]", state.logPreamble, (state.callSequenceNested.size()), callSequence.getMultiplier());
+        log.debug("{} close level [{}], multiplier [{}]", state.logPreamble, (state.callSequenceNested.size()), callSequence.getMultiplier());
         // unwind the multiplier stack
         for (int i = 0; i< callSequence.getMultiplier(); i++) {
-            log.debug("{} Add level [{}] to [{}] call sequence: [{}]", state.logPreamble, state.callSequenceNested.size(), state.callSequenceNested.size()-1, callSequence);
+            log.debug("{} add level [{}] to [{}] call sequence: [{}]", state.logPreamble, state.callSequenceNested.size(), state.callSequenceNested.size()-1, callSequence);
             state.callSequenceNested.peekFirst().addAll(callSequence);
         }
     }
@@ -168,17 +176,17 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
         checkArgument(varianceDetailSection.getParseType() == VARIANCE_DETAIL);
         String varianceCharacters = state.cell.getCharacters(varianceDetailSection);
         state.currentVariance = state.varianceLookupByName.get(varianceCharacters.toLowerCase());
-        log.debug("{} [ Open variance [{}]", state.logPreamble, state.currentVariance);
+        log.debug("{} [ open variance [{}]", state.logPreamble, state.currentVariance);
     }
 
     private void closeVariance(final State state) {
-        log.debug("{} ] Close variance [{}]", state.logPreamble, state.currentVariance);
+        log.debug("{} ] close variance [{}]", state.logPreamble, state.currentVariance);
         checkArgument(state.group.getSections().size() == 1, "Open Variance should have a group with a length of 1 %s", state.group);
         state.currentVariance = VarianceFactory.nullVariance();
     }
 
     private void insertExpandedDefinition(final State state, PASSTHROUGH passthrough) {
-        log.debug("{} Start expand definition [{}]", state.logPreamble, state.group);
+        log.debug("{} start expand definition [{}]", state.logPreamble, state.group);
         String definitionIdentifier = state.cell.getCharacters(state.group);
 
         Optional<ImmutableArrayTable<ParsedCell>> definitionCells = state.parse.findDefinitionByShorthand(definitionIdentifier);
@@ -190,7 +198,7 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
         generateCallInstancesForCell(state, passthrough);
         state.cell = originalCell;
 
-        log.debug("{} Finish expand definition [{}]", state.logPreamble,state.group);
+        log.debug("{} finish expand definition [{}]", state.logPreamble,state.group);
     }
 
     private MultiplierAndParseContents getMultiplierAndCall(final State state, ParseType parseType, ParseType multiplierParseType) {
@@ -245,6 +253,14 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
 
         String getParseContents() {
             return parseContents;
+        }
+
+        @Override
+        public String toString() {
+            return "MultiplierAndParseContents{" +
+                    "multiplier=" + multiplier +
+                    ", parseContents='" + parseContents + '\'' +
+                    '}';
         }
     }
 }

@@ -13,21 +13,28 @@ import javax.annotation.concurrent.Immutable;
 class LeadBasedDenormalisedCall extends DenormalisedCall {
 
 	private final boolean plainLead;
+	private final boolean defaultCall;
 
-	public LeadBasedDenormalisedCall(String callName, Variance variance, boolean plainLead) {
+	public LeadBasedDenormalisedCall(String callName, Variance variance, boolean plainLead, boolean defaultCall) {
 		super(callName, variance);
 		this.plainLead = plainLead;
+		this.defaultCall = defaultCall;
 	}
 
 	public boolean isPlainLead() {
 		return plainLead;
 	}
 
+	public boolean isDefaultCall() {
+		return defaultCall;
+	}
+
 	@Override
 	public String toString() {
 		String varianceToString = getVariance().toString();
 		return "{" +
-				((plainLead)?("plainLead,"):"") +
+				((plainLead)?("PLAIN_LEAD,"):"") +
+				((defaultCall)?("DEFAULT_CALL,"):"") +
 				getCallName()  +
 				((varianceToString.length() > 0)?(", " + varianceToString ):"") +
 				'}';

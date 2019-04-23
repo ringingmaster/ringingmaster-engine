@@ -41,13 +41,23 @@ class DefaultCall extends DefaultPlaceSetSequence implements Call {
         return buf.toString();
     }
 
+//    @Override
+//    public String toString() {
+//        final StringBuilder buf = new StringBuilder();
+//        buf.append("[").append(getName());
+//        buf.append(", ").append(getNameShorthand());
+//        buf.append(", ").append(getNotationDisplayString(false));
+//        buf.append("]");
+//        return buf.toString();
+//    }
+
+
     @Override
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
-        buf.append("[").append(getName());
-        buf.append(", ").append(getNameShorthand());
-        buf.append(", ").append(getNotationDisplayString(false));
-        buf.append("]");
-        return buf.toString();
+        return "{" +
+                getName() + ',' +
+                nameShorthand + ',' +
+                getNotationDisplayString(false) +
+                '}';
     }
 }

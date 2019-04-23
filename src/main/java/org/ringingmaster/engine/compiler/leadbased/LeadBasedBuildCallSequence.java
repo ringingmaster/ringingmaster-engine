@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 
+import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
 
 /**
@@ -22,7 +23,7 @@ public class LeadBasedBuildCallSequence implements Function<LeadBasedCompilerPip
 
         @Override
         protected LeadBasedDenormalisedCall buildDecomposedCall(String callName, ParseType parseType, State state, LeadBasedCompilerPipelineData input) {
-            return new LeadBasedDenormalisedCall(callName, state.getCurrentVariance(), parseType.equals(PLAIN_LEAD));
+            return new LeadBasedDenormalisedCall(callName, state.getCurrentVariance(), parseType.equals(PLAIN_LEAD), parseType.equals(DEFAULT_CALL_MULTIPLIER));
         }
     };
 

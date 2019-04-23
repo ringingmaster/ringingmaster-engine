@@ -42,7 +42,7 @@ public class MaskedNotation implements Notation { //TODO completely lacking any 
     }
 
     public void applyCall(Call call, String logPreamble) {
-        log.debug("{}   - Applying Call [{}] at index [{}] ", logPreamble, call, iteratorIndex);
+        log.debug("{}   - applying Call [{}] at index [{}] ", logPreamble, call, iteratorIndex);
 
         this.call = Optional.ofNullable(call);
         this.callIndex = 0;

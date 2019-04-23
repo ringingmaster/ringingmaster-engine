@@ -28,11 +28,16 @@ class LeadBasedCompile implements Function<LeadBasedCompilerPipelineData, LeadBa
         protected boolean applyNextCall(State state) {
             if (state.getNextDenormalisedCall().isPlainLead()) {
                 // No Call, but consume the call.
-                log.debug("{}    Apply Plain lead", state.getLogPreamble());
+                log.debug("{}    apply plain lead", state.getLogPreamble());
+            }
+            else if (state.getNextDenormalisedCall().isDefaultCall()) {
+                Call call = state.getComposition().getNonSplicedActiveNotation().get().getDefaultCall();
+                log.debug("{}    apply default call [{}]", state.getLogPreamble(), call);
+                state.getMaskedNotation().applyCall(call, state.getLogPreamble());
             }
             else {
                 Call call = state.getCallLookupByName().get(state.getNextDenormalisedCall().getCallName());
-                log.debug("{}    Apply call [{}]", state.getLogPreamble(), call);
+                log.debug("{}    apply call [{}]", state.getLogPreamble(), call);
                 state.getMaskedNotation().applyCall(call, state.getLogPreamble());
             }
             // We consumed the call
