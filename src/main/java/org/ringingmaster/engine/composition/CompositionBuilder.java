@@ -37,7 +37,7 @@ class CompositionBuilder {
     private Optional<String> author = Optional.empty();
 
     private Optional<NumberOfBells> numberOfBells = Optional.empty();
-    private Optional<CompositionType> checkingType = Optional.empty();
+    private Optional<CompositionType> compositionType = Optional.empty();
 
     private Optional<Bell> callFromBell = Optional.empty();
     private Optional<PSet<Notation>> allNotations = Optional.empty();
@@ -72,7 +72,7 @@ class CompositionBuilder {
         setAuthor("");
 
         setNumberOfBells(NumberOfBells.BELLS_6);
-        setCheckingType(CompositionType.COURSE_BASED);
+        setCompositionType(CompositionType.COURSE_BASED);
 
         setCallFromBell(numberOfBells.get().getTenor());
         setAllNotations(HashTreePSet.empty());
@@ -116,8 +116,8 @@ class CompositionBuilder {
         return this;
     }
 
-    CompositionBuilder setCheckingType(CompositionType compositionType) {
-        this.checkingType = Optional.of(compositionType);
+    CompositionBuilder setCompositionType(CompositionType compositionType) {
+        this.compositionType = Optional.of(compositionType);
         return this;
     }
 
@@ -207,7 +207,7 @@ class CompositionBuilder {
                 author.orElseGet(()->prototype.getAuthor()),
 
                 numberOfBells.orElseGet(()->prototype.getNumberOfBells()),
-                checkingType.orElseGet(()->prototype.getCompositionType()),
+                compositionType.orElseGet(()->prototype.getCompositionType()),
 
                 callFromBell.orElseGet(()->prototype.getCallFromBell()),
                 allNotations.orElseGet(()->prototype.getAllNotations()),
@@ -237,7 +237,7 @@ class CompositionBuilder {
                 ", title=" + title +
                 ", author=" + author +
                 ", numberOfBells=" + numberOfBells +
-                ", checkingType=" + checkingType +
+                ", compositionType=" + compositionType +
                 ", callFromBell=" + callFromBell +
                 ", allNotations=" + allNotations +
                 ", nonSplicedActiveNotation=" + nonSplicedActiveNotation +

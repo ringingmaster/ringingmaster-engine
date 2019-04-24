@@ -166,7 +166,7 @@ public class ObservableComposition {
 
     //TODO need a checkNumberOfBells to drive UI
 
-    public void setCheckingType(CompositionType compositionType) {
+    public void setCompositionType(CompositionType compositionType) {
         checkNotNull(compositionType);
 
         if (Objects.equals(currentComposition.getCompositionType(), compositionType)) {
@@ -174,7 +174,7 @@ public class ObservableComposition {
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
-                .setCheckingType(compositionType);
+                .setCompositionType(compositionType);
 
         setCurrentComposition(compositionBuilder.build());
     }

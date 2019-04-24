@@ -91,7 +91,7 @@ public class AssignParseTypeVARIANCERegexTest {
         log.info("Test Value  {}", testValue);
         ObservableComposition composition = new ObservableComposition();
         composition.addNotation(buildPlainBobMinor());
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addCharacters(MAIN_TABLE,0,0,testValue);
 
@@ -121,7 +121,7 @@ public class AssignParseTypeVARIANCERegexTest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "[-o]");
         return composition;

@@ -71,7 +71,7 @@ public class AssignParseTypeTest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "-P");
         return composition;

@@ -24,7 +24,7 @@ public class CompositionTypeMutationTest {
     public void changeIsReflected() throws Exception {
 
         ObservableComposition composition = new ObservableComposition();
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
 
         assertEquals(CompositionType.LEAD_BASED, composition.get().getCompositionType());
     }

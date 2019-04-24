@@ -175,7 +175,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         return composition;
     }

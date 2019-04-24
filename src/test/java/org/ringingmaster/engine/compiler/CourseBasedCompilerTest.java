@@ -59,7 +59,7 @@ public class CourseBasedCompilerTest {
         composition.setNumberOfBells(NumberOfBells.BELLS_6);
         composition.setTitle("Test Composition");
         composition.addNotation(buildPlainBobMinor());
-        composition.setCheckingType(CompositionType.COURSE_BASED);
+        composition.setCompositionType(CompositionType.COURSE_BASED);
         composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
         return composition;
     }

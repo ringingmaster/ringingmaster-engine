@@ -101,7 +101,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
     @Test
     public void variancesWithinCourseBasedInvalid() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.setCheckingType(CompositionType.COURSE_BASED);
+        composition.setCompositionType(CompositionType.COURSE_BASED);
         composition.addCharacters(MAIN_TABLE, 0,0, "[");
         composition.addCharacters(MAIN_TABLE, 0,1, "]");
         composition.addCharacters(MAIN_TABLE, 1,0, "-");
@@ -162,7 +162,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         return composition;
     }

@@ -28,7 +28,7 @@ public class AssignParseTypeSPLICETest {
     @Test
     public void spliceIgnoredInCallingPoitionArea() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "WP");
-        composition.setCheckingType(COURSE_BASED);
+        composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -136,7 +136,7 @@ public class AssignParseTypeSPLICETest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "P");
         return composition;

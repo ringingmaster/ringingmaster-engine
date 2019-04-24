@@ -52,7 +52,7 @@ public class AssignParseTypeMULTIPLIERTest {
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
-        composition.setCheckingType(COURSE_BASED);
+        composition.setCompositionType(COURSE_BASED);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
         composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
@@ -298,7 +298,7 @@ public class AssignParseTypeMULTIPLIERTest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "-P");
         composition.addDefinition("def2", "2");

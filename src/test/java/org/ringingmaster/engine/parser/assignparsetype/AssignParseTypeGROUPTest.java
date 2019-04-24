@@ -28,7 +28,7 @@ public class AssignParseTypeGROUPTest {
     @Test
     public void groupIgnoredInCallingPoitionArea() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "()");
-        composition.setCheckingType(COURSE_BASED);
+        composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -122,7 +122,7 @@ public class AssignParseTypeGROUPTest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "()");
         return composition;

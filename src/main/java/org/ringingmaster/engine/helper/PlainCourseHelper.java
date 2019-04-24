@@ -52,7 +52,7 @@ public class PlainCourseHelper {
         composition.setTitle(" " + notation.getNameIncludingNumberOfBells() + ":" + " PLAINCOURSE_" + counter.getAndIncrement());
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setTerminationChange(MethodBuilder.buildRoundsRow(notation.getNumberOfWorkingBells()));
         composition.setTerminationMaxLeads(TERMINATION_MAX_LEADS_MAX);
         composition.setTerminationMaxRows(TERMINATION_MAX_ROWS_MAX);

@@ -101,7 +101,7 @@ public class ValidateSingleCallingPositionPerCellTest {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.COURSE_BASED);
+        composition.setCompositionType(CompositionType.COURSE_BASED);
         composition.setSpliced(false);
         return composition;
     }

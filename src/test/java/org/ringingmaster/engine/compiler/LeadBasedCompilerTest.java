@@ -52,7 +52,7 @@ public class LeadBasedCompilerTest {
 
 		ObservableComposition composition = new ObservableComposition();
 		composition.addNotation(allChange);
-		composition.setCheckingType(CompositionType.LEAD_BASED);
+		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.setNumberOfBells(NumberOfBells.BELLS_8);
 		composition.setTerminationMaxLeads(1);
 
@@ -78,7 +78,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CompositionType.LEAD_BASED);
+		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.setTerminationMaxLeads(1);
 
@@ -117,7 +117,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CompositionType.LEAD_BASED);
+		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.removeTerminationChange();
 
@@ -146,7 +146,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CompositionType.LEAD_BASED);
+		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.removeTerminationChange();
 
@@ -174,7 +174,7 @@ public class LeadBasedCompilerTest {
 				.build();
 
 		ObservableComposition composition = new ObservableComposition();
-		composition.setCheckingType(CompositionType.LEAD_BASED);
+		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		final Row roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
 		composition.setTerminationChange(roundsRow);
@@ -210,7 +210,7 @@ public class LeadBasedCompilerTest {
 		ObservableComposition composition = null;
 		try {
 			composition = new ObservableComposition();
-			composition.setCheckingType(CompositionType.LEAD_BASED);
+			composition.setCompositionType(CompositionType.LEAD_BASED);
 			composition.setTerminationMaxRows(10);
 		} catch (Exception e) {
 			fail();
@@ -299,7 +299,7 @@ public class LeadBasedCompilerTest {
 	private ObservableComposition buildPlainBobMinorCompositionShell() {
 		ObservableComposition composition = new ObservableComposition();
 		composition.addNotation(buildPlainBobMinor());
-		composition.setCheckingType(CompositionType.LEAD_BASED);
+		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
 		composition.setPlainLeadToken("p");
 		return composition;

@@ -45,7 +45,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.setCheckingType(COURSE_BASED);
+        composition.setCompositionType(COURSE_BASED);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
         composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
@@ -355,7 +355,7 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         ObservableComposition composition = new ObservableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(true);
         composition.addDefinition("CALL", "-1-");
         composition.addDefinition("SPLICE", "P");

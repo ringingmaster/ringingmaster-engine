@@ -26,7 +26,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
     @Test
     public void callingPositionParsedInCallingPoitionArea() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "WH");
-        composition.setCheckingType(COURSE_BASED);
+        composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -95,7 +95,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
     @Test
     public void ignoreOtherCharactersInCallingPositionCell() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "bHd");
-        composition.setCheckingType(COURSE_BASED);
+        composition.setCompositionType(COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0, 0), unparsed(), valid(CALLING_POSITION), unparsed());
@@ -123,7 +123,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
-        composition.setCheckingType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "W");
         return composition;
