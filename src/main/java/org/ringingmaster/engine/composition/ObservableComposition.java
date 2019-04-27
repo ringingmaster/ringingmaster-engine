@@ -88,24 +88,25 @@ public class ObservableComposition {
         currentComposition = newComposition;
     }
 
-    public void setTitle(String title) {
+    public boolean setTitle(String title) {
         checkNotNull(title);
 
         if (Objects.equals(currentComposition.getTitle(), title)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTitle(title);
 
         setCurrentComposition(compositionBuilder.build());
+        return true;
     }
 
-    public void setAuthor(String author) {
+    public boolean setAuthor(String author) {
         checkNotNull(author);
 
         if (Objects.equals(currentComposition.getAuthor(), author)) {
-            return;
+            return false;
         }
 
         log.debug("[{}] Set author [{}]", currentComposition.getTitle(), author);
@@ -114,13 +115,14 @@ public class ObservableComposition {
                 .setAuthor(author);
 
         setCurrentComposition(compositionBuilder.build());
+        return true;
     }
 
-    public void setNumberOfBells(NumberOfBells numberOfBells) {
+    public boolean setNumberOfBells(NumberOfBells numberOfBells) {
         checkNotNull(numberOfBells);
 
         if (Objects.equals(currentComposition.getNumberOfBells(), numberOfBells)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder()
@@ -162,36 +164,38 @@ public class ObservableComposition {
         }
 
         setCurrentComposition(compositionBuilder.build());
+        return true;
     }
 
     //TODO need a checkNumberOfBells to drive UI
 
-    public void setCompositionType(CompositionType compositionType) {
+    public boolean setCompositionType(CompositionType compositionType) {
         checkNotNull(compositionType);
 
         if (Objects.equals(currentComposition.getCompositionType(), compositionType)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setCompositionType(compositionType);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+    return true;}
 
-    public void setCallFromBell(Bell callFromBell) {
+    public boolean setCallFromBell(Bell callFromBell) {
         checkNotNull(callFromBell);
         checkArgument(callFromBell.getZeroBasedBell() < currentComposition.getNumberOfBells().toInt());
 
         if (Objects.equals(currentComposition.getCallFromBell(), callFromBell)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setCallFromBell(callFromBell);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
     private Optional<Notation> findNextBestNonSplicedActiveNotation(Notation previousNotation) {
         final List<Notation> validNotations = Lists.newArrayList(currentComposition.getValidNotations());
@@ -236,14 +240,14 @@ public class ObservableComposition {
         return Optional.empty();
     }
 
-    public void addNotation(Notation notationToAdd) {
+    public boolean addNotation(Notation notationToAdd) {
         checkNotNull(notationToAdd, "notation must not be null");
 
         List<String> messages = checkAddNotation(notationToAdd);
 
         if (messages.size() > 0) {
             String message = messages.stream().collect(Collectors.joining(System.lineSeparator()));
-            throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "]: " + System.lineSeparator() + message);
+            throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "]: " + System.lineSeparator() + message); // TODO why not just return false like all the other methods
         }
 
         // IOf we are the first notation, then pre-emotively set the number of bells to match.
@@ -263,7 +267,8 @@ public class ObservableComposition {
         }
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
     public List<String> checkAddNotation(Notation notationToAdd) {
         return checkPotentialNewNotation(notationToAdd, Collections.emptySet());
@@ -296,7 +301,7 @@ public class ObservableComposition {
         return messages;
     }
 
-    public void removeNotation(Notation notationForRemoval) {
+    public boolean removeNotation(Notation notationForRemoval) {
         checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 
         PSet<Notation> allNotations = currentComposition.getAllNotations();
@@ -314,9 +319,10 @@ public class ObservableComposition {
         }
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void exchangeNotation(Notation originalNotation, Notation replacementNotation) {
+    public boolean exchangeNotation(Notation originalNotation, Notation replacementNotation) {
         checkNotNull(originalNotation, "originalNotation must not be null");
         checkNotNull(replacementNotation, "replacementNotation must not be null");
         checkArgument(originalNotation != replacementNotation);
@@ -348,7 +354,8 @@ public class ObservableComposition {
             }
         }
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
     //TODO rename exchangeNotation
     public List<String> checkUpdateNotation(Notation originalNotation, Notation replacementNotation) {
@@ -358,25 +365,26 @@ public class ObservableComposition {
         return checkPotentialNewNotation(replacementNotation, Sets.<Notation>newHashSet(originalNotation));
     }
 
-    public void setNonSplicedActiveNotation(Notation nonSplicedActiveNotation) {
+    public boolean setNonSplicedActiveNotation(Notation nonSplicedActiveNotation) {
         checkNotNull(nonSplicedActiveNotation);
         checkState(currentComposition.getAllNotations().contains(nonSplicedActiveNotation), "Can't set NonSplicedActiveNotation to notation not part of composition.");
 
         if (currentComposition.getNonSplicedActiveNotation().isPresent() &&
                 Objects.equals(currentComposition.getNonSplicedActiveNotation().get(), nonSplicedActiveNotation)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setNonSplicedActiveNotation(Optional.of(nonSplicedActiveNotation));
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setSpliced(boolean spliced) {
+    public boolean setSpliced(boolean spliced) {
 
         if (Objects.equals(currentComposition.isSpliced(), spliced)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition);
@@ -397,22 +405,24 @@ public class ObservableComposition {
         }
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setPlainLeadToken(String plainLeadToken) {
+    public boolean setPlainLeadToken(String plainLeadToken) {
         checkNotNull(plainLeadToken);
 
         if (Objects.equals(currentComposition.getPlainLeadToken(), plainLeadToken)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setPlainLeadToken(plainLeadToken);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void addDefinition(String shorthand, String characters) {
+    public boolean addDefinition(String shorthand, String characters) {
         checkNotNull(shorthand, "shorthand must not be null");
         checkState(shorthand.length() > 0, "shorthand must contain some characters");
 
@@ -443,9 +453,10 @@ public class ObservableComposition {
                 .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(cells, EmptyCell::new));
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void removeDefinition(String shorthand) {
+    public boolean removeDefinition(String shorthand) {
         checkNotNull(shorthand, "shorthand must not be null");
         checkState(shorthand.length() > 0, "shorthand must contain some characters");
 
@@ -471,180 +482,193 @@ public class ObservableComposition {
             .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setStartChange(Row startChange) {
+    public boolean setStartChange(Row startChange) {
         checkNotNull(startChange);
         checkArgument(startChange.getNumberOfBells() == currentComposition.getNumberOfBells());
 
         if (Objects.equals(currentComposition.getStartChange(), startChange)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setStartChange(startChange);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setStartAtRow(int startAtRow) {
+    public boolean setStartAtRow(int startAtRow) {
         checkArgument(startAtRow >= 0, "Start at row must be 0 or greater.");
         checkArgument(startAtRow <= START_AT_ROW_MAX, "Start at row must be less than or equal to %s", START_AT_ROW_MAX);
 
 
         if (Objects.equals(currentComposition.getStartAtRow(), startAtRow)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setStartAtRow(startAtRow);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setStartStroke(Stroke startStroke) {
+    public boolean setStartStroke(Stroke startStroke) {
         checkNotNull(startStroke);
 
         if (Objects.equals(currentComposition.getStartStroke(), startStroke)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setStartStroke(startStroke);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setStartNotation(Notation startNotation) {
+    public boolean setStartNotation(Notation startNotation) {
         checkNotNull(startNotation);
         checkState(startNotation.getNumberOfWorkingBells() == currentComposition.getNumberOfBells(), "Start Notation number of bells must match composition number of bells");
 
         if (currentComposition.getStartNotation().isPresent() &&
                 currentComposition.getStartNotation().get().getNotationDisplayString(false).equals(startNotation.getNotationDisplayString(false))) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setStartNotation(Optional.of(startNotation));
 
         setCurrentComposition(compositionBuilder.build());
+        return true;
+}
 
-    }
-
-    public void removeStartNotation() {
+    public boolean removeStartNotation() {
         if (!currentComposition.getStartNotation().isPresent()) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setStartNotation(Optional.empty());
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setTerminationMaxRows(int terminationMaxRows) {
+    public boolean setTerminationMaxRows(int terminationMaxRows) {
         checkArgument(terminationMaxRows > 0, "Termination max rows must be greater than 0");
         checkArgument(terminationMaxRows <= TERMINATION_MAX_ROWS_MAX, "Termination max rows must be less than or equal to %s", TERMINATION_MAX_ROWS_MAX);
 
         if (Objects.equals(currentComposition.getTerminationMaxRows(), terminationMaxRows)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationMaxRows(terminationMaxRows);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setTerminationMaxLeads(int terminationMaxLeads) {
+    public boolean setTerminationMaxLeads(int terminationMaxLeads) {
         checkArgument(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
         checkArgument(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
 
         if (Objects.equals(currentComposition.getTerminationMaxLeads(), terminationMaxLeads)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationMaxLeads(Optional.of(terminationMaxLeads));
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void removeTerminationMaxLeads() {
+    public boolean removeTerminationMaxLeads() {
         if (!currentComposition.getTerminationMaxLeads().isPresent()) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationMaxLeads(Optional.empty());
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setTerminationMaxParts(int terminationMaxParts) {
+    public boolean setTerminationMaxParts(int terminationMaxParts) {
         checkArgument(terminationMaxParts > 0, "Termination max parts must be greater than 0");
         checkArgument(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
 
         if (Objects.equals(currentComposition.getTerminationMaxParts(), terminationMaxParts)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationMaxParts(Optional.of(terminationMaxParts));
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void removeTerminationMaxParts() {
+    public boolean removeTerminationMaxParts() {
         if (!currentComposition.getTerminationMaxParts().isPresent()) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationMaxParts(Optional.empty());
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setTerminationMaxCircularComposition(int terminationCircularComposition) {
+    public boolean setTerminationMaxCircularComposition(int terminationCircularComposition) {
         checkArgument(terminationCircularComposition > 0, "Termination circular composition must be greater than 0");
         checkArgument(terminationCircularComposition <= TERMINATION_MAX_CIRCULARITY_MAX, "Termination circular composition must be less than or equal to %s", TERMINATION_MAX_CIRCULARITY_MAX);
 
         if (Objects.equals(currentComposition.getTerminationMaxCircularity(), terminationCircularComposition)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationMaxCircularity(terminationCircularComposition);
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void setTerminationChange(Row terminationChange) {
+    public boolean setTerminationChange(Row terminationChange) {
         checkNotNull(terminationChange, "terminationChange cant be null");
         checkArgument(terminationChange.getNumberOfBells().equals(currentComposition.getNumberOfBells()));
 
         if (currentComposition.getTerminationChange().isPresent() &&
                 currentComposition.getTerminationChange().get().equals(terminationChange)) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationChange(Optional.of(terminationChange));
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
-    public void removeTerminationChange() {
+    public boolean removeTerminationChange() {
         if (!currentComposition.getTerminationChange().isPresent()) {
-            return;
+            return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
                 .setTerminationChange(Optional.empty());
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
     /**
      * Because of the self collapsing nature of the grid, it is only possible to add characters to
@@ -655,7 +679,7 @@ public class ObservableComposition {
      * @param columnIndex must be no more than one larger than current column size
      * @param characters non null and greater than 0 in length
      */
-    public void addCharacters(TableType tableType, int rowIndex, int columnIndex, String characters) {
+    public boolean addCharacters(TableType tableType, int rowIndex, int columnIndex, String characters) {
         checkNotNull(tableType);
         checkNotNull(characters);
         checkArgument(!characters.isEmpty(), "Empty characters");
@@ -674,10 +698,10 @@ public class ObservableComposition {
             cellInsertIndex = (cell == null) ? 0 : cell.getElementSize();
         }
 
-        insertCharacters(tableType, rowIndex, columnIndex, cellInsertIndex, characters);
+        return insertCharacters(tableType, rowIndex, columnIndex, cellInsertIndex, characters);
     }
 
-    public void insertCharacters(TableType tableType, int rowIndex, int columnIndex, int cellInsertIndex, String characters) {
+    public boolean insertCharacters(TableType tableType, int rowIndex, int columnIndex, int cellInsertIndex, String characters) {
         checkNotNull(tableType);
         checkNotNull(characters);
         checkArgument(characters.length() > 0);
@@ -713,10 +737,10 @@ public class ObservableComposition {
                 .setCells(tableType, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
         setCurrentComposition(compositionBuilder.build());
+        return true;
+}
 
-    }
-
-    public void removeCharacters(TableType tableType, int rowIndex, int columnIndex, int cellIndex, int count) {
+    public boolean removeCharacters(TableType tableType, int rowIndex, int columnIndex, int cellIndex, int count) {
         checkNotNull(tableType);
         checkArgument(cellIndex >= 0 );
 
@@ -731,7 +755,8 @@ public class ObservableComposition {
                 .setCells(tableType, new TableBackedImmutableArrayTable<Cell>(mutatedCells, EmptyCell::new));
 
         setCurrentComposition(compositionBuilder.build());
-    }
+        return true;
+}
 
     private void removeCharactersInternal(int rowIndex, int columnIndex, int cellIndex, int count, Table<Integer, Integer, Cell> mutatedCells, ImmutableArrayTable<Cell> originalCells) {
         Cell currentCell = mutatedCells.get(rowIndex, columnIndex);
