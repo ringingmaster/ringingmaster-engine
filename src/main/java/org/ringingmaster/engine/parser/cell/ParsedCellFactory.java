@@ -43,10 +43,10 @@ public class ParsedCellFactory {
             }
         }).collect(Collectors.toSet());
 
-        Section[] sectionByElementIndex = new Section[parentCell.getElementSize()];
+        Section[] sectionByElementIndex = new Section[parentCell.size()];
         createSectionIndex(sections, sectionByElementIndex);
 
-        Group[] groupByElementIndex = new Group[parentCell.getElementSize()];
+        Group[] groupByElementIndex = new Group[parentCell.size()];
         createGroupIndex(groups, groupByElementIndex);
 
         ImmutableList<Section> allSections = ImmutableList.sortedCopyOf(Section.BY_START_INDEX, sections);

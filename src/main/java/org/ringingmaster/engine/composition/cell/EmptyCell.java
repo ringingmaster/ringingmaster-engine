@@ -1,7 +1,5 @@
 package org.ringingmaster.engine.composition.cell;
 
-import org.ringingmaster.engine.composition.element.Element;
-
 /**
  * TODO comments???
  *
@@ -12,12 +10,12 @@ public class EmptyCell implements Cell{
     public static EmptyCell INSTANCE = new EmptyCell();
 
     @Override
-    public Element getElement(int index) {
+    public char get(int index) {
         throw new IndexOutOfBoundsException();
     }
 
     @Override
-    public int getElementSize() {
+    public int size() {
         return 0;
     }
 

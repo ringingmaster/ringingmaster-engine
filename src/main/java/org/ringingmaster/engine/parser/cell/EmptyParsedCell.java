@@ -1,12 +1,11 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.composition.cell.Cell;
+import org.ringingmaster.engine.composition.cell.EmptyCell;
 import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.cell.EmptyCell;
-import org.ringingmaster.engine.composition.element.Element;
 
 import java.util.Optional;
 
@@ -23,12 +22,12 @@ public class EmptyParsedCell implements ParsedCell {
     }
 
     @Override
-    public Element getElement(int index) {
+    public char get(int index) {
         throw new IndexOutOfBoundsException();
     }
 
     @Override
-    public int getElementSize() {
+    public int size() {
         return 0;
     }
 

@@ -1,11 +1,6 @@
 package org.ringingmaster.engine.composition.cell;
 
-import com.google.common.collect.ImmutableList;
-import org.ringingmaster.engine.composition.element.Element;
-
 import javax.annotation.concurrent.Immutable;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * TODO Comments
@@ -15,24 +10,20 @@ import java.util.stream.Collectors;
 @Immutable
 class DefaultCell implements Cell {
 
-    private final ImmutableList<Element> elements;
     private final String characters;
 
-    public DefaultCell(List<Element> elements) {
-        this.elements = ImmutableList.copyOf(elements);
-        this.characters = elements.stream()
-                .map(element -> element.getCharacter())
-                .collect(Collectors.joining());
+    public DefaultCell(String characters) {
+        this.characters = characters;
     }
 
     @Override
-    public Element getElement(int index) {
-        return elements.get(index);
+    public char get(int index) {
+        return characters.charAt(index);
     }
 
     @Override
-    public int getElementSize() {
-        return elements.size();
+    public int size() {
+        return characters.length();
     }
 
     @Override

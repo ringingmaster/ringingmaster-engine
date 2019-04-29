@@ -432,7 +432,7 @@ public class ParsedCellMutatorTest {
 //        Element e = new Element('c');
 //
 //        Cell mock = mock(Cell.class);
-//        when(mock.getElementSize()).thenReturn(6);
+//        when(mock.size()).thenReturn(6);
 //        when(mock.get(anyInt())).thenReturn(e);
 //
 //        return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
@@ -448,8 +448,8 @@ public class ParsedCellMutatorTest {
         Element e = new Element('c');
 
         Cell mock = mock(Cell.class);
-        when(mock.getElementSize()).thenReturn(6);
-        when(mock.getElement(anyInt())).thenReturn(e);
+        when(mock.size()).thenReturn(6);
+        when(mock.get(anyInt())).thenReturn(e);
 
         return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }

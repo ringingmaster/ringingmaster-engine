@@ -24,7 +24,7 @@ public class ParsedCellMutatorGetSectionsAndGroups implements Function<ParsedCel
 
     private PSet<Section> getPrototypeSections(ParsedCell prototype) {
         Set<Section> sections = Sets.newHashSet();
-        for(int elementIndex = 0;elementIndex<prototype.getElementSize();elementIndex++) {
+        for(int elementIndex = 0; elementIndex<prototype.size(); elementIndex++) {
             prototype.getSectionAtElementIndex(elementIndex)
                     .ifPresent(sections::add);
         }
@@ -33,7 +33,7 @@ public class ParsedCellMutatorGetSectionsAndGroups implements Function<ParsedCel
 
     private PSet<Group> getPrototypeGroups(ParsedCell prototype) {
         Set<Group> groups = Sets.newHashSet();
-        for(int elementIndex = 0;elementIndex<prototype.getElementSize();elementIndex++) {
+        for(int elementIndex = 0; elementIndex<prototype.size(); elementIndex++) {
             prototype.getGroupAtElementIndex(elementIndex)
                     .ifPresent(groups::add);
         }

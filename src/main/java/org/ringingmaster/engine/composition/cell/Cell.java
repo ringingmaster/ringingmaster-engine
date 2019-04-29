@@ -10,9 +10,9 @@ import com.google.errorprone.annotations.Immutable;
 @Immutable
 public interface Cell {
 
-    char getElement(int index);
+    char get(int index);
 
-    int getElementSize();
+    int size();
 
     String getCharacters();
 }

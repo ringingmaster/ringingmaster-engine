@@ -26,11 +26,11 @@ public class ParsedCellFactoryTest {
                 buildSection(0, 1, CALL));
 
         Cell mock = mock(Cell.class);
-        when(mock.getElementSize()).thenReturn(1);
+        when(mock.size()).thenReturn(1);
 
         final ParsedCell parsedCell = ParsedCellFactory.buildParsedCellFromSections(mock, sections);
 
-        assertEquals(1, parsedCell.getElementSize());
+        assertEquals(1, parsedCell.size());
         assertEquals(CALL, parsedCell.getGroupAtElementIndex(0).get().getSections().get(0).getParseType());
     }
 
@@ -43,7 +43,7 @@ public class ParsedCellFactoryTest {
         );
 
         Cell mock = mock(Cell.class);
-        when(mock.getElementSize()).thenReturn(3);
+        when(mock.size()).thenReturn(3);
 
         final ParsedCell parsedCell = ParsedCellFactory.buildParsedCellFromSections(mock, sections);
 
@@ -59,8 +59,8 @@ public class ParsedCellFactoryTest {
                 buildSection(1, 1, CALL_MULTIPLIER));
 
         Cell mock = mock(Cell.class);
-        when(mock.getElementSize()).thenReturn(3);
-        when(mock.getElement(anyInt())).thenReturn(new Element('c'));
+        when(mock.size()).thenReturn(3);
+        when(mock.get(anyInt())).thenReturn(new Element('c'));
 
         ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }

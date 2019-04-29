@@ -1,11 +1,10 @@
 package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.ImmutableList;
+import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.element.Element;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,13 +42,13 @@ class DefaultParsedCell implements ParsedCell {
     }
 
     @Override
-    public int getElementSize() {
-        return parentCell.getElementSize();
+    public int size() {
+        return parentCell.size();
     }
 
     @Override
-    public Element getElement(int index) {
-        return parentCell.getElement(index);
+    public char get(int index) {
+        return parentCell.get(index);
     }
 
     @Override
@@ -88,11 +87,11 @@ class DefaultParsedCell implements ParsedCell {
     @Override
     public String getCharacters(ElementRange elementRange) {
         checkNotNull(elementRange);
-        checkArgument(elementRange.getStartIndex() + elementRange.getLength() <= getElementSize());
+        checkArgument(elementRange.getStartIndex() + elementRange.getLength() <= size());
 
         StringBuilder buff = new StringBuilder();
         for (int index = elementRange.getStartIndex(); index< elementRange.getStartIndex() + elementRange.getLength(); index++) {
-            buff.append(getElement(index).getCharacter());
+            buff.append(get(index));
         }
         return buff.toString();
     }
@@ -120,7 +119,7 @@ class DefaultParsedCell implements ParsedCell {
 
                     parsedTypeRow.append(" ").append(section.getParseType().toString()).append(" ");
                     sectionRow.append(" ")
-                            .append(parentCell.getElement(section.getStartIndex() + i).getCharacter())
+                            .append(parentCell.get(section.getStartIndex() + i))
                             .append(' ');
 
                     addBlockChar(groupRow, parsedTypeRow.length()-groupRow.length(), '-');

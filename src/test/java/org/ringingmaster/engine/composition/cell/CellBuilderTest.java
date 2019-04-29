@@ -19,7 +19,7 @@ public class CellBuilderTest {
                 .build();
 
         assertNotNull(cell);
-        assertEquals(0, cell.getElementSize());
+        assertEquals(0, cell.size());
     }
 
     @Test

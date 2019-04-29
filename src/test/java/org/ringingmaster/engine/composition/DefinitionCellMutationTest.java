@@ -40,11 +40,11 @@ public class DefinitionCellMutationTest {
         Cell shorthandCell = cells.get(0,0);
         Cell definitionCell = cells.get(0,1);
         assertEquals("A", shorthandCell.getCharacters());
-        assertEquals(2, definitionCell.getElementSize());
-        assertEquals("S", definitionCell.getElement(0).getCharacter());
-        assertFalse(definitionCell.getElement(0).getVariance().isPresent());
-        assertEquals("L", definitionCell.getElement(1).getCharacter());
-        assertFalse(definitionCell.getElement(1).getVariance().isPresent());
+        assertEquals(2, definitionCell.size());
+        assertEquals("S", definitionCell.get(0).getCharacter());
+        assertFalse(definitionCell.get(0).getVariance().isPresent());
+        assertEquals("L", definitionCell.get(1).getCharacter());
+        assertFalse(definitionCell.get(1).getVariance().isPresent());
     }
 
     @Test
@@ -61,11 +61,11 @@ public class DefinitionCellMutationTest {
         Cell shorthandCell = cells.get(0,0);
         Cell definitionCell = cells.get(0,1);
         assertEquals("A", shorthandCell.getCharacters());
-        assertEquals(2, definitionCell.getElementSize());
-        assertEquals("S", definitionCell.getElement(0).getCharacter());
-        assertFalse(definitionCell.getElement(0).getVariance().isPresent());
-        assertEquals("L", definitionCell.getElement(1).getCharacter());
-        assertFalse(definitionCell.getElement(1).getVariance().isPresent());
+        assertEquals(2, definitionCell.size());
+        assertEquals("S", definitionCell.get(0).getCharacter());
+        assertFalse(definitionCell.get(0).getVariance().isPresent());
+        assertEquals("L", definitionCell.get(1).getCharacter());
+        assertFalse(definitionCell.get(1).getVariance().isPresent());
     }
 
     @Test

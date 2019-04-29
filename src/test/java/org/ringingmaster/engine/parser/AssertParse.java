@@ -35,7 +35,7 @@ public class AssertParse {
 
         assertNotNull(parsedCell);
 
-        assertEquals("expected length does not match actual length", Arrays.stream(expecteds).mapToInt(Expected::getLength).sum(), parsedCell.getElementSize());
+        assertEquals("expected length does not match actual length", Arrays.stream(expecteds).mapToInt(Expected::getLength).sum(), parsedCell.size());
 
         long unexpectedGroupCount = Arrays.stream(expecteds).filter((Predicate<Expected>) input -> !(input instanceof UnparsedExpected)).count();
         assertEquals("expected top level count [" + unexpectedGroupCount + "] does not match group count [" + parsedCell.allGroups() .size() + "]", unexpectedGroupCount, parsedCell.allGroups().size());

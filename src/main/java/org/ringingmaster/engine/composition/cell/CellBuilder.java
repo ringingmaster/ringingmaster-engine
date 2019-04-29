@@ -1,7 +1,6 @@
 package org.ringingmaster.engine.composition.cell;
 
 import com.google.common.collect.Lists;
-import org.ringingmaster.engine.composition.element.ElementBuilder;
 
 import java.util.List;
 
@@ -65,10 +64,10 @@ public class CellBuilder {
         }
 
         if (buff.length() == 0) {
-
+            return EmptyCell.INSTANCE;
         }
 
-        return new DefaultCell(ElementBuilder.createElements(buff.toString()));
+        return new DefaultCell(buff.toString());
     }
 
     enum CharacterChangeAction {

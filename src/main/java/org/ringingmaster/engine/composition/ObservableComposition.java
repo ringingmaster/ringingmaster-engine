@@ -471,9 +471,9 @@ public class ObservableComposition {
             final Cell definitionCell = mutatedCells.get(rowIndex, DEFINITION_COLUMN);
             if (shorthandCell != null) {
                 if (Objects.equals(shorthand, shorthandCell.getCharacters())){
-                    removeCharactersInternal(rowIndex, SHORTHAND_COLUMN, 0,shorthandCell.getElementSize(), mutatedCells, definitionCells);
+                    removeCharactersInternal(rowIndex, SHORTHAND_COLUMN, 0,shorthandCell.size(), mutatedCells, definitionCells);
                     if (definitionCell != null) {
-                        removeCharactersInternal(rowIndex, DEFINITION_COLUMN, 0, definitionCell.getElementSize(), mutatedCells, definitionCells);
+                        removeCharactersInternal(rowIndex, DEFINITION_COLUMN, 0, definitionCell.size(), mutatedCells, definitionCells);
                     }
                     removeRowIfEmpty(rowIndex, mutatedCells, definitionCells);
                     break;
@@ -698,7 +698,7 @@ public class ObservableComposition {
         if (rowIndex    < cells.getRowSize() &&
             columnIndex < cells.getColumnSize()) {
             Cell cell = cells.get(rowIndex, columnIndex);
-            cellInsertIndex = (cell == null) ? 0 : cell.getElementSize();
+            cellInsertIndex = (cell == null) ? 0 : cell.size();
         }
 
         return insertCharacters(tableType, rowIndex, columnIndex, cellInsertIndex, characters);
@@ -771,7 +771,7 @@ public class ObservableComposition {
                 .delete(cellIndex, count)
                 .build();
 
-        if (cell.getElementSize() == 0) {
+        if (cell.size() == 0) {
             mutatedCells.remove(rowIndex, columnIndex);
             removeRowIfEmpty(rowIndex, mutatedCells, originalCells);
             removeColumnIfEmpty(columnIndex, mutatedCells, originalCells);

@@ -27,7 +27,7 @@ public class ParsedCellTest {
 
         ParsedCell parsedCell = buildParsedCell();
 
-        parsedCell.getGroupAtElementIndex(parsedCell.getElementSize());
+        parsedCell.getGroupAtElementIndex(parsedCell.size());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -43,7 +43,7 @@ public class ParsedCellTest {
 
         ParsedCell parsedCell = buildParsedCell();
 
-        parsedCell.getSectionAtElementIndex(parsedCell.getElementSize());
+        parsedCell.getSectionAtElementIndex(parsedCell.size());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -74,8 +74,8 @@ public class ParsedCellTest {
 
 
         Cell mockCell = mock(Cell.class);
-        when(mockCell.getElementSize()).thenReturn(10);
-        when(mockCell.getElement(anyInt())).thenReturn(new Element('c'));
+        when(mockCell.size()).thenReturn(10);
+        when(mockCell.get(anyInt())).thenReturn(new Element('c'));
 
         ParsedCell parsedCell = ParsedCellFactory.buildParsedCellFromGroups(mockCell, groups);
 
@@ -90,7 +90,7 @@ public class ParsedCellTest {
                 GroupingFactory.buildSection(3, 3, ParseType.PLAIN_LEAD));
 
         Cell mockCell = mock(Cell.class);
-        when(mockCell.getElementSize()).thenReturn(6);
+        when(mockCell.size()).thenReturn(6);
 
         return ParsedCellFactory.buildParsedCellFromSections(mockCell, sections);
     }
