@@ -739,7 +739,7 @@ public class ObservableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCells(tableType, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Typing"));
         return true;
 }
 
@@ -757,7 +757,7 @@ public class ObservableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCells(tableType, new TableBackedImmutableArrayTable<Cell>(mutatedCells, EmptyCell::new));
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Delete"));
         return true;
 }
 
