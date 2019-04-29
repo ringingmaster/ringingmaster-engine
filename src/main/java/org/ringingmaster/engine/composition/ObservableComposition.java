@@ -13,19 +13,19 @@ import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
-import org.ringingmaster.engine.composition.compositiontype.CompositionType;
-import org.ringingmaster.engine.method.Bell;
-import org.ringingmaster.engine.method.Row;
-import org.ringingmaster.engine.method.Stroke;
-import org.ringingmaster.engine.method.MethodBuilder;
-import org.ringingmaster.engine.notation.Notation;
-import org.ringingmaster.engine.notation.PlaceSetSequence;
-import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.CellBuilder;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
-import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.composition.tableaccess.DefaultCompositionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.method.Bell;
+import org.ringingmaster.engine.method.MethodBuilder;
+import org.ringingmaster.engine.method.Row;
+import org.ringingmaster.engine.method.Stroke;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
+import org.ringingmaster.engine.notation.PlaceSetSequence;
 import org.ringingmaster.util.smartcompare.SmartCompare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,92 +66,95 @@ public class ObservableComposition {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Composition currentComposition = new CompositionBuilder().defaults().build();
-    private final BehaviorSubject<Composition> subject = BehaviorSubject.create();
+    private final BehaviorSubject<Composition> compositionStream;
     private final SmartCompare s = new SmartCompare("", "> ")
             .comparePaths("numberOfBells")
             .comparePaths("startChange")
+            .ignorePaths("actionName")
             .bindComparator((field, object1, object2) -> ((DefaultCompositionTableAccess)object1).allCompositionCells() == ((DefaultCompositionTableAccess)object2).allCompositionCells(),"compositionTableAccessDelegate")
             .bindComparator((field, object1, object2) -> ((DefaultDefinitionTableAccess)object1).allDefinitionCells() == ((DefaultDefinitionTableAccess)object2).allDefinitionCells(),"definitionTableCellsDelegate");
 
+    public ObservableComposition() {
+        compositionStream = BehaviorSubject.createDefault(new CompositionBuilder().defaults().build());
+        if (log.isInfoEnabled()) {
+            compositionStream.buffer(2,1).subscribe(compositions -> {
+                log.info("[{}] Action:[{}] Diff [{}]",
+                        compositions.get(0).getTitle(), compositions.get(1).getActionName(),
+                        s.stringDifferences(compositions.get(0), compositions.get(1)));
+            });
+        }
+    }
+
     public Observable<Composition> observable() {
-        return subject;
+        return compositionStream;
     }
 
     public Composition get() {
-        return currentComposition;
-    }
-
-    private void setCurrentComposition(Composition newComposition) {
-        log.info("[{}] Composition diff [{}]", currentComposition.getTitle(), s.stringDifferences(currentComposition, newComposition));
-        subject.onNext(newComposition);
-        currentComposition = newComposition;
+        return compositionStream.getValue();
     }
 
     public boolean setTitle(String title) {
         checkNotNull(title);
 
-        if (Objects.equals(currentComposition.getTitle(), title)) {
+        if (Objects.equals(compositionStream.getValue().getTitle(), title)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTitle(title);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Set Title"));
         return true;
     }
 
     public boolean setAuthor(String author) {
         checkNotNull(author);
 
-        if (Objects.equals(currentComposition.getAuthor(), author)) {
+        if (Objects.equals(compositionStream.getValue().getAuthor(), author)) {
             return false;
         }
 
-        log.debug("[{}] Set author [{}]", currentComposition.getTitle(), author);
-
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setAuthor(author);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Set Author"));
         return true;
     }
 
     public boolean setNumberOfBells(NumberOfBells numberOfBells) {
         checkNotNull(numberOfBells);
 
-        if (Objects.equals(currentComposition.getNumberOfBells(), numberOfBells)) {
+        if (Objects.equals(compositionStream.getValue().getNumberOfBells(), numberOfBells)) {
             return false;
         }
 
         CompositionBuilder compositionBuilder = new CompositionBuilder()
-                .prototypeOf(currentComposition)
+                .prototypeOf(compositionStream.getValue())
                 .setNumberOfBells(numberOfBells);
 
-        if (currentComposition.getCallFromBell().getZeroBasedBell() > numberOfBells.getTenor().getZeroBasedBell()) {
+        if (compositionStream.getValue().getCallFromBell().getZeroBasedBell() > numberOfBells.getTenor().getZeroBasedBell()) {
             compositionBuilder.setCallFromBell(numberOfBells.getTenor());
         }
 
-        final Row existingStartChange = currentComposition.getStartChange();
+        final Row existingStartChange = compositionStream.getValue().getStartChange();
         final Row newStartChange = MethodBuilder.transformToNewNumberOfBells(existingStartChange, numberOfBells);
         compositionBuilder.setStartChange(newStartChange);
 
-        if (currentComposition.getTerminationChange().isPresent()) {
-            final Row existingTerminationRow = currentComposition.getTerminationChange().get();
+        if (compositionStream.getValue().getTerminationChange().isPresent()) {
+            final Row existingTerminationRow = compositionStream.getValue().getTerminationChange().get();
             final Row newTerminationRow = MethodBuilder.transformToNewNumberOfBells(existingTerminationRow, numberOfBells);
             compositionBuilder.setTerminationChange(Optional.of(newTerminationRow));
         }
 
-        if (!currentComposition.isSpliced() &&
-                currentComposition.getNonSplicedActiveNotation().isPresent() &&
-                currentComposition.getNonSplicedActiveNotation().get().getNumberOfWorkingBells().toInt() > numberOfBells.toInt()) {
-            Optional<Notation> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(currentComposition.getNonSplicedActiveNotation().get());
+        if (!compositionStream.getValue().isSpliced() &&
+                compositionStream.getValue().getNonSplicedActiveNotation().isPresent() &&
+                compositionStream.getValue().getNonSplicedActiveNotation().get().getNumberOfWorkingBells().toInt() > numberOfBells.toInt()) {
+            Optional<Notation> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(compositionStream.getValue().getNonSplicedActiveNotation().get());
             compositionBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
         }
 
-        if (currentComposition.getStartNotation().isPresent()) {
-            final String originalNotation = currentComposition.getStartNotation().get().getNotationDisplayString(false);
+        if (compositionStream.getValue().getStartNotation().isPresent()) {
+            final String originalNotation = compositionStream.getValue().getStartNotation().get().getNotationDisplayString(false);
             Notation builtNotation = NotationBuilder.getInstance()
                     .setNumberOfWorkingBells(numberOfBells)
                     .setUnfoldedNotationShorthand(originalNotation)
@@ -163,7 +166,7 @@ public class ObservableComposition {
             }
         }
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
     }
 
@@ -172,33 +175,33 @@ public class ObservableComposition {
     public boolean setCompositionType(CompositionType compositionType) {
         checkNotNull(compositionType);
 
-        if (Objects.equals(currentComposition.getCompositionType(), compositionType)) {
+        if (Objects.equals(compositionStream.getValue().getCompositionType(), compositionType)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCompositionType(compositionType);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
     return true;}
 
     public boolean setCallFromBell(Bell callFromBell) {
         checkNotNull(callFromBell);
-        checkArgument(callFromBell.getZeroBasedBell() < currentComposition.getNumberOfBells().toInt());
+        checkArgument(callFromBell.getZeroBasedBell() < compositionStream.getValue().getNumberOfBells().toInt());
 
-        if (Objects.equals(currentComposition.getCallFromBell(), callFromBell)) {
+        if (Objects.equals(compositionStream.getValue().getCallFromBell(), callFromBell)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCallFromBell(callFromBell);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     private Optional<Notation> findNextBestNonSplicedActiveNotation(Notation previousNotation) {
-        final List<Notation> validNotations = Lists.newArrayList(currentComposition.getValidNotations());
+        final List<Notation> validNotations = Lists.newArrayList(compositionStream.getValue().getValidNotations());
         validNotations.remove(previousNotation);
 
         Comparator<NumberOfBells> byDistanceFromPassedNumberOfBells = (o1, o2) -> ComparisonChain.start()
@@ -251,22 +254,22 @@ public class ObservableComposition {
         }
 
         // IOf we are the first notation, then pre-emotively set the number of bells to match.
-        if (currentComposition.getAllNotations().size() == 0) {
+        if (compositionStream.getValue().getAllNotations().size() == 0) {
             setNumberOfBells(notationToAdd.getNumberOfWorkingBells());
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition);
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue());
 
 
-        PSet<Notation> withAddedNotation = currentComposition.getAllNotations().plus(notationToAdd);
+        PSet<Notation> withAddedNotation = compositionStream.getValue().getAllNotations().plus(notationToAdd);
         compositionBuilder.setAllNotations(withAddedNotation);
 
 //TODO what if the number of bells is wrong?
-        if (!currentComposition.isSpliced() && !currentComposition.getNonSplicedActiveNotation().isPresent()) {
+        if (!compositionStream.getValue().isSpliced() && !compositionStream.getValue().getNonSplicedActiveNotation().isPresent()) {
             compositionBuilder.setNonSplicedActiveNotation(Optional.of(notationToAdd));
         }
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -279,7 +282,7 @@ public class ObservableComposition {
         checkNotNull(notationsToExclude);
 
         List<String> messages = new ArrayList<>();
-        PSet<Notation> allNotationsWithExclusions = currentComposition.getAllNotations().minusAll(notationsToExclude);
+        PSet<Notation> allNotationsWithExclusions = compositionStream.getValue().getAllNotations().minusAll(notationsToExclude);
 
         messages.addAll(allNotationsWithExclusions.stream()
                 .filter(existingNotation -> (existingNotation.getNumberOfWorkingBells() == notationToCheck.getNumberOfWorkingBells()) &&
@@ -304,21 +307,21 @@ public class ObservableComposition {
     public boolean removeNotation(Notation notationForRemoval) {
         checkNotNull(notationForRemoval, "notationForRemoval must not be null");
 
-        PSet<Notation> allNotations = currentComposition.getAllNotations();
+        PSet<Notation> allNotations = compositionStream.getValue().getAllNotations();
         checkState(allNotations.contains(notationForRemoval));
 
         PSet<Notation> withRemovedNotation = allNotations.minus(notationForRemoval);
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setAllNotations(withRemovedNotation);
 
         // Sort out the next notation if it is the active notation
-        if (currentComposition.getNonSplicedActiveNotation().isPresent() &&
-                notationForRemoval.equals(currentComposition.getNonSplicedActiveNotation().get())) {
+        if (compositionStream.getValue().getNonSplicedActiveNotation().isPresent() &&
+                notationForRemoval.equals(compositionStream.getValue().getNonSplicedActiveNotation().get())) {
             Optional<Notation> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(notationForRemoval);
             compositionBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
         }
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -328,7 +331,7 @@ public class ObservableComposition {
         checkArgument(originalNotation != replacementNotation);
 
 
-        PSet<Notation> allNotations = currentComposition.getAllNotations();
+        PSet<Notation> allNotations = compositionStream.getValue().getAllNotations();
         checkState(allNotations.contains(originalNotation));
 
         List<String> messages = checkUpdateNotation(originalNotation, replacementNotation);
@@ -338,22 +341,22 @@ public class ObservableComposition {
             throw new IllegalArgumentException("Can't update notation [" + replacementNotation + "]: " + System.lineSeparator() + message);
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition);
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue());
 
         allNotations = allNotations.minus(originalNotation)
                 .plus(replacementNotation);
         compositionBuilder.setAllNotations(allNotations);
 
-        if (currentComposition.getNonSplicedActiveNotation().isPresent() &&
-                currentComposition.getNonSplicedActiveNotation().get() == originalNotation) {
-            if (replacementNotation.getNumberOfWorkingBells().toInt() > currentComposition.getNumberOfBells().toInt()) {
+        if (compositionStream.getValue().getNonSplicedActiveNotation().isPresent() &&
+                compositionStream.getValue().getNonSplicedActiveNotation().get() == originalNotation) {
+            if (replacementNotation.getNumberOfWorkingBells().toInt() > compositionStream.getValue().getNumberOfBells().toInt()) {
                 Optional<Notation> nextBestNonSplicedActiveNotation = findNextBestNonSplicedActiveNotation(replacementNotation);
                 compositionBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
             } else {
                 compositionBuilder.setNonSplicedActiveNotation(Optional.of(replacementNotation));
             }
         }
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -367,34 +370,34 @@ public class ObservableComposition {
 
     public boolean setNonSplicedActiveNotation(Notation nonSplicedActiveNotation) {
         checkNotNull(nonSplicedActiveNotation);
-        checkState(currentComposition.getAllNotations().contains(nonSplicedActiveNotation), "Can't set NonSplicedActiveNotation to notation not part of composition.");
+        checkState(compositionStream.getValue().getAllNotations().contains(nonSplicedActiveNotation), "Can't set NonSplicedActiveNotation to notation not part of composition.");
 
-        if (currentComposition.getNonSplicedActiveNotation().isPresent() &&
-                Objects.equals(currentComposition.getNonSplicedActiveNotation().get(), nonSplicedActiveNotation)) {
+        if (compositionStream.getValue().getNonSplicedActiveNotation().isPresent() &&
+                Objects.equals(compositionStream.getValue().getNonSplicedActiveNotation().get(), nonSplicedActiveNotation)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setNonSplicedActiveNotation(Optional.of(nonSplicedActiveNotation));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean setSpliced(boolean spliced) {
 
-        if (Objects.equals(currentComposition.isSpliced(), spliced)) {
+        if (Objects.equals(compositionStream.getValue().isSpliced(), spliced)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition);
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue());
 
 
         if (spliced) {
             compositionBuilder.setNonSplicedActiveNotation(Optional.empty());
         }
         else {
-            final Set<Notation> validNotations = currentComposition.getValidNotations();
+            final Set<Notation> validNotations = compositionStream.getValue().getValidNotations();
 
             if (validNotations.size() > 0) {
                 Optional<Notation> firstByName = validNotations.stream()
@@ -404,21 +407,21 @@ public class ObservableComposition {
             }
         }
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean setPlainLeadToken(String plainLeadToken) {
         checkNotNull(plainLeadToken);
 
-        if (Objects.equals(currentComposition.getPlainLeadToken(), plainLeadToken)) {
+        if (Objects.equals(compositionStream.getValue().getPlainLeadToken(), plainLeadToken)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setPlainLeadToken(plainLeadToken);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -428,12 +431,12 @@ public class ObservableComposition {
 
         // Check duplicate name
         shorthand = shorthand.trim();
-        if (currentComposition.findDefinitionByShorthand(shorthand).isPresent()) {
-            throw new IllegalArgumentException("Can't add definition [" + shorthand + "] as it has a duplicate shorthand to existing definition [" + currentComposition.findDefinitionByShorthand(shorthand) + "]");
+        if (compositionStream.getValue().findDefinitionByShorthand(shorthand).isPresent()) {
+            throw new IllegalArgumentException("Can't add definition [" + shorthand + "] as it has a duplicate shorthand to existing definition [" + compositionStream.getValue().findDefinitionByShorthand(shorthand) + "]");
         }
 
-        Table<Integer, Integer, Cell> cells = HashBasedTable.create(currentComposition.allDefinitionCells().getBackingTable());
-        int insertionRow = currentComposition.allDefinitionCells().getRowSize();
+        Table<Integer, Integer, Cell> cells = HashBasedTable.create(compositionStream.getValue().allDefinitionCells().getBackingTable());
+        int insertionRow = compositionStream.getValue().allDefinitionCells().getRowSize();
 
         Cell shorthandCell = new CellBuilder()
                 .defaults()
@@ -449,10 +452,10 @@ public class ObservableComposition {
 
         //TODO sort the definitions alpha numeric???
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(cells, EmptyCell::new));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -460,7 +463,7 @@ public class ObservableComposition {
         checkNotNull(shorthand, "shorthand must not be null");
         checkState(shorthand.length() > 0, "shorthand must contain some characters");
 
-        final ImmutableArrayTable<Cell> definitionCells = currentComposition.allDefinitionCells();
+        final ImmutableArrayTable<Cell> definitionCells = compositionStream.getValue().allDefinitionCells();
         Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(definitionCells.getBackingTable());
 
         for (int rowIndex=0;rowIndex<definitionCells.getRowSize();rowIndex++) {
@@ -478,25 +481,25 @@ public class ObservableComposition {
             }
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
             .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean setStartChange(Row startChange) {
         checkNotNull(startChange);
-        checkArgument(startChange.getNumberOfBells() == currentComposition.getNumberOfBells());
+        checkArgument(startChange.getNumberOfBells() == compositionStream.getValue().getNumberOfBells());
 
-        if (Objects.equals(currentComposition.getStartChange(), startChange)) {
+        if (Objects.equals(compositionStream.getValue().getStartChange(), startChange)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartChange(startChange);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -505,56 +508,56 @@ public class ObservableComposition {
         checkArgument(startAtRow <= START_AT_ROW_MAX, "Start at row must be less than or equal to %s", START_AT_ROW_MAX);
 
 
-        if (Objects.equals(currentComposition.getStartAtRow(), startAtRow)) {
+        if (Objects.equals(compositionStream.getValue().getStartAtRow(), startAtRow)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartAtRow(startAtRow);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean setStartStroke(Stroke startStroke) {
         checkNotNull(startStroke);
 
-        if (Objects.equals(currentComposition.getStartStroke(), startStroke)) {
+        if (Objects.equals(compositionStream.getValue().getStartStroke(), startStroke)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartStroke(startStroke);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean setStartNotation(Notation startNotation) {
         checkNotNull(startNotation);
-        checkState(startNotation.getNumberOfWorkingBells() == currentComposition.getNumberOfBells(), "Start Notation number of bells must match composition number of bells");
+        checkState(startNotation.getNumberOfWorkingBells() == compositionStream.getValue().getNumberOfBells(), "Start Notation number of bells must match composition number of bells");
 
-        if (currentComposition.getStartNotation().isPresent() &&
-                currentComposition.getStartNotation().get().getNotationDisplayString(false).equals(startNotation.getNotationDisplayString(false))) {
+        if (compositionStream.getValue().getStartNotation().isPresent() &&
+                compositionStream.getValue().getStartNotation().get().getNotationDisplayString(false).equals(startNotation.getNotationDisplayString(false))) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartNotation(Optional.of(startNotation));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean removeStartNotation() {
-        if (!currentComposition.getStartNotation().isPresent()) {
+        if (!compositionStream.getValue().getStartNotation().isPresent()) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartNotation(Optional.empty());
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -562,14 +565,14 @@ public class ObservableComposition {
         checkArgument(terminationMaxRows > 0, "Termination max rows must be greater than 0");
         checkArgument(terminationMaxRows <= TERMINATION_MAX_ROWS_MAX, "Termination max rows must be less than or equal to %s", TERMINATION_MAX_ROWS_MAX);
 
-        if (Objects.equals(currentComposition.getTerminationMaxRows(), terminationMaxRows)) {
+        if (Objects.equals(compositionStream.getValue().getTerminationMaxRows(), terminationMaxRows)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxRows(terminationMaxRows);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -577,26 +580,26 @@ public class ObservableComposition {
         checkArgument(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
         checkArgument(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
 
-        if (Objects.equals(currentComposition.getTerminationMaxLeads(), terminationMaxLeads)) {
+        if (Objects.equals(compositionStream.getValue().getTerminationMaxLeads(), terminationMaxLeads)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxLeads(Optional.of(terminationMaxLeads));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean removeTerminationMaxLeads() {
-        if (!currentComposition.getTerminationMaxLeads().isPresent()) {
+        if (!compositionStream.getValue().getTerminationMaxLeads().isPresent()) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxLeads(Optional.empty());
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -604,26 +607,26 @@ public class ObservableComposition {
         checkArgument(terminationMaxParts > 0, "Termination max parts must be greater than 0");
         checkArgument(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
 
-        if (Objects.equals(currentComposition.getTerminationMaxParts(), terminationMaxParts)) {
+        if (Objects.equals(compositionStream.getValue().getTerminationMaxParts(), terminationMaxParts)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxParts(Optional.of(terminationMaxParts));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean removeTerminationMaxParts() {
-        if (!currentComposition.getTerminationMaxParts().isPresent()) {
+        if (!compositionStream.getValue().getTerminationMaxParts().isPresent()) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxParts(Optional.empty());
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -631,42 +634,42 @@ public class ObservableComposition {
         checkArgument(terminationCircularComposition > 0, "Termination circular composition must be greater than 0");
         checkArgument(terminationCircularComposition <= TERMINATION_MAX_CIRCULARITY_MAX, "Termination circular composition must be less than or equal to %s", TERMINATION_MAX_CIRCULARITY_MAX);
 
-        if (Objects.equals(currentComposition.getTerminationMaxCircularity(), terminationCircularComposition)) {
+        if (Objects.equals(compositionStream.getValue().getTerminationMaxCircularity(), terminationCircularComposition)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxCircularity(terminationCircularComposition);
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean setTerminationChange(Row terminationChange) {
         checkNotNull(terminationChange, "terminationChange cant be null");
-        checkArgument(terminationChange.getNumberOfBells().equals(currentComposition.getNumberOfBells()));
+        checkArgument(terminationChange.getNumberOfBells().equals(compositionStream.getValue().getNumberOfBells()));
 
-        if (currentComposition.getTerminationChange().isPresent() &&
-                currentComposition.getTerminationChange().get().equals(terminationChange)) {
+        if (compositionStream.getValue().getTerminationChange().isPresent() &&
+                compositionStream.getValue().getTerminationChange().get().equals(terminationChange)) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationChange(Optional.of(terminationChange));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
     public boolean removeTerminationChange() {
-        if (!currentComposition.getTerminationChange().isPresent()) {
+        if (!compositionStream.getValue().getTerminationChange().isPresent()) {
             return false;
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationChange(Optional.empty());
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -733,10 +736,10 @@ public class ObservableComposition {
             mutatedCells.put(rowIndex, columnIndex, cell);
         }
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCells(tableType, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -751,10 +754,10 @@ public class ObservableComposition {
         Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(originalCells.getBackingTable());
         removeCharactersInternal(rowIndex, columnIndex, cellIndex, count, mutatedCells, originalCells);
 
-        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(currentComposition)
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCells(tableType, new TableBackedImmutableArrayTable<Cell>(mutatedCells, EmptyCell::new));
 
-        setCurrentComposition(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build());
         return true;
 }
 
@@ -782,9 +785,9 @@ public class ObservableComposition {
         switch (tableType){
 
             case MAIN_TABLE:
-                return currentComposition.allCompositionCells();
+                return compositionStream.getValue().allCompositionCells();
             case DEFINITION_TABLE:
-                return currentComposition.allDefinitionCells();
+                return compositionStream.getValue().allDefinitionCells();
             default:
                 throw new UnsupportedOperationException();
         }

@@ -114,6 +114,34 @@ public class AssignParseTypeSPLICETest {
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), unparsed());
     }
 
+    @Test
+    public void regexInSpliceMatchedLiteral() {
+        Notation notation = NotationBuilder.getInstance()
+                .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+                .setName("Plain*Bob")
+                .setFoldedPalindromeNotationShorthand("x16x16x16", "12")
+                .addCall("Bob", "-", "14", true)
+                .addCall("Single", "s", "1234", false)
+                .addCallInitiationRow(7)
+                .addMethodCallingPosition("W", 7, 1)
+                .addMethodCallingPosition("H", 7, 2)
+                .setSpliceIdentifier("*")
+                .build();
+
+        ObservableComposition composition = buildSingleCellComposition(notation, "-");
+        composition.addCharacters(MAIN_TABLE,0,1,"Plain*Bob");
+        composition.addCharacters(MAIN_TABLE,1,1,"Plain*Bob Minor");
+        composition.addCharacters(MAIN_TABLE,2,1,"*");
+
+        composition.setSpliced(true);
+
+        Parse parse = new AssignParseType().apply(composition.get());
+
+        assertParse(parse.allCompositionCells().get(0, 1), valid(9, SPLICE));
+        assertParse(parse.allCompositionCells().get(1, 1), valid(15, SPLICE));
+        assertParse(parse.allCompositionCells().get(2, 1), valid(1, SPLICE));
+    }
+
 
     private Notation buildPlainBobMinor() {
         return NotationBuilder.getInstance()

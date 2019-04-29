@@ -33,6 +33,10 @@ class CompositionBuilder {
 
     private Composition prototype;
 
+    // Holds the name of the change that caused this change to be built. Used for Undo/Redo
+    private Optional<String> actionName = Optional.empty();
+
+
     private Optional<String> title = Optional.empty();
     private Optional<String> author = Optional.empty();
 
@@ -68,6 +72,8 @@ class CompositionBuilder {
      * @return
      */
     CompositionBuilder defaults() {
+        actionName = Optional.of("New");
+
         setTitle(DEFAULT_TITLE);
         setAuthor("");
 
@@ -200,9 +206,12 @@ class CompositionBuilder {
         return this;
     }
 
+    Composition build(String actionName) {
+        this.actionName = Optional.of(actionName);
 
-    Composition build() {
         return new Composition(
+                this.actionName.get(),
+
                 title.orElseGet(()->prototype.getTitle()),
                 author.orElseGet(()->prototype.getAuthor()),
 
@@ -228,6 +237,11 @@ class CompositionBuilder {
 
                 compositionCells.orElseGet(()->prototype.allCompositionCells())
         );
+    }
+
+    @Deprecated
+    Composition build() {
+        return build("TODO");
     }
 
     @Override

@@ -74,7 +74,7 @@ public class AssertParse {
                 }
             }
             else if (expected instanceof SectionExpected) {
-                throw new IllegalStateException("SectionExpected onlay valid in a GroupExpected");
+                throw new IllegalStateException("SectionExpected only valid in a GroupExpected");
             }
         }
     }

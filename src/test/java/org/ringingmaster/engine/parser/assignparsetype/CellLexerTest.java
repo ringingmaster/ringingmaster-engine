@@ -256,6 +256,19 @@ public class CellLexerTest {
     }
 
 
+    @Test
+    public void escapedRegexCharactersMatchLiteral() {
+        Set<LexerDefinition> a = Sets.newHashSet();
+        a.add(new LexerDefinition(1, 0, "3\\*", CALL));
+
+        Cell cell = buildCell("3*");
+
+        ParsedCell parsedCell = cellLexer.lexCell(cell, a, "");
+
+        assertParse(parsedCell, valid(2,CALL));
+    }
+
+
     private Cell buildCell(String characters) {
         return new CellBuilder().insert(0, characters).build();
     }

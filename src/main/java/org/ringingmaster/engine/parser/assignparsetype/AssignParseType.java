@@ -253,7 +253,7 @@ public class AssignParseType implements Function<Composition, Parse> {
         for (Notation notation : composition.getAvailableNotations()) {
             for (CallingPosition callingPosition : notation.getMethodBasedCallingPositions()) {
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, callingPosition.getName().length(),
-                        callingPosition.getName(), CALLING_POSITION));
+                        "\\Q" + callingPosition.getName() + "\\E", CALLING_POSITION));
             }
         }
     }
@@ -261,7 +261,7 @@ public class AssignParseType implements Function<Composition, Parse> {
     private void addPlainLeadLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
         if (composition.getCompositionType() == LEAD_BASED) {
             lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, composition.getPlainLeadToken().length(),
-                    "(\\d*)(" + composition.getPlainLeadToken() + ")", PLAIN_LEAD_MULTIPLIER, PLAIN_LEAD));
+                    "(\\d*)(\\Q" + composition.getPlainLeadToken() + "\\E)", PLAIN_LEAD_MULTIPLIER, PLAIN_LEAD));
         }
     }
 
@@ -269,9 +269,9 @@ public class AssignParseType implements Function<Composition, Parse> {
         for (Notation notation : composition.getAvailableNotations()) {
             for (Call call : notation.getCalls()) {
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, call.getNameShorthand().length(),
-                        "(\\d*)(" + call.getNameShorthand() + ")", CALL_MULTIPLIER, CALL));
+                        "(\\d*)(\\Q" + call.getNameShorthand() + "\\E)", CALL_MULTIPLIER, CALL));
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, call.getName().length(),
-                        "(\\d*)(" + call.getName() + ")", CALL_MULTIPLIER, CALL));
+                        "(\\d*)(\\Q" + call.getName() + "\\E)", CALL_MULTIPLIER, CALL));
             }
         }
     }
@@ -280,19 +280,19 @@ public class AssignParseType implements Function<Composition, Parse> {
         for (Notation notation : composition.getAvailableNotations()) {
             if (!Strings.isNullOrEmpty(notation.getSpliceIdentifier())){
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notation.getSpliceIdentifier().length(),
-                        "(\\d*)(" + notation.getSpliceIdentifier() + ")", SPLICE_MULTIPLIER, SPLICE));
+                        "(\\d*)(\\Q" + notation.getSpliceIdentifier() + "\\E)", SPLICE_MULTIPLIER, SPLICE));
             }
             lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notation.getName().length(),
-                    "(\\d*)(" + notation.getName() + ")", SPLICE_MULTIPLIER, SPLICE));
+                    "(\\d*)(\\Q" + notation.getName() + "\\E)", SPLICE_MULTIPLIER, SPLICE));
             lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, notation.getNameIncludingNumberOfBells().length(),
-                    "(\\d*)(" + notation.getNameIncludingNumberOfBells() + ")", SPLICE_MULTIPLIER, SPLICE));
+                    "(\\d*)(\\Q" + notation.getNameIncludingNumberOfBells() + "\\E)", SPLICE_MULTIPLIER, SPLICE));
         }
     }
 
     private void addDefinitionLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
         for (String shorthand : composition.getAllDefinitionShorthands()) {
             lexerDefinitions.add(new LexerDefinition(PRECEDENCE_DEFINITION, shorthand.length(),
-                    "(\\d*)(" + shorthand + ")", DEFINITION_MULTIPLIER, DEFINITION));
+                    "(\\d*)(\\Q" + shorthand + "\\E)", DEFINITION_MULTIPLIER, DEFINITION));
         }
     }
 

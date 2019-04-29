@@ -27,7 +27,7 @@ import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAc
 public class AssignParseTypeDEFINITIONTest {
 
     @Test
-    public void definitionUnparsedInCallingPoitionArea() {
+    public void definitionUnparsedInCallingPositionArea() {
         ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
         composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
@@ -170,6 +170,16 @@ public class AssignParseTypeDEFINITIONTest {
         Parse parse = new AssignParseType().apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("def2").get().get(0, DEFINITION_COLUMN), valid(DEFAULT_CALL_MULTIPLIER));
+    }
+
+    @Test
+    public void regexInDefinitionMatchedLiteral() {
+        ObservableComposition composition = new ObservableComposition();
+        composition.addDefinition("3*", "-");
+
+        Parse parse = new AssignParseType().apply(composition.get());
+
+        assertParse(parse.findDefinitionByShorthand("3*").get().get(0, SHORTHAND_COLUMN), valid(2, DEFINITION));
     }
 
     private Notation buildPlainBobMinor() {

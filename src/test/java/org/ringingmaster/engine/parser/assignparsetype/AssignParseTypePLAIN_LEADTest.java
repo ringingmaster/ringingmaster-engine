@@ -3,19 +3,19 @@ package org.ringingmaster.engine.parser.assignparsetype;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
-import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
-import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???
@@ -103,6 +103,27 @@ public class AssignParseTypePLAIN_LEADTest {
         Parse parse = new AssignParseType().apply(composition.get());
 
         assertParse(parse.mainBodyCells().get(0,0), unparsed());
+    }
+
+    @Test
+    public void regexInPlainLeadMatchedLiteral() {
+
+        Notation notation = NotationBuilder.getInstance()
+                .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+                .setName("Plain Bob")
+                .setFoldedPalindromeNotationShorthand("x16x16x16", "12")
+                .addCall("3*", "?", "14", true)
+                .addCallInitiationRow(7)
+                .addMethodCallingPosition("W", 7, 1)
+                .addMethodCallingPosition("H", 7, 2)
+                .setSpliceIdentifier("P")
+                .build();
+        ObservableComposition composition = buildSingleCellComposition(notation, "*P*");
+        composition.setPlainLeadToken("P*");
+
+        Parse parse = new AssignParseType().apply(composition.get());
+
+        assertParse(parse.allCompositionCells().get(0, 0), unparsed(), valid(2,PLAIN_LEAD));
     }
 
     private Notation buildPlainBobMinor() {

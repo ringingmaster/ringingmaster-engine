@@ -8,13 +8,13 @@ import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 
+import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
-import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
-import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 /**
  * TODO comments???
@@ -99,6 +99,30 @@ public class AssignParseTypeCALLING_POSITIONTest {
 
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0, 0), unparsed(), valid(CALLING_POSITION), unparsed());
+    }
+
+    @Test
+    public void regexInCallingPositionMatchedLiteral() {
+        Notation notation = NotationBuilder.getInstance()
+                .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
+                .setName("Plain*Bob")
+                .setFoldedPalindromeNotationShorthand("x16x16x16", "12")
+                .addCall("Bob", "-", "14", true)
+                .addCall("Single", "s", "1234", false)
+                .addCallInitiationRow(7)
+                .addMethodCallingPosition("W*", 7, 1)
+                .addMethodCallingPosition("H", 7, 2)
+                .setSpliceIdentifier("*")
+                .build();
+
+        ObservableComposition composition = buildSingleCellComposition(notation, "W*");
+
+        composition.setSpliced(false);
+        composition.setCompositionType(COURSE_BASED);
+
+        Parse parse = new AssignParseType().apply(composition.get());
+
+        assertParse(parse.allCompositionCells().get(0, 0), valid(2, CALLING_POSITION));
     }
 
 
