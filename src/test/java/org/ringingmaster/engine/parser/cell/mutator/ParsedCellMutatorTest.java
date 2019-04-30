@@ -3,12 +3,11 @@ package org.ringingmaster.engine.parser.cell.mutator;
 
 import com.google.common.collect.Sets;
 import org.junit.Test;
+import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.ParsedCellFactory;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.element.Element;
 
 import java.util.HashSet;
 
@@ -445,11 +444,10 @@ public class ParsedCellMutatorTest {
                 GroupingFactory.buildSection(2, 1, CALL_MULTIPLIER),
                 GroupingFactory.buildSection(3, 3, PLAIN_LEAD));
 
-        Element e = new Element('c');
 
         Cell mock = mock(Cell.class);
         when(mock.size()).thenReturn(6);
-        when(mock.get(anyInt())).thenReturn(e);
+        when(mock.get(anyInt())).thenReturn('c');
 
         return ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }

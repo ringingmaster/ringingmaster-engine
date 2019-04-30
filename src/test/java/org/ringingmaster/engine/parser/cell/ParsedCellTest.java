@@ -2,12 +2,11 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.Sets;
 import org.junit.Test;
+import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.element.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +74,7 @@ public class ParsedCellTest {
 
         Cell mockCell = mock(Cell.class);
         when(mockCell.size()).thenReturn(10);
-        when(mockCell.get(anyInt())).thenReturn(new Element('c'));
+        when(mockCell.get(anyInt())).thenReturn('c');
 
         ParsedCell parsedCell = ParsedCellFactory.buildParsedCellFromGroups(mockCell, groups);
 

@@ -31,9 +31,10 @@ public class MutableCompositionTest {
 
         mutableComposition.setTitle("0");
         mutableComposition.setTitle("1");
-        verify(compositionConsumer1, times(2)).accept(argumentMatch1.capture());
-        assertEquals("0", argumentMatch1.getAllValues().get(0).getTitle());
-        assertEquals("1", argumentMatch1.getAllValues().get(1).getTitle());
+        verify(compositionConsumer1, times(3)).accept(argumentMatch1.capture());
+        assertEquals("UNNAMED", argumentMatch1.getAllValues().get(0).getTitle());
+        assertEquals("0", argumentMatch1.getAllValues().get(1).getTitle());
+        assertEquals("1", argumentMatch1.getAllValues().get(2).getTitle());
 
     }
 

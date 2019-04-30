@@ -41,10 +41,8 @@ public class DefinitionCellMutationTest {
         Cell definitionCell = cells.get(0,1);
         assertEquals("A", shorthandCell.getCharacters());
         assertEquals(2, definitionCell.size());
-        assertEquals("S", definitionCell.get(0).getCharacter());
-        assertFalse(definitionCell.get(0).getVariance().isPresent());
-        assertEquals("L", definitionCell.get(1).getCharacter());
-        assertFalse(definitionCell.get(1).getVariance().isPresent());
+        assertEquals('S', definitionCell.get(0));
+        assertEquals('L', definitionCell.get(1));
     }
 
     @Test
@@ -62,10 +60,8 @@ public class DefinitionCellMutationTest {
         Cell definitionCell = cells.get(0,1);
         assertEquals("A", shorthandCell.getCharacters());
         assertEquals(2, definitionCell.size());
-        assertEquals("S", definitionCell.get(0).getCharacter());
-        assertFalse(definitionCell.get(0).getVariance().isPresent());
-        assertEquals("L", definitionCell.get(1).getCharacter());
-        assertFalse(definitionCell.get(1).getVariance().isPresent());
+        assertEquals('S', definitionCell.get(0));
+        assertEquals('L', definitionCell.get(1));
     }
 
     @Test

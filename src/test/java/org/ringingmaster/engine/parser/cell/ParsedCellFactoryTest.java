@@ -2,9 +2,8 @@ package org.ringingmaster.engine.parser.cell;
 
 import com.google.common.collect.Sets;
 import org.junit.Test;
-import org.ringingmaster.engine.parser.cell.grouping.Section;
 import org.ringingmaster.engine.composition.cell.Cell;
-import org.ringingmaster.engine.composition.element.Element;
+import org.ringingmaster.engine.parser.cell.grouping.Section;
 
 import java.util.HashSet;
 
@@ -60,7 +59,7 @@ public class ParsedCellFactoryTest {
 
         Cell mock = mock(Cell.class);
         when(mock.size()).thenReturn(3);
-        when(mock.get(anyInt())).thenReturn(new Element('c'));
+        when(mock.get(anyInt())).thenReturn('c');
 
         ParsedCellFactory.buildParsedCellFromSections(mock, sections);
     }
