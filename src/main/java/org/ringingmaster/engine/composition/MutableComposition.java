@@ -54,7 +54,7 @@ import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAc
  *
  * @author Lake
  */
-public class ObservableComposition {
+public class MutableComposition {
 
     public static final int START_AT_ROW_MAX                                =     10_000;
     public static final int TERMINATION_MAX_ROWS_INITIAL_VALUE              =     10_000;
@@ -74,7 +74,7 @@ public class ObservableComposition {
             .bindComparator((field, object1, object2) -> ((DefaultCompositionTableAccess)object1).allCompositionCells() == ((DefaultCompositionTableAccess)object2).allCompositionCells(),"compositionTableAccessDelegate")
             .bindComparator((field, object1, object2) -> ((DefaultDefinitionTableAccess)object1).allDefinitionCells() == ((DefaultDefinitionTableAccess)object2).allDefinitionCells(),"definitionTableCellsDelegate");
 
-    public ObservableComposition() {
+    public MutableComposition() {
         compositionStream = BehaviorSubject.createDefault(new CompositionBuilder().defaults().build());
         if (log.isInfoEnabled()) {
             compositionStream.buffer(2,1).subscribe(compositions -> {
@@ -837,7 +837,7 @@ public class ObservableComposition {
 
     @Override
     public String toString() {
-        return "ObservableComposition{" +
+        return "MutableComposition{" +
                 "cocomposition=" + compositionStream.getValue().getTitle() +
                 '}';
     }

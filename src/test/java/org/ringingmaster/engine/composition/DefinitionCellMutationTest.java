@@ -21,7 +21,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void hasCorrectDefault()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(0, composition.get().allDefinitionCells().getColumnSize());
         assertEquals(0, composition.get().allDefinitionCells().getRowSize());
@@ -30,7 +30,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void canAddDefinitionThroughAddMethod()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition("A", "SL");
 
         final ImmutableArrayTable<Cell> cells = composition.get().allDefinitionCells();
@@ -50,7 +50,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void canAddDefinitionThroughCellEditing()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(DEFINITION_TABLE,0, SHORTHAND_COLUMN,"A");
         composition.addCharacters(DEFINITION_TABLE,0, DEFINITION_COLUMN,"SL");
 
@@ -71,7 +71,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void addingDefinitionThroughAddMethodWithLeadingWhitespaceTrims()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition(" A", "SL");
 
         assertTrue(composition.get().findDefinitionByShorthand("A").isPresent());
@@ -80,7 +80,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void addingDefinitionThroughAddMethodWithTrailingWhitespaceTrims()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition("A ", "SL");
 
         assertTrue(composition.get().findDefinitionByShorthand("A").isPresent());
@@ -89,7 +89,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void addingDefinitionThroughAddMethodWithCentralWhitespaceDoesNotTrim()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition("A B", "SL");
 
         assertTrue(composition.get().findDefinitionByShorthand("A B").isPresent());
@@ -98,7 +98,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void addingDefinitionThroughCellEditingWithLeadingWhitespaceTrims()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(DEFINITION_TABLE, 0, SHORTHAND_COLUMN, " A");
 
         assertTrue(composition.get().findDefinitionByShorthand("A").isPresent());
@@ -107,7 +107,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void addingDefinitionThroughCellEditingWithTrailingWhitespaceTrims()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(DEFINITION_TABLE, 0, SHORTHAND_COLUMN, "A ");
 
         assertTrue(composition.get().findDefinitionByShorthand("A").isPresent());
@@ -116,7 +116,7 @@ public class DefinitionCellMutationTest {
     @Test
     public void addingDefinitionThroughCellEditingWithEmbeddedWhitespaceDoesNotTrim()  {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(DEFINITION_TABLE, 0, SHORTHAND_COLUMN, "A B");
 
         assertTrue(composition.get().findDefinitionByShorthand("A B").isPresent());
@@ -124,7 +124,7 @@ public class DefinitionCellMutationTest {
 
     @Test
     public void canRemoveDefinitionThroughRemoveMethod()  {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition("A", "aa");
         composition.addDefinition("B", "bb");
         composition.addDefinition("C", "cc");
@@ -141,7 +141,7 @@ public class DefinitionCellMutationTest {
 
     @Test
     public void canRemoveDefinitionThroughCellEditing()  {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition("A", "aa");
         composition.addDefinition("B", "bb");
         composition.addDefinition("C", "cc");
@@ -159,7 +159,7 @@ public class DefinitionCellMutationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addingCharactersBeyondTwoColumnsThrows()  {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(DEFINITION_TABLE, 0,0,"A");
         composition.addCharacters(DEFINITION_TABLE, 0,1,"B");
         composition.addCharacters(DEFINITION_TABLE, 0,2,"C");
@@ -168,7 +168,7 @@ public class DefinitionCellMutationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addingDuplicateDefinitionThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition("a", "p-p");
         composition.addDefinition("a", "sp-");
     }

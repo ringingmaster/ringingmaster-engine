@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.callingPosition;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -26,7 +26,7 @@ public class ValidateSingleCallingPositionPerCellTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallingPositionPerCell())
                 .apply(composition.get());
@@ -37,7 +37,7 @@ public class ValidateSingleCallingPositionPerCellTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
@@ -57,7 +57,7 @@ public class ValidateSingleCallingPositionPerCellTest {
 
     @Test
     public void parsingGoodCallingPositionTakesNoAction() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "W");
         composition.addCharacters(MAIN_TABLE, 0,1, "H");
 
@@ -71,7 +71,7 @@ public class ValidateSingleCallingPositionPerCellTest {
 
     @Test
     public void parsingDuplicateMarksSeconsAsInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "WH");
         composition.addCharacters(MAIN_TABLE, 0,1, "-HW");
 
@@ -97,8 +97,8 @@ public class ValidateSingleCallingPositionPerCellTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.COURSE_BASED);

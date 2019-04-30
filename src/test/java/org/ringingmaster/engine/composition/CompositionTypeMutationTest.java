@@ -15,7 +15,7 @@ public class CompositionTypeMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(CompositionType.COURSE_BASED, composition.get().getCompositionType());
     }
@@ -23,7 +23,7 @@ public class CompositionTypeMutationTest {
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setCompositionType(CompositionType.LEAD_BASED);
 
         assertEquals(CompositionType.LEAD_BASED, composition.get().getCompositionType());

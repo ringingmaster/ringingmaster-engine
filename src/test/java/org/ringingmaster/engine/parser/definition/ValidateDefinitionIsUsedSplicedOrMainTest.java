@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.definition;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -24,7 +24,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         Parse parse = new AssignParseType().apply(composition.get());
         Parse result = new ValidateDefinitionIsUsedSplicedOrMain().apply(parse);
 
@@ -34,7 +34,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(COURSE_BASED);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
@@ -56,7 +56,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void differentDefinitionsValidInMainAndSpliced() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
         composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
 
@@ -70,7 +70,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void usingSameDefinitionInMainAndSplicedSetsBothInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
         composition.addCharacters(MAIN_TABLE, 1,0, "SPLICE");
         composition.addCharacters(MAIN_TABLE, 0,1, "CALL");
@@ -86,7 +86,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void usingSameDefinitionInEitherMainOrSplicedIsValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
         composition.addCharacters(MAIN_TABLE, 1,0, "CALL");
         composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
@@ -104,7 +104,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void embeddedDefinitionInMainUsedInSplicedInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_MAIN", "SPLICE");
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
         composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
@@ -121,7 +121,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void embeddedDefinitionInMainTransitivelyUsedInSplicedInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_MAIN_1", "IN_MAIN_2");
         composition.addDefinition("IN_MAIN_2", "SPLICE");
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
@@ -139,7 +139,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void embeddedDefinitionInSplicedUsedInMainInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_SPICE", "CALL");
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
         composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
@@ -156,7 +156,7 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
 
     @Test
     public void embeddedDefinitionInSplicedTransitivelyUsedInMainInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_SPICE_1", "IN_SPICE_2");
         composition.addDefinition("IN_SPICE_2", "CALL");
         composition.addCharacters(MAIN_TABLE, 0, 0, "CALL");
@@ -200,8 +200,8 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation... notations) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation... notations) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

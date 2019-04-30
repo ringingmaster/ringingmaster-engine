@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.AssertParse.Expected;
@@ -89,7 +89,7 @@ public class AssignParseTypeVARIANCERegexTest {
     public void validStringParsesAll() {
 
         log.info("Test Value  {}", testValue);
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addNotation(buildPlainBobMinor());
         composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
@@ -114,8 +114,8 @@ public class AssignParseTypeVARIANCERegexTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

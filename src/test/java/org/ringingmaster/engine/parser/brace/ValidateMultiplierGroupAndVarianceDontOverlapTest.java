@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.brace;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -27,7 +27,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
@@ -39,7 +39,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
@@ -63,7 +63,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void VarianceEnclosedByGroupValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "([-o])");
 
         Parse result = new AssignParseType()
@@ -76,7 +76,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void GroupEnclosedByVarianceValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "[-o()]");
 
         Parse result = new AssignParseType()
@@ -89,7 +89,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void GroupOverlappingVarianceInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "([-e)]");
 
         Parse result = new AssignParseType()
@@ -102,7 +102,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void VarianceOverlappingGroupInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "[-e(])");
 
         Parse result = new AssignParseType()
@@ -115,7 +115,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void MultiVarianceOverlappingGroupInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "[-o(][-e)]");
 
         Parse result = new AssignParseType()
@@ -128,7 +128,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void ignoresAlreadyInvalidBrace() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "(])"); //this sequence caused crash
 
         Parse result = new AssignParseType()
@@ -144,7 +144,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
     @Test
     public void closingBraceBeforeOpeningBraceDoesNotThrow() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "(])]"); //this sequence caused crash
 
         Parse result = new AssignParseType()
@@ -171,8 +171,8 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation... notations) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation... notations) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

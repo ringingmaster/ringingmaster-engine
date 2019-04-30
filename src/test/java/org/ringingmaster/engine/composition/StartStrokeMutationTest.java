@@ -15,7 +15,7 @@ public class StartStrokeMutationTest {
     @Test
     public void hasCorrectDefault() {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(Stroke.BACKSTROKE, composition.get().getStartStroke());
     }
@@ -23,7 +23,7 @@ public class StartStrokeMutationTest {
     @Test
     public void changeIsReflected(){
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.setStartStroke(Stroke.HANDSTROKE);
         assertEquals(Stroke.HANDSTROKE, composition.get().getStartStroke());

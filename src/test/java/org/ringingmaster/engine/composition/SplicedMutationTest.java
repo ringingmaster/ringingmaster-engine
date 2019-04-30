@@ -30,15 +30,15 @@ public class SplicedMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition observableComposition = new ObservableComposition();
+        MutableComposition mutableComposition = new MutableComposition();
 
-        assertEquals(false, observableComposition.get().isSpliced());
+        assertEquals(false, mutableComposition.get().isSpliced());
     }
 
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addNotation(METHOD_A_6_BELL);
         composition.setSpliced(true);
 
@@ -48,7 +48,7 @@ public class SplicedMutationTest {
     @Test
     public void settingSplicedIneffectiveWhenNoMethods() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(true);
 
         assertEquals(false, composition.get().isSpliced());
@@ -56,7 +56,7 @@ public class SplicedMutationTest {
 
     @Test
     public void settingSplicedClearsActiveNotation() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addNotation(METHOD_A_6_BELL);
         composition.addNotation(METHOD_B_6_BELL);
 
@@ -67,7 +67,7 @@ public class SplicedMutationTest {
 
     @Test
     public void unsettingSplicedSetsFirstActiveNotation() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addNotation(METHOD_A_6_BELL);
         composition.addNotation(METHOD_B_6_BELL);
 

@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.brace;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -28,7 +28,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())
@@ -40,7 +40,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
@@ -62,7 +62,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void parsesNoContentPairOfVarianceInSingleCell() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "[-o]");
 
         Parse result = new AssignParseType()
@@ -74,7 +74,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void varianceInSingleCellInWrongOrderInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "][-o");
 
         Parse result = new AssignParseType()
@@ -86,7 +86,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void varianceOnMultiLineCellInWrongOrderInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "]");
         composition.addCharacters(MAIN_TABLE, 1,0, "[-0");
 
@@ -100,7 +100,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void variancesWithinCourseBasedInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(CompositionType.COURSE_BASED);
         composition.addCharacters(MAIN_TABLE, 0,0, "[");
         composition.addCharacters(MAIN_TABLE, 0,1, "]");
@@ -116,7 +116,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void varianceWithinDefinitionValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addDefinition("DEF1", "[-e-]");
 
         Parse result = new AssignParseType()
@@ -128,7 +128,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
     @Test
     public void nestingVarianceInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "[-o[-e-]]");
 
         Parse result = new AssignParseType()
@@ -158,8 +158,8 @@ public class ValidateVarianceMatchingBraceLogicTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation... notations) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation... notations) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

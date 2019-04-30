@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
@@ -31,7 +31,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInCallingArea() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "W H");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "W H");
         composition.setCompositionType(CompositionType.COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -41,7 +41,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "- Bob");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "- Bob");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -50,7 +50,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(TableType.MAIN_TABLE,0,1,"P P ");
         composition.setSpliced(true);
 
@@ -61,7 +61,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInUnusedDefinition() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -70,7 +70,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInDefinitionUsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -79,7 +79,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInDefinitionUsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -90,7 +90,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInDefinitionUsedInMainBodySplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -101,7 +101,7 @@ public class AssignParseTypeWHITESPACETest {
 
     @Test
     public void correctlyParsesWhitespaceInDefinitionShorthand() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(DEFINITION_TABLE,1,0, " de f2 ");
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -123,8 +123,8 @@ public class AssignParseTypeWHITESPACETest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

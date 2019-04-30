@@ -30,7 +30,7 @@ public class StartPlaceSetSequenceMutationTest {
     @Test
     public void hasCorrectDefault() {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(Optional.empty(), composition.get().getStartNotation());
     }
@@ -38,7 +38,7 @@ public class StartPlaceSetSequenceMutationTest {
     @Test
     public void changeIsReflected(){
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.setStartNotation(METHOD_A_6_BELL);
         assertEquals(Optional.of(METHOD_A_6_BELL), composition.get().getStartNotation());

@@ -8,7 +8,7 @@ import org.ringingmaster.engine.analyser.Analyser;
 import org.ringingmaster.engine.analyser.proof.Proof;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.composition.Composition;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.method.Bell;
 import org.ringingmaster.engine.method.Method;
@@ -37,7 +37,7 @@ public class CourseBasedCompilerTest {
 
     @Test
     public void compileSingleCallCalledFromTenor() throws IOException {
-        ObservableComposition composition = buildPlainBobMinorCompositionShell();
+        MutableComposition composition = buildPlainBobMinorCompositionShell();
         composition.addCharacters(MAIN_TABLE, 0, 0, "W");
         composition.addCharacters(MAIN_TABLE, 1, 0, "-");
         proveAndCheckComposition(15
@@ -46,7 +46,7 @@ public class CourseBasedCompilerTest {
 
     @Test
     public void compileSingleCallCalledFrom5() throws IOException {
-        ObservableComposition composition = buildPlainBobMinorCompositionShell();
+        MutableComposition composition = buildPlainBobMinorCompositionShell();
 		composition.setCallFromBell(Bell.BELL_5);
         composition.addCharacters(MAIN_TABLE, 0, 0, "W");
         composition.addCharacters(MAIN_TABLE, 1, 0, "-");
@@ -54,8 +54,8 @@ public class CourseBasedCompilerTest {
 				, "/PlainBobMinor W - From5.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
     }
 
-    private ObservableComposition buildPlainBobMinorCompositionShell() {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildPlainBobMinorCompositionShell() {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(NumberOfBells.BELLS_6);
         composition.setTitle("Test Composition");
         composition.addNotation(buildPlainBobMinor());

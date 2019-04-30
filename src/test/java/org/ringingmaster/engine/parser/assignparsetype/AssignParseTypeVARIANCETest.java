@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -29,7 +29,7 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceIgnoredInCallingPoitionArea() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-o]");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-o]");
         composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
 
@@ -39,7 +39,7 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceParsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-o]");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-o]");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -48,7 +48,7 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceUnparsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1,"[]");
         composition.setSpliced(true);
 
@@ -58,7 +58,7 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceParsedInUnusedDefinition() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -67,7 +67,7 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceParsedInDefinitionUsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -76,7 +76,7 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceUnparsedInDefinitionUsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -87,7 +87,7 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void varianceParsedInDefinitionUsedInSpliceAnMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -98,14 +98,14 @@ public class AssignParseTypeVARIANCETest {
 
     @Test
     public void correctlyIdentifiesVariance() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-o-]s");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-o-]s");
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0,0), valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(CALL), valid(VARIANCE_CLOSE), valid(CALL));
     }
 
     @Test
     public void identifiesVarianceTypeWhenNoContent() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-2]");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "[-2]");
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0,0), valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(VARIANCE_CLOSE));
     }
@@ -124,8 +124,8 @@ public class AssignParseTypeVARIANCETest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

@@ -16,14 +16,14 @@ import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import java.util.Optional;
 
-import static org.ringingmaster.engine.composition.ObservableComposition.TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE;
-import static org.ringingmaster.engine.composition.ObservableComposition.TERMINATION_MAX_ROWS_INITIAL_VALUE;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_ROWS_INITIAL_VALUE;
 import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
 import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 
 
 /**
- * Used exclusively by class ObservableComposition.
+ * Used exclusively by class MutableComposition.
  *
  * @author Lake
  */

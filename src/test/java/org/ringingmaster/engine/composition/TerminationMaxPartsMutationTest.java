@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.composition.ObservableComposition.TERMINATION_MAX_PARTS_MAX;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_PARTS_MAX;
 
 /**
  * TODO Comments
@@ -17,7 +17,7 @@ public class TerminationMaxPartsMutationTest {
     @Test
     public void hasCorrectDefault() {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(Optional.empty(), composition.get().getTerminationMaxParts());
     }
@@ -25,7 +25,7 @@ public class TerminationMaxPartsMutationTest {
     @Test
     public void changeIsReflected(){
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.setTerminationMaxParts(10);
         assertEquals(Optional.of(10), composition.get().getTerminationMaxParts());
@@ -43,14 +43,14 @@ public class TerminationMaxPartsMutationTest {
     @Test (expected = IllegalArgumentException.class)
     public void setting0OrLowerThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setTerminationMaxParts(0);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setTerminationMaxParts(TERMINATION_MAX_PARTS_MAX +1);
     }
 

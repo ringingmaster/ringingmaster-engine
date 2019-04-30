@@ -3,7 +3,7 @@ package org.ringingmaster.engine.composition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.composition.ObservableComposition.START_AT_ROW_MAX;
+import static org.ringingmaster.engine.composition.MutableComposition.START_AT_ROW_MAX;
 
 /**
  * TODO Comments
@@ -15,7 +15,7 @@ public class StartAtRowMutationTest {
     @Test
     public void hasCorrectDefault() {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(0, composition.get().getStartAtRow());
     }
@@ -23,7 +23,7 @@ public class StartAtRowMutationTest {
     @Test
     public void changeIsReflected(){
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.setStartAtRow(10);
         assertEquals(10, composition.get().getStartAtRow());
@@ -38,14 +38,14 @@ public class StartAtRowMutationTest {
     @Test (expected = IllegalArgumentException.class)
     public void settingMinusOneOrLowerThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setStartAtRow(-1);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setStartAtRow(START_AT_ROW_MAX +1);
     }
 

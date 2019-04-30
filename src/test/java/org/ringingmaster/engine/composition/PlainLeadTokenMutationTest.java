@@ -14,7 +14,7 @@ public class PlainLeadTokenMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals("p", composition.get().getPlainLeadToken());
     }
@@ -22,7 +22,7 @@ public class PlainLeadTokenMutationTest {
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setPlainLeadToken("TEST");
 
         assertEquals("TEST", composition.get().getPlainLeadToken());

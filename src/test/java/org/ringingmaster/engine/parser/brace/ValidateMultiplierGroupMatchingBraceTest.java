@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.brace;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -26,7 +26,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -38,7 +38,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
@@ -60,7 +60,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void parsesNoContentPairOfGroupInSingleCell() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "()");
 
         Parse result = new AssignParseType()
@@ -72,7 +72,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void groupInSingleCellInWrongOrderInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, ")(");
 
         Parse result = new AssignParseType()
@@ -84,7 +84,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void groupOnMultiLineCellInWrongOrderInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, ")");
         composition.addCharacters(MAIN_TABLE, 1,0, "(");
 
@@ -98,7 +98,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void nestedGroupInSingleCellIsValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "(())");
 
         Parse result = new AssignParseType()
@@ -110,7 +110,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void nestedGroupOnMultiLineIsValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "(");
         composition.addCharacters(MAIN_TABLE, 0,1, "(");
         composition.addCharacters(MAIN_TABLE, 1,0, "))");
@@ -127,7 +127,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void additionalOpeningGroupInSingleCellIsInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "(()");
 
         Parse result = new AssignParseType()
@@ -139,7 +139,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void additionalOpeningGroupInMultiCellIsInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "(");
         composition.addCharacters(MAIN_TABLE, 0,1, "(");
         composition.addCharacters(MAIN_TABLE, 1,0, ")");
@@ -156,7 +156,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void nestedGroupWithSplicedAssignsInvalidityToCorrect() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
         composition.addCharacters(MAIN_TABLE, 0,0, "(");
         composition.addCharacters(MAIN_TABLE, 0,1, "(");//spliced
@@ -179,7 +179,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void groupsWithinCourseBasedInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(CompositionType.COURSE_BASED);
         composition.addCharacters(MAIN_TABLE, 0,0, "(");
         composition.addCharacters(MAIN_TABLE, 0,1, ")");
@@ -195,7 +195,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void groupsWithinDefinitionValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addDefinition("DEF1", "(-)");
 
         Parse result = new AssignParseType()
@@ -207,7 +207,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void nestingDepthOkAt4() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "((((-))))");
 
         Parse result = new AssignParseType()
@@ -223,7 +223,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
 
     @Test
     public void nestingDepthInvalidAt5() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "(((((-)))))");
 
         Parse result = new AssignParseType()
@@ -251,8 +251,8 @@ public class ValidateMultiplierGroupMatchingBraceTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation... notations) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation... notations) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

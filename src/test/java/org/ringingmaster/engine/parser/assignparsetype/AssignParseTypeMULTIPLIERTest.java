@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -41,7 +41,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
         Parse parse = new AssignParseType()
                 .apply(composition.get());
 
@@ -51,7 +51,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
         composition.setCompositionType(COURSE_BASED);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
@@ -74,7 +74,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
 	public void correctlyParseSingleDefaultCallMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-2");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-2");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -84,7 +84,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
 	@Test
 	public void correctlyParseMultiDefaultCallMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-22");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-22");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -94,7 +94,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseDefaultCallMultiplierBeforeWhitespace() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2 ");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2 ");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -104,7 +104,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseDefaultCallMultiplierBeforeVariance() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "6[-o7]");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "6[-o7]");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -114,7 +114,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseCallMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2-");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -124,7 +124,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseMultiCallMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "28-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "28-");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -134,7 +134,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseGroupMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "6(7)");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "6(7)");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -144,7 +144,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseMultiGroupMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "624(");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "624(");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -154,7 +154,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParsePlainLeadMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "3p");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "3p");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -164,7 +164,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseMultiPlainLeadMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "434p");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "434p");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -174,7 +174,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseDefinitionMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2def1");
 
         Parse parse = new AssignParseType()
  
@@ -185,7 +185,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseMultiDefinitionMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "243def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "243def1");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -195,7 +195,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseSpliceMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
         composition.addCharacters(MAIN_TABLE, 0, 1, "2p");
         composition.setSpliced(true);
 
@@ -207,7 +207,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void correctlyParseMultiSpliceMultiplier() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
         composition.addCharacters(MAIN_TABLE, 0, 1, "392p");
         composition.setSpliced(true);
 
@@ -219,7 +219,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void standAloneNumbersInSplicedUnparsed() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
         composition.addCharacters(MAIN_TABLE, 0, 1, "392-");
         composition.setSpliced(true);
 
@@ -231,7 +231,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void multiplierWorksInDefinition() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
 
         Parse parse = new AssignParseType()
                 .apply(composition.get());
@@ -241,7 +241,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void multiplierDoesNotAddDefaultCallWhenUsedOnlyInSpliceInDefinition() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE, 0, 1, "def2");
         composition.setSpliced(true);
 
@@ -253,7 +253,7 @@ public class AssignParseTypeMULTIPLIERTest {
 
     @Test
     public void multiplierDoesAddDefaultCallWhenUsedInMainCellsInDefinition() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
         composition.addCharacters(MAIN_TABLE, 0, 1, "-");
         composition.setSpliced(true);
 
@@ -291,8 +291,8 @@ public class AssignParseTypeMULTIPLIERTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

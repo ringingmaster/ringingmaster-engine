@@ -1,7 +1,7 @@
 package org.ringingmaster.engine.parser;
 
 import org.junit.Test;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 
 /**
  * TODO comments???
@@ -14,7 +14,7 @@ public class ParsingTest {
 
     @Test
     public void parsingEmptyCompositionDoesNotThrow() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         parser.apply(composition.get());
     }

@@ -9,7 +9,7 @@ import org.ringingmaster.engine.analyser.Analyser;
 import org.ringingmaster.engine.analyser.proof.Proof;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
 import org.ringingmaster.engine.composition.Composition;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.TableType;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.helper.PlainCourseHelper;
@@ -50,7 +50,7 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("-")
 				.build();
 
-		ObservableComposition composition = new ObservableComposition();
+		MutableComposition composition = new MutableComposition();
 		composition.addNotation(allChange);
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.setNumberOfBells(NumberOfBells.BELLS_8);
@@ -77,7 +77,7 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("14")
 				.build();
 
-		ObservableComposition composition = new ObservableComposition();
+		MutableComposition composition = new MutableComposition();
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.setTerminationMaxLeads(1);
@@ -116,7 +116,7 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("x.14.x")
 				.build();
 
-		ObservableComposition composition = new ObservableComposition();
+		MutableComposition composition = new MutableComposition();
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.removeTerminationChange();
@@ -145,7 +145,7 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("x.14.x.14")
 				.build();
 
-		ObservableComposition composition = new ObservableComposition();
+		MutableComposition composition = new MutableComposition();
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		composition.removeTerminationChange();
@@ -173,7 +173,7 @@ public class LeadBasedCompilerTest {
 				.setUnfoldedNotationShorthand("x.16.x.16")
 				.build();
 
-		ObservableComposition composition = new ObservableComposition();
+		MutableComposition composition = new MutableComposition();
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		final Row roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
@@ -207,9 +207,9 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void compilingCompositionWithNoNotationTerminatesWithError() {
 
-		ObservableComposition composition = null;
+		MutableComposition composition = null;
 		try {
-			composition = new ObservableComposition();
+			composition = new MutableComposition();
 			composition.setCompositionType(CompositionType.LEAD_BASED);
 			composition.setTerminationMaxRows(10);
 		} catch (Exception e) {
@@ -266,14 +266,14 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void compileOmitParts() throws IOException {
-		ObservableComposition composition = buildPlainBobMinorCompositionShell();
+		MutableComposition composition = buildPlainBobMinorCompositionShell();
 		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "-[-2s]");
 		proveAndCheckCompositionn(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
 	}
 
 	@Test
 	public void compileEmptyPartsTerminatedWithEmptyParts() throws IOException {
-		ObservableComposition composition = buildPlainBobMinorCompositionShell();
+		MutableComposition composition = buildPlainBobMinorCompositionShell();
 
 		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "[-1,2,3-s]");
 
@@ -282,7 +282,7 @@ public class LeadBasedCompilerTest {
 
 	@Test
 	public void compileDefinitionWithGroup() throws IOException {
-		ObservableComposition composition = buildPlainBobMinorCompositionShell();
+		MutableComposition composition = buildPlainBobMinorCompositionShell();
 		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "-def-");
 		composition.addDefinition("def", "2(sBob)");
 
@@ -290,14 +290,14 @@ public class LeadBasedCompilerTest {
 	}
 
 	Proof checkSimple1CellPlainBobComposition(String compositionString, int expectedLeadCount, String fileName, boolean trueComposition) throws IOException {
-		ObservableComposition composition = buildPlainBobMinorCompositionShell();
+		MutableComposition composition = buildPlainBobMinorCompositionShell();
 		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, compositionString);
 
 		return proveAndCheckCompositionn(expectedLeadCount, fileName, trueComposition, CompileTerminationReason.SPECIFIED_ROW, composition.get());
 	}
 
-	private ObservableComposition buildPlainBobMinorCompositionShell() {
-		ObservableComposition composition = new ObservableComposition();
+	private MutableComposition buildPlainBobMinorCompositionShell() {
+		MutableComposition composition = new MutableComposition();
 		composition.addNotation(buildPlainBobMinor());
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));

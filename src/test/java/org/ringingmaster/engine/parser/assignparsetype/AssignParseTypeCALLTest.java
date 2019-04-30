@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -25,7 +25,7 @@ public class AssignParseTypeCALLTest {
 
     @Test
     public void callIgnoredInCallingPoitionArea() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
 
@@ -35,7 +35,7 @@ public class AssignParseTypeCALLTest {
 
     @Test
     public void callParsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-P-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-P-");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -44,7 +44,7 @@ public class AssignParseTypeCALLTest {
 
     @Test
     public void callUnparsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1,"-");
         composition.setSpliced(true);
 
@@ -54,7 +54,7 @@ public class AssignParseTypeCALLTest {
 
     @Test
     public void callParsedInUnusedDefinition() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -63,7 +63,7 @@ public class AssignParseTypeCALLTest {
 
     @Test
     public void callUnparsedInDefinitionUsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -72,7 +72,7 @@ public class AssignParseTypeCALLTest {
 
     @Test
     public void callUnparsedInDefinitionUsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -83,7 +83,7 @@ public class AssignParseTypeCALLTest {
 
     @Test
     public void callParsedInDefinitionUsedInSpliceAnMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -105,7 +105,7 @@ public class AssignParseTypeCALLTest {
                 .addMethodCallingPosition("H", 7, 2)
                 .setSpliceIdentifier("P")
                 .build();
-        ObservableComposition composition = buildSingleCellComposition(notation, "3*?");
+        MutableComposition composition = buildSingleCellComposition(notation, "3*?");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -127,8 +127,8 @@ public class AssignParseTypeCALLTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
@@ -28,7 +28,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void definitionUnparsedInCallingPositionArea() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
         composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
 
@@ -38,7 +38,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void definitionParsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0, 0), valid(4, DEFINITION));
@@ -46,7 +46,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void definitionParsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1,"def1");
         composition.setSpliced(true);
 
@@ -56,7 +56,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void correctlyParsesDefinitionTokenInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-def1-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-def1-");
 
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0, 0), valid(CALL), valid(4, DEFINITION), valid(CALL));
@@ -64,7 +64,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void correctlyParsesDefinitionTokenInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.setSpliced(true);
         composition.addCharacters(MAIN_TABLE, 0, 1, "Pdef1P");
 
@@ -74,7 +74,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void definitionShorthandsParsedAsDefinitions() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
         composition.addDefinition("def2","s");
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -84,7 +84,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void unusedDefinitionParsedAsMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
 
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
@@ -92,7 +92,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void definitionUsedInMainBodyAreaParsedAsMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1 def2");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1 def2");
 
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.findDefinitionByShorthand("def1").get().get(0, DEFINITION_COLUMN), valid(CALL), unparsed());
@@ -100,7 +100,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void definitionUsedInSpiceAreaParsedAsSpice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "s");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "s");
         composition.addCharacters(MAIN_TABLE, 0,1,"def1 def2");
         composition.setSpliced(true);
 
@@ -110,7 +110,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void definitionUsedInMainAndSpiceAreaParsedAsMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
         composition.addCharacters(MAIN_TABLE, 0,1,"def1");
         composition.setSpliced(true);
 
@@ -120,7 +120,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void transitiveDefinitionInMainBodyParsedAsMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def3");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def3");
         composition.addDefinition("def3", "def2");
         composition.addDefinition("def2", "def1");
 
@@ -132,7 +132,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void transitiveDefinitionInSplicedParsedAsSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(TableType.MAIN_TABLE,0,1,"def3");
         composition.setSpliced(true);
         composition.addDefinition("def3", "def2");
@@ -147,7 +147,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void transitiveDefinitionInSplicedAndMainBodyParsedAsMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def33");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def33");
         composition.addCharacters(TableType.MAIN_TABLE,0,1,"def3");
         composition.setSpliced(true);
         composition.addDefinition("def3", "def2");
@@ -162,7 +162,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void multiplierDoesAddsDefaultCallWhenUsedInSpliceAndMainCells() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
         composition.addCharacters(MAIN_TABLE, 0, 1, "def2");
         composition.setSpliced(true);
         composition.addDefinition("def2", "2");
@@ -174,7 +174,7 @@ public class AssignParseTypeDEFINITIONTest {
 
     @Test
     public void regexInDefinitionMatchedLiteral() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addDefinition("3*", "-");
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -196,8 +196,8 @@ public class AssignParseTypeDEFINITIONTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

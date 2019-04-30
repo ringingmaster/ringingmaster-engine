@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Lake
  */
-public class ObservableCompositionTest {
+public class MutableCompositionTest {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -26,11 +26,11 @@ public class ObservableCompositionTest {
         ArgumentCaptor<Composition> argumentMatch1 = ArgumentCaptor.forClass(Composition.class);
         Consumer compositionConsumer1 = mock(Consumer.class);
 
-        ObservableComposition observableComposition = new ObservableComposition();
-        observableComposition.observable().subscribe(compositionConsumer1);
+        MutableComposition mutableComposition = new MutableComposition();
+        mutableComposition.observable().subscribe(compositionConsumer1);
 
-        observableComposition.setTitle("0");
-        observableComposition.setTitle("1");
+        mutableComposition.setTitle("0");
+        mutableComposition.setTitle("1");
         verify(compositionConsumer1, times(2)).accept(argumentMatch1.capture());
         assertEquals("0", argumentMatch1.getAllValues().get(0).getTitle());
         assertEquals("1", argumentMatch1.getAllValues().get(1).getTitle());
@@ -40,13 +40,13 @@ public class ObservableCompositionTest {
     @Test
     public void lateJoinerGetsCurrentItem() throws Exception {
 
-        ObservableComposition observableComposition = new ObservableComposition();
-        observableComposition.setTitle("0");
+        MutableComposition mutableComposition = new MutableComposition();
+        mutableComposition.setTitle("0");
 
         ArgumentCaptor<Composition> argumentMatch = ArgumentCaptor.forClass(Composition.class);
         Consumer compositionConsumer = mock(Consumer.class);
 
-        observableComposition.observable().subscribe(compositionConsumer);
+        mutableComposition.observable().subscribe(compositionConsumer);
         verify(compositionConsumer).accept(argumentMatch.capture());
     }
 }

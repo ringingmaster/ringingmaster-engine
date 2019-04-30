@@ -16,7 +16,7 @@ public class StartChangeMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals("123456", composition.get().getStartChange().getDisplayString(false));
     }
@@ -24,7 +24,7 @@ public class StartChangeMutationTest {
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setStartChange(MethodBuilder.parse(NumberOfBells.BELLS_6, "654123"));
 
         assertEquals("654123", composition.get().getStartChange().getDisplayString(false));
@@ -33,7 +33,7 @@ public class StartChangeMutationTest {
     @Test(expected = IllegalArgumentException.class)
     public void addingStartChangeWithIncorrectNumberThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setStartChange(MethodBuilder.parse(NumberOfBells.BELLS_5, "54123"));
 
     }
@@ -41,7 +41,7 @@ public class StartChangeMutationTest {
     @Test(expected = NullPointerException.class)
     public void addingNullStartChangeWith() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setStartChange(null);
     }
 }

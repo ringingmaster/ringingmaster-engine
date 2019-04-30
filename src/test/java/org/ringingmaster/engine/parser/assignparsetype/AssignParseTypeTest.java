@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
@@ -27,14 +27,14 @@ public class AssignParseTypeTest {
 
     @Test
     public void correctlyRetrievesAndParsesFromNotation() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-s");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-s");
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0, 0), valid(CALL), valid(CALL));
     }
 
     @Test
     public void correctlyAllocatedOverlappingParsings() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "Bob");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "Bob");
         composition.setPlainLeadToken("b");
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -43,7 +43,7 @@ public class AssignParseTypeTest {
 
     @Test
     public void correctlyAllocatedAdjacentParsings() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "Bobb");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "Bobb");
         composition.setPlainLeadToken("b");
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -64,8 +64,8 @@ public class AssignParseTypeTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

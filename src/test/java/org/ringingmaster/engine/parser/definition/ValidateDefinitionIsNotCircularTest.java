@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.definition;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
@@ -25,7 +25,7 @@ public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void parsingEmptyParseReturnsEmptyParse() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsNotCircular())
@@ -37,7 +37,7 @@ public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void parsingAllCellTypesReturnsOriginals() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(COURSE_BASED);
 
         composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
@@ -59,7 +59,7 @@ public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void circularDependencyInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("DEF_1", "DEF_2");
         composition.addDefinition("DEF_2", "DEF_3");
         composition.addDefinition("DEF_3", "DEF_1");
@@ -77,7 +77,7 @@ public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void circularDependencyleavesAdditionalPathValid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("DEF_1", "DEF_2DEF_3");
         composition.addDefinition("DEF_2", "DEF_1");
         composition.addDefinition("DEF_3", "-");
@@ -95,7 +95,7 @@ public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void circularDependencyInsideSingleDefInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
@@ -107,7 +107,7 @@ public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void circularDependencyInsideSingleDefWhenUsedInMainInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "-");
         composition.addCharacters(MAIN_TABLE, 0,1, "DEF_1");
         composition.addDefinition("DEF_1", "DEF_1");
@@ -121,7 +121,7 @@ public class ValidateDefinitionIsNotCircularTest {
 
     @Test
     public void circularDependencyInsideSingleDefWhenUsedInSpliceInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addCharacters(MAIN_TABLE, 0,0, "DEF_1");
         composition.addDefinition("DEF_1", "DEF_1");
 
@@ -160,8 +160,8 @@ public class ValidateDefinitionIsNotCircularTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation... notations) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation... notations) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notations[0].getNumberOfWorkingBells());
         Arrays.stream(notations).forEach(composition::addNotation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

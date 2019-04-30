@@ -47,15 +47,15 @@ public class PlaceSetSequenceMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition observableComposition = new ObservableComposition();
+        MutableComposition mutableComposition = new MutableComposition();
 
-        assertEquals(ImmutableSet.of(), observableComposition.get().getAllNotations());
+        assertEquals(ImmutableSet.of(), mutableComposition.get().getAllNotations());
     }
 
     @Test
     public void canAddAndRemoveNotations() {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addNotation(METHOD_A_6_BELL);
 
         Set<Notation> retrievedNotations = composition.get().getAllNotations();
@@ -75,7 +75,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addingDuplicateNotationNameThrows() {
-        ObservableComposition composition = null;
+        MutableComposition composition = null;
         Notation mockNotation2 = null;
         try {
             Notation mockNotation1 = mock(Notation.class);
@@ -86,7 +86,7 @@ public class PlaceSetSequenceMutationTest {
             when(mockNotation2.getName()).thenReturn("Duplicate Name");
             when(mockNotation2.getNumberOfWorkingBells()).thenReturn(NumberOfBells.BELLS_6);
 
-            composition = new ObservableComposition();
+            composition = new MutableComposition();
             composition.addNotation(mockNotation1);
         }
         catch (Exception e) {
@@ -97,7 +97,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void notationCanBeExchanged() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(NumberOfBells.BELLS_6);
 
         composition.addNotation(METHOD_A_6_BELL);
@@ -109,7 +109,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void addingFirstNotationToNonSplicedSetsDefaultNotation() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(false);
         composition.addNotation(METHOD_A_8_BELL);
 
@@ -119,7 +119,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void addingFirstNotationToSplicedSetsDefaultNotation() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(true);
         composition.addNotation(METHOD_A_8_BELL);
 
@@ -129,7 +129,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void removingOnlyNotationRemovesActiveNotation() throws CloneNotSupportedException {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
 
         composition.addNotation(METHOD_A_8_BELL);
@@ -140,7 +140,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void removingActiveNotationChoosesNextNotationAlphabetically() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(false);
 
         composition.addNotation(METHOD_A_6_BELL);
@@ -163,7 +163,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void removingActiveNotationOnlyChoosesValidNotations() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(NumberOfBells.BELLS_6);
         composition.setSpliced(false);
 
@@ -183,7 +183,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void removingNotationSwitchesToLexicographicallyNextActiveNotationWithinClosestNumberOfBells() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
 
         composition.addNotation(METHOD_A_8_BELL);
@@ -203,7 +203,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void removingNotationSwitchesToClosestNumberOfBellsHighestFirst() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.addNotation(METHOD_A_6_BELL);
         composition.addNotation(METHOD_A_7_BELL);
@@ -224,7 +224,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void addingNotationsWithDifferentNumberOfBellsFiltersInappropriateNotations() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.setSpliced(false);
         composition.addNotation(METHOD_A_6_BELL);
@@ -243,7 +243,7 @@ public class PlaceSetSequenceMutationTest {
 
     @Test
     public void settingActiveNotationUnsetsSpliced() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.addNotation(METHOD_A_6_BELL);
         composition.addNotation(METHOD_B_6_BELL);

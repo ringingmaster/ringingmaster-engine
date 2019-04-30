@@ -3,7 +3,7 @@ package org.ringingmaster.engine.helper;
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.Compiler;
 import org.ringingmaster.engine.compiler.compiledcomposition.CompiledComposition;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.composition.ObservableComposition.TERMINATION_MAX_LEADS_MAX;
-import static org.ringingmaster.engine.composition.ObservableComposition.TERMINATION_MAX_ROWS_MAX;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_LEADS_MAX;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_ROWS_MAX;
 
 /**
  * TODO comments???
@@ -48,7 +48,7 @@ public class PlainCourseHelper {
      * @return
      */
     public static Function<Notation, Composition> buildPlainCourseComposition = notation -> {
-        final ObservableComposition composition = new ObservableComposition();
+        final MutableComposition composition = new MutableComposition();
         composition.setTitle(" " + notation.getNameIncludingNumberOfBells() + ":" + " PLAINCOURSE_" + counter.getAndIncrement());
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         composition.addNotation(notation);

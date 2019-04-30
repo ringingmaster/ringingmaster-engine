@@ -16,7 +16,7 @@ public class CallFromBellMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(Bell.BELL_6, composition.get().getCallFromBell());
     }
@@ -24,7 +24,7 @@ public class CallFromBellMutationTest {
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setCallFromBell(Bell.BELL_1);
 
         assertEquals(Bell.BELL_1, composition.get().getCallFromBell());
@@ -33,7 +33,7 @@ public class CallFromBellMutationTest {
     @Test (expected = IllegalArgumentException.class)
     public void settingHigherThanNumberOfBellsThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
         composition.setCallFromBell(Bell.BELL_9);
 

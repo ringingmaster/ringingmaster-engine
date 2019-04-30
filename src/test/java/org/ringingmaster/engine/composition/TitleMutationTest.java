@@ -14,7 +14,7 @@ public class TitleMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(CompositionBuilder.DEFAULT_TITLE, composition.get().getTitle());
     }
@@ -22,7 +22,7 @@ public class TitleMutationTest {
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setTitle("TEST");
 
         assertEquals("TEST", composition.get().getTitle());

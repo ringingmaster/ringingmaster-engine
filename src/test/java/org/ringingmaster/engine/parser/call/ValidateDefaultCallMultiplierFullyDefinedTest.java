@@ -3,7 +3,7 @@ package org.ringingmaster.engine.parser.call;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
-import org.ringingmaster.engine.composition.ObservableComposition;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
@@ -24,7 +24,7 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
 
     @Test
     public void defaultCallNotDefinedInAllMethodsInSplicedSetsInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2");
         composition.addCharacters(MAIN_TABLE, 0, 1, "DUMMY");
         composition.addNotation(buildLittleBobMinorWithNoDefaultCall());
         composition.setSpliced(true);
@@ -38,7 +38,7 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
 
     @Test
     public void defaultCallNotDefinedInChosenMethodSetsInvalid() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2");
         composition.removeNotation(Iterables.getOnlyElement(composition.get().getAllNotations()));
 
         Parse parse = new AssignParseType()
@@ -75,8 +75,8 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

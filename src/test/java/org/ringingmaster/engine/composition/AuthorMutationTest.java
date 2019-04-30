@@ -14,7 +14,7 @@ public class AuthorMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals("", composition.get().getAuthor());
     }
@@ -22,7 +22,7 @@ public class AuthorMutationTest {
     @Test
     public void changeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setAuthor("TEST");
 
         assertEquals("TEST", composition.get().getAuthor());

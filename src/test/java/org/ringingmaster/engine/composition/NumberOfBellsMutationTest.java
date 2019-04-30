@@ -33,7 +33,7 @@ public class NumberOfBellsMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(NumberOfBells.BELLS_6, composition.get().getNumberOfBells());
     }
@@ -41,7 +41,7 @@ public class NumberOfBellsMutationTest {
     @Test
     public void changeIsReflectedInNonOptionalFields() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(NumberOfBells.BELLS_20);
 
         assertEquals(NumberOfBells.BELLS_20, composition.get().getNumberOfBells());
@@ -58,7 +58,7 @@ public class NumberOfBellsMutationTest {
     @Test
     public void whenTerminationChangeExistsChangeIsReflected() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(false);
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
 
@@ -72,7 +72,7 @@ public class NumberOfBellsMutationTest {
     @Test
     public void whenStartNotationExistsAndConversionPossibleStartNotationChanged() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(false);
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
 
@@ -87,7 +87,7 @@ public class NumberOfBellsMutationTest {
     @Test
     public void whenStartNotationExistsAndConversionNotPossibleStartNotationRemoved() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(false);
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
 
@@ -100,7 +100,7 @@ public class NumberOfBellsMutationTest {
 
     @Test
     public void settingNumberOfBellsResetsActiveNotation() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setSpliced(false);
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
         composition.addNotation(METHOD_A_8_BELL);

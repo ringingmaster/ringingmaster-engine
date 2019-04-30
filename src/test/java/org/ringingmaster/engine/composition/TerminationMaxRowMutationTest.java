@@ -3,8 +3,8 @@ package org.ringingmaster.engine.composition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.composition.ObservableComposition.TERMINATION_MAX_ROWS_INITIAL_VALUE;
-import static org.ringingmaster.engine.composition.ObservableComposition.TERMINATION_MAX_ROWS_MAX;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_ROWS_INITIAL_VALUE;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_ROWS_MAX;
 
 /**
  * TODO Comments
@@ -16,7 +16,7 @@ public class TerminationMaxRowMutationTest {
     @Test
     public void hasCorrectDefault() {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(TERMINATION_MAX_ROWS_INITIAL_VALUE, composition.get().getTerminationMaxRows());
     }
@@ -24,7 +24,7 @@ public class TerminationMaxRowMutationTest {
     @Test
     public void changeIsReflected(){
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.setTerminationMaxRows(10);
         assertEquals(10, composition.get().getTerminationMaxRows());
@@ -39,14 +39,14 @@ public class TerminationMaxRowMutationTest {
     @Test (expected = IllegalArgumentException.class)
     public void setting0OrLowerThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setTerminationMaxRows(0);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.setTerminationMaxRows(TERMINATION_MAX_ROWS_MAX +1);
     }
 

@@ -2,10 +2,10 @@ package org.ringingmaster.engine.parser.assignparsetype;
 
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.composition.ObservableComposition;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
@@ -27,7 +27,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupIgnoredInCallingPoitionArea() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "()");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "()");
         composition.setCompositionType(COURSE_BASED);
         composition.setSpliced(true);
 
@@ -37,7 +37,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupParsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "()");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "()");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -46,7 +46,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupUnparsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1,"()");
         composition.setSpliced(true);
 
@@ -56,7 +56,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupParsedInUnusedDefinition() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -65,7 +65,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupParsedInDefinitionUsedInMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -74,7 +74,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupUnparsedInDefinitionUsedInSplice() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -85,7 +85,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void groupParsedInDefinitionUsedInSpliceAnMainBody() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
         composition.addCharacters(MAIN_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
@@ -96,7 +96,7 @@ public class AssignParseTypeGROUPTest {
 
     @Test
     public void correctlyIdentifiesGroup() {
-        ObservableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "(-)s");
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "(-)s");
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0,0), valid(MULTIPLIER_GROUP_OPEN), valid(CALL), valid(MULTIPLIER_GROUP_CLOSE), valid(CALL));
     }
@@ -115,8 +115,8 @@ public class AssignParseTypeGROUPTest {
                 .build();
     }
 
-    private ObservableComposition buildSingleCellComposition(Notation notation, String characters) {
-        ObservableComposition composition = new ObservableComposition();
+    private MutableComposition buildSingleCellComposition(Notation notation, String characters) {
+        MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
             composition.addCharacters(MAIN_TABLE, 0, 0, characters);

@@ -17,7 +17,7 @@ public class CellMutationTest {
     @Test
     public void hasCorrectDefault() throws Exception {
 
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         assertEquals(0, composition.get().allCompositionCells().getColumnSize());
         assertEquals(0, composition.get().allCompositionCells().getRowSize());
@@ -25,7 +25,7 @@ public class CellMutationTest {
 
     @Test
     public void addingCharactersToEmptyCellAddsCell() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.addCharacters(MAIN_TABLE, 0,0, "ABC");
 
@@ -36,19 +36,19 @@ public class CellMutationTest {
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void addingCharactersOutsideRowBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 1,0, "ABC");
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void addingCharactersOutsideColumnBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,1, "ABC");
     }
 
     @Test
     public void addingCharacterToExistingCellAppends() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0, "ABC");
 
         composition.addCharacters(MAIN_TABLE, 0,0, "123");
@@ -58,7 +58,7 @@ public class CellMutationTest {
 
     @Test
     public void insertingCharactersToEmptyCellAddsCell() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
 
         composition.insertCharacters(MAIN_TABLE, 0,0, 0,"ABC");
 
@@ -69,7 +69,7 @@ public class CellMutationTest {
 
     @Test
     public void insertingCharacterToExistingCellInserts() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0, "ABC");
 
         composition.insertCharacters(MAIN_TABLE, 0,0, 1, "123");
@@ -78,25 +78,25 @@ public class CellMutationTest {
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void insertingCharactersOutsideRowBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.insertCharacters(MAIN_TABLE, 1,0, 0, "ABC");
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void insertingCharactersOutsideColumnBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.insertCharacters(MAIN_TABLE, 0,1, 0, "ABC");
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void insertingCharactersOutsideCellBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.insertCharacters(MAIN_TABLE, 0,0, 1, "ABC");
     }
 
     @Test
     public void removingSingleCharacterFromExistingCellDeletes() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0, "ABC");
 
         composition.removeCharacters(MAIN_TABLE, 0, 0, 1,1);
@@ -105,7 +105,7 @@ public class CellMutationTest {
 
     @Test
     public void removingCharacterRangeFromExistingCellDeletes() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0, "ABCD");
 
         composition.removeCharacters(MAIN_TABLE, 0, 0, 1,2);
@@ -114,26 +114,26 @@ public class CellMutationTest {
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void removingCharactersOutsideRowBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.removeCharacters(MAIN_TABLE, 1,0, 0, 1);
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void removingCharactersOutsideColumnBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.removeCharacters(MAIN_TABLE, 0,1, 0, 1);
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void removingCharactersOutsideCellBoundsThrows() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0,"A");
         composition.removeCharacters(MAIN_TABLE, 0,0, 1, 1);
     }
 
     @Test
     public void removingAllCharactersRemovesCell() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0, "ABC");
         composition.addCharacters(MAIN_TABLE, 0,1, "PADDING");
         composition.addCharacters(MAIN_TABLE, 1,0, "PADDING");
@@ -145,7 +145,7 @@ public class CellMutationTest {
 
     @Test
     public void removingAllItemsInColumnCausesColumnRemoval() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0, "0,0");
         composition.addCharacters(MAIN_TABLE, 0,1, "0,1");
         composition.addCharacters(MAIN_TABLE, 0,2, "0,2");
@@ -158,7 +158,7 @@ public class CellMutationTest {
 
     @Test
     public void removingAllItemsInRowCausesRowRemoval() {
-        ObservableComposition composition = new ObservableComposition();
+        MutableComposition composition = new MutableComposition();
         composition.addCharacters(MAIN_TABLE, 0,0, "0,0");
         composition.addCharacters(MAIN_TABLE, 1,0, "1,0");
         composition.addCharacters(MAIN_TABLE, 2,0, "2,0");
