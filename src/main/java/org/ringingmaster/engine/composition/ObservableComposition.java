@@ -834,4 +834,11 @@ public class ObservableComposition {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "ObservableComposition{" +
+                "cocomposition=" + compositionStream.getValue().getTitle() +
+                '}';
+    }
 }
