@@ -515,7 +515,7 @@ public class ObservableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartAtRow(startAtRow);
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build(String.format("Set Start At Row: %d", startAtRow)));
         return true;
 }
 
@@ -614,7 +614,7 @@ public class ObservableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxParts(Optional.of(terminationMaxParts));
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build(String.format("Set Part Limit: %d", terminationMaxParts)));
         return true;
 }
 
@@ -626,7 +626,7 @@ public class ObservableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxParts(Optional.empty());
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Remove Part Limit"));
         return true;
 }
 
@@ -641,7 +641,7 @@ public class ObservableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationMaxCircularity(terminationCircularComposition);
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build(String.format("Set Circular Composition Limit: %d", terminationCircularComposition)));
         return true;
 }
 
