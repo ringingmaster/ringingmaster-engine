@@ -627,7 +627,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartStroke(startStroke);
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Set Start Stroke: %s", startStroke));
     }
 
     public void setStartNotation(Notation startNotation) {
@@ -643,7 +643,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartNotation(Optional.of(startNotation));
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Set Start Notation: " + startNotation.getNotationDisplayString(true)));
     }
 
     public void removeStartNotation() {
@@ -655,7 +655,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartNotation(Optional.empty());
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Remove Start Notation"));
     }
 
     public DryRun dryRunSetTerminationMaxRows(int terminationMaxRows) {
