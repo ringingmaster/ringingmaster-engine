@@ -27,13 +27,13 @@ public class TerminationMaxCircularityMutationTest {
 
         MutableComposition composition = new MutableComposition();
 
-        composition.setTerminationMaxCircularComposition(10);
+        composition.setTerminationMaxCircularity(10);
         assertEquals(10, composition.get().getTerminationMaxCircularity());
 
-        composition.setTerminationMaxCircularComposition(TERMINATION_MAX_CIRCULARITY_MAX);
+        composition.setTerminationMaxCircularity(TERMINATION_MAX_CIRCULARITY_MAX);
         assertEquals(TERMINATION_MAX_CIRCULARITY_MAX, composition.get().getTerminationMaxCircularity());
 
-        composition.setTerminationMaxCircularComposition(1);
+        composition.setTerminationMaxCircularity(1);
         assertEquals(1, composition.get().getTerminationMaxCircularity());
 
     }
@@ -42,14 +42,14 @@ public class TerminationMaxCircularityMutationTest {
     public void setting0OrLowerThrows() throws Exception {
 
         MutableComposition composition = new MutableComposition();
-        composition.setTerminationMaxCircularComposition(0);
+        composition.setTerminationMaxCircularity(0);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void settingAboveMaxThrows() throws Exception {
 
         MutableComposition composition = new MutableComposition();
-        composition.setTerminationMaxCircularComposition(TERMINATION_MAX_CIRCULARITY_MAX +1);
+        composition.setTerminationMaxCircularity(TERMINATION_MAX_CIRCULARITY_MAX +1);
     }
 
 }

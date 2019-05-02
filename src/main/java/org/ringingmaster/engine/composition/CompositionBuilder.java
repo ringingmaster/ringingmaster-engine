@@ -206,8 +206,8 @@ class CompositionBuilder {
         return this;
     }
 
-    Composition build(String actionName) {
-        this.actionName = Optional.of(actionName);
+    Composition build(String actionNameFormat, Object... actionNameArgs) {
+        this.actionName = Optional.of(String.format(actionNameFormat, actionNameArgs));
 
         return new Composition(
                 this.actionName.get(),
