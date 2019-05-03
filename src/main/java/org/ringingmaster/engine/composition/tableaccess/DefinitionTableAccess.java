@@ -34,6 +34,6 @@ public interface DefinitionTableAccess<T extends Cell> {
     Optional<ImmutableArrayTable<T>> findDefinitionByShorthand(String shorthand);
 
 
-    public ImmutableSet<String> getAllDefinitionShorthands();
+     ImmutableSet<String> getAllDefinitionShorthands();
 
 }
