@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class BuildCompiledComposition<T extends CompilerPipelineData<T>> implements Function<T, CompiledComposition> {
 

@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * TODO comments.
  *
- * @author stephen
+ * @author Steve Lake
  */
 @Immutable
 public interface CompiledComposition {

@@ -13,7 +13,7 @@ import java.util.function.Function;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class ParsedCellMutatorGetSectionsAndGroups implements Function<ParsedCell, ParsedCellMutatorSectionsAndGroups> {
 

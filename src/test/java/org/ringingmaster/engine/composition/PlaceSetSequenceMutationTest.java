@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class PlaceSetSequenceMutationTest {
 

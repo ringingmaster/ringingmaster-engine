@@ -12,7 +12,7 @@ import java.util.Optional;
  * The Group overlays validity and an optional message
  *
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public interface Group extends ElementRange {

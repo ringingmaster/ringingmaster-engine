@@ -20,13 +20,14 @@ import org.ringingmaster.engine.composition.tableaccess.CompositionTableAccess;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Raw immutable POJO for a composition.
  *
- * @author Lake
+ * @author Steve Lake
  */
 @Immutable
 public class Composition implements CompositionTableAccess<Cell>, DefinitionTableAccess<Cell> {
@@ -175,13 +176,17 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     @Override
     public Optional<ImmutableArrayTable<Cell>> findDefinitionByShorthand(String shorthand) {
         checkNotNull(shorthand);
-
         return definitionTableCellsDelegate.findDefinitionByShorthand(shorthand);
     }
 
     @Override
+    public Set<ImmutableArrayTable<Cell>> getDefinitionAsTables() {
+        return definitionTableCellsDelegate.getDefinitionAsTables();
+    }
+
+    @Override
     public ImmutableArrayTable<Cell> definitionDefinitionCells() {
-        return definitionTableCellsDelegate.definitionShorthandCells();
+        return definitionTableCellsDelegate.definitionDefinitionCells();
     }
 
 

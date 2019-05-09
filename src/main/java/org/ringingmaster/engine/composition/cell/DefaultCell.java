@@ -5,7 +5,7 @@ import javax.annotation.concurrent.Immutable;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 @Immutable
 class DefaultCell implements Cell {

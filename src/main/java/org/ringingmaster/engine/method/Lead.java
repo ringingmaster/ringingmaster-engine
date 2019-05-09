@@ -13,7 +13,7 @@ import java.util.Set;
  * Where a Method contains multiple Lead's, the last Row in
  * Lead n is the same object as the first row in Lead n+1
  * 
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 public interface Lead extends Iterable<Row> {

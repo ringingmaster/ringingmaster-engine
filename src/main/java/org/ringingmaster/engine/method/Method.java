@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Representation of fully expanded method.
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 public interface Method extends Iterable<Lead> {

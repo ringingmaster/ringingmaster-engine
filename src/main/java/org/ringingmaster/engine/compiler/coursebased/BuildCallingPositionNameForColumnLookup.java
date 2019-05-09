@@ -18,7 +18,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_
 /**
  * Build the mapping between the name of the calling position (W, B, M, H Etc.) and the column index.
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class BuildCallingPositionNameForColumnLookup implements Function<CourseBasedCompilerPipelineData, CourseBasedCompilerPipelineData> {
 

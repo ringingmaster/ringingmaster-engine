@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class ByRowThenColumnIterator<IT> implements Iterator<BackingTableLocationAndValue<IT>> {
     private final ImmutableArrayTable<IT> immutableArrayTable;

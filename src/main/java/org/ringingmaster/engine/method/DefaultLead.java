@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Default implementation of the Lead interface.
  * 
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 class DefaultLead implements Lead {

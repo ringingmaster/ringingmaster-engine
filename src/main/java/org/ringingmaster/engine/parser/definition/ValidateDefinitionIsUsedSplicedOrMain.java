@@ -3,30 +3,28 @@ package org.ringingmaster.engine.parser.definition;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.Immutable;
+import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
-import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.functions.InUseMainBodyDefinitionsTransitively;
-import org.ringingmaster.engine.parser.functions.InUseSpliceDefinitionsTransitively;
-import org.ringingmaster.engine.parser.functions.DefinitionFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 import java.util.function.Function;
 
+import static org.ringingmaster.engine.parser.definition.DefinitionFunctions.markDefinitionsInvalidInComposition;
+import static org.ringingmaster.engine.parser.definition.DefinitionFunctions.markDefinitionsInvalidInDefinitions;
+
 /**
  * Marks as invalid any definitions that are used in both spliced or main area.
  * A dependency is considered part of splice or main when it is directly used, or used transitively.
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
 
 
     // TODO can we get the dependency chain in the error message?
@@ -59,15 +57,8 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
             log.debug("[{}]  marking invalid definitions [{}]", parse.getComposition().getTitle(), invalidDefinitions);
         }
 
-
-        HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult =
-                HashBasedTable.create(parse.allCompositionCells().getBackingTable());
-        definitionFunctions.markInvalid(parse.mainBodyCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
-        definitionFunctions.markInvalid(parse.splicedCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
-
-        HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
-                HashBasedTable.create(parse.definitionDefinitionCells().getBackingTable());
-        definitionFunctions.markInvalid(parse.definitionDefinitionCells(), invalidDefinitions, definitionTableResult, createErrorMessage);
+        HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult = markDefinitionsInvalidInComposition(parse, invalidDefinitions, createErrorMessage);
+        HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult = markDefinitionsInvalidInDefinitions(parse, invalidDefinitions, createErrorMessage);
 
         return new ParseBuilder()
                 .prototypeOf(parse)

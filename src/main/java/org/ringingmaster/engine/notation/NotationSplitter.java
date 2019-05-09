@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * different style on entry. </b>
  * i.e. 'X12X', x.12x' Etc.
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 class NotationSplitter {

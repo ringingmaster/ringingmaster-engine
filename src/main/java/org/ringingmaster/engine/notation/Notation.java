@@ -10,7 +10,7 @@ import java.util.SortedSet;
  * Can iterate over the rows.
  * <br/>
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 
 @Immutable

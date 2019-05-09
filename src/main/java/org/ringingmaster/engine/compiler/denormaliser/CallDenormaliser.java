@@ -34,7 +34,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
  * Takes nesting and grouping in cells, and denormalises it down to a list of calls that cary enough information to
  * support the runtime rules around call identification (from call names), Variance, Etc.
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> {

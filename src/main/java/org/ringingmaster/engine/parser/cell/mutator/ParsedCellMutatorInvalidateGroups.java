@@ -17,7 +17,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class ParsedCellMutatorInvalidateGroups implements Function<ParsedCellMutatorSectionsAndGroups, ParsedCellMutatorSectionsAndGroups> {
 

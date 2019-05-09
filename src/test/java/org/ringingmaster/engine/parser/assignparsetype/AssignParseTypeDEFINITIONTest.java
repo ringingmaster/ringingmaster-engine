@@ -9,6 +9,7 @@ import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.composition.TableType;
 
+import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
@@ -22,7 +23,7 @@ import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAc
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
 /**
- * @author stevelake
+ * @author Steve Lake
  */
 public class AssignParseTypeDEFINITIONTest {
 
@@ -180,6 +181,15 @@ public class AssignParseTypeDEFINITIONTest {
         Parse parse = new AssignParseType().apply(composition.get());
 
         assertParse(parse.findDefinitionByShorthand("3*").get().get(0, SHORTHAND_COLUMN), valid(2, DEFINITION));
+    }
+
+    @Test
+    public void definitionWithZeroShorthandLengthDoesNotCauseNPE() {
+        MutableComposition composition = new MutableComposition();
+        composition.addDefinition("3*", "-");
+        composition.addCharacters(DEFINITION_TABLE, 1, DEFINITION_COLUMN, "s");
+
+        new AssignParseType().apply(composition.get());
     }
 
     private Notation buildPlainBobMinor() {

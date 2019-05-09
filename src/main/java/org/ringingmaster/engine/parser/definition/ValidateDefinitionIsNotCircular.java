@@ -4,11 +4,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.errorprone.annotations.Immutable;
 import org.pcollections.ConsPStack;
 import org.pcollections.PStack;
-import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
-import org.ringingmaster.engine.parser.functions.DefinitionFunctions;
+import org.ringingmaster.engine.parser.parse.Parse;
+import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,16 +16,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static org.ringingmaster.engine.parser.definition.DefinitionFunctions.markDefinitionsInvalidInComposition;
+import static org.ringingmaster.engine.parser.definition.DefinitionFunctions.markDefinitionsInvalidInDefinitions;
+
 /**
  * Marks any participants in a circular dependency as invalid.
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final DefinitionFunctions definitionFunctions = new DefinitionFunctions();
 
     // TODO can we get the dependency chain in the error message? If so the addition of all shorthands for definitions in use will have to change.
     private final Function<String, String> createErrorMessage = (characters) -> "Definition [" + characters + "] forms part of a circular dependency";
@@ -42,14 +43,8 @@ public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
             discoverCircularity(invalidDefinitions, adjacency, ConsPStack.singleton(shorthand));
         }
 
-        HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult =
-                HashBasedTable.create(input.allCompositionCells().getBackingTable());
-        definitionFunctions.markInvalid(input.mainBodyCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
-        definitionFunctions.markInvalid(input.splicedCells(), invalidDefinitions, compositionTableResult, createErrorMessage);
-
-        HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
-                HashBasedTable.create(input.definitionDefinitionCells().getBackingTable());
-        definitionFunctions.markInvalid(input.definitionDefinitionCells(), invalidDefinitions, definitionTableResult, createErrorMessage);
+        HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult = markDefinitionsInvalidInComposition(input, invalidDefinitions, createErrorMessage);
+        HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult = markDefinitionsInvalidInDefinitions(input, invalidDefinitions, createErrorMessage);
 
 
         Parse result = new ParseBuilder()

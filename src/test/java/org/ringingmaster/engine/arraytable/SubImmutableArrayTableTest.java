@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class SubImmutableArrayTableTest {
 

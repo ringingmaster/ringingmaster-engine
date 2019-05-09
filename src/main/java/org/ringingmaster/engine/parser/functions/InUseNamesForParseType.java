@@ -13,7 +13,7 @@ import java.util.stream.StreamSupport;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class InUseNamesForParseType implements BiFunction<ImmutableArrayTable<ParsedCell>, ParseType, Set<String>> {
 

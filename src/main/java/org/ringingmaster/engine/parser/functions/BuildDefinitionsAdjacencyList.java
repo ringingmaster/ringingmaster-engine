@@ -15,7 +15,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITI
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class BuildDefinitionsAdjacencyList implements Function<Parse, Map<String, Set<String>>> {
 

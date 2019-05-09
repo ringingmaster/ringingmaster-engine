@@ -11,11 +11,12 @@ import org.ringingmaster.engine.composition.tableaccess.CompositionTableAccess;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 class DefaultParse implements Parse {
@@ -74,6 +75,11 @@ class DefaultParse implements Parse {
     @Override
     public Optional<ImmutableArrayTable<ParsedCell>> findDefinitionByShorthand(String shorthand) {
         return definitionTableAccessDelegate.findDefinitionByShorthand(shorthand);
+    }
+
+    @Override
+    public Set<ImmutableArrayTable<ParsedCell>> getDefinitionAsTables() {
+        return definitionTableAccessDelegate.getDefinitionAsTables();
     }
 
     @Override

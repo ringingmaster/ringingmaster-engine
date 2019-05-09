@@ -59,7 +59,7 @@ import static org.ringingmaster.engine.notation.PlaceSetSequence.BY_NUMBER_THEN_
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class MutableComposition {
 

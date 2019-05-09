@@ -35,7 +35,7 @@ import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAc
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class AssignParseTypeMULTIPLIERTest {
 

@@ -14,7 +14,7 @@ import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAc
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class DefinitionCellMutationTest {
 

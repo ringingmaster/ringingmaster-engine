@@ -10,7 +10,7 @@ import javax.annotation.concurrent.Immutable;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public interface Parse extends CompositionTableAccess<ParsedCell>, DefinitionTableAccess<ParsedCell>  {

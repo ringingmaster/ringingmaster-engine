@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkState;
  * This also means that twin-hunt methods will have the same code as the corresponding single-hunt methods,
  * for example Single/Double Oxford and Single/Double Court.<br>
  *
- * @author Lake
+ * @author Steve Lake
  */
 
 //TODO Need to handle type 'm' being optionally near for canned calls. file:///Users/Lake/Documents/projects/ringingmaster_cpp/Supporting%20Projects/Web/Ringing%20Master/WebHelp/Option_Library.htm

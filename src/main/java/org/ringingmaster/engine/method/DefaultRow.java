@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 /**
  * Default implementation of the Row interface.
  * 
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 class DefaultRow implements Row {

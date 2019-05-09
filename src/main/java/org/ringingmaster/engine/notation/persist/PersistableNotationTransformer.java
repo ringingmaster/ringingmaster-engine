@@ -9,7 +9,7 @@ import org.ringingmaster.persist.generated.v1.LibraryNotationPersist;
  * Manage the conversion of the persistable and engine version of notations.
  * Attempt to keep the persistable stuff isolated.
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class PersistableNotationTransformer {
 

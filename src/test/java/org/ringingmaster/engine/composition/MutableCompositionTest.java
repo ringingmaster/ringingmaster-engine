@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class MutableCompositionTest {
 

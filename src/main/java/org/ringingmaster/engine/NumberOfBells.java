@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Represents the number of bells in a notation / method type.
  *
- * @author Stephen Lake
+ * @author Steve Lake
  *
  */
 public enum NumberOfBells implements Iterable<Place> {

@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public class CourseBasedCompilerPipelineData extends CompilerPipelineData<CourseBasedCompilerPipelineData> {

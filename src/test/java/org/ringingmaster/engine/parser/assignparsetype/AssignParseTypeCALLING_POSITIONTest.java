@@ -19,7 +19,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class AssignParseTypeCALLING_POSITIONTest {
 

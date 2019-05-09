@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Represents the individual bell in a method that actually swaps places Etc.
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 public enum Bell {
 

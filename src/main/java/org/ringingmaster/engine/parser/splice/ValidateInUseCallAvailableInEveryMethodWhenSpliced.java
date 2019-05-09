@@ -27,7 +27,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 /**
  * Validates that any call that is actually in use is available in every method in spliced
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Function<Parse, Parse> {
 

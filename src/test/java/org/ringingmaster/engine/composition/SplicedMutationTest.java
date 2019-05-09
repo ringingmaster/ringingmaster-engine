@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class SplicedMutationTest {
 

@@ -26,7 +26,7 @@ import static org.ringingmaster.engine.composition.compositiontype.CompositionTy
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @RunWith(Parameterized.class)
 public class DefaultCompositionTableAccessTest {

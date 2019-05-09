@@ -14,7 +14,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LE
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class LeadBasedBuildCallSequence implements Function<LeadBasedCompilerPipelineData, LeadBasedCompilerPipelineData> {
     private final Logger log = LoggerFactory.getLogger(LeadBasedBuildCallSequence.class);

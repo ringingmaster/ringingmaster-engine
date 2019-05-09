@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkState;
  * <p>
  * This forces that the construction of the Notation is verified.
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 
 // TODO need to ensure that canned calls (and other components) are re-created when loaded from serialised. This will then take into account options like type 'm' calls being optionally near or extreme . Will also save space when serialised.

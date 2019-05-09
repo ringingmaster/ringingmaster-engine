@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * have had the folded palindrome symmetry and LE values already applied to simplify
  * iteration.
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 class DefaultNotation extends DefaultPlaceSetSequence implements Notation {

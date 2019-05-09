@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * @author stevelake
+ * @author Steve Lake
  */
 public class TableBackedImmutableArrayTable<T> implements ImmutableArrayTable<T> {
 

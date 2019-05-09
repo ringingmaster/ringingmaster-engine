@@ -18,7 +18,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class BuildVarianceLookupByName<T extends CompilerPipelineData<T>> implements Function<T, T> {
     private final Logger log = LoggerFactory.getLogger(BuildVarianceLookupByName.class);

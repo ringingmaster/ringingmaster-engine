@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 /**
  * An implementation of ImmutableArrayTabler that acts much like List.subList()
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class SubImmutableArrayTable<T> implements ImmutableArrayTable<T> {
 

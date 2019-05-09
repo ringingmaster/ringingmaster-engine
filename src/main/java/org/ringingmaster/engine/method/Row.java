@@ -10,7 +10,7 @@ import javax.annotation.concurrent.Immutable;
  * Contains verified bells, representing a single row of a method.
  * If this method has covers, then these will be included in the row.
  * 
- * @author Stephen
+ * @author Steve Lake
  */
 @Immutable
 public interface Row extends Iterable<Bell>, Comparable<Row> {

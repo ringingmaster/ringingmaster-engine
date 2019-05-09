@@ -5,7 +5,7 @@ import javax.annotation.concurrent.Immutable;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public class BackingTableLocationAndValue<T> {

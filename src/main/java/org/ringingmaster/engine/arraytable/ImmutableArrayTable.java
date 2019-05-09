@@ -8,7 +8,7 @@ import java.util.Iterator;
  * An extension to the Guava Table to act like two fully populated ArrayLists on the
  * row and column dimensions.
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public interface ImmutableArrayTable<T> extends Iterable<BackingTableLocationAndValue<T>> {
 

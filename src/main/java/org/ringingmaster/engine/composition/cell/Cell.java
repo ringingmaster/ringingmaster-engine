@@ -5,7 +5,7 @@ import com.google.errorprone.annotations.Immutable;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public interface Cell {

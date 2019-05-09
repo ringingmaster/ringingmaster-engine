@@ -20,7 +20,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LE
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class AssignParseTypePLAIN_LEADTest {
 

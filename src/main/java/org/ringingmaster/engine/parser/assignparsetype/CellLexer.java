@@ -28,7 +28,7 @@ import static org.ringingmaster.engine.parser.cell.grouping.GroupingFactory.buil
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 class CellLexer {

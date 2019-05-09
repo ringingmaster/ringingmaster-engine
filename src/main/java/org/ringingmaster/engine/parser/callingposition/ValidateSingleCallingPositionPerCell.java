@@ -20,7 +20,7 @@ import java.util.function.Function;
  * Enforces that only one call position is allowed in a cell.
  * Works with CallingPosition cells only.
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public class ValidateSingleCallingPositionPerCell implements Function<Parse, Parse> {

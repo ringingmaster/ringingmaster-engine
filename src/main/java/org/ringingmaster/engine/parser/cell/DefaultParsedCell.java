@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 class DefaultParsedCell implements ParsedCell {
 
@@ -106,7 +106,7 @@ class DefaultParsedCell implements ParsedCell {
         for (int groupIndex = 0;groupIndex< allGroups.size();groupIndex++) {
             Group group = allGroups.get(groupIndex);
             groupRow.append("[").append(groupIndex).append("]").append(group.getStartIndex());
-            if (!group.isValid()) groupRow.append("-X");
+            groupRow.append(group.isValid()?"-✓":"-X");
             if (group.getMessage().isPresent()){
                 messages.put(groupIndex, group.getMessage().get());
             }

@@ -9,7 +9,7 @@ import static org.ringingmaster.engine.composition.MutableComposition.TERMINATIO
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class TerminationMaxRowMutationTest {
 

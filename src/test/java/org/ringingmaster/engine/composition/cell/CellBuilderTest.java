@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class CellBuilderTest {
 

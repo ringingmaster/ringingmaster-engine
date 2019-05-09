@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public abstract class SkeletalMatchingBraceLogic implements Function<Parse, Parse> {
 

@@ -1,5 +1,8 @@
-package org.ringingmaster.engine.parser.functions;
+package org.ringingmaster.engine.parser.definition;
 
+import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
+import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
+import org.ringingmaster.engine.parser.functions.InUseNamesForParseType;
 import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.Map;
@@ -11,9 +14,9 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITI
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
-public class InUseMainBodyDefinitionsTransitively implements Function<Parse, Set<String>>{
+class InUseMainBodyDefinitionsTransitively implements Function<Parse, Set<String>>{
 
     private final InUseNamesForParseType inUseNamesForParseType = new InUseNamesForParseType();
 

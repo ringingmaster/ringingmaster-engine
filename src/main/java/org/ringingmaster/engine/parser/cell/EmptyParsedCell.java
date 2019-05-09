@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class EmptyParsedCell implements ParsedCell {
 

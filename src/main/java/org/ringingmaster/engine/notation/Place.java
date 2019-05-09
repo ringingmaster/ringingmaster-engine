@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * notation was 'X.15', then this would represent either the
  * 'X' or the '1' or the '5'
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 public enum Place {

@@ -10,7 +10,7 @@ import java.util.function.Function;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class ValidCompositionCheck<T extends CompilerPipelineData<T>> implements Function<T, T> {
 

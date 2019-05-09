@@ -3,7 +3,7 @@ package org.ringingmaster.engine.compiler;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class TerminateEarlyException extends RuntimeException {
 

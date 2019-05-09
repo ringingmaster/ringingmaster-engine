@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
 public class CourseBasedBuildCallSequence implements Function<CourseBasedCompilerPipelineData, CourseBasedCompilerPipelineData> {

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 
 public class AssertParse {

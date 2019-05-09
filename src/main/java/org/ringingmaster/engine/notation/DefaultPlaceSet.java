@@ -9,7 +9,7 @@ import java.util.Set;
  * Default implementation of the PlaceSet interface. Only to be constructed from
  * this package, using the NotationBuilder.
  *
- * @author Stephen Lake
+ * @author Steve Lake
  */
 @Immutable
 class DefaultPlaceSet implements PlaceSet {

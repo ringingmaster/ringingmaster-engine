@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class StartStrokeMutationTest {
 

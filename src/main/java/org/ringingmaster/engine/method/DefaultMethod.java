@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The default implementation of the Method interface.
  * 
- * @author Stephen Lake
+ * @author Steve Lake
  */
 
 @Immutable

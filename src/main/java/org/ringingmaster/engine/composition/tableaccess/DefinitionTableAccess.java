@@ -5,11 +5,12 @@ import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.composition.cell.Cell;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public interface DefinitionTableAccess<T extends Cell> {
 
@@ -29,9 +30,14 @@ public interface DefinitionTableAccess<T extends Cell> {
     ImmutableArrayTable<T> definitionDefinitionCells();
 
     /**
-     * @return whole row. i.e. up to two cells.
+     * @return whole row as a sub table. i.e. up to two cells.
      */
     Optional<ImmutableArrayTable<T>> findDefinitionByShorthand(String shorthand);
+
+    /**
+     * @return Set of whole row's as a sub table. i.e. up to two cells per table.
+     */
+    Set<ImmutableArrayTable<T>> getDefinitionAsTables();
 
 
      ImmutableSet<String> getAllDefinitionShorthands();

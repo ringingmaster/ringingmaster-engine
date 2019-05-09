@@ -6,7 +6,7 @@ import org.ringingmaster.engine.composition.cell.Cell;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public interface CompositionTableAccess<T extends Cell> {
 

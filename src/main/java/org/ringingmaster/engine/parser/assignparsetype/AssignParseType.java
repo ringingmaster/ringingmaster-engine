@@ -29,6 +29,7 @@ import java.util.function.Function;
 import static org.ringingmaster.engine.compiler.variance.VarianceFactory.ODD_EVEN_REGEX;
 import static org.ringingmaster.engine.compiler.variance.VarianceFactory.OMIT_INCLUDE_REGEX;
 import static org.ringingmaster.engine.compiler.variance.VarianceFactory.SPECIFIED_PARTS_REGEX;
+import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALLING_POSITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL_MULTIPLIER;
@@ -51,10 +52,10 @@ import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAc
  * Parses all cells and assigns a parse type where possible.
  * Does not include multipliers.
  *
- * @author stevelake
+ * @author Steve Lake
  */
 @Immutable
-public class AssignParseType implements Function<Composition, Parse> {
+public class    AssignParseType implements Function<Composition, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(AssignParseType.class);
 
@@ -190,45 +191,39 @@ public class AssignParseType implements Function<Composition, Parse> {
             return;
         }
 
-        // Pass 1 - parse definitions
+        // Pass 1 - parse definition area for definition ParseType's
         Set<LexerDefinition> definitionMappings = buildDefinitionDefinitionTokenMap(composition);
-        for (String shorthand : composition.getAllDefinitionShorthands()) {
-            composition.findDefinitionByShorthand(shorthand).ifPresent(
-                    (definitionTable) -> {
-                        log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", composition.getTitle(), shorthand);
-                        final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
-                        parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
-                    }
-            );
+        for (ImmutableArrayTable<Cell> definitionTable : composition.getDefinitionAsTables()) {
+            final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
+            String shorthand = definitionCellAsTable.get(0, SHORTHAND_COLUMN).getCharacters();
+            log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", composition.getTitle(), shorthand);
+            parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
         }
 
-        // Pass 2 - find transative definitions
-        final Parse tempParseToFindAdjacensyList = new ParseBuilder()
+        // Pass 2 - build adjacency list of transitive definitions for main and spliced
+        final Parse tempParseToFindAdjacencyList = new ParseBuilder()
                 .prototypeOf(composition)
                 .setCompositionTableCells(HashBasedTable.create())
                 .setDefinitionTableCells(parsedDefinitionCells)
                 .build();
-        final Map<String, Set<String>> adjencency = new BuildDefinitionsAdjacencyList().apply(tempParseToFindAdjacensyList);
+        final Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(tempParseToFindAdjacencyList);
 
-        Set<String> mainBodyDefinitionsWithTransative = new FollowTransitiveDefinitions().apply(mainBodyDefinitions, adjencency);
-        Set<String> spliceAreaDefinitionsWithTransative = new FollowTransitiveDefinitions().apply(spliceAreaDefinitions, adjencency);
+        Set<String> mainBodyDefinitionsWithTransitive = new FollowTransitiveDefinitions().apply(mainBodyDefinitions, adjacency);
+        Set<String> spliceAreaDefinitionsWithTransitive = new FollowTransitiveDefinitions().apply(spliceAreaDefinitions, adjacency);
 
-        // Pass 3 - parse other values
+        // Pass 3 - parse definition area for the other (non definition) ParseType's
         Set<LexerDefinition> mainBodyParseTokenMappings = buildMainBodyParseTokenMap(composition);
         Set<LexerDefinition> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(composition);
 
-        for (String shorthand : composition.getAllDefinitionShorthands()) {
-            composition.findDefinitionByShorthand(shorthand).ifPresent(
-                    (definitionTable) -> {
-                        log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", composition.getTitle(), shorthand);
+        for (ImmutableArrayTable<Cell> definitionTable : composition.getDefinitionAsTables()) {
+            final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
+            String shorthand = definitionCellAsTable.get(0, SHORTHAND_COLUMN).getCharacters();
+            log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", composition.getTitle(), shorthand);
 
-                        final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
-                        // We only use splices mappings when token is not in main body but is in spliced.
-                        Set<LexerDefinition> chosenMappings = (!mainBodyDefinitionsWithTransative.contains(shorthand))&&
-                                spliceAreaDefinitionsWithTransative.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
-                        parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
-                    }
-            );
+            // We only use splices mappings when token is not in main body but is in spliced.
+            Set<LexerDefinition> chosenMappings = (!mainBodyDefinitionsWithTransitive.contains(shorthand))&&
+                    spliceAreaDefinitionsWithTransitive.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
+            parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
         }
 
     }

@@ -9,6 +9,7 @@ import org.ringingmaster.engine.parser.call.ValidateDefaultCallMultiplierFullyDe
 import org.ringingmaster.engine.parser.callingposition.ValidateSingleCallingPositionPerCell;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsNotCircular;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsUsedSplicedOrMain;
+import org.ringingmaster.engine.parser.definition.ValidateDefinitionShorthandNotDuplicated;
 import org.ringingmaster.engine.parser.observability.PrettyPrintCells;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.splice.ValidateInUseCallAvailableInEveryMethodWhenSpliced;
@@ -21,7 +22,7 @@ import java.util.function.Function;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class Parser implements Function<Composition, Parse> {
 
@@ -59,6 +60,7 @@ public class Parser implements Function<Composition, Parse> {
         //TODO		parseSplicedNotBlocks();
             .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
             .andThen(new ValidateDefinitionIsNotCircular())
+            .andThen(new ValidateDefinitionShorthandNotDuplicated())
             .andThen(new ValidateDefaultCallMultiplierFullyDefined())
 
             .andThen(new PrettyPrintCells());

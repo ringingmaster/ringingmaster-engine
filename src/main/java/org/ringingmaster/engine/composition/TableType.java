@@ -3,7 +3,7 @@ package org.ringingmaster.engine.composition;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public enum TableType {
 

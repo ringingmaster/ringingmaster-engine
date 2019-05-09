@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 @Immutable
 public abstract class CompilerPipelineData<T extends CompilerPipelineData> {

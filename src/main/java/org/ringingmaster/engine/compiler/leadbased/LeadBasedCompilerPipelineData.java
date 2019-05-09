@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 @Immutable
 class LeadBasedCompilerPipelineData extends CompilerPipelineData<LeadBasedCompilerPipelineData> {

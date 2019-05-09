@@ -13,7 +13,7 @@ import static org.ringingmaster.engine.composition.cell.CellBuilder.CharacterCha
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class CellBuilder {
 

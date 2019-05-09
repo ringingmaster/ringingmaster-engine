@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class FollowTransitiveDefinitions implements BiFunction<Set<String>, Map<String, Set<String>>, Set<String>> {
 

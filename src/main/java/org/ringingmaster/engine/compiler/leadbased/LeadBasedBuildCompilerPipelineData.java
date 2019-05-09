@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class LeadBasedBuildCompilerPipelineData implements Function<Parse, LeadBasedCompilerPipelineData> {
 

@@ -9,7 +9,7 @@ import javax.annotation.concurrent.Immutable;
  * 'X' or the '15'
  * <br/>
  *
- * @author Stephen
+ * @author Steve Lake
  */
 @Immutable
 public interface PlaceSet {

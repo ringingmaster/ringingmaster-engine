@@ -25,7 +25,7 @@ import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 /**
  * Used exclusively by class MutableComposition.
  *
- * @author Lake
+ * @author Steve Lake
  */
 class CompositionBuilder {
 

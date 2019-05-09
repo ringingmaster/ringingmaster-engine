@@ -3,7 +3,7 @@ package org.ringingmaster.engine.composition.cell;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class EmptyCell implements Cell{
 

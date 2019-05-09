@@ -19,7 +19,7 @@ import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 /**
  * TODO comments???
  *
- * @author stevelake
+ * @author Steve Lake
  */
 public class AssignParseTypeTest {
 

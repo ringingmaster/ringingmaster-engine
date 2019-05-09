@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Helper class in the correct package to allow the calling of the 
  * PlaceSet package private constructor
- * @author Stephen
+ * @author Steve Lake
  *
  */
 public class NotationRowHelper {

@@ -8,7 +8,7 @@ import static org.ringingmaster.engine.composition.MutableComposition.START_AT_R
 /**
  * TODO Comments
  *
- * @author Lake
+ * @author Steve Lake
  */
 public class StartAtRowMutationTest {
 
