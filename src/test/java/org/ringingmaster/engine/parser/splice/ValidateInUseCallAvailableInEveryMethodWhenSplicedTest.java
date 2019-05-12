@@ -20,7 +20,7 @@ import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 
 /**
@@ -47,11 +47,11 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(COURSE_BASED);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "CALL");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -71,8 +71,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         composition.setSpliced(false);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
         composition.setNonSplicedActiveNotation(plainBobMinor);
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "PL");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "Bob");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "PL");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -87,8 +87,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "PL");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "Bob");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "PL");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -103,8 +103,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "PL");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "-");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "PL");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -119,8 +119,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "P");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "Bob");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "P");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -135,8 +135,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "P");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "-");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "P");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -152,8 +152,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "L");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "Bob");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "L");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -168,8 +168,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "L");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "-");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "L");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -184,8 +184,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildCambridgeMajorNoCalls());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "P");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "Bob");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "P");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -200,8 +200,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildCambridgeMajorNoCalls());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "P");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "-");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "P");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())
@@ -216,8 +216,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "Bob");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "DEF1P");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "Bob");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "DEF1P");
         composition.addDefinition("DEF1", "L");
 
         Parse result = new AssignParseType()
@@ -234,8 +234,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "DEF1P");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "-");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "DEF1P");
         composition.addDefinition("DEF1", "L");
 
         Parse result = new AssignParseType()
@@ -252,8 +252,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "DEF1");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "PL");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "DEF1");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "PL");
         composition.addDefinition("DEF1", "-");
 
         Parse result = new AssignParseType()
@@ -270,8 +270,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildLittleBobMinorWithNoCalls().build());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "DEF1");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "PL");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "DEF1");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "PL");
         composition.addDefinition("DEF1", "Bob");
 
         Parse result = new AssignParseType()
@@ -288,8 +288,8 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSplicedTest {
         final Notation plainBobMinor = buildPlainBobMinor();
         MutableComposition composition = buildSingleCellComposition(plainBobMinor);
         composition.addNotation(buildDoublePlainBobMinor());
-        composition.addCharacters(TableType.MAIN_TABLE, 0,0, "-");
-        composition.addCharacters(TableType.MAIN_TABLE, 0,1, "PD");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,0, "-");
+        composition.addCharacters(TableType.COMPOSITION_TABLE, 0,1, "PD");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateInUseCallAvailableInEveryMethodWhenSpliced())

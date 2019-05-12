@@ -52,11 +52,7 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
             return parse;
         }
 
-        // Step 4: Mark invalid
-        if (!invalidDefinitions.isEmpty()) {
-            log.debug("[{}]  marking invalid definitions [{}]", parse.getComposition().getTitle(), invalidDefinitions);
-        }
-
+        // Step 2: Mark invalid
         HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult = markDefinitionsInvalidInComposition(parse, invalidDefinitions, createErrorMessage);
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult = markDefinitionsInvalidInDefinitions(parse, invalidDefinitions, createErrorMessage);
 

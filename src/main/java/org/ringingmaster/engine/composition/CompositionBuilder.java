@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE;
 import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_ROWS_INITIAL_VALUE;
 import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 
 
 /**
@@ -97,7 +97,7 @@ class CompositionBuilder {
         setTerminationMaxCircularity(TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE);
         setTerminationChange(Optional.empty());
 
-        setCells(MAIN_TABLE, new TableBackedImmutableArrayTable<>(EmptyCell::new));
+        setCells(COMPOSITION_TABLE, new TableBackedImmutableArrayTable<>(EmptyCell::new));
 
         return this;
     }
@@ -195,7 +195,7 @@ class CompositionBuilder {
     CompositionBuilder setCells(TableType tableType, ImmutableArrayTable<Cell> cells) {
         switch (tableType) {
 
-            case MAIN_TABLE:
+            case COMPOSITION_TABLE:
                 this.compositionCells = Optional.of(cells);
                 break;
             case DEFINITION_TABLE:

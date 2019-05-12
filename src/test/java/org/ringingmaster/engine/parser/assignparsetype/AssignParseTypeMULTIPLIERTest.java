@@ -28,7 +28,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE_M
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
@@ -54,11 +54,11 @@ public class AssignParseTypeMULTIPLIERTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), null);
         composition.setCompositionType(COURSE_BASED);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "CALL");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse parse = new AssignParseType()
  
@@ -196,7 +196,7 @@ public class AssignParseTypeMULTIPLIERTest {
     @Test
     public void correctlyParseSpliceMultiplier() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "2p");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "2p");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
@@ -208,7 +208,7 @@ public class AssignParseTypeMULTIPLIERTest {
     @Test
     public void correctlyParseMultiSpliceMultiplier() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "392p");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "392p");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
@@ -220,7 +220,7 @@ public class AssignParseTypeMULTIPLIERTest {
     @Test
     public void standAloneNumbersInSplicedUnparsed() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "DUMMY");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "392-");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "392-");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
@@ -242,7 +242,7 @@ public class AssignParseTypeMULTIPLIERTest {
     @Test
     public void multiplierDoesNotAddDefaultCallWhenUsedOnlyInSpliceInDefinition() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "def2");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "def2");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
@@ -254,7 +254,7 @@ public class AssignParseTypeMULTIPLIERTest {
     @Test
     public void multiplierDoesAddDefaultCallWhenUsedInMainCellsInDefinition() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "-");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "-");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType()
@@ -295,7 +295,7 @@ public class AssignParseTypeMULTIPLIERTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

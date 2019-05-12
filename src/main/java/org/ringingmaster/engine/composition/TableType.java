@@ -7,6 +7,6 @@ package org.ringingmaster.engine.composition;
  */
 public enum TableType {
 
-    MAIN_TABLE,
+    COMPOSITION_TABLE,
     DEFINITION_TABLE
 }

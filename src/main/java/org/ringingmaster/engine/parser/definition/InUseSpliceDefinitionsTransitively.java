@@ -1,8 +1,5 @@
 package org.ringingmaster.engine.parser.definition;
 
-import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
-import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
-import org.ringingmaster.engine.parser.functions.InUseNamesForParseType;
 import org.ringingmaster.engine.parser.parse.Parse;
 
 import java.util.Map;

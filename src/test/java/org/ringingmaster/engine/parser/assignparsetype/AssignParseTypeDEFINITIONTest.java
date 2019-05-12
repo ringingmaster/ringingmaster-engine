@@ -17,7 +17,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
@@ -48,7 +48,7 @@ public class AssignParseTypeDEFINITIONTest {
     @Test
     public void definitionParsedInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1,"def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1,"def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -67,7 +67,7 @@ public class AssignParseTypeDEFINITIONTest {
     public void correctlyParsesDefinitionTokenInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
         composition.setSpliced(true);
-        composition.addCharacters(MAIN_TABLE, 0, 1, "Pdef1P");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "Pdef1P");
 
         Parse parse = new AssignParseType().apply(composition.get());
         assertParse(parse.allCompositionCells().get(0, 1), valid(SPLICE), valid(4, DEFINITION), valid(SPLICE));
@@ -102,7 +102,7 @@ public class AssignParseTypeDEFINITIONTest {
     @Test
     public void definitionUsedInSpiceAreaParsedAsSpice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "s");
-        composition.addCharacters(MAIN_TABLE, 0,1,"def1 def2");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1,"def1 def2");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -112,7 +112,7 @@ public class AssignParseTypeDEFINITIONTest {
     @Test
     public void definitionUsedInMainAndSpiceAreaParsedAsMainBody() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
-        composition.addCharacters(MAIN_TABLE, 0,1,"def1");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1,"def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -134,7 +134,7 @@ public class AssignParseTypeDEFINITIONTest {
     @Test
     public void transitiveDefinitionInSplicedParsedAsSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(TableType.MAIN_TABLE,0,1,"def3");
+        composition.addCharacters(TableType.COMPOSITION_TABLE,0,1,"def3");
         composition.setSpliced(true);
         composition.addDefinition("def3", "def2");
         composition.addDefinition("def2", "def1");
@@ -149,7 +149,7 @@ public class AssignParseTypeDEFINITIONTest {
     @Test
     public void transitiveDefinitionInSplicedAndMainBodyParsedAsMainBody() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def33");
-        composition.addCharacters(TableType.MAIN_TABLE,0,1,"def3");
+        composition.addCharacters(TableType.COMPOSITION_TABLE,0,1,"def3");
         composition.setSpliced(true);
         composition.addDefinition("def3", "def2");
         composition.addDefinition("def2", "def1");
@@ -164,7 +164,7 @@ public class AssignParseTypeDEFINITIONTest {
     @Test
     public void multiplierDoesAddsDefaultCallWhenUsedInSpliceAndMainCells() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def2");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "def2");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "def2");
         composition.setSpliced(true);
         composition.addDefinition("def2", "2");
 
@@ -210,7 +210,7 @@ public class AssignParseTypeDEFINITIONTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

@@ -925,7 +925,7 @@ public class MutableComposition {
     private ImmutableArrayTable<Cell> getCells(TableType tableType) {
         switch (tableType) {
 
-            case MAIN_TABLE:
+            case COMPOSITION_TABLE:
                 return compositionStream.getValue().allCompositionCells();
             case DEFINITION_TABLE:
                 return compositionStream.getValue().allDefinitionCells();

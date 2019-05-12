@@ -5,7 +5,6 @@ import com.google.errorprone.annotations.Immutable;
 import org.pcollections.ConsPStack;
 import org.pcollections.PStack;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;
@@ -60,14 +59,17 @@ public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
 
     private void discoverCircularity(Set<String> results, Map<String, Set<String>> adjacency, PStack<String> path) {
         String shorthand = path.get(0);
-        final Set<String> dependencies = adjacency.get(shorthand);
 
-        for (String dependency : dependencies) {
-            if (path.contains(dependency)) {
-                // we are declaring circularity at this point, and delve no further
-                results.addAll(path);
-            } else {
-                discoverCircularity(results, adjacency, path.plus(dependency));
+        if (adjacency.containsKey(shorthand)) {
+            final Set<String> dependencies = adjacency.get(shorthand);
+
+            for (String dependency : dependencies) {
+                if (path.contains(dependency)) {
+                    // we are declaring circularity at this point, and delve no further
+                    results.addAll(path);
+                } else {
+                    discoverCircularity(results, adjacency, path.plus(dependency));
+                }
             }
         }
     }

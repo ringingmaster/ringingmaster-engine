@@ -21,7 +21,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 public class ValidateVarianceMatchingBraceLogicTest {
@@ -43,11 +43,11 @@ public class ValidateVarianceMatchingBraceLogicTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "abc");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "abc");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "abc");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())
@@ -63,7 +63,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
     @Test
     public void parsesNoContentPairOfVarianceInSingleCell() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "[-o]");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "[-o]");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())
@@ -75,7 +75,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
     @Test
     public void varianceInSingleCellInWrongOrderInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "][-o");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "][-o");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())
@@ -87,8 +87,8 @@ public class ValidateVarianceMatchingBraceLogicTest {
     @Test
     public void varianceOnMultiLineCellInWrongOrderInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "]");
-        composition.addCharacters(MAIN_TABLE, 1,0, "[-0");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "]");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "[-0");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())
@@ -102,9 +102,9 @@ public class ValidateVarianceMatchingBraceLogicTest {
     public void variancesWithinCourseBasedInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(CompositionType.COURSE_BASED);
-        composition.addCharacters(MAIN_TABLE, 0,0, "[");
-        composition.addCharacters(MAIN_TABLE, 0,1, "]");
-        composition.addCharacters(MAIN_TABLE, 1,0, "-");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "[");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "]");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "-");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())
@@ -129,7 +129,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
     @Test
     public void nestingVarianceInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "[-o[-e-]]");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "[-o[-e-]]");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())

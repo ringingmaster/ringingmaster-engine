@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
@@ -45,7 +45,7 @@ public class AssignParseTypeCALLTest {
     @Test
     public void callUnparsedInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1,"-");
+        composition.addCharacters(COMPOSITION_TABLE,0,1,"-");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -62,7 +62,7 @@ public class AssignParseTypeCALLTest {
     }
 
     @Test
-    public void callUnparsedInDefinitionUsedInMainBody() {
+    public void callUnparsedInDefinitionUsedOnlyInMainBody() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -71,9 +71,9 @@ public class AssignParseTypeCALLTest {
     }
 
     @Test
-    public void callUnparsedInDefinitionUsedInSplice() {
+    public void callUnparsedInDefinitionUsedOnlyInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -84,7 +84,7 @@ public class AssignParseTypeCALLTest {
     @Test
     public void callParsedInDefinitionUsedInSpliceAnMainBody() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -131,7 +131,7 @@ public class AssignParseTypeCALLTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

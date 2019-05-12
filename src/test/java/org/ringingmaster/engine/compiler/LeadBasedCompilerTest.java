@@ -267,7 +267,7 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void compileOmitParts() throws IOException {
 		MutableComposition composition = buildPlainBobMinorCompositionShell();
-		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "-[-2s]");
+		composition.addCharacters(TableType.COMPOSITION_TABLE, 0, 0, "-[-2s]");
 		proveAndCheckCompositionn(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
 	}
 
@@ -275,7 +275,7 @@ public class LeadBasedCompilerTest {
 	public void compileEmptyPartsTerminatedWithEmptyParts() throws IOException {
 		MutableComposition composition = buildPlainBobMinorCompositionShell();
 
-		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "[-1,2,3-s]");
+		composition.addCharacters(TableType.COMPOSITION_TABLE, 0, 0, "[-1,2,3-s]");
 
 		proveAndCheckCompositionn(0, "/PlainBobMinor [-s] omit1_2_3.txt", true, EMPTY_PARTS, composition.get());
 	}
@@ -283,7 +283,7 @@ public class LeadBasedCompilerTest {
 	@Test
 	public void compileDefinitionWithGroup() throws IOException {
 		MutableComposition composition = buildPlainBobMinorCompositionShell();
-		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, "-def-");
+		composition.addCharacters(TableType.COMPOSITION_TABLE, 0, 0, "-def-");
 		composition.addDefinition("def", "2(sBob)");
 
 		proveAndCheckCompositionn(6, "/PlainBobMinor -def-.txt", false, CompileTerminationReason.SPECIFIED_ROW, composition.get());
@@ -291,7 +291,7 @@ public class LeadBasedCompilerTest {
 
 	Proof checkSimple1CellPlainBobComposition(String compositionString, int expectedLeadCount, String fileName, boolean trueComposition) throws IOException {
 		MutableComposition composition = buildPlainBobMinorCompositionShell();
-		composition.addCharacters(TableType.MAIN_TABLE, 0, 0, compositionString);
+		composition.addCharacters(TableType.COMPOSITION_TABLE, 0, 0, compositionString);
 
 		return proveAndCheckCompositionn(expectedLeadCount, fileName, trueComposition, CompileTerminationReason.SPECIFIED_ROW, composition.get());
 	}

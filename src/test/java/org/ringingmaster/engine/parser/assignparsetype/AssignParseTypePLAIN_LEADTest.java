@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
@@ -46,7 +46,7 @@ public class AssignParseTypePLAIN_LEADTest {
     @Test
     public void doesNotParsePlainLeadInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1,"p");
+        composition.addCharacters(COMPOSITION_TABLE,0,1,"p");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -75,7 +75,7 @@ public class AssignParseTypePLAIN_LEADTest {
     @Test
     public void correctlyParsesPlainLeadInDefinitionUsedInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -86,7 +86,7 @@ public class AssignParseTypePLAIN_LEADTest {
     @Test
     public void correctlyParsesPlainLeadInDefinitionUsedInSpliceAndMainBody() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -97,7 +97,7 @@ public class AssignParseTypePLAIN_LEADTest {
     @Test
     public void plainLeadUnparsedInMainBodyWhenCourseBased() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "W");
-        composition.addCharacters(MAIN_TABLE, 1,0,"p");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0,"p");
         composition.setCompositionType(COURSE_BASED);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -144,7 +144,7 @@ public class AssignParseTypePLAIN_LEADTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

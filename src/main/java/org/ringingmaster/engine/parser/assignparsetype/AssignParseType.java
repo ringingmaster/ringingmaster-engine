@@ -9,8 +9,8 @@ import org.ringingmaster.engine.notation.Call;
 import org.ringingmaster.engine.notation.CallingPosition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.functions.BuildDefinitionsAdjacencyList;
-import org.ringingmaster.engine.parser.functions.FollowTransitiveDefinitions;
+import org.ringingmaster.engine.parser.definition.BuildDefinitionsAdjacencyList;
+import org.ringingmaster.engine.parser.definition.FollowTransitiveDefinitions;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
@@ -55,7 +55,7 @@ import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAc
  * @author Steve Lake
  */
 @Immutable
-public class    AssignParseType implements Function<Composition, Parse> {
+public class AssignParseType implements Function<Composition, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(AssignParseType.class);
 
@@ -77,20 +77,16 @@ public class    AssignParseType implements Function<Composition, Parse> {
         log.debug("[{}] > assign parse type", composition.getTitle());
 
         final HashBasedTable<Integer, Integer, ParsedCell> parsedCompositionCells = HashBasedTable.create();
+        parseNullArea(composition, parsedCompositionCells);
         parseCallingPositionArea(composition, parsedCompositionCells);
-        final Set<String> mainBodyDefinitions =
-                parseMainBodyArea(composition, parsedCompositionCells);
-        final Set<String> spliceAreaDefinitions =
-                parseSpliceArea(composition, parsedCompositionCells);
+        final Set<String> mainBodyDefinitions = parseMainBodyArea(composition, parsedCompositionCells);
+        final Set<String> spliceAreaDefinitions = parseSpliceArea(composition, parsedCompositionCells);
 
         final HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells = HashBasedTable.create();
         parseDefinitionShorthandArea(composition, parsedDefinitionCells);
         parseDefinitionDefinitionArea(composition, parsedDefinitionCells, mainBodyDefinitions, spliceAreaDefinitions);
 
-
-        //TODO should we allow variance in definitions?
         //TODO should we allow variance in splice?
-
 
         Parse parse = new ParseBuilder()
                 .prototypeOf(composition)
@@ -103,14 +99,16 @@ public class    AssignParseType implements Function<Composition, Parse> {
         return parse;
     }
 
-    private void parseDefinitionShorthandArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {
-        log.debug("[{}] Parse definition shorthand area", composition.getTitle());
+    private void parseNullArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
+        if (composition.getCompositionType() != CompositionType.COURSE_BASED) {
+            return;
+        }
 
-        // This is a special parse - we just take trimmed versions of every definition and add it as a parse
-        Set<LexerDefinition> lexerDefinitions = new HashSet<>();
-        addDefinitionLexerDefinitions(composition, lexerDefinitions);
+        log.debug("[{}] Parse null area (unused top right cell when both spliced and course based)", composition.getTitle());
 
-        parse(parsedDefinitionCells, lexerDefinitions, composition.definitionShorthandCells(), (parsedCell) -> {}, composition.getTitle());
+        Set<LexerDefinition> lexerDefinitions = Collections.emptySet();
+
+        parse(parsedCells, lexerDefinitions, composition.nullAreaCells(), (parsedCell) -> {}, composition.getTitle());
     }
 
     private void parseCallingPositionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
@@ -120,10 +118,15 @@ public class    AssignParseType implements Function<Composition, Parse> {
 
         log.debug("[{}] Parse call position area", composition.getTitle());
 
-        Set<LexerDefinition> lexerDefinitions = new HashSet<>();
-        addCallingPositionLexerDefinitions(composition, lexerDefinitions);
+        Set<LexerDefinition> lexerDefinitions = buildCallingPositionParseTokenMap(composition);
 
         parse(parsedCells, lexerDefinitions, composition.callingPositionCells(), (parsedCell) -> {}, composition.getTitle());
+    }
+
+    private Set<LexerDefinition> buildCallingPositionParseTokenMap(Composition composition) {
+        Set<LexerDefinition> lexerDefinitions = new HashSet<>();
+        addCallingPositionLexerDefinitions(composition, lexerDefinitions);
+        return lexerDefinitions;
     }
 
     private Set<String> parseMainBodyArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
@@ -185,6 +188,16 @@ public class    AssignParseType implements Function<Composition, Parse> {
         return lexerDefinitions;
     }
 
+    private void parseDefinitionShorthandArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {
+        log.debug("[{}] Parse definition shorthand area", composition.getTitle());
+
+        // This is a special parse - we just take trimmed versions of every definition and add it as a parse
+        Set<LexerDefinition> lexerDefinitions = new HashSet<>();
+        addDefinitionLexerDefinitions(composition, lexerDefinitions);
+
+        parse(parsedDefinitionCells, lexerDefinitions, composition.definitionShorthandCells(), (parsedCell) -> {}, composition.getTitle());
+    }
+
     private void parseDefinitionDefinitionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells, Set<String> mainBodyDefinitions, Set<String> spliceAreaDefinitions) {
 
         if (composition.getAllDefinitionShorthands().size() == 0) {
@@ -194,10 +207,12 @@ public class    AssignParseType implements Function<Composition, Parse> {
         // Pass 1 - parse definition area for definition ParseType's
         Set<LexerDefinition> definitionMappings = buildDefinitionDefinitionTokenMap(composition);
         for (ImmutableArrayTable<Cell> definitionTable : composition.getDefinitionAsTables()) {
-            final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
-            String shorthand = definitionCellAsTable.get(0, SHORTHAND_COLUMN).getCharacters();
-            log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", composition.getTitle(), shorthand);
-            parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
+            if (definitionTable.getColumnSize() == 2) { //Can  be one when only shorthand entered
+                final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
+                String shorthand = definitionCellAsTable.get(0, SHORTHAND_COLUMN).getCharacters();
+                log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", composition.getTitle(), shorthand);
+                parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, parsedCell -> {}, composition.getTitle());
+            }
         }
 
         // Pass 2 - build adjacency list of transitive definitions for main and spliced
@@ -216,14 +231,17 @@ public class    AssignParseType implements Function<Composition, Parse> {
         Set<LexerDefinition> spliceAreaParseTokenMappings = buildSpliceAreaParseTokenMap(composition);
 
         for (ImmutableArrayTable<Cell> definitionTable : composition.getDefinitionAsTables()) {
-            final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
-            String shorthand = definitionCellAsTable.get(0, SHORTHAND_COLUMN).getCharacters();
-            log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", composition.getTitle(), shorthand);
+            if (definitionTable.getColumnSize() == 2) { //Can  be one when only shorthand entered
+                final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
+                String shorthand = definitionTable.get(0, SHORTHAND_COLUMN).getCharacters();
+                log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", composition.getTitle(), shorthand);
 
-            // We only use splices mappings when token is not in main body but is in spliced.
-            Set<LexerDefinition> chosenMappings = (!mainBodyDefinitionsWithTransitive.contains(shorthand))&&
-                    spliceAreaDefinitionsWithTransitive.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
-            parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {}, composition.getTitle());
+                // We only use splices mappings when token is not in main body but is in spliced.
+                Set<LexerDefinition> chosenMappings = (!mainBodyDefinitionsWithTransitive.contains(shorthand)) &&
+                        spliceAreaDefinitionsWithTransitive.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
+                parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {
+                }, composition.getTitle());
+            }
         }
 
     }
@@ -235,11 +253,12 @@ public class    AssignParseType implements Function<Composition, Parse> {
     }
 
 
-    private void parse(HashBasedTable<Integer, Integer, ParsedCell> parsedCells, Set<LexerDefinition> lexerDefinitions, ImmutableArrayTable<Cell> cells, Consumer<ParsedCell> observer, String logPreamble) {
+    private void parse(HashBasedTable<Integer, Integer, ParsedCell> targetParsedCells, Set<LexerDefinition> lexerDefinitions,
+                       ImmutableArrayTable<Cell> cells, Consumer<ParsedCell> observer, String logPreamble) {
         for (BackingTableLocationAndValue<Cell> cellAndLocation : cells) {
             ParsedCell parsedCell = lexer.lexCell(cellAndLocation.getValue(), lexerDefinitions, logPreamble);
             observer.accept(parsedCell);
-            parsedCells.put(cellAndLocation.getRow(), cellAndLocation.getCol(), parsedCell);
+            targetParsedCells.put(cellAndLocation.getRow(), cellAndLocation.getCol(), parsedCell);
         }
     }
 

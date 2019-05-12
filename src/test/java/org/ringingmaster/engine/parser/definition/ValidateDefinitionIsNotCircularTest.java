@@ -12,12 +12,14 @@ import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.LEAD_BASED;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
@@ -40,11 +42,11 @@ public class ValidateDefinitionIsNotCircularTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(COURSE_BASED);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "CALL");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsNotCircular())
@@ -63,7 +65,7 @@ public class ValidateDefinitionIsNotCircularTest {
         composition.addDefinition("DEF_1", "DEF_2");
         composition.addDefinition("DEF_2", "DEF_3");
         composition.addDefinition("DEF_3", "DEF_1");
-        composition.addCharacters(MAIN_TABLE, 0,0, "DEF_1");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "DEF_1");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsNotCircular())
@@ -76,12 +78,12 @@ public class ValidateDefinitionIsNotCircularTest {
     }
 
     @Test
-    public void circularDependencyleavesAdditionalPathValid() {
+    public void circularDependencyLeavesAdditionalPathValid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("DEF_1", "DEF_2DEF_3");
         composition.addDefinition("DEF_2", "DEF_1");
         composition.addDefinition("DEF_3", "-");
-        composition.addCharacters(MAIN_TABLE, 0,0, "DEF_1");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "DEF_1");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsNotCircular())
@@ -108,8 +110,8 @@ public class ValidateDefinitionIsNotCircularTest {
     @Test
     public void circularDependencyInsideSingleDefWhenUsedInMainInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "-");
-        composition.addCharacters(MAIN_TABLE, 0,1, "DEF_1");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "-");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "DEF_1");
         composition.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
@@ -122,7 +124,7 @@ public class ValidateDefinitionIsNotCircularTest {
     @Test
     public void circularDependencyInsideSingleDefWhenUsedInSpliceInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "DEF_1");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "DEF_1");
         composition.addDefinition("DEF_1", "DEF_1");
 
         Parse result = new AssignParseType()
@@ -130,6 +132,18 @@ public class ValidateDefinitionIsNotCircularTest {
                 .apply(composition.get());
 
         assertParse(result.findDefinitionByShorthand("DEF_1").get().get(0, DEFINITION_COLUMN), invalid(5, DEFINITION));
+    }
+
+    @Test
+    public void canOperateWithDefinitionWithOnlyShorthandDoesNotTHrow() {
+        MutableComposition composition = new MutableComposition();
+        composition.setCompositionType(LEAD_BASED);
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "DEF_1");
+        composition.addCharacters(DEFINITION_TABLE, 0,0, "DEF_1");
+
+        new AssignParseType()
+                .andThen(new ValidateDefinitionIsNotCircular())
+                .apply(composition.get());
     }
 
     private Notation buildPlainBobMinor() {

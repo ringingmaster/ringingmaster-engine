@@ -23,7 +23,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 
 /**
  * TODO comments???
@@ -93,7 +93,7 @@ public class AssignParseTypeVARIANCERegexTest {
         composition.addNotation(buildPlainBobMinor());
         composition.setCompositionType(CompositionType.LEAD_BASED);
         composition.setSpliced(false);
-        composition.addCharacters(MAIN_TABLE,0,0,testValue);
+        composition.addCharacters(COMPOSITION_TABLE,0,0,testValue);
 
         Parse parse = new AssignParseType().apply(composition.get());
 
@@ -118,7 +118,7 @@ public class AssignParseTypeVARIANCERegexTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

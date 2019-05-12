@@ -89,6 +89,24 @@ public class DefaultCompositionTableAccess<T extends Cell> implements Compositio
     }
 
     @Override
+    public ImmutableArrayTable<T> nullAreaCells() {
+        if (!isSpliced) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+        if (compositionType != CompositionType.COURSE_BASED) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+        if (cells.getColumnSize() < 2) {
+            return cells.subTable(0, 0, 0, 0);
+        }
+        return cells.subTable(
+               0,
+                1,
+                cells.getColumnSize() - 1,
+                cells.getColumnSize());
+    }
+
+    @Override
     public String toString() {
         return "DefaultCompositionTableAccess{" +
                 "cells=" + cells +

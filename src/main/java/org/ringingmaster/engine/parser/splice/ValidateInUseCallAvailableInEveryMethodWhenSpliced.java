@@ -9,7 +9,7 @@ import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
-import org.ringingmaster.engine.parser.functions.InUseNamesForParseType;
+import org.ringingmaster.engine.parser.definition.InUseNamesForParseType;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;

@@ -21,7 +21,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLI
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 
 public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
 
@@ -42,11 +42,11 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "abc");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "abc");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "abc");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
@@ -64,7 +64,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
     @Test
     public void VarianceEnclosedByGroupValid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "([-o])");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "([-o])");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
@@ -77,7 +77,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
     @Test
     public void GroupEnclosedByVarianceValid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "[-o()]");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "[-o()]");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
@@ -90,7 +90,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
     @Test
     public void GroupOverlappingVarianceInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "([-e)]");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "([-e)]");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
@@ -103,7 +103,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
     @Test
     public void VarianceOverlappingGroupInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "[-e(])");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "[-e(])");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
@@ -116,7 +116,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
     @Test
     public void MultiVarianceOverlappingGroupInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "[-o(][-e)]");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "[-o(][-e)]");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
@@ -129,7 +129,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
     @Test
     public void ignoresAlreadyInvalidBrace() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "(])"); //this sequence caused crash
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(])"); //this sequence caused crash
 
         Parse result = new AssignParseType()
 //                this line will pre-invalidate the closing variance brace.
@@ -145,7 +145,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
     @Test
     public void closingBraceBeforeOpeningBraceDoesNotThrow() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "(])]"); //this sequence caused crash
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(])]"); //this sequence caused crash
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateVarianceMatchingBraceLogic())

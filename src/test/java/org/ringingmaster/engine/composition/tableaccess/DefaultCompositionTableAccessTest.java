@@ -10,12 +10,12 @@ import org.junit.runners.Parameterized.Parameters;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
-import org.ringingmaster.engine.notation.Notation;
-import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.composition.cell.CellBuilder;
 import org.ringingmaster.engine.composition.cell.EmptyCell;
 import org.ringingmaster.engine.composition.compositiontype.CompositionType;
+import org.ringingmaster.engine.notation.Notation;
+import org.ringingmaster.engine.notation.NotationBuilder;
 
 import java.util.Arrays;
 
@@ -35,36 +35,36 @@ public class DefaultCompositionTableAccessTest {
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
 
-                //R, C, CompositionType,   spliced,   mainSize, spliceSize, callPosSize, mainRoot,  spliceRoot, callPosRoot
-                { 0, 0, LEAD_BASED,     true,      0,0,      0,0,        0,0,         null,      null,       null},   //0
-                { 0, 0, COURSE_BASED,   true,      0,0,      0,0,        0,0,         null,      null,       null},
-                { 0, 0, LEAD_BASED,     false,     0,0,      0,0,        0,0,         null,      null,       null},
-                { 0, 0, COURSE_BASED,   false,     0,0,      0,0,        0,0,         null,      null,       null},
+                //R, C, CompositionType,spliced,   nullSize, mainSize, spliceSize, callPosSize, nullRoot,  mainRoot,  spliceRoot, callPosRoot
+                { 0, 0, LEAD_BASED,     true,      0,0,      0,0,      0,0,        0,0,         null,      null,      null,       null},   //0
+                { 0, 0, COURSE_BASED,   true,      0,0,      0,0,      0,0,        0,0,         null,      null,      null,       null},
+                { 0, 0, LEAD_BASED,     false,     0,0,      0,0,      0,0,        0,0,         null,      null,      null,       null},
+                { 0, 0, COURSE_BASED,   false,     0,0,      0,0,      0,0,        0,0,         null,      null,      null,       null},
 
-                { 1, 1, LEAD_BASED,     true,      1,1,      0,0,        0,0,         "0,0",     null,       null},   //4
-                { 1, 1, COURSE_BASED,   true,      0,0,      0,0,        1,1,         null,      null,       "0,0"},
-                { 1, 1, LEAD_BASED,     false,     1,1,      0,0,        0,0,         "0,0",     null,       null},
-                { 1, 1, COURSE_BASED,   false,     0,0,      0,0,        1,1,         null,      null,       "0,0"},
+                { 1, 1, LEAD_BASED,     true,      0,0,      1,1,      0,0,        0,0,         null,      "0,0",     null,       null},   //4
+                { 1, 1, COURSE_BASED,   true,      0,0,      0,0,      0,0,        1,1,         null,      null,      null,       "0,0"},
+                { 1, 1, LEAD_BASED,     false,     0,0,      1,1,      0,0,        0,0,         null,      "0,0",     null,       null},
+                { 1, 1, COURSE_BASED,   false,     0,0,      0,0,      0,0,        1,1,         null,      null,      null,       "0,0"},
 
-                { 2, 1, LEAD_BASED,     true,      2,1,      0,0,        0,0,         "0,0",     null,       null},   //8
-                { 2, 1, COURSE_BASED,   true,      1,1,      0,0,        1,1,         "1,0",     null,       "0,0"},
-                { 2, 1, LEAD_BASED,     false,     2,1,      0,0,        0,0,         "0,0",     null,       null},
-                { 2, 1, COURSE_BASED,   false,     1,1,      0,0,        1,1,         "1,0",     null,       "0,0"},
+                { 2, 1, LEAD_BASED,     true,      0,0,      2,1,      0,0,        0,0,         null,      "0,0",     null,       null},   //8
+                { 2, 1, COURSE_BASED,   true,      0,0,      1,1,      0,0,        1,1,         null,      "1,0",     null,       "0,0"},
+                { 2, 1, LEAD_BASED,     false,     0,0,      2,1,      0,0,        0,0,         null,      "0,0",     null,       null},
+                { 2, 1, COURSE_BASED,   false,     0,0,      1,1,      0,0,        1,1,         null,      "1,0",     null,       "0,0"},
 
-                { 1, 2, LEAD_BASED,     true,      1,1,      1,1,        0,0,         "0,0",     "0,1",       null},   //12
-                { 1, 2, COURSE_BASED,   true,      0,0,      0,0,        1,1,         null,      null,       "0,0"},
-                { 1, 2, LEAD_BASED,     false,     1,2,      0,0,        0,0,         "0,0",     null,       null},
-                { 1, 2, COURSE_BASED,   false,     0,0,      0,0,        1,2,         null,      null,       "0,0"},
+                { 1, 2, LEAD_BASED,     true,      0,0,      1,1,      1,1,        0,0,         null,      "0,0",     "0,1",       null},   //12
+                { 1, 2, COURSE_BASED,   true,      1,1,      0,0,      0,0,        1,1,         "0,1",     null,      null,       "0,0"},
+                { 1, 2, LEAD_BASED,     false,     0,0,      1,2,      0,0,        0,0,         null,      "0,0",     null,       null},
+                { 1, 2, COURSE_BASED,   false,     0,0,      0,0,      0,0,        1,2,         null,      null,      null,       "0,0"},
 
-                { 2, 2, LEAD_BASED,     true,      2,1,      2,1,        0,0,         "0,0",     "0,1",      null},   //16
-                { 2, 2, COURSE_BASED,   true,      1,1,      1,1,        1,1,         "1,0",     "1,1",      "0,0"},
-                { 2, 2, LEAD_BASED,     false,     2,2,      0,0,        0,0,         "0,0",     null,       null},
-                { 2, 2, COURSE_BASED,   false,     1,2,      0,0,        1,2,         "1,0",     null,       "0,0"},
+                { 2, 2, LEAD_BASED,     true,      0,0,      2,1,      2,1,        0,0,         null,      "0,0",     "0,1",      null},   //16
+                { 2, 2, COURSE_BASED,   true,      1,1,      1,1,      1,1,        1,1,         "0,1",     "1,0",     "1,1",      "0,0"},
+                { 2, 2, LEAD_BASED,     false,     0,0,      2,2,      0,0,        0,0,         null,      "0,0",     null,       null},
+                { 2, 2, COURSE_BASED,   false,     0,0,      1,2,      0,0,        1,2,         null,      "1,0",     null,       "0,0"},
 
-                { 3, 3, LEAD_BASED,     true,      3,2,      3,1,        0,0,         "0,0",     "0,2",      null},   //20
-                { 3, 3, COURSE_BASED,   true,      2,2,      2,1,        1,2,         "1,0",     "1,2",      "0,0"},
-                { 3, 3, LEAD_BASED,     false,     3,3,      0,0,        0,0,         "0,0",     null,       null},
-                { 3, 3, COURSE_BASED,   false,     2,3,      0,0,        1,3,         "1,0",     null,       "0,0"}
+                { 3, 3, LEAD_BASED,     true,      0,0,      3,2,      3,1,        0,0,         null,      "0,0",     "0,2",      null},   //20
+                { 3, 3, COURSE_BASED,   true,      1,1,      2,2,      2,1,        1,2,         "0,2",     "1,0",     "1,2",      "0,0"},
+                { 3, 3, LEAD_BASED,     false,     0,0,      3,3,      0,0,        0,0,         null,      "0,0",     null,       null},
+                { 3, 3, COURSE_BASED,   false,     0,0,      2,3,      0,0,        1,3,         null,      "1,0",     null,       "0,0"}
         });
         }
 
@@ -79,25 +79,32 @@ public class DefaultCompositionTableAccessTest {
 
 
     @Parameter(4)
-    public int expectedMainBodyRows;
+    public int expectedNullAreaRows;
     @Parameter(5)
-    public int expectedMainBodyColumns;
+    public int expectedNullAreaColumns;
 
     @Parameter(6)
-    public int expectedSplicedRows;
+    public int expectedMainBodyRows;
     @Parameter(7)
-    public int expectedSplicedColumns;
+    public int expectedMainBodyColumns;
 
     @Parameter(8)
-    public int expectedCallingPositionRows;
+    public int expectedSplicedRows;
     @Parameter(9)
-    public int expectedCallingPositionColumns;
+    public int expectedSplicedColumns;
 
     @Parameter(10)
-    public String expectedMainRoot;
+    public int expectedCallingPositionRows;
     @Parameter(11)
-    public String expectedSplicedRoot;
+    public int expectedCallingPositionColumns;
+
     @Parameter(12)
+    public String expectedNullRoot;
+    @Parameter(13)
+    public String expectedMainRoot;
+    @Parameter(14)
+    public String expectedSplicedRoot;
+    @Parameter(15)
     public String expectedCallingPositionRoot;
 
 
@@ -110,38 +117,50 @@ public class DefaultCompositionTableAccessTest {
     }
 
     @Test
+    public void nullAreaTableDimensions() {
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
+        assertDimensions(expectedNullAreaRows, expectedNullAreaColumns, defaultCompositionTableAccess.nullAreaCells());
+    }
+
+    @Test
+    public void nullAreaRoot() {
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
+        assertRoot(expectedNullRoot, defaultCompositionTableAccess.nullAreaCells());
+    }
+
+    @Test
     public void mainBodyTableDimensions() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
         assertDimensions(expectedMainBodyRows, expectedMainBodyColumns, defaultCompositionTableAccess.mainBodyCells());
     }
 
     @Test
     public void mainBodyRoot() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
         assertRoot(expectedMainRoot, defaultCompositionTableAccess.mainBodyCells());
     }
 
     @Test
     public void spliceTableDimensions() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
         assertDimensions(expectedSplicedRows, expectedSplicedColumns, defaultCompositionTableAccess.splicedCells());
     }
 
-    @Test
+        @Test
     public void spliceRoot() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
         assertRoot(expectedSplicedRoot, defaultCompositionTableAccess.splicedCells());
     }
 
     @Test
     public void callingPositionTableDimensions() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
         assertDimensions(expectedCallingPositionRows, expectedCallingPositionColumns, defaultCompositionTableAccess.callingPositionCells());
     }
 
     @Test
     public void callingPositionRoot() {
-        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells1(rows, cols, compositionType, spliced);
+        DefaultCompositionTableAccess<Cell> defaultCompositionTableAccess = buildCells(rows, cols, compositionType, spliced);
         assertRoot(expectedCallingPositionRoot, defaultCompositionTableAccess.callingPositionCells());
     }
 
@@ -159,7 +178,7 @@ public class DefaultCompositionTableAccessTest {
         }
     }
 
-    private DefaultCompositionTableAccess<Cell> buildCells1(int rows, int cols, CompositionType compositionType, boolean spliced) {
+    private DefaultCompositionTableAccess<Cell> buildCells(int rows, int cols, CompositionType compositionType, boolean spliced) {
         Table<Integer, Integer, Cell> cells = HashBasedTable.create();
 
         for (int row = 0; row < rows; row++) {

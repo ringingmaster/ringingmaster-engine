@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.unparsed;
@@ -40,9 +40,9 @@ public class ValidateSingleCallingPositionPerCellTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallingPositionPerCell())
@@ -58,8 +58,8 @@ public class ValidateSingleCallingPositionPerCellTest {
     @Test
     public void parsingGoodCallingPositionTakesNoAction() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "W");
-        composition.addCharacters(MAIN_TABLE, 0,1, "H");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "W");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "H");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallingPositionPerCell())
@@ -72,8 +72,8 @@ public class ValidateSingleCallingPositionPerCellTest {
     @Test
     public void parsingDuplicateMarksSeconsAsInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "WH");
-        composition.addCharacters(MAIN_TABLE, 0,1, "-HW");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "WH");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "-HW");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateSingleCallingPositionPerCell())

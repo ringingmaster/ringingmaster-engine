@@ -19,7 +19,7 @@ import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_CLOSE;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.MULTIPLIER_GROUP_OPEN;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
 public class ValidateMultiplierGroupMatchingBraceTest {
@@ -41,11 +41,11 @@ public class ValidateMultiplierGroupMatchingBraceTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "abc");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "abc");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "abc");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "abc");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -61,7 +61,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void parsesNoContentPairOfGroupInSingleCell() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "()");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "()");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -73,7 +73,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void groupInSingleCellInWrongOrderInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, ")(");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, ")(");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -85,8 +85,8 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void groupOnMultiLineCellInWrongOrderInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, ")");
-        composition.addCharacters(MAIN_TABLE, 1,0, "(");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, ")");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "(");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -99,7 +99,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void nestedGroupInSingleCellIsValid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "(())");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(())");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -111,9 +111,9 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void nestedGroupOnMultiLineIsValid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "(");
-        composition.addCharacters(MAIN_TABLE, 0,1, "(");
-        composition.addCharacters(MAIN_TABLE, 1,0, "))");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "(");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "))");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -128,7 +128,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void additionalOpeningGroupInSingleCellIsInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "(()");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(()");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -140,9 +140,9 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void additionalOpeningGroupInMultiCellIsInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "(");
-        composition.addCharacters(MAIN_TABLE, 0,1, "(");
-        composition.addCharacters(MAIN_TABLE, 1,0, ")");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "(");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, ")");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -158,12 +158,12 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     public void nestedGroupWithSplicedAssignsInvalidityToCorrect() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setSpliced(true);
-        composition.addCharacters(MAIN_TABLE, 0,0, "(");
-        composition.addCharacters(MAIN_TABLE, 0,1, "(");//spliced
-        composition.addCharacters(MAIN_TABLE, 1,0, "-");
-        composition.addCharacters(MAIN_TABLE, 1,1, ")");//spliced
-        composition.addCharacters(MAIN_TABLE, 2,0, ")");
-        composition.addCharacters(MAIN_TABLE, 2,1, ")");//spliced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "(");//spliced
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "-");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, ")");//spliced
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, ")");
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, ")");//spliced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -181,9 +181,9 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     public void groupsWithinCourseBasedInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(CompositionType.COURSE_BASED);
-        composition.addCharacters(MAIN_TABLE, 0,0, "(");
-        composition.addCharacters(MAIN_TABLE, 0,1, ")");
-        composition.addCharacters(MAIN_TABLE, 1,0, "-");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, ")");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "-");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -208,7 +208,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void nestingDepthOkAt4() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "((((-))))");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "((((-))))");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())
@@ -224,7 +224,7 @@ public class ValidateMultiplierGroupMatchingBraceTest {
     @Test
     public void nestingDepthInvalidAt5() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "(((((-)))))");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "(((((-)))))");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateMultiplierGroupMatchingBrace())

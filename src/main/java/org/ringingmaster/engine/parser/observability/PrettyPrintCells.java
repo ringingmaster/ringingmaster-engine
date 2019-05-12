@@ -1,7 +1,6 @@
 package org.ringingmaster.engine.parser.observability;
 
 import com.google.common.base.Function;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.parse.Parse;
@@ -17,9 +16,8 @@ public class  PrettyPrintCells implements Function<Parse, Parse> {
 
     private final Logger log = LoggerFactory.getLogger(PrettyPrintCells.class);
 
-    @Nullable
     @Override
-    public Parse apply(@Nullable Parse input) {
+    public Parse apply(Parse input) {
         log.debug("[{}] > pretty print cells (trace output only)", input.getComposition().getTitle());
 
         if (log.isTraceEnabled()) {
@@ -32,7 +30,7 @@ public class  PrettyPrintCells implements Function<Parse, Parse> {
             }
         }
 
-        log.debug("[{}] < pretty print cells", input.getComposition().getTitle());
+        log.debug("[{}] < pretty print cells (trace output only)", input.getComposition().getTitle());
 
         return input;
     }

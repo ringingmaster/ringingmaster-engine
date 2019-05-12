@@ -18,7 +18,7 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITI
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.SPLICE;
 
 import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.SHORTHAND_COLUMN;
 
@@ -51,7 +51,7 @@ public class AssignParseTypeWHITESPACETest {
     @Test
     public void correctlyParsesWhitespaceInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(TableType.MAIN_TABLE,0,1,"P P ");
+        composition.addCharacters(TableType.COMPOSITION_TABLE,0,1,"P P ");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -80,7 +80,7 @@ public class AssignParseTypeWHITESPACETest {
     @Test
     public void correctlyParsesWhitespaceInDefinitionUsedInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -91,7 +91,7 @@ public class AssignParseTypeWHITESPACETest {
     @Test
     public void correctlyParsesWhitespaceInDefinitionUsedInMainBodySplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -127,7 +127,7 @@ public class AssignParseTypeWHITESPACETest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

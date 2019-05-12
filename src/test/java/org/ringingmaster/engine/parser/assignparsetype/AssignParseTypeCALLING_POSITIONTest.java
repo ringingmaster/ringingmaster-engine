@@ -8,7 +8,7 @@ import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
 
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
@@ -45,7 +45,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
     @Test
     public void callingPositionUnparsedInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1,"W");
+        composition.addCharacters(COMPOSITION_TABLE,0,1,"W");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -73,7 +73,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
     @Test
     public void callingPositionParsedInDefinitionUsedInSplice() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "-");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -84,7 +84,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
     @Test
     public void callingPositionParsedInDefinitionUsedInSpliceAnMainBody() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "def1");
-        composition.addCharacters(MAIN_TABLE,0,1, "def1");
+        composition.addCharacters(COMPOSITION_TABLE,0,1, "def1");
         composition.setSpliced(true);
 
         Parse parse = new AssignParseType().apply(composition.get());
@@ -144,7 +144,7 @@ public class AssignParseTypeCALLING_POSITIONTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

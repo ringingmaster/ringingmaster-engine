@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 
 
 /**
@@ -38,8 +38,8 @@ public class CourseBasedCompilerTest {
     @Test
     public void compileSingleCallCalledFromTenor() throws IOException {
         MutableComposition composition = buildPlainBobMinorCompositionShell();
-        composition.addCharacters(MAIN_TABLE, 0, 0, "W");
-        composition.addCharacters(MAIN_TABLE, 1, 0, "-");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 0, "W");
+        composition.addCharacters(COMPOSITION_TABLE, 1, 0, "-");
         proveAndCheckComposition(15
                 , "/PlainBobMinor W - FromTenor.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
     }
@@ -48,8 +48,8 @@ public class CourseBasedCompilerTest {
     public void compileSingleCallCalledFrom5() throws IOException {
         MutableComposition composition = buildPlainBobMinorCompositionShell();
 		composition.setCallFromBell(Bell.BELL_5);
-        composition.addCharacters(MAIN_TABLE, 0, 0, "W");
-        composition.addCharacters(MAIN_TABLE, 1, 0, "-");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 0, "W");
+        composition.addCharacters(COMPOSITION_TABLE, 1, 0, "-");
         proveAndCheckComposition(15
 				, "/PlainBobMinor W - From5.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
     }

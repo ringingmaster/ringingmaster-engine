@@ -13,7 +13,7 @@ import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFAULT_CALL_MULTIPLIER;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 
 /**
  * TODO comments???
@@ -25,7 +25,7 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
     @Test
     public void defaultCallNotDefinedInAllMethodsInSplicedSetsInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), "2");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "DUMMY");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "DUMMY");
         composition.addNotation(buildLittleBobMinorWithNoDefaultCall());
         composition.setSpliced(true);
 
@@ -79,7 +79,7 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);

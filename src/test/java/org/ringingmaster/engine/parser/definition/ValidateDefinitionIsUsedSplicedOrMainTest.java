@@ -12,11 +12,13 @@ import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.LEAD_BASED;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.DEFINITION;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.invalid;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 
@@ -37,11 +39,11 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(COURSE_BASED);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "CALL");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -57,8 +59,8 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
     @Test
     public void differentDefinitionsValidInMainAndSpliced() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "SPLICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -71,9 +73,9 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
     @Test
     public void usingSameDefinitionInMainAndSplicedSetsBothInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 1,0, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 0,1, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "CALL");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -87,10 +89,10 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
     @Test
     public void usingSameDefinitionInEitherMainOrSplicedIsValid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 1,0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -106,9 +108,9 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
     public void embeddedDefinitionInMainUsedInSplicedInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_MAIN", "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 1,0, "IN_MAIN");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "IN_MAIN");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -124,9 +126,9 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_MAIN_1", "IN_MAIN_2");
         composition.addDefinition("IN_MAIN_2", "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 1,0, "IN_MAIN_1");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "IN_MAIN_1");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -141,9 +143,9 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
     public void embeddedDefinitionInSplicedUsedInMainInvalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_SPICE", "CALL");
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 0,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 1,1, "IN_SPICE");
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 0,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "IN_SPICE");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -159,9 +161,9 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor(), buildLittleBobMinor());
         composition.addDefinition("IN_SPICE_1", "IN_SPICE_2");
         composition.addDefinition("IN_SPICE_2", "CALL");
-        composition.addCharacters(MAIN_TABLE, 0, 0, "CALL");
-        composition.addCharacters(MAIN_TABLE, 0, 1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 1, 1, "IN_SPICE_1");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 0, "CALL");
+        composition.addCharacters(COMPOSITION_TABLE, 0, 1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 1, 1, "IN_SPICE_1");
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
@@ -171,6 +173,19 @@ public class ValidateDefinitionIsUsedSplicedOrMainTest {
         assertParse(result.allCompositionCells().get(0, 1), valid(6, DEFINITION));
         assertParse(result.findDefinitionByShorthand("IN_SPICE_2").get().get(0, DEFINITION_COLUMN), invalid(4, DEFINITION));
     }
+
+    @Test
+    public void canOperateWithDefinitionWithOnlyShorthandDoesNotTHrow() {
+        MutableComposition composition = new MutableComposition();
+        composition.setCompositionType(LEAD_BASED);
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "DEF_1");
+        composition.addCharacters(DEFINITION_TABLE, 0,0, "DEF_1");
+
+        Parse result = new AssignParseType()
+                .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
+                .apply(composition.get());
+    }
+
 
     private Notation buildPlainBobMinor() {
         return NotationBuilder.getInstance()

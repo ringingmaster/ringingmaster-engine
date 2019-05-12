@@ -3,11 +3,11 @@ package org.ringingmaster.engine.parser.parse;
 import com.google.common.collect.ImmutableSet;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.composition.Composition;
-import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
-import org.ringingmaster.engine.composition.tableaccess.DefaultCompositionTableAccess;
-import org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess;
 import org.ringingmaster.engine.composition.tableaccess.CompositionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefaultCompositionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefaultDefinitionTableAccess;
+import org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess;
+import org.ringingmaster.engine.parser.cell.ParsedCell;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
@@ -54,6 +54,11 @@ class DefaultParse implements Parse {
     @Override
     public ImmutableArrayTable<ParsedCell> splicedCells() {
         return compositionTableAccessDelegate.splicedCells();
+    }
+
+    @Override
+    public ImmutableArrayTable<ParsedCell> nullAreaCells() {
+        return compositionTableAccessDelegate.nullAreaCells();
     }
 
 

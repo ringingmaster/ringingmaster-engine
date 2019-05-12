@@ -19,7 +19,9 @@ public class DefinitionFunctions {
 
     static HashBasedTable<Integer, Integer, ParsedCell> markDefinitionsInvalidInComposition(Parse parse, Set<String> invalidDefinitions,  Function<String, String> createErrorMessage) {
 
-        log.info("Invalidating definitions in composition{}", invalidDefinitions);
+        if (!invalidDefinitions.isEmpty()) {
+            log.debug("[{}]  marking invalid definitions in composition [{}]", parse.getComposition().getTitle(), invalidDefinitions);
+        }
 
         HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult =
                 HashBasedTable.create(parse.allCompositionCells().getBackingTable());
@@ -30,7 +32,9 @@ public class DefinitionFunctions {
 
     static HashBasedTable<Integer, Integer, ParsedCell> markDefinitionsInvalidInDefinitions(Parse parse, Set<String> invalidDefinitions,  Function<String, String> createErrorMessage) {
 
-        log.info("Invalidating definitions in definition{}", invalidDefinitions);
+        if (!invalidDefinitions.isEmpty()) {
+            log.debug("[{}]  marking invalid definitions in definitions [{}]", parse.getComposition().getTitle(), invalidDefinitions);
+        }
 
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =
                 HashBasedTable.create(parse.allDefinitionCells().getBackingTable());

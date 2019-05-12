@@ -6,15 +6,16 @@ import org.ringingmaster.engine.composition.MutableComposition;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.NotationBuilder;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
+import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
+import static org.ringingmaster.engine.composition.compositiontype.CompositionType.LEAD_BASED;
 import static org.ringingmaster.engine.parser.AssertParse.assertParse;
 import static org.ringingmaster.engine.parser.AssertParse.valid;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.PLAIN_LEAD;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
 
 /**
  * TODO comments???
@@ -50,6 +51,19 @@ public class AssignParseTypeTest {
         assertParse(parse.allCompositionCells().get(0, 0), valid(3, CALL), valid(PLAIN_LEAD));
     }
 
+    @Test
+    public void parseWhenOneDefinitionWithOnlyShorthand() {
+        MutableComposition composition = new MutableComposition();
+        composition.setCompositionType(LEAD_BASED);
+        composition.setSpliced(true);
+
+        composition.addCharacters(COMPOSITION_TABLE,0,0,"3*");
+        composition.addCharacters(COMPOSITION_TABLE,0,1,"3*");
+        composition.addCharacters(DEFINITION_TABLE,0,0,"3*");
+
+        new AssignParseType().apply(composition.get());
+    }
+
     private Notation buildPlainBobMinor() {
         return NotationBuilder.getInstance()
                 .setNumberOfWorkingBells(NumberOfBells.BELLS_6)
@@ -68,10 +82,10 @@ public class AssignParseTypeTest {
         MutableComposition composition = new MutableComposition();
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         if (characters != null) {
-            composition.addCharacters(MAIN_TABLE, 0, 0, characters);
+            composition.addCharacters(COMPOSITION_TABLE, 0, 0, characters);
         }
         composition.addNotation(notation);
-        composition.setCompositionType(CompositionType.LEAD_BASED);
+        composition.setCompositionType(LEAD_BASED);
         composition.setSpliced(false);
         composition.addDefinition("def1", "-P");
         return composition;

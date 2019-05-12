@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.ringingmaster.engine.composition.TableType.MAIN_TABLE;
+import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.COURSE_BASED;
 import static org.ringingmaster.engine.composition.compositiontype.CompositionType.LEAD_BASED;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
@@ -47,11 +47,11 @@ public class ValidateDefinitionShorthandNotDuplicatedTest {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.setCompositionType(COURSE_BASED);
 
-        composition.addCharacters(MAIN_TABLE, 0,0, "CALL_POSITION");
-        composition.addCharacters(MAIN_TABLE, 1,0, "MAIN_BODY");
-        composition.addCharacters(MAIN_TABLE, 1,1, "SPLICE");
-        composition.addCharacters(MAIN_TABLE, 2,0, "CALL");// To force the Parse to be replaced
-        composition.addCharacters(MAIN_TABLE, 2,1, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 0,0, "CALL_POSITION");
+        composition.addCharacters(COMPOSITION_TABLE, 1,0, "MAIN_BODY");
+        composition.addCharacters(COMPOSITION_TABLE, 1,1, "SPLICE");
+        composition.addCharacters(COMPOSITION_TABLE, 2,0, "CALL");// To force the Parse to be replaced
+        composition.addCharacters(COMPOSITION_TABLE, 2,1, "CALL");// To force the Parse to be replaced
 
         Parse result = new AssignParseType()
                 .andThen(new ValidateDefinitionIsNotCircular())
@@ -88,31 +88,8 @@ public class ValidateDefinitionShorthandNotDuplicatedTest {
         composition.addNotation(buildPlainBobMinor());
         composition.setSpliced(true);
         composition.setCompositionType(LEAD_BASED);
-        composition.addCharacters(MAIN_TABLE,0,0,"3*-");
-        composition.addCharacters(MAIN_TABLE,0,1,"3*P");
-
-        composition.addDefinition("3*", "-");
-        composition.addCharacters(TableType.DEFINITION_TABLE, 1,SHORTHAND_COLUMN, "3*");
-        composition.addDefinition("a", "3*");
-
-        Parse parse = new AssignParseType()
-                .andThen(new ValidateDefinitionShorthandNotDuplicated())
-                .apply(composition.get());
-
-
-        assertParse(parse.allCompositionCells().get(0,0),invalid(2, DEFINITION), valid(CALL));
-        assertParse(parse.allCompositionCells().get(0,1),invalid(2, DEFINITION), valid(SPLICE));
-        assertParse(parse.findDefinitionByShorthand("a").get().get(0,DEFINITION_COLUMN),invalid(2, DEFINITION));
-    }
-
-    @Test
-    public void usagesOfDuplicateDefinitionsMarkedInvalid() {
-        MutableComposition composition = new MutableComposition();
-        composition.addNotation(buildPlainBobMinor());
-        composition.setSpliced(true);
-        composition.setCompositionType(LEAD_BASED);
-        composition.addCharacters(MAIN_TABLE,0,0,"3*-");
-        composition.addCharacters(MAIN_TABLE,0,1,"3*P");
+        composition.addCharacters(COMPOSITION_TABLE,0,0,"3*-");
+        composition.addCharacters(COMPOSITION_TABLE,0,1,"3*P");
 
         composition.addDefinition("3*", "-");
         composition.addCharacters(TableType.DEFINITION_TABLE, 1,SHORTHAND_COLUMN, "3*");

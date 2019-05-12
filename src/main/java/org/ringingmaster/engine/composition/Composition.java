@@ -250,6 +250,10 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         return compositionTableAccessDelegate.splicedCells();
     }
 
+    @Override
+    public ImmutableArrayTable<Cell> nullAreaCells() {
+        return compositionTableAccessDelegate.nullAreaCells();
+    }
 
     @Override
     public String toString() {
