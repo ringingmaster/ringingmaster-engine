@@ -49,7 +49,7 @@ public class PlainCourseHelper {
      */
     public static Function<Notation, Composition> buildPlainCourseComposition = notation -> {
         final MutableComposition composition = new MutableComposition();
-        composition.setTitle(" " + notation.getNameIncludingNumberOfBells() + ":" + " PLAINCOURSE_" + counter.getAndIncrement());
+        composition.setTitle(" " + notation.getNameIncludingNumberOfBells() + ":" + " PLAINCOURSE<" + counter.getAndIncrement() + ">");
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);
