@@ -360,7 +360,7 @@ public class MutableComposition {
             compositionBuilder.setNonSplicedActiveNotation(Optional.of(notationToAdd));
         }
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Add method: %s", notationToAdd.getNameIncludingNumberOfBells()));
     }
 
     private DryRun dryRunPotentialNewNotation(Notation notationToCheck, Set<Notation> notationsToExclude) {
@@ -468,7 +468,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setNonSplicedActiveNotation(Optional.of(nonSplicedActiveNotation));
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Set active method: %s", nonSplicedActiveNotation.getNameIncludingNumberOfBells()));
     }
 
     public void setSpliced(boolean spliced) {
