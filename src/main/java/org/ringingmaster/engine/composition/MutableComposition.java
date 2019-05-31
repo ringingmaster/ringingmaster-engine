@@ -345,11 +345,6 @@ public class MutableComposition {
             throw new IllegalArgumentException("Can't add notation [" + notationToAdd + "]: " + System.lineSeparator() + message); // TODO why not just return false like all the other methods
         }
 
-        // IOf we are the first notation, then pre-emotively set the number of bells to match.
-        if (compositionStream.getValue().getAllNotations().size() == 0) {
-            setNumberOfBells(notationToAdd.getNumberOfWorkingBells()); //TODO we should dry run this??
-        }
-
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue());
 
         PSet<Notation> withAddedNotation = compositionStream.getValue().getAllNotations().plus(notationToAdd);
@@ -647,7 +642,7 @@ public class MutableComposition {
     }
 
     public void removeStartNotation() {
-        if (!compositionStream.getValue().getStartNotation().isPresent()) {
+        if (compositionStream.getValue().getStartNotation().isEmpty()) {
             renotify();
             return;
         }
@@ -701,7 +696,8 @@ public class MutableComposition {
         checkArgument(terminationMaxLeads > 0, "Termination max leads must be greater than 0");
         checkArgument(terminationMaxLeads <= TERMINATION_MAX_LEADS_MAX, "Termination max leads must be less than or equal to %s", TERMINATION_MAX_LEADS_MAX);
 
-        if (Objects.equals(compositionStream.getValue().getTerminationMaxLeads(), terminationMaxLeads)) {
+        if (compositionStream.getValue().getTerminationMaxLeads().isPresent() &&
+                Objects.equals(compositionStream.getValue().getTerminationMaxLeads().get(), terminationMaxLeads)) {
             renotify();
             return;
         }
@@ -713,7 +709,7 @@ public class MutableComposition {
     }
 
     public void removeTerminationMaxLeads() {
-        if (!compositionStream.getValue().getTerminationMaxLeads().isPresent()) {
+        if (compositionStream.getValue().getTerminationMaxLeads().isEmpty()) {
             renotify();
             return;
         }
@@ -740,7 +736,8 @@ public class MutableComposition {
         checkArgument(terminationMaxParts > 0, "Termination max parts must be greater than 0");
         checkArgument(terminationMaxParts <= TERMINATION_MAX_PARTS_MAX, "Termination max parts must be less than or equal to %s", TERMINATION_MAX_PARTS_MAX);
 
-        if (Objects.equals(compositionStream.getValue().getTerminationMaxParts(), terminationMaxParts)) {
+        if (compositionStream.getValue().getTerminationMaxParts().isPresent() &&
+                Objects.equals(compositionStream.getValue().getTerminationMaxParts().get(), terminationMaxParts)) {
             renotify();
             return;
         }
@@ -898,7 +895,7 @@ public class MutableComposition {
         removeCharactersInternal(rowIndex, columnIndex, cellIndex, count, mutatedCells, originalCells);
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
-                .setCells(tableType, new TableBackedImmutableArrayTable<Cell>(mutatedCells, EmptyCell::new));
+                .setCells(tableType, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
         compositionStream.onNext(compositionBuilder.build("Delete"));
     }

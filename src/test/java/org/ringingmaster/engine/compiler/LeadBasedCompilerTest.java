@@ -80,6 +80,7 @@ public class LeadBasedCompilerTest {
 		MutableComposition composition = new MutableComposition();
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
+		composition.setNumberOfBells(NumberOfBells.BELLS_8);
 		composition.setTerminationMaxLeads(1);
 
 		Method method = parser
