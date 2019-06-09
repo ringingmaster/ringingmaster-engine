@@ -37,7 +37,7 @@ public class BuildVarianceLookupByName<T extends CompilerPipelineData<T>> implem
             ParsedCell cell = cellAndLocation.getValue();
             for (Group group : cell.allGroups()) {
                 if (group.isValid() &&
-                    group.getFirstSectionParseType() == VARIANCE_OPEN) {
+                        group.getFirstSectionParseType() == VARIANCE_OPEN) {
 
                     checkState(group.getSections().size() == 2);
                     checkState(group.getSections().get(1).getParseType() == VARIANCE_DETAIL);
@@ -56,10 +56,9 @@ public class BuildVarianceLookupByName<T extends CompilerPipelineData<T>> implem
         log.debug("{} < creating variance lookup", input.getLogPreamble());
 
         ImmutableMap<String, Variance> varianceLookupByName = builder.build();
-        if ( varianceLookupByName.size() == 0) {
+        if (varianceLookupByName.size() == 0) {
             return input;
-        }
-        else {
+        } else {
             return input.setVarianceLookupByName(builder.build());
         }
     }

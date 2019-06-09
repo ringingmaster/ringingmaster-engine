@@ -18,7 +18,7 @@ public class CourseBasedCompilerPipeline implements Function<Parse, CompiledComp
 
     @Override
     public CompiledComposition apply(Parse parse) {
-//TODO Add in early terminate nechanisam
+//TODO Add in early terminate mechanism
         return pipeline.apply(parse);
     }
 
@@ -29,7 +29,7 @@ public class CourseBasedCompilerPipeline implements Function<Parse, CompiledComp
                 .andThen(new BuildCallingPositionNameForColumnLookup())
                 .andThen(new BuildTenorPlaceForCallingPositionLookup())
                 .andThen(new BuildVarianceLookupByName<>())
-                .andThen(new BuildCallLookupByName())
+                .andThen(new BuildCallLookupByName<>())
                 .andThen(new CourseBasedBuildCallSequence())
                 .andThen(new CourseBasedCompile())
                 

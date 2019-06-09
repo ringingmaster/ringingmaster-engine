@@ -29,7 +29,7 @@ public class LeadBasedCompilerPipeline implements Function<Parse, CompiledCompos
             new LeadBasedBuildCompilerPipelineData()
             .andThen(new ValidCompositionCheck<>())
             .andThen(new BuildVarianceLookupByName<>())
-            .andThen(new BuildCallLookupByName())
+            .andThen(new BuildCallLookupByName<>())
             .andThen(new LeadBasedBuildCallSequence())
             .andThen(new LeadBasedCompile())
             .andThen(new BuildCompiledComposition<>());

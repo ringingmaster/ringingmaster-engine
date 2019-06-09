@@ -18,9 +18,12 @@ import javax.annotation.concurrent.Immutable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess.DEFINITION_COLUMN;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.CALL;
@@ -95,8 +98,11 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
     }
 
     private void generateCallInstancesForCell(final State state, PASSTHROUGH passthrough) {
-        final ImmutableList<Group> groups = state.cell.allGroups();
-        for (Group group : groups) {
+        final List<Group> validGroups = state.cell.allGroups().stream()
+                .filter(Group::isValid)
+                .collect(Collectors.toList());
+
+        for (Group group : validGroups) {
             state.group = group;
             ParseType parseType = state.group.getFirstSectionParseType();
             switch (parseType) {
@@ -175,7 +181,8 @@ public abstract class CallDenormaliser<T extends DenormalisedCall, PASSTHROUGH> 
         Section varianceDetailSection = state.group.getSections().get(1);
         checkArgument(varianceDetailSection.getParseType() == VARIANCE_DETAIL);
         String varianceCharacters = state.cell.getCharacters(varianceDetailSection);
-        state.currentVariance = state.varianceLookupByName.get(varianceCharacters.toLowerCase());
+        state.currentVariance = checkNotNull(state.varianceLookupByName.get(varianceCharacters.toLowerCase()), "Cant find variance [%s] from [%s]", varianceCharacters.toLowerCase(), state.varianceLookupByName);
+
         log.debug("{} [ open variance [{}]", state.logPreamble, state.currentVariance);
     }
 

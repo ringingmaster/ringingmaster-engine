@@ -1,17 +1,17 @@
 package org.ringingmaster.engine.compiler.variance;
 
-import com.google.common.base.Function;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.lang.Math.min;
 import static org.ringingmaster.engine.compiler.variance.OddEvenVariance.OddEvenVarianceType.EVEN;
 import static org.ringingmaster.engine.compiler.variance.OddEvenVariance.OddEvenVarianceType.ODD;
 import static org.ringingmaster.engine.compiler.variance.VarianceLogicType.INCLUDE;
@@ -45,6 +45,7 @@ public class VarianceFactory {
     private static final String REGEX = "(?i)(" + OMIT_INCLUDE_REGEX + ")(?:(" + ODD_EVEN_REGEX + ")|(" + SPECIFIED_PARTS_REGEX + "+))";
     private static final Pattern PATTERN = Pattern.compile(REGEX);//. represents single character
 
+
     public static Variance parseVariance(String input) {
 
         log.trace("Parsing variance string [ {} ]", input);
@@ -66,9 +67,7 @@ public class VarianceFactory {
 
             if (oddEven != null) {
                 return new OddEvenVariance(varianceLogicType, parseOddEven(oddEven));
-            }
-
-            else if (parts != null) {
+            } else if (parts != null) {
                 return new SpecifiedPartsVariance(varianceLogicType, parseParts(parts));
             }
         }
@@ -76,8 +75,29 @@ public class VarianceFactory {
         throw new IllegalArgumentException("[" + input + "] does not form a valid variance definition");
     }
 
+    public static Set<Integer> parseJustPartsForValidation(String input) {
 
-    static VarianceLogicType parseOmitInclude(String omitInclude) {
+        log.trace("Parsing variance string [ {} ]", input);
+
+        String varianceString = input.toUpperCase();
+
+        Matcher m = PATTERN.matcher(varianceString);
+
+        if (m.find()) {
+            checkState(m.groupCount() == 3);
+
+            String parts = m.group(3);
+
+            if (parts != null) {
+                return parseParts(parts);
+            }
+
+        }
+
+        return Collections.emptySet();
+    }
+
+    static private VarianceLogicType parseOmitInclude(String omitInclude) {
 
         switch (omitInclude) {
             case "-":
@@ -89,30 +109,25 @@ public class VarianceFactory {
         }
     }
 
-    static OddEvenVariance.OddEvenVarianceType parseOddEven(String oddEven) {
+    static private OddEvenVariance.OddEvenVarianceType parseOddEven(String oddEven) {
 
         switch (oddEven) {
-            case "odd":
-            case "o":
+            case "ODD":
+            case "O":
                 return ODD;
-            case "even":
-            case "e":
+            case "EVEN":
+            case "E":
                 return EVEN;
             default:
                 throw new IllegalArgumentException("[" + oddEven + "] is not a valid OddEvenVarianceType");
         }
     }
 
-    static Set<Integer> parseParts(String parts) {
+    static private Set<Integer> parseParts(String parts) {
         return Arrays.stream(parts.split(","))
+                .map(str -> str.substring(0, min(str.length(), 9)))// Trim ridiculously long number sequences that will throw NumberFormatException's. Integer.MAX_VALUE = 2 billion (2,000,000,000), so we cut at 9 digits to stay well under.
                 .map(Integer::parseInt)
-                .map(new Function<Integer, Integer>() {
-                    @Nullable
-                    @Override
-                    public Integer apply(@Nullable Integer input) {
-                        return input.intValue() - 1 ;
-                    }
-                })
+                .map(part -> part - 1)
                 .collect(Collectors.toSet());
     }
 }

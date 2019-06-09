@@ -31,7 +31,7 @@ public class CourseBasedBuildCallSequence implements Function<CourseBasedCompile
 
             checkPositionIndex(state.getColumnIndex(), callingPositionLookupByColumn.size(), "column index out of bounds");
             Optional<String> callingPositionName = callingPositionLookupByColumn.get(state.getColumnIndex());
-            checkState(callingPositionName.isPresent(), "callingPositionName is missing. Check that the parsing is correctly excluding columns with no valid call position");
+            checkState(callingPositionName.isPresent(), "callingPositionName is missing for index [%s]. Check that the parsing is correctly excluding columns with no valid call position. [%s]", state.getColumnIndex(), callingPositionLookupByColumn);
 
             return new CourseBasedDenormalisedCall(callName, state.getCurrentVariance(), callingPositionName.get());
         }

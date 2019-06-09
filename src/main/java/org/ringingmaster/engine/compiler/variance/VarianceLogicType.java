@@ -5,6 +5,6 @@ package org.ringingmaster.engine.compiler.variance;
  * User: Stephen
  */
 enum VarianceLogicType {
-	OMIT,
-	INCLUDE
+    OMIT,
+    INCLUDE
 }

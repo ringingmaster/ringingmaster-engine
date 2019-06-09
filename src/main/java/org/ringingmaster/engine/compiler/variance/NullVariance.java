@@ -8,21 +8,21 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 enum NullVariance implements Variance {
-	INSTANCE,
-	;
+    INSTANCE,
+    ;
 
-	static Variance getInstance() {
-		return INSTANCE;
-	}
+    static Variance getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public boolean includePart(int part) {
-		return true;
-	}
+    @Override
+    public boolean includePart(int part) {
+        return true;
+    }
 
 
-	@Override
-	public String toString() {
-		return "";
-	}
+    @Override
+    public String toString() {
+        return "";
+    }
 }
