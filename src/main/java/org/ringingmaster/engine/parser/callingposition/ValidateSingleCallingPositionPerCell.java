@@ -5,10 +5,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
+import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
-import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
 import org.ringingmaster.engine.parser.cell.grouping.Section;
+import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;
@@ -29,6 +30,10 @@ public class ValidateSingleCallingPositionPerCell implements Function<Parse, Par
 
     public Parse apply(Parse input) {
 
+        if (input.getComposition().getCompositionType() != CompositionType.COURSE_BASED) {
+            return input;
+        }
+
         log.debug("[{}] > validate single call position per cell", input.getComposition().getTitle());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
@@ -36,14 +41,14 @@ public class ValidateSingleCallingPositionPerCell implements Function<Parse, Par
 
         parseCallingPositionArea(input, resultCells);
 
-        Parse build = new ParseBuilder()
+        Parse result = new ParseBuilder()
                 .prototypeOf(input)
                 .setCompositionTableCells(resultCells)
                 .build();
 
         log.debug("[{}] < validate single call position per cell", input.getComposition().getTitle());
 
-        return build;
+        return result;
     }
 
     private void parseCallingPositionArea(Parse input, HashBasedTable<Integer, Integer, ParsedCell> resultCells) {

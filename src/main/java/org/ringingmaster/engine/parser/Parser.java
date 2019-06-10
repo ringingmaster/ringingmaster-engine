@@ -7,6 +7,7 @@ import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupMatchingBrac
 import org.ringingmaster.engine.parser.brace.ValidateVarianceMatchingBraceLogic;
 import org.ringingmaster.engine.parser.brace.ValidateVariancePartNumbersWithinRange;
 import org.ringingmaster.engine.parser.call.ValidateDefaultCallMultiplierFullyDefined;
+import org.ringingmaster.engine.parser.callingposition.ValidateCellInColumnWithValidCallPosition;
 import org.ringingmaster.engine.parser.callingposition.ValidateSingleCallingPositionPerCell;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsNotCircular;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsUsedSplicedOrMain;
@@ -58,6 +59,7 @@ public class Parser implements Function<Composition, Parse> {
         //TODO		parseGroupOnDifferentLines(); // TODO I dont think we need this one now as allowing groups on many lines. Might have to do extra parsing when a block definition in use though to make sure we have full groups in the block
             .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
         //TODO		parseSpaceOnlyInCell(); //TODO I dont think this is necessary, apart from where whole rows and columns are empty
+            .andThen(new ValidateCellInColumnWithValidCallPosition())
         //TODO		parseCallsInColumnWithoutCallingPos();
         //TODO		parseSplicedNotBlocks();
             .andThen(new ValidateDefinitionIsUsedSplicedOrMain())

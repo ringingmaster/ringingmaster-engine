@@ -8,6 +8,8 @@ import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.parse.ParseBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -19,13 +21,19 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
 
 /**
- * TODO comments???
+ * Validates that where a variance has part numbers specified, they are in bounds.
  *
  * @author Steve Lake
  */
 public class ValidateVariancePartNumbersWithinRange implements Function<Parse, Parse> {
+
+    private final Logger log = LoggerFactory.getLogger(ValidateVariancePartNumbersWithinRange.class);
+
     @Override
     public Parse apply(Parse input) {
+
+        log.debug("[{}] > validate variance part number within range", input.getComposition().getTitle());
+
 
         HashBasedTable<Integer, Integer, ParsedCell> compositionCells =
                 HashBasedTable.create(input.allCompositionCells().getBackingTable());
@@ -39,11 +47,15 @@ public class ValidateVariancePartNumbersWithinRange implements Function<Parse, P
             doInvalidation(definitionCells, locationAndCell);
         }
 
-        return new ParseBuilder()
+        Parse result = new ParseBuilder()
                 .prototypeOf(input)
                 .setCompositionTableCells(compositionCells)
                 .setDefinitionTableCells(definitionCells)
                 .build();
+
+        log.debug("[{}] < validate variance part number within range", input.getComposition().getTitle());
+
+        return result;
     }
 
     private void doInvalidation(HashBasedTable<Integer, Integer, ParsedCell> cells, BackingTableLocationAndValue<ParsedCell> locationAndCell) {
