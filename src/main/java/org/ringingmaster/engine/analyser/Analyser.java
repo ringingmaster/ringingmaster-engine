@@ -23,7 +23,7 @@ public class Analyser implements Function<CompiledComposition, Proof> {
     @Override
     public Proof apply(CompiledComposition input) {
 
-        log.info("[{}] > building analysis ", input.getComposition().getTitle());
+        log.info("[{}] > analyse ", input.getComposition().getTitle());
 
         Proof proof =
                 new BuildAnalysisPipelineData()
@@ -31,7 +31,7 @@ public class Analyser implements Function<CompiledComposition, Proof> {
                         .andThen(new BuildProof())
                         .apply(input);
 
-        log.info("[{}] < building analysis", input.getComposition().getTitle());
+        log.info("[{}] < analyse", input.getComposition().getTitle());
 
         return proof;
     }
