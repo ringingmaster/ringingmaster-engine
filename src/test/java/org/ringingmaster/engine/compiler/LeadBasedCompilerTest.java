@@ -199,7 +199,7 @@ public class LeadBasedCompilerTest {
 				.apply(composition);
 
 
-		assertTrue( compiledComposition.getComposition().getTitle().startsWith(" Plain Bob Minor: PLAINCOURSE"));
+		assertTrue( compiledComposition.getComposition().getLoggingTag().startsWith(" Plain Bob Minor: PLAINCOURSE"));
 		assertEquals(60, compiledComposition.getMethod().get().getRowCount());
 		assertEquals(5, compiledComposition.getMethod().get().getLeadCount());
 		checkAgainstFile(compiledComposition.getMethod().get(), "/PlainBobMinor.txt");

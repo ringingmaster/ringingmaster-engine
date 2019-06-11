@@ -74,7 +74,7 @@ public class AssignParseType implements Function<Composition, Parse> {
 
     public Parse apply(Composition composition) {
 
-        log.debug("[{}] > assign parse type", composition.getTitle());
+        log.debug("[{}] > assign parse type", composition.getLoggingTag());
 
         final HashBasedTable<Integer, Integer, ParsedCell> parsedCompositionCells = HashBasedTable.create();
         parseNullArea(composition, parsedCompositionCells);
@@ -94,7 +94,7 @@ public class AssignParseType implements Function<Composition, Parse> {
                 .setDefinitionTableCells(parsedDefinitionCells)
                 .build();
 
-        log.debug("[{}] < assign parse type", parse.getComposition().getTitle());
+        log.debug("[{}] < assign parse type", parse.getComposition().getLoggingTag());
 
         return parse;
     }
@@ -104,11 +104,11 @@ public class AssignParseType implements Function<Composition, Parse> {
             return;
         }
 
-        log.debug("[{}] Parse null area (unused top right cell when both spliced and course based)", composition.getTitle());
+        log.debug("[{}] Parse null area (unused top right cell when both spliced and course based)", composition.getLoggingTag());
 
         Set<LexerDefinition> lexerDefinitions = Collections.emptySet();
 
-        parse(parsedCells, lexerDefinitions, composition.nullAreaCells(), (parsedCell) -> {}, composition.getTitle());
+        parse(parsedCells, lexerDefinitions, composition.nullAreaCells(), (parsedCell) -> {}, composition.getLoggingTag());
     }
 
     private void parseCallingPositionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
@@ -116,11 +116,11 @@ public class AssignParseType implements Function<Composition, Parse> {
             return;
         }
 
-        log.debug("[{}] Parse call position area", composition.getTitle());
+        log.debug("[{}] Parse call position area", composition.getLoggingTag());
 
         Set<LexerDefinition> lexerDefinitions = buildCallingPositionParseTokenMap(composition);
 
-        parse(parsedCells, lexerDefinitions, composition.callingPositionCells(), (parsedCell) -> {}, composition.getTitle());
+        parse(parsedCells, lexerDefinitions, composition.callingPositionCells(), (parsedCell) -> {}, composition.getLoggingTag());
     }
 
     private Set<LexerDefinition> buildCallingPositionParseTokenMap(Composition composition) {
@@ -130,7 +130,7 @@ public class AssignParseType implements Function<Composition, Parse> {
     }
 
     private Set<String> parseMainBodyArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedCells) {
-        log.debug("[{}] Parse main body area", composition.getTitle());
+        log.debug("[{}] Parse main body area", composition.getLoggingTag());
 
         Set<LexerDefinition> lexerDefinitions = buildMainBodyParseTokenMap(composition);
 
@@ -140,7 +140,7 @@ public class AssignParseType implements Function<Composition, Parse> {
                         .filter(section -> section.getParseType().equals(DEFINITION))
                         .map(parsedCell::getCharacters)
                         .forEach(definitionsInUse::add),
-                composition.getTitle()
+                composition.getLoggingTag()
         );
 
         return definitionsInUse;
@@ -163,7 +163,7 @@ public class AssignParseType implements Function<Composition, Parse> {
             return Collections.emptySet();
         }
 
-        log.debug("[{}] Parse splice area", composition.getTitle());
+        log.debug("[{}] Parse splice area", composition.getLoggingTag());
         Set<LexerDefinition> lexerDefinitions = buildSpliceAreaParseTokenMap(composition);
 
 
@@ -173,7 +173,7 @@ public class AssignParseType implements Function<Composition, Parse> {
                     .filter(section -> section.getParseType().equals(DEFINITION))
                     .map(parsedCell::getCharacters)
                     .forEach(definitionsInUse::add),
-                            composition.getTitle()
+                            composition.getLoggingTag()
         );
 
         return definitionsInUse;
@@ -189,13 +189,13 @@ public class AssignParseType implements Function<Composition, Parse> {
     }
 
     private void parseDefinitionShorthandArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells) {
-        log.debug("[{}] Parse definition shorthand area", composition.getTitle());
+        log.debug("[{}] Parse definition shorthand area", composition.getLoggingTag());
 
         // This is a special parse - we just take trimmed versions of every definition and add it as a parse
         Set<LexerDefinition> lexerDefinitions = new HashSet<>();
         addDefinitionLexerDefinitions(composition, lexerDefinitions);
 
-        parse(parsedDefinitionCells, lexerDefinitions, composition.definitionShorthandCells(), (parsedCell) -> {}, composition.getTitle());
+        parse(parsedDefinitionCells, lexerDefinitions, composition.definitionShorthandCells(), (parsedCell) -> {}, composition.getLoggingTag());
     }
 
     private void parseDefinitionDefinitionArea(Composition composition, HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells, Set<String> mainBodyDefinitions, Set<String> spliceAreaDefinitions) {
@@ -210,8 +210,8 @@ public class AssignParseType implements Function<Composition, Parse> {
             if (definitionTable.getColumnSize() == 2) { //Can  be one when only shorthand entered
                 final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
                 String shorthand = definitionCellAsTable.get(0, SHORTHAND_COLUMN).getCharacters();
-                log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", composition.getTitle(), shorthand);
-                parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, parsedCell -> {}, composition.getTitle());
+                log.debug("[{}] Parsing definition with shorthand [{}] for definition regex's", composition.getLoggingTag(), shorthand);
+                parse(parsedDefinitionCells, definitionMappings, definitionCellAsTable, parsedCell -> {}, composition.getLoggingTag());
             }
         }
 
@@ -234,13 +234,13 @@ public class AssignParseType implements Function<Composition, Parse> {
             if (definitionTable.getColumnSize() == 2) { //Can  be one when only shorthand entered
                 final ImmutableArrayTable<Cell> definitionCellAsTable = definitionTable.subTable(0, 1, DEFINITION_COLUMN, DEFINITION_COLUMN + 1);
                 String shorthand = definitionTable.get(0, SHORTHAND_COLUMN).getCharacters();
-                log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", composition.getTitle(), shorthand);
+                log.debug("[{}] Parsing definition with shorthand [{}] for non-definition regex's", composition.getLoggingTag(), shorthand);
 
                 // We only use splices mappings when token is not in main body but is in spliced.
                 Set<LexerDefinition> chosenMappings = (!mainBodyDefinitionsWithTransitive.contains(shorthand)) &&
                         spliceAreaDefinitionsWithTransitive.contains(shorthand) ? spliceAreaParseTokenMappings : mainBodyParseTokenMappings;
                 parse(parsedDefinitionCells, chosenMappings, definitionCellAsTable, (parsedCell) -> {
-                }, composition.getTitle());
+                }, composition.getLoggingTag());
             }
         }
 

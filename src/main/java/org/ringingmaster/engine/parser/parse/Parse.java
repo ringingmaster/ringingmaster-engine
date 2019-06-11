@@ -17,4 +17,6 @@ public interface Parse extends CompositionTableAccess<ParsedCell>, DefinitionTab
 
     Composition getComposition();
 
+    long getElapsedMs();
+
 }

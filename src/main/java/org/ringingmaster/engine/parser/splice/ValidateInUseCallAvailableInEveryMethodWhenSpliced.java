@@ -35,15 +35,15 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
 
     @Override
     public Parse apply(Parse parse) {
-        log.debug("[{}] > validate in use calls available in every method when spliced", parse.getComposition().getTitle());
+        log.debug("[{}] > validate in use calls available in every method when spliced", parse.getComposition().getLoggingTag());
         Parse response = doCheck(parse);
-        log.debug("[{}] < validate in use calls available in every method when spliced", parse.getComposition().getTitle());
+        log.debug("[{}] < validate in use calls available in every method when spliced", parse.getComposition().getLoggingTag());
         return response;
     }
 
     private Parse doCheck(Parse input) {
         if (! input.getComposition().isSpliced()) {
-            log.debug("[{}]  ignore check: not spliced", input.getComposition().getTitle());
+            log.debug("[{}]  ignore check: not spliced", input.getComposition().getLoggingTag());
             return input;
         }
 
@@ -53,13 +53,13 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
             return input;
         }
         if (log.isDebugEnabled()) {
-            log.debug("[{}]  valid notations available in composition {}", input.getComposition().getTitle(),
+            log.debug("[{}]  valid notations available in composition {}", input.getComposition().getLoggingTag(),
                     validNotationsInComposition.stream().map(Notation::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
         final Set<String> spliceNamesInUse = Sets.union(new InUseNamesForParseType().apply(input.splicedCells(), SPLICE),
                                                    new InUseNamesForParseType().apply(input.definitionDefinitionCells(), SPLICE));
-        log.debug("[{}]  splice Names in use {}", input.getComposition().getTitle(),
+        log.debug("[{}]  splice Names in use {}", input.getComposition().getLoggingTag(),
                 spliceNamesInUse)  ;
 
 
@@ -67,20 +67,20 @@ public class ValidateInUseCallAvailableInEveryMethodWhenSpliced implements Funct
                 .filter(notation -> spliceNamesInUse.contains(notation.getSpliceIdentifier()))
                 .collect(Collectors.toSet());
         if (log.isDebugEnabled()) {
-            log.debug("[{}]  notations in use {}", input.getComposition().getTitle(),
+            log.debug("[{}]  notations in use {}", input.getComposition().getLoggingTag(),
                     notationsInUse.stream().map(Notation::getNameIncludingNumberOfBells).collect(Collectors.toSet()));
         }
 
         final Set<String> availableCallsFromValidNotations = getAllCalls(validNotationsInComposition);
-        log.debug("[{}]  calls available {}", input.getComposition().getTitle(),
+        log.debug("[{}]  calls available {}", input.getComposition().getLoggingTag(),
                 spliceNamesInUse)  ;
 
         final Set<String> commonCalls = getCommonCallsFromNotationsInUse(notationsInUse);
-        log.debug("[{}]  calls that are defined in every valid notation {}", input.getComposition().getTitle(),
+        log.debug("[{}]  calls that are defined in every valid notation {}", input.getComposition().getLoggingTag(),
                 commonCalls)  ;
 
         final Set<String> invalidCalls = Sets.difference(availableCallsFromValidNotations, commonCalls);
-        log.debug("[{}]  calls that cant be used {}", input.getComposition().getTitle(),
+        log.debug("[{}]  calls that cant be used {}", input.getComposition().getLoggingTag(),
                 invalidCalls)  ;
 
         if (invalidCalls.size() == 0) {

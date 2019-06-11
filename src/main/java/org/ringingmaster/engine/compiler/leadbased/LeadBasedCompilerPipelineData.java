@@ -30,7 +30,7 @@ class LeadBasedCompilerPipelineData extends CompilerPipelineData<LeadBasedCompil
 
 
     LeadBasedCompilerPipelineData(Parse parse) {
-        this(parse, "[" + parse.getComposition().getTitle() + "]",
+        this(parse, "[" + parse.getComposition().getLoggingTag() + "]",
                 ImmutableMap.of(), ImmutableMap.of(),
                 Optional.empty(), Optional.empty(), Optional.empty(),
                 ImmutableList.of());

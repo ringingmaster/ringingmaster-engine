@@ -16,7 +16,7 @@ public class TitleMutationTest {
 
         MutableComposition composition = new MutableComposition();
 
-        assertEquals(CompositionBuilder.DEFAULT_TITLE, composition.get().getTitle());
+        assertEquals(CompositionBuilder.DEFAULT_TITLE, composition.get().getLoggingTag());
     }
 
     @Test
@@ -25,6 +25,6 @@ public class TitleMutationTest {
         MutableComposition composition = new MutableComposition();
         composition.setTitle("TEST");
 
-        assertEquals("TEST", composition.get().getTitle());
+        assertEquals("TEST", composition.get().getLoggingTag());
     }
 }

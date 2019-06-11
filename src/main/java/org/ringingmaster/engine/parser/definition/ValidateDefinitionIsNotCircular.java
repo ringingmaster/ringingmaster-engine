@@ -33,7 +33,7 @@ public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
 
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate definitions do not form a circular dependency", input.getComposition().getTitle());
+        log.debug("[{}] > validate definitions do not form a circular dependency", input.getComposition().getLoggingTag());
 
         Map<String, Set<String>> adjacency = new BuildDefinitionsAdjacencyList().apply(input);
 
@@ -52,7 +52,7 @@ public class ValidateDefinitionIsNotCircular implements Function<Parse, Parse> {
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < validate definitions do not form a circular dependency", input.getComposition().getTitle());
+        log.debug("[{}] < validate definitions do not form a circular dependency", input.getComposition().getLoggingTag());
 
         return result;
     }

@@ -34,11 +34,11 @@ public class Parser implements Function<Composition, Parse> {
     @Override
     public Parse apply(Composition composition) {
 
-        log.info("[{}] > parsing", composition.getTitle());
+        log.info("[{}] > parse", composition.getLoggingTag());
 
         Parse parse = pipeline.apply(composition);
 
-        log.info("[{}] < parsing", composition.getTitle());
+        log.info("[{}] < parse", composition.getLoggingTag());
         return parse;
     }
 

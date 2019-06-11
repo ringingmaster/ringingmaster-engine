@@ -26,11 +26,11 @@ public class ValidateDefinitionShorthandNotDuplicated implements Function<Parse,
 
     @Override
     public Parse apply(Parse input) {
-        log.debug("[{}] > validate definition shorthand is only defined once", input.getComposition().getTitle());
+        log.debug("[{}] > validate definition shorthand is only defined once", input.getComposition().getLoggingTag());
 
         Parse result = doCheck(input);
 
-        log.debug("[{}] < validate definition shorthand is only defined once", input.getComposition().getTitle());
+        log.debug("[{}] < validate definition shorthand is only defined once", input.getComposition().getLoggingTag());
 
         return result;
 

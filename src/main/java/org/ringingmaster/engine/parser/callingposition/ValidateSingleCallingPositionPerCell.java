@@ -34,7 +34,7 @@ public class ValidateSingleCallingPositionPerCell implements Function<Parse, Par
             return input;
         }
 
-        log.debug("[{}] > validate single call position per cell", input.getComposition().getTitle());
+        log.debug("[{}] > validate single call position per cell", input.getComposition().getLoggingTag());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(input.allCompositionCells().getBackingTable());
@@ -46,7 +46,7 @@ public class ValidateSingleCallingPositionPerCell implements Function<Parse, Par
                 .setCompositionTableCells(resultCells)
                 .build();
 
-        log.debug("[{}] < validate single call position per cell", input.getComposition().getTitle());
+        log.debug("[{}] < validate single call position per cell", input.getComposition().getLoggingTag());
 
         return result;
     }

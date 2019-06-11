@@ -78,6 +78,7 @@ public class MutableComposition {
             .comparePaths("numberOfBells")
             .comparePaths("startChange")
             .ignorePaths("actionName")
+            .ignorePaths("sequenceNumber")
             .bindComparator((field, object1, object2) -> ((DefaultCompositionTableAccess) object1).allCompositionCells() == ((DefaultCompositionTableAccess) object2).allCompositionCells(), "compositionTableAccessDelegate")
             .bindComparator((field, object1, object2) -> ((DefaultDefinitionTableAccess) object1).allDefinitionCells() == ((DefaultDefinitionTableAccess) object2).allDefinitionCells(), "definitionTableCellsDelegate");
 
@@ -86,7 +87,7 @@ public class MutableComposition {
         if (log.isInfoEnabled()) {
             compositionStream.buffer(2, 1).subscribe(compositions -> {
                 log.info("[{}] Action:[{}] Diff [{}]",
-                        compositions.get(0).getTitle(), compositions.get(1).getActionName(),
+                        compositions.get(0).getLoggingTag(), compositions.get(1).getActionName(),
                         s.stringDifferences(compositions.get(0), compositions.get(1)));
             });
         }

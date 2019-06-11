@@ -32,7 +32,7 @@ public class ValidateVariancePartNumbersWithinRange implements Function<Parse, P
     @Override
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate variance part number within range", input.getComposition().getTitle());
+        log.debug("[{}] > validate variance part number within range", input.getComposition().getLoggingTag());
 
 
         HashBasedTable<Integer, Integer, ParsedCell> compositionCells =
@@ -53,7 +53,7 @@ public class ValidateVariancePartNumbersWithinRange implements Function<Parse, P
                 .setDefinitionTableCells(definitionCells)
                 .build();
 
-        log.debug("[{}] < validate variance part number within range", input.getComposition().getTitle());
+        log.debug("[{}] < validate variance part number within range", input.getComposition().getLoggingTag());
 
         return result;
     }

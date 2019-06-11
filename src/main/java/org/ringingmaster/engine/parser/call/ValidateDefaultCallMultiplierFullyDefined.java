@@ -30,7 +30,7 @@ public class ValidateDefaultCallMultiplierFullyDefined implements Function<Parse
     @Override
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate default call is fully defined", input.getComposition().getTitle());
+        log.debug("[{}] > validate default call is fully defined", input.getComposition().getLoggingTag());
 
         Parse result = input;
         final boolean hasFullyDefinedDefaultCall = hasFullyDefinedDefaultCall(input.getComposition());
@@ -46,7 +46,7 @@ public class ValidateDefaultCallMultiplierFullyDefined implements Function<Parse
                     .build();
         }
 
-        log.debug("[{}] < validate default call is fully defined", input.getComposition().getTitle());
+        log.debug("[{}] < validate default call is fully defined", input.getComposition().getLoggingTag());
 
         return result;
     }

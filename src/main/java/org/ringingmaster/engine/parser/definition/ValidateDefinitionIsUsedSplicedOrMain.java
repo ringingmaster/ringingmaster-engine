@@ -32,11 +32,11 @@ public class ValidateDefinitionIsUsedSplicedOrMain implements Function<Parse, Pa
 
 
     public Parse apply(Parse input) {
-        log.debug("[{}] > validate definition is used  spliced or main", input.getComposition().getTitle());
+        log.debug("[{}] > validate definition is used  spliced or main", input.getComposition().getLoggingTag());
 
         Parse result = doCheck(input);
 
-        log.debug("[{}] < validate definition is used  spliced or main", input.getComposition().getTitle());
+        log.debug("[{}] < validate definition is used  spliced or main", input.getComposition().getLoggingTag());
 
         return result;
     }

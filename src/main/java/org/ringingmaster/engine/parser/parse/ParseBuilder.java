@@ -23,6 +23,7 @@ public class ParseBuilder {
     private Optional<Parse> prototypeParse = Optional.empty();
     private Optional<HashBasedTable<Integer, Integer, ParsedCell>> compositionCells = Optional.empty();;
     private Optional<HashBasedTable<Integer, Integer, ParsedCell>> definitionCells = Optional.empty();;
+    private long elapsedMs;
 
     public Parse build() {
 
@@ -33,7 +34,8 @@ public class ParseBuilder {
             return new DefaultParse(
                     prototypeComposition.get(),
                     new TableBackedImmutableArrayTable<>(compositionCells.get(), () -> EmptyParsedCell.INSTANCE),
-                    new TableBackedImmutableArrayTable<>(definitionCells.get(), () -> EmptyParsedCell.INSTANCE));
+                    new TableBackedImmutableArrayTable<>(definitionCells.get(), () -> EmptyParsedCell.INSTANCE),
+                    elapsedMs);
         }
         else if (prototypeParse.isPresent()) {
             return new DefaultParse(
@@ -41,7 +43,8 @@ public class ParseBuilder {
                     compositionCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
                             .orElse(prototypeParse.get().allCompositionCells()),
                     definitionCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
-                            .orElse(prototypeParse.get().allDefinitionCells()));
+                            .orElse(prototypeParse.get().allDefinitionCells()),
+            0);
         }
         else {
             throw new IllegalStateException();
@@ -70,4 +73,8 @@ public class ParseBuilder {
         return this;
     }
 
+    public ParseBuilder setElapsedMs(long elapsedMs) {
+        this.elapsedMs = elapsedMs;
+        return this;
+    }
 }

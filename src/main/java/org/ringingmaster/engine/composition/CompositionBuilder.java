@@ -33,8 +33,8 @@ class CompositionBuilder {
 
     private Composition prototype;
 
-    // Holds the name of the change that caused this change to be built. Used for Undo/Redo
-    private Optional<String> actionName = Optional.empty();
+    private Optional<Integer> sequenceNumber = Optional.empty(); // Holds an incrementing sequence number. 1 increment per mutation.
+    private Optional<String> actionName = Optional.empty();// Holds the name of the change that caused this change to be built. Used for Undo/Redo
 
 
     private Optional<String> title = Optional.empty();
@@ -72,6 +72,7 @@ class CompositionBuilder {
      * @return
      */
     CompositionBuilder defaults() {
+        sequenceNumber = Optional.of(0);
         actionName = Optional.of("New");
 
         setTitle(DEFAULT_TITLE);
@@ -210,6 +211,7 @@ class CompositionBuilder {
         this.actionName = Optional.of(String.format(actionNameFormat, actionNameArgs));
 
         return new Composition(
+                this.sequenceNumber.orElseGet(() -> prototype.getSequenceNumber() + 1),
                 this.actionName.get(),
 
                 title.orElseGet(()->prototype.getTitle()),
@@ -247,7 +249,9 @@ class CompositionBuilder {
     @Override
     public String toString() {
         return "CompositionBuilder{" +
-                "prototype=" + prototype +
+                "sequenceNumber=" + sequenceNumber +
+                ", actionName=" + actionName +
+                ", prototype=" + prototype +
                 ", title=" + title +
                 ", author=" + author +
                 ", numberOfBells=" + numberOfBells +

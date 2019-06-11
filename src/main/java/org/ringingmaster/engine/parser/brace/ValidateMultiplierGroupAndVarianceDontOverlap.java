@@ -32,13 +32,13 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
 
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate multiplier group and variance dine overlap", input.getComposition().getTitle());
+        log.debug("[{}] > validate multiplier group and variance dine overlap", input.getComposition().getLoggingTag());
 
         HashBasedTable<Integer, Integer, ParsedCell> resultCells =
                 HashBasedTable.create(input.allCompositionCells().getBackingTable());
 
-        parseCells(input.mainBodyCells(), resultCells, input.getComposition().getTitle());
-        parseCells(input.splicedCells(), resultCells, input.getComposition().getTitle());
+        parseCells(input.mainBodyCells(), resultCells, input.getComposition().getLoggingTag());
+        parseCells(input.splicedCells(), resultCells, input.getComposition().getLoggingTag());
 
         // We parse definitions individually. This is so that any open/close brace in a definition
         // must be complete sets within the definition. i.e a matched open and close brace.
@@ -47,7 +47,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
         final ImmutableArrayTable<ParsedCell> definitionDefinitionCells = input.definitionDefinitionCells();
         for(int rowIndex = 0; rowIndex < definitionDefinitionCells.getRowSize();rowIndex++) {
             final ImmutableArrayTable<ParsedCell> cell = definitionDefinitionCells.subTable(rowIndex, rowIndex + 1, 0, 1);
-            parseCells(cell, definitionTableResult, input.getComposition().getTitle());
+            parseCells(cell, definitionTableResult, input.getComposition().getLoggingTag());
         }
 
         Parse result = new ParseBuilder()
@@ -56,7 +56,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlap implements Function<P
                 .setDefinitionTableCells(definitionTableResult)
                 .build();
 
-        log.debug("[{}] < validate multiplier group and variance dine overlap", input.getComposition().getTitle());
+        log.debug("[{}] < validate multiplier group and variance dine overlap", input.getComposition().getLoggingTag());
 
         return result;
 

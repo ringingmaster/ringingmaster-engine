@@ -32,6 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 public class Composition implements CompositionTableAccess<Cell>, DefinitionTableAccess<Cell> {
 
+    private final int sequenceNumber;
     private final String actionName;
 
     private final String title;
@@ -59,7 +60,8 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
 
     private final CompositionTableAccess<Cell> compositionTableAccessDelegate;
 
-    public Composition(String actionName,
+    public Composition(int sequenceNumber,
+                       String actionName,
                        String title,
                        String author,
                        NumberOfBells numberOfBells,
@@ -79,6 +81,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
                        Optional<Row> terminationChange,
                        ImmutableArrayTable<Cell> cells) {
 
+        this.sequenceNumber = sequenceNumber;
         this.actionName = actionName;
 
         this.title = title;
@@ -107,8 +110,16 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(cells, compositionType, isSpliced());
     }
 
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
     public String getActionName() {
         return actionName;
+    }
+
+    public String getLoggingTag() {
+        return title + "<" + sequenceNumber + ">";
     }
 
     public String getTitle() {
@@ -258,6 +269,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     @Override
     public String toString() {
         return "Composition{" +
+                "<" + sequenceNumber + "> " +
                 "<" + actionName + "> " +
                 "title='" + title + '\'' +
                 ", author=" + author +

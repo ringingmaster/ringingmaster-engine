@@ -20,7 +20,7 @@ public class DefinitionFunctions {
     static HashBasedTable<Integer, Integer, ParsedCell> markDefinitionsInvalidInComposition(Parse parse, Set<String> invalidDefinitions,  Function<String, String> createErrorMessage) {
 
         if (!invalidDefinitions.isEmpty()) {
-            log.debug("[{}]  marking invalid definitions in composition [{}]", parse.getComposition().getTitle(), invalidDefinitions);
+            log.debug("[{}]  marking invalid definitions in composition [{}]", parse.getComposition().getLoggingTag(), invalidDefinitions);
         }
 
         HashBasedTable<Integer, Integer, ParsedCell> compositionTableResult =
@@ -33,7 +33,7 @@ public class DefinitionFunctions {
     static HashBasedTable<Integer, Integer, ParsedCell> markDefinitionsInvalidInDefinitions(Parse parse, Set<String> invalidDefinitions,  Function<String, String> createErrorMessage) {
 
         if (!invalidDefinitions.isEmpty()) {
-            log.debug("[{}]  marking invalid definitions in definitions [{}]", parse.getComposition().getTitle(), invalidDefinitions);
+            log.debug("[{}]  marking invalid definitions in definitions [{}]", parse.getComposition().getLoggingTag(), invalidDefinitions);
         }
 
         HashBasedTable<Integer, Integer, ParsedCell> definitionTableResult =

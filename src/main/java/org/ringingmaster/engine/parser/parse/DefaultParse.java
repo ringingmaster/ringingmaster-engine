@@ -24,16 +24,23 @@ class DefaultParse implements Parse {
     private final Composition composition;
     private final CompositionTableAccess<ParsedCell> compositionTableAccessDelegate;
     private final DefinitionTableAccess<ParsedCell> definitionTableAccessDelegate;
+    private long elapsedMs;
 
-    DefaultParse(Composition composition, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells) {
+    DefaultParse(Composition composition, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells, long elapsedMs) {
         this.composition = composition;
         this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(mainTableCells, composition.getCompositionType(), composition.isSpliced());
         this.definitionTableAccessDelegate = new DefaultDefinitionTableAccess<>(definitionCells);
+        this.elapsedMs = elapsedMs;
     }
 
     @Override
     public Composition getComposition() {
         return composition;
+    }
+
+    @Override
+    public long getElapsedMs() {
+        return elapsedMs;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class  PrettyPrintCells implements Function<Parse, Parse> {
 
     @Override
     public Parse apply(Parse input) {
-        log.debug("[{}] > pretty print cells (trace output only)", input.getComposition().getTitle());
+        log.debug("[{}] > pretty print cells (trace output only)", input.getComposition().getLoggingTag());
 
         if (log.isTraceEnabled()) {
 
@@ -30,7 +30,7 @@ public class  PrettyPrintCells implements Function<Parse, Parse> {
             }
         }
 
-        log.debug("[{}] < pretty print cells (trace output only)", input.getComposition().getTitle());
+        log.debug("[{}] < pretty print cells (trace output only)", input.getComposition().getLoggingTag());
 
         return input;
     }

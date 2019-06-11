@@ -34,7 +34,7 @@ public class ValidateCellInColumnWithValidCallPosition implements Function<Parse
             return input;
         }
 
-        log.debug("[{}] > validate cell in column with valid call position", input.getComposition().getTitle());
+        log.debug("[{}] > validate cell in column with valid call position", input.getComposition().getLoggingTag());
 
         Set<Integer> validColumns = buildValidColumns(input);
 
@@ -52,7 +52,7 @@ public class ValidateCellInColumnWithValidCallPosition implements Function<Parse
                 .setCompositionTableCells(compositionCells)
                 .build();
 
-        log.debug("[{}] < validate cell in column with valid call position", input.getComposition().getTitle());
+        log.debug("[{}] < validate cell in column with valid call position", input.getComposition().getLoggingTag());
 
         return result;
     }
