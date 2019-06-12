@@ -11,6 +11,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import org.pcollections.PSet;
 import org.ringingmaster.engine.NumberOfBells;
+import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.arraytable.ImmutableArrayTable;
 import org.ringingmaster.engine.arraytable.TableBackedImmutableArrayTable;
 import org.ringingmaster.engine.composition.cell.Cell;
@@ -816,6 +817,37 @@ public class MutableComposition {
         compositionStream.onNext(compositionBuilder.build("Remove Termination Change"));
     }
 
+    public void bulkSetCharacters(TableType tableType, Set<BackingTableLocationAndValue<String>> cellCharactersAndLocations) {
+        checkNotNull(tableType);
+        checkNotNull(cellCharactersAndLocations);
+
+        ImmutableArrayTable<Cell> cells = getCells(tableType);
+
+        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(cells.getBackingTable());
+
+        for (BackingTableLocationAndValue<String> cellDetail : cellCharactersAndLocations) {
+
+            int columnIndex = cellDetail.getCol();
+            int rowIndex = cellDetail.getRow();
+            String characters = cellDetail.getValue();
+
+            if (tableType == DEFINITION_TABLE) {
+                checkArgument(columnIndex < 2, "Maximum of two columns allowed in definition table.");
+            }
+
+            Cell cell = new CellBuilder()
+                    .defaults()
+                    .insert(0, characters)
+                    .build();
+            mutatedCells.put(rowIndex, columnIndex, cell);
+        }
+
+        CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
+                .setCells(tableType, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
+
+        compositionStream.onNext(compositionBuilder.build("Bulk Set"));
+    }
+
     /**
      * Because of the self collapsing nature of the grid, it is only possible to add characters to
      * one index value larger that the current size for both rows and columns.
@@ -847,6 +879,16 @@ public class MutableComposition {
         insertCharacters(tableType, rowIndex, columnIndex, cellInsertIndex, characters);
     }
 
+    /**
+     * Because of the self collapsing nature of the grid, it is only possible to add characters to
+     * one index value larger that the current size for both rows and columns.
+     *
+     * @param tableType   the section of the document we want to act upon
+     * @param rowIndex    must be no more than one larger than current row size
+     * @param columnIndex must be no more than one larger than current column size
+     * @param cellInsertIndex  ??
+     * @param characters  non null and greater than 0 in length
+     */
     public void insertCharacters(TableType tableType, int rowIndex, int columnIndex, int cellInsertIndex, String characters) {
         checkNotNull(tableType);
         checkNotNull(characters);
