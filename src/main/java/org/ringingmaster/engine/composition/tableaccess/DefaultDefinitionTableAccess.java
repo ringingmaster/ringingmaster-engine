@@ -8,6 +8,7 @@ import org.ringingmaster.engine.composition.cell.Cell;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -83,6 +84,19 @@ public class DefaultDefinitionTableAccess<T extends Cell> implements DefinitionT
 
     public ImmutableSet<String> getAllDefinitionShorthands() {
         return byShorthand.keySet();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DefaultDefinitionTableAccess)) return false;
+        DefaultDefinitionTableAccess<?> that = (DefaultDefinitionTableAccess<?>) o;
+        return Objects.equals(cells, that.cells);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cells);
     }
 
     @Override

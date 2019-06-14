@@ -58,9 +58,7 @@ public class Parser implements Function<Composition, Parse> {
             .andThen(new ValidateMultiplierGroupMatchingBrace())
         //TODO		parseGroupOnDifferentLines(); // TODO I dont think we need this one now as allowing groups on many lines. Might have to do extra parsing when a block definition in use though to make sure we have full groups in the block
             .andThen(new ValidateMultiplierGroupAndVarianceDontOverlap())
-        //TODO		parseSpaceOnlyInCell(); //TODO I dont think this is necessary, apart from where whole rows and columns are empty
             .andThen(new ValidateCellInColumnWithValidCallPosition())
-        //TODO		parseCallsInColumnWithoutCallingPos();
         //TODO		parseSplicedNotBlocks();
             .andThen(new ValidateDefinitionIsUsedSplicedOrMain())
             .andThen(new ValidateDefinitionIsNotCircular())

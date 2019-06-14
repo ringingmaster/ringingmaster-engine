@@ -43,7 +43,7 @@ public class BuildTenorPlaceForCallingPositionLookup implements Function<CourseB
         // build the map.
         ImmutableMap.Builder<CallingPosition, Integer> callingPositionMap = ImmutableMap.builder();
 
-        for (CallingPosition callingPosition : activeNotation.getMethodBasedCallingPositions()) {
+        for (CallingPosition callingPosition : activeNotation.getCallingPositions()) {
             Integer place = plainCourse
                     .getLead(callingPosition.getLeadOfTenor())
                     .getRow(callingPosition.getCallInitiationRow())

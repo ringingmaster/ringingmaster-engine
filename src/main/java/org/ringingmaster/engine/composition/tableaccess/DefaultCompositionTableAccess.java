@@ -6,6 +6,8 @@ import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import javax.annotation.concurrent.Immutable;
 
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -104,6 +106,19 @@ public class DefaultCompositionTableAccess<T extends Cell> implements Compositio
                 1,
                 cells.getColumnSize() - 1,
                 cells.getColumnSize());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DefaultCompositionTableAccess)) return false;
+        DefaultCompositionTableAccess<?> that = (DefaultCompositionTableAccess<?>) o;
+        return Objects.equals(cells, that.cells);
+    }
+
+    @Override
+    public int hashCode() {
+        return cells.hashCode();
     }
 
     @Override

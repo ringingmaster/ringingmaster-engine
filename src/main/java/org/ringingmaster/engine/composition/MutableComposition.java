@@ -75,7 +75,7 @@ public class MutableComposition {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final BehaviorSubject<Composition> compositionStream;
-    private final SmartCompare s = new SmartCompare("", "> ")
+    private final SmartCompare smartCompare = new SmartCompare("", "> ")
             .comparePaths("numberOfBells")
             .comparePaths("startChange")
             .ignorePaths("actionName")
@@ -89,7 +89,7 @@ public class MutableComposition {
             compositionStream.buffer(2, 1).subscribe(compositions -> {
                 log.info("[{}] Action:[{}] Diff [{}]",
                         compositions.get(0).getLoggingTag(), compositions.get(1).getActionName(),
-                        s.stringDifferences(compositions.get(0), compositions.get(1)));
+                        smartCompare.stringDifferences(compositions.get(0), compositions.get(1)));
             });
         }
     }
@@ -821,9 +821,9 @@ public class MutableComposition {
         checkNotNull(tableType);
         checkNotNull(cellCharactersAndLocations);
 
-        ImmutableArrayTable<Cell> cells = getCells(tableType);
+        ImmutableArrayTable<Cell> originalCells = getCells(tableType);
 
-        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(cells.getBackingTable());
+        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(originalCells.getBackingTable());
 
         for (BackingTableLocationAndValue<String> cellDetail : cellCharactersAndLocations) {
 
@@ -898,11 +898,11 @@ public class MutableComposition {
             checkArgument(columnIndex < 2, "Maximum of two columns allowed in definition table.");
         }
 
-        ImmutableArrayTable<Cell> cells = getCells(tableType);
-        checkPositionIndex(rowIndex, cells.getRowSize(), "rowIndex");
-        checkPositionIndex(columnIndex, cells.getColumnSize(), "columnIndex");
+        ImmutableArrayTable<Cell> originalCells = getCells(tableType);
+        checkPositionIndex(rowIndex, originalCells.getRowSize(), "rowIndex");
+        checkPositionIndex(columnIndex, originalCells.getColumnSize(), "columnIndex");
 
-        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(cells.getBackingTable());
+        Table<Integer, Integer, Cell> mutatedCells = HashBasedTable.create(originalCells.getBackingTable());
         Cell currentCell = mutatedCells.get(rowIndex, columnIndex);
 
         if (currentCell == null) {
@@ -983,7 +983,7 @@ public class MutableComposition {
 
         int rowCount = originalCells.getRowSize();
         int columnCount = originalCells.getColumnSize();
-        // We allow the column loop to go '1' past end to ensure the final column is removed.
+        // We allow the column loop to go '1' past end to ensure the final column is shifted.
         for (int columnIndex = columnIndexForRemoval; columnIndex < columnCount + 1; columnIndex++) {
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
                 Cell cell = cells.get(rowIndex, columnIndex);
@@ -1004,7 +1004,7 @@ public class MutableComposition {
 
         int rowCount = originalCells.getRowSize();
         int columnCount = originalCells.getColumnSize();
-        // We allow the row loop to go '1' past end to ensure the final row is removed.
+        // We allow the row loop to go '1' past end to ensure the final row is shifted.
         for (int rowIndex = rowIndexForRemoval; rowIndex < rowCount + 1; rowIndex++) {
             for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
                 Cell cell = mutatedCells.get(rowIndex, columnIndex);

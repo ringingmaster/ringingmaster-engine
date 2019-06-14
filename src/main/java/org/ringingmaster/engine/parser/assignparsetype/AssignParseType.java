@@ -265,7 +265,7 @@ public class AssignParseType implements Function<Composition, Parse> {
 
     private void addCallingPositionLexerDefinitions(Composition composition, Set<LexerDefinition> lexerDefinitions) {
         for (Notation notation : composition.getAvailableNotations()) {
-            for (CallingPosition callingPosition : notation.getMethodBasedCallingPositions()) {
+            for (CallingPosition callingPosition : notation.getCallingPositions()) {
                 lexerDefinitions.add(new LexerDefinition(PRECEDENCE_GENERAL, callingPosition.getName().length(),
                         "\\Q" + callingPosition.getName() + "\\E", CALLING_POSITION));
             }

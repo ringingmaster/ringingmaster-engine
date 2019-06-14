@@ -76,8 +76,8 @@ public class MaskedNotation implements Notation { //TODO completely lacking any 
     }
 
     @Override
-    public SortedSet<CallingPosition> getMethodBasedCallingPositions() {
-        return currentNotation.getMethodBasedCallingPositions();
+    public SortedSet<CallingPosition> getCallingPositions() {
+        return currentNotation.getCallingPositions();
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.ringingmaster.engine.composition.tableaccess.DefinitionTableAccess;
 import org.ringingmaster.engine.composition.tableaccess.CompositionTableAccess;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -264,6 +265,37 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     @Override
     public ImmutableArrayTable<Cell> nullAreaCells() {
         return compositionTableAccessDelegate.nullAreaCells();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Composition)) return false;
+        Composition that = (Composition) o;
+        return  getStartAtRow() == that.getStartAtRow() &&
+                getTerminationMaxRows() == that.getTerminationMaxRows() &&
+                getTerminationMaxCircularity() == that.getTerminationMaxCircularity() &&
+                Objects.equals(getTitle(), that.getTitle()) &&
+                Objects.equals(getAuthor(), that.getAuthor()) &&
+                getNumberOfBells() == that.getNumberOfBells() &&
+                getCompositionType() == that.getCompositionType() &&
+                getCallFromBell() == that.getCallFromBell() &&
+                Objects.equals(getAllNotations(), that.getAllNotations()) &&
+                Objects.equals(getNonSplicedActiveNotation(), that.getNonSplicedActiveNotation()) &&
+                Objects.equals(getPlainLeadToken(), that.getPlainLeadToken()) &&
+                Objects.equals(definitionTableCellsDelegate, that.definitionTableCellsDelegate) &&
+                Objects.equals(getStartChange(), that.getStartChange()) &&
+                getStartStroke() == that.getStartStroke() &&
+                Objects.equals(getStartNotation(), that.getStartNotation()) &&
+                Objects.equals(getTerminationMaxLeads(), that.getTerminationMaxLeads()) &&
+                Objects.equals(getTerminationMaxParts(), that.getTerminationMaxParts()) &&
+                Objects.equals(getTerminationChange(), that.getTerminationChange()) &&
+                Objects.equals(compositionTableAccessDelegate, that.compositionTableAccessDelegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSequenceNumber(), getActionName(), getTitle(), getAuthor(), getNumberOfBells(), getCompositionType(), getCallFromBell(), getAllNotations(), getNonSplicedActiveNotation(), getPlainLeadToken(), definitionTableCellsDelegate, getStartChange(), getStartAtRow(), getStartStroke(), getStartNotation(), getTerminationMaxRows(), getTerminationMaxLeads(), getTerminationMaxParts(), getTerminationMaxCircularity(), getTerminationChange(), compositionTableAccessDelegate);
     }
 
     @Override

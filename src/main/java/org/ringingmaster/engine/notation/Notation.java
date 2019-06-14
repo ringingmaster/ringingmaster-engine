@@ -57,12 +57,12 @@ public interface Notation extends PlaceSetSequence {
     /**
      * Get the position that a call can be started on any lead
      */
-    SortedSet<Integer> getCallInitiationRows();
+    SortedSet<Integer> getCallInitiationRows(); //TODO do we actually need this? Could it be derived from methodBasedCallingPositions
 
     /**
      * Get the lead and position that a call can be started.
      */
-    SortedSet<CallingPosition> getMethodBasedCallingPositions();
+    SortedSet<CallingPosition> getCallingPositions();
 
     /**
      * Find the {@link CallingPosition} for the passed name, otherwise null.

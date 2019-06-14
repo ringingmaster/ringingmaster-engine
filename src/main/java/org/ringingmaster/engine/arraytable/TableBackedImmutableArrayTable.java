@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -103,6 +104,21 @@ public class TableBackedImmutableArrayTable<T> implements ImmutableArrayTable<T>
     @Override
     public int getBackingColumnIndex(int columnIndex) {
         return columnIndex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TableBackedImmutableArrayTable)) return false;
+        TableBackedImmutableArrayTable<?> that = (TableBackedImmutableArrayTable<?>) o;
+        return getColumnSize() == that.getColumnSize() &&
+                getRowSize() == that.getRowSize() &&
+                Objects.equals(getBackingTable(), that.getBackingTable());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBackingTable(), getColumnSize(), getRowSize());
     }
 
     @Override

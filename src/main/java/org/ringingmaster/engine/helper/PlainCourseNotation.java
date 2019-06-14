@@ -94,8 +94,8 @@ public class PlainCourseNotation implements Notation {
     }
 
     @Override
-    public SortedSet<CallingPosition> getMethodBasedCallingPositions() {
-        return delegate.getMethodBasedCallingPositions();
+    public SortedSet<CallingPosition> getCallingPositions() {
+        return delegate.getCallingPositions();
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.ringingmaster.engine.NumberOfBells;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representation of a single call.
@@ -33,6 +34,22 @@ class DefaultCall extends DefaultPlaceSetSequence implements Call {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DefaultCall)) return false;
+        DefaultCall placeSets = (DefaultCall) o;
+        return Objects.equals(getNameShorthand(), placeSets.getNameShorthand()) &&
+                Objects.equals(getName(), placeSets.getName()) &&
+                getNumberOfWorkingBells() == placeSets.getNumberOfWorkingBells() &&
+                Objects.equals(getNormalisedNotationElements(), placeSets.getNormalisedNotationElements());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNameShorthand(), getName(), getNumberOfWorkingBells(), getNormalisedNotationElements());
+    }
+
+    @Override
     public String toDisplayString() {
         final StringBuilder buf = new StringBuilder();
         buf.append(getName());
@@ -40,16 +57,6 @@ class DefaultCall extends DefaultPlaceSetSequence implements Call {
         buf.append(getNotationDisplayString(false));
         return buf.toString();
     }
-
-//    @Override
-//    public String toString() {
-//        final StringBuilder buf = new StringBuilder();
-//        buf.append("[").append(getName());
-//        buf.append(", ").append(getNameShorthand());
-//        buf.append(", ").append(getNotationDisplayString(false));
-//        buf.append("]");
-//        return buf.toString();
-//    }
 
 
     @Override

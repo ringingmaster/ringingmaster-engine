@@ -115,7 +115,7 @@ class DefaultNotation extends DefaultPlaceSetSequence implements Notation {
     }
 
     @Override
-    public SortedSet<CallingPosition> getMethodBasedCallingPositions() {
+    public SortedSet<CallingPosition> getCallingPositions() {
         return methodBasedCallingPositions;
     }
 
@@ -188,11 +188,11 @@ class DefaultNotation extends DefaultPlaceSetSequence implements Notation {
         buf.append(", numberOfWorkingBells=").append(getNumberOfWorkingBells());
         buf.append(", notation=").append(getNotationDisplayString(false));
         buf.append(", leadHeadCode=").append(getLeadHeadCode());
-        buf.append(", useCannedCalls=").append(isCannedCalls());
+        buf.append(", cannedCalls=").append(isCannedCalls());
         buf.append(", calls=").append(getCalls());
         buf.append(", defaultCall=").append(getDefaultCall());
         buf.append(", callInitiationRow=").append(getCallInitiationRows());
-        buf.append(", methodBasedCallingPositions=").append(getMethodBasedCallingPositions());
+        buf.append(", methodBasedCallingPositions=").append(getCallingPositions());
         buf.append(", spliceIdentifier=").append(getSpliceIdentifier());
         buf.append("]");
         return buf.toString();

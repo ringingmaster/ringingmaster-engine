@@ -16,8 +16,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 abstract class DefaultPlaceSetSequence implements PlaceSetSequence {
 
-    private final NumberOfBells numberOfWorkingBells;
     private final String name;
+    private final NumberOfBells numberOfWorkingBells;
 
     /**
      * A List of PlaceSets. NOTE Where this is used in an implementation that folds, this is the full unfolded version

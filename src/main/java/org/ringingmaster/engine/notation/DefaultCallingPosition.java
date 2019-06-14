@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.notation;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.Objects;
 
 /**
  * TODO comments???
@@ -46,6 +47,21 @@ class DefaultCallingPosition implements CallingPosition {
         }
 
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DefaultCallingPosition)) return false;
+        DefaultCallingPosition that = (DefaultCallingPosition) o;
+        return getCallInitiationRow() == that.getCallInitiationRow() &&
+                getLeadOfTenor() == that.getLeadOfTenor() &&
+                Objects.equals(getName(), that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCallInitiationRow(), getLeadOfTenor(), getName());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.composition.cell;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.Objects;
 
 /**
  * TODO Comments
@@ -29,6 +30,19 @@ class DefaultCell implements Cell {
     @Override
     public String getCharacters() {
         return characters;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DefaultCell)) return false;
+        DefaultCell that = (DefaultCell) o;
+        return Objects.equals(getCharacters(), that.getCharacters());
+    }
+
+    @Override
+    public int hashCode() {
+        return getCharacters().hashCode();
     }
 
     @Override
