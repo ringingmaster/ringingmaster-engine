@@ -18,13 +18,18 @@ public class AnalysisPipelineData {
     private final CompiledComposition compiledComposition;
     private final ImmutableList<ImmutableList<Row>> falseRowGroups;
 
+    private final long startMs;
+
     AnalysisPipelineData(CompiledComposition compiledComposition) {
-        this(compiledComposition, ImmutableList.of());
+        this(compiledComposition, ImmutableList.of(),
+                System.currentTimeMillis());
     }
 
-    private AnalysisPipelineData(CompiledComposition compiledComposition, ImmutableList<ImmutableList<Row>> falseRowGroups) {
+    private AnalysisPipelineData(CompiledComposition compiledComposition, ImmutableList<ImmutableList<Row>> falseRowGroups,
+                                 long startMs) {
         this.compiledComposition = compiledComposition;
         this.falseRowGroups = falseRowGroups;
+        this.startMs = startMs;
     }
 
     public CompiledComposition getCompiledComposition() {
@@ -36,7 +41,11 @@ public class AnalysisPipelineData {
     }
 
     public AnalysisPipelineData setFalseRowGroups(ImmutableList<ImmutableList<Row>> falseRowGroups) {
-        return new AnalysisPipelineData(compiledComposition, falseRowGroups);
+        return new AnalysisPipelineData(compiledComposition, falseRowGroups,
+                startMs);
     }
 
+    public long getStartMs() {
+        return startMs;
+    }
 }

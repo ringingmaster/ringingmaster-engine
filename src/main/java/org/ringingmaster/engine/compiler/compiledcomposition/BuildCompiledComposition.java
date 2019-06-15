@@ -31,7 +31,8 @@ public class BuildCompiledComposition<T extends CompilerPipelineData<T>> impleme
                 data.getTerminationReason().get(),
                 data.getTerminateNotes(),
                 data.getMethod(),
-                -1);
+                data.getStartMs(),
+                System.currentTimeMillis());
 
         log.debug("{} > build compiledComposition structures", data.getLogPreamble());
 

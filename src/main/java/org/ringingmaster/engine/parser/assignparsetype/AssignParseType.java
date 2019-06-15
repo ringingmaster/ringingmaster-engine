@@ -76,6 +76,10 @@ public class AssignParseType implements Function<Composition, Parse> {
 
         log.debug("[{}] > assign parse type", composition.getLoggingTag());
 
+        ParseBuilder parseBuilder = new ParseBuilder();
+        parseBuilder.setStartMs(System.currentTimeMillis());
+
+
         final HashBasedTable<Integer, Integer, ParsedCell> parsedCompositionCells = HashBasedTable.create();
         parseNullArea(composition, parsedCompositionCells);
         parseCallingPositionArea(composition, parsedCompositionCells);
@@ -88,7 +92,7 @@ public class AssignParseType implements Function<Composition, Parse> {
 
         //TODO should we allow variance in splice?
 
-        Parse parse = new ParseBuilder()
+        Parse parse = parseBuilder
                 .prototypeOf(composition)
                 .setCompositionTableCells(parsedCompositionCells)
                 .setDefinitionTableCells(parsedDefinitionCells)

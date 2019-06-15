@@ -1,9 +1,9 @@
 package org.ringingmaster.engine.compiler.compiledcomposition;
 
 import org.ringingmaster.engine.compiler.CompileTerminationReason;
+import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.parser.parse.Parse;
-import org.ringingmaster.engine.composition.Composition;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
@@ -16,16 +16,18 @@ import java.util.Optional;
 @Immutable
 public interface CompiledComposition {
 
-	Composition getComposition();
+    Composition getComposition();
 
-	Parse getParse();
+    Parse getParse();
 
 
-	CompileTerminationReason getTerminationReason();
+    CompileTerminationReason getTerminationReason();
 
-	String getTerminateReasonDisplayString();
+    String getTerminateReasonDisplayString();
 
-	Optional<Method> getMethod();
+    Optional<Method> getMethod();
 
-	long getCompileTimeMs();
+    long getStartMs();
+
+    long getEndMs();
 }

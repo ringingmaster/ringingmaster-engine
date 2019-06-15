@@ -34,6 +34,6 @@ public class BuildCallLookupByName<T extends CompilerPipelineData<T>> implements
 
         ImmutableMap<String, Call> result = builder.build();
         log.debug("{} < creating call lookup by name [{}]", data.getLogPreamble(), result);
-        return data.setLookupByName(result);
+        return data.setCallLookupByName(result);
     }
 }

@@ -36,10 +36,12 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
     private final Optional<Method> method;
     private final Optional<CompileTerminationReason> terminationReason;
     private final Optional<String> terminateNotes;
+    private final long startMs;
 
     protected CompilerPipelineData(Parse parse, String logPreamble,
                                    ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
-                                   Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes) {
+                                   Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
+                                   long startMs) {
         this.parse = checkNotNull(parse);
         this.logPreamble = checkNotNull(logPreamble);
 
@@ -49,6 +51,9 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
         this.method = checkNotNull(method);
         this.terminationReason = checkNotNull(terminationReason);
         this.terminateNotes = checkNotNull(terminateNotes);
+
+        this.startMs = startMs;
+
     }
 
     public Parse getParse() {
@@ -64,10 +69,11 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
         return callLookupByName;
     }
 
-    public T setLookupByName(ImmutableMap<String, Call> callLookupByName) {
+    public T setCallLookupByName(ImmutableMap<String, Call> callLookupByName) {
         return buildWhenBaseChanges(parse, logPreamble,
                 callLookupByName, varianceLookupByName,
-                method, terminationReason, terminateNotes);
+                method, terminationReason, terminateNotes,
+                startMs);
     }
 
     public ImmutableMap<String, Variance> getVarianceLookupByName() {
@@ -77,7 +83,9 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
     public T setVarianceLookupByName(ImmutableMap<String, Variance> varianceLookupByName) {
         return buildWhenBaseChanges(parse, logPreamble,
                 callLookupByName, varianceLookupByName,
-                method, terminationReason, terminateNotes);    }
+                method, terminationReason, terminateNotes,
+                startMs);
+    }
 
 
     public Optional<Method> getMethod() {
@@ -87,7 +95,8 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
     public T setMethod(Optional<Method> method) {
         return buildWhenBaseChanges(parse, logPreamble,
                 callLookupByName, varianceLookupByName,
-                method, terminationReason, terminateNotes);
+                method, terminationReason, terminateNotes,
+                startMs);
     }
 
     public Optional<CompileTerminationReason> getTerminationReason() {
@@ -106,7 +115,8 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
         if (!isTerminated()) {
             return buildWhenBaseChanges(parse, logPreamble,
                     callLookupByName, varianceLookupByName,
-                    method, Optional.of(terminationReason), Optional.of(terminateNotes));
+                    method, Optional.of(terminationReason), Optional.of(terminateNotes),
+                    startMs);
         }
         else  {
             log.warn("Requesting second terminate [{}]{}", terminationReason, terminateNotes);
@@ -114,10 +124,14 @@ public abstract class CompilerPipelineData<T extends CompilerPipelineData> {
         }
     }
 
+    public long getStartMs() {
+        return startMs;
+    }
 
     protected abstract T buildWhenBaseChanges(Parse parse, String logPreamble,
                                               ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
-                                              Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes);
+                                              Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
+                                              long startMs);
 
 
 

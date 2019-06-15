@@ -23,7 +23,8 @@ public class ParseBuilder {
     private Optional<Parse> prototypeParse = Optional.empty();
     private Optional<HashBasedTable<Integer, Integer, ParsedCell>> compositionCells = Optional.empty();;
     private Optional<HashBasedTable<Integer, Integer, ParsedCell>> definitionCells = Optional.empty();;
-    private long elapsedMs;
+    private Optional<Long> startMs = Optional.empty();
+    private Optional<Long> endMs = Optional.empty();
 
     public Parse build() {
 
@@ -35,7 +36,8 @@ public class ParseBuilder {
                     prototypeComposition.get(),
                     new TableBackedImmutableArrayTable<>(compositionCells.get(), () -> EmptyParsedCell.INSTANCE),
                     new TableBackedImmutableArrayTable<>(definitionCells.get(), () -> EmptyParsedCell.INSTANCE),
-                    elapsedMs);
+                    startMs.orElse(0L),
+                    endMs.orElse(0L));
         }
         else if (prototypeParse.isPresent()) {
             return new DefaultParse(
@@ -44,7 +46,8 @@ public class ParseBuilder {
                             .orElse(prototypeParse.get().allCompositionCells()),
                     definitionCells.map((value) ->  (ImmutableArrayTable<ParsedCell>)new TableBackedImmutableArrayTable<>(value, () -> EmptyParsedCell.INSTANCE))
                             .orElse(prototypeParse.get().allDefinitionCells()),
-            0);
+                    startMs.orElse(prototypeParse.get().getStartMs()),
+                    endMs.orElse(prototypeParse.get().getEndMs()));
         }
         else {
             throw new IllegalStateException();
@@ -73,8 +76,13 @@ public class ParseBuilder {
         return this;
     }
 
-    public ParseBuilder setElapsedMs(long elapsedMs) {
-        this.elapsedMs = elapsedMs;
+    public ParseBuilder setStartMs(long startMs) {
+        this.startMs = Optional.of(startMs);
+        return this;
+    }
+
+    public ParseBuilder setEndMs(long endMs) {
+        this.endMs = Optional.of(endMs);
         return this;
     }
 }

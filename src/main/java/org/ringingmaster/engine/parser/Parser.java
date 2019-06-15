@@ -13,6 +13,7 @@ import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsNotCircula
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionIsUsedSplicedOrMain;
 import org.ringingmaster.engine.parser.definition.ValidateDefinitionShorthandNotDuplicated;
 import org.ringingmaster.engine.parser.observability.PrettyPrintCells;
+import org.ringingmaster.engine.parser.observability.SetEndTime;
 import org.ringingmaster.engine.parser.parse.Parse;
 import org.ringingmaster.engine.parser.splice.ValidateInUseCallAvailableInEveryMethodWhenSpliced;
 import org.slf4j.Logger;
@@ -65,7 +66,8 @@ public class Parser implements Function<Composition, Parse> {
             .andThen(new ValidateDefinitionShorthandNotDuplicated())
             .andThen(new ValidateDefaultCallMultiplierFullyDefined())
 
-            .andThen(new PrettyPrintCells());
+            .andThen(new PrettyPrintCells())
+            .andThen(new SetEndTime());
 
 
         //TODO need to enhance tool tips as per old ringingmaster. See: CString CellElement::getTipText()

@@ -34,6 +34,7 @@ public class CourseBasedCompilerPipelineData extends CompilerPipelineData<Course
         this(parse, "[" + parse.getComposition().getLoggingTag() + "]",
                 ImmutableMap.of(), ImmutableMap.of(),
                 Optional.empty(),Optional.empty(), Optional.empty(),
+                System.currentTimeMillis(),
                 ImmutableList.of(),
                 ImmutableMap.of(),
                 ImmutableList.of());
@@ -42,10 +43,12 @@ public class CourseBasedCompilerPipelineData extends CompilerPipelineData<Course
     private CourseBasedCompilerPipelineData(Parse parse, String logPreamble,
                                             ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
                                             Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
+                                            long startMs,
                                             ImmutableList<Optional<String>> callingPositionNameLookupByColumn, ImmutableMap<CallingPosition, Integer> tenorPlaceForCallingPositionLookup, ImmutableList<CourseBasedDenormalisedCall> callSequence) {
         super(parse, logPreamble,
                 callLookupByName, varianceLookupByName,
-                method, terminationReason, terminateNotes);
+                method, terminationReason, terminateNotes,
+                startMs);
         this.callingPositionNameLookupByColumn = callingPositionNameLookupByColumn;
         this.tenorPlaceForCallingPositionLookup = tenorPlaceForCallingPositionLookup;
         this.callSequence = callSequence;
@@ -59,6 +62,7 @@ public class CourseBasedCompilerPipelineData extends CompilerPipelineData<Course
         return new CourseBasedCompilerPipelineData(getParse(), getLogPreamble(),
                 getCallLookupByName(), getVarianceLookupByName(),
                 getMethod(), getTerminationReason(), getTerminateNotes(),
+                getStartMs(),
                 callingPositionNameLookupByColumn, tenorPlaceForCallingPositionLookup, callSequence);
     }
 
@@ -70,6 +74,7 @@ public class CourseBasedCompilerPipelineData extends CompilerPipelineData<Course
         return new CourseBasedCompilerPipelineData(getParse(), getLogPreamble(),
                 getCallLookupByName(), getVarianceLookupByName(),
                 getMethod(), getTerminationReason(), getTerminateNotes(),
+                getStartMs(),
                 callingPositionNameLookupByColumn, tenorPlaceForCallingPositionLookup, callSequence);
     }
 
@@ -81,16 +86,19 @@ public class CourseBasedCompilerPipelineData extends CompilerPipelineData<Course
         return new CourseBasedCompilerPipelineData(getParse(), getLogPreamble(),
                 getCallLookupByName(), getVarianceLookupByName(),
                 getMethod(), getTerminationReason(), getTerminateNotes(),
+                getStartMs(),
                 callingPositionNameLookupByColumn, tenorPlaceForCallingPositionLookup, callSequence);
     }
 
     @Override
     protected CourseBasedCompilerPipelineData buildWhenBaseChanges(Parse parse, String logPreamble,
                                                                    ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
-                                                                   Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes) {
+                                                                   Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
+                                                                   long startMs) {
         return new CourseBasedCompilerPipelineData(parse, logPreamble,
                 callLookupByName, varianceLookupByName,
                 method, terminationReason, terminateNotes,
+                startMs,
                 callingPositionNameLookupByColumn, tenorPlaceForCallingPositionLookup, callSequence);
     }
 }

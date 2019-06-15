@@ -24,13 +24,15 @@ class DefaultParse implements Parse {
     private final Composition composition;
     private final CompositionTableAccess<ParsedCell> compositionTableAccessDelegate;
     private final DefinitionTableAccess<ParsedCell> definitionTableAccessDelegate;
-    private long elapsedMs;
+    private final long startMs;
+    private final long endMs;
 
-    DefaultParse(Composition composition, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells, long elapsedMs) {
+    DefaultParse(Composition composition, ImmutableArrayTable<ParsedCell> mainTableCells, ImmutableArrayTable<ParsedCell> definitionCells, long startMs, long endMs) {
         this.composition = composition;
         this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(mainTableCells, composition.getCompositionType(), composition.isSpliced());
         this.definitionTableAccessDelegate = new DefaultDefinitionTableAccess<>(definitionCells);
-        this.elapsedMs = elapsedMs;
+        this.startMs = startMs;
+        this.endMs = endMs;
     }
 
     @Override
@@ -39,8 +41,13 @@ class DefaultParse implements Parse {
     }
 
     @Override
-    public long getElapsedMs() {
-        return elapsedMs;
+    public long getStartMs() {
+        return startMs;
+    }
+
+    @Override
+    public long getEndMs() {
+        return endMs;
     }
 
     @Override

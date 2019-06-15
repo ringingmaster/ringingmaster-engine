@@ -33,16 +33,19 @@ class LeadBasedCompilerPipelineData extends CompilerPipelineData<LeadBasedCompil
         this(parse, "[" + parse.getComposition().getLoggingTag() + "]",
                 ImmutableMap.of(), ImmutableMap.of(),
                 Optional.empty(), Optional.empty(), Optional.empty(),
+                System.currentTimeMillis(),
                 ImmutableList.of());
     }
 
     private LeadBasedCompilerPipelineData(Parse parse, String logPreamble,
                                           ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
                                           Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
+                                          long startMs,
                                           ImmutableList<LeadBasedDenormalisedCall> denormalisedCallSequence) {
         super(parse, logPreamble,
                 callLookupByName, varianceLookupByName,
-                method, terminationReason, terminateNotes);
+                method, terminationReason, terminateNotes,
+                startMs);
         this.denormalisedCallSequence = checkNotNull(denormalisedCallSequence);
     }
 
@@ -54,6 +57,7 @@ class LeadBasedCompilerPipelineData extends CompilerPipelineData<LeadBasedCompil
         return new LeadBasedCompilerPipelineData(getParse(), getLogPreamble(),
                 getCallLookupByName(), getVarianceLookupByName(),
                 getMethod(), getTerminationReason(), getTerminateNotes(),
+                getStartMs(),
                 denormalisedCallSequence);
     }
 
@@ -61,10 +65,12 @@ class LeadBasedCompilerPipelineData extends CompilerPipelineData<LeadBasedCompil
     @Override
     protected LeadBasedCompilerPipelineData buildWhenBaseChanges(Parse parse, String logPreamble,
                                                                  ImmutableMap<String, Call> callLookupByName, ImmutableMap<String, Variance> varianceLookupByName,
-                                                                 Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes) {
+                                                                 Optional<Method> method, Optional<CompileTerminationReason> terminationReason, Optional<String> terminateNotes,
+                                                                 long startMs) {
         return new LeadBasedCompilerPipelineData(parse, logPreamble,
                 callLookupByName, varianceLookupByName,
                 method, terminationReason, terminateNotes,
+                startMs,
                 denormalisedCallSequence);
     }
 

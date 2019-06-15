@@ -12,14 +12,18 @@ import org.ringingmaster.engine.parser.parse.Parse;
  */
 public interface Proof {
 
-	Composition getComposition();
+    Composition getComposition();
 
-	Parse getParse();
+    Parse getParse();
 
-	CompiledComposition getCompiledComposition();
+    CompiledComposition getCompiledComposition();
 
 
-	ImmutableList<ImmutableList<Row>> getFalseRowGroups();
+    ImmutableList<ImmutableList<Row>> getFalseRowGroups();
 
-	boolean isTrueComposition();
+    boolean isTrueComposition();
+
+    long getStartMs();
+
+    long getEndMs();
 }

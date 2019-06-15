@@ -14,6 +14,7 @@ public class BuildProof implements Function<AnalysisPipelineData, Proof> {
     @Override
     public Proof apply(AnalysisPipelineData input) {
         return new DefaultProof(input.getCompiledComposition(),
-                input.getFalseRowGroups());
+                input.getFalseRowGroups(),
+                input.getStartMs(), System.currentTimeMillis());
     }
 }
