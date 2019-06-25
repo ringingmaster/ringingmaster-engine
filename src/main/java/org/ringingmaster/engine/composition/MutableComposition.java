@@ -84,11 +84,11 @@ public class MutableComposition {
             .bindComparator((field, object1, object2) -> ((DefaultDefinitionTableAccess) object1).allDefinitionCells() == ((DefaultDefinitionTableAccess) object2).allDefinitionCells(), "definitionTableCellsDelegate");
 
     public MutableComposition() {
-        compositionStream = BehaviorSubject.createDefault(new CompositionBuilder().defaults().build());
+        compositionStream = BehaviorSubject.createDefault(new CompositionBuilder().defaults().build("Initialise"));
         if (log.isInfoEnabled()) {
             compositionStream.buffer(2, 1).subscribe(compositions -> {
                 log.info("[{}] Action:[{}] Diff [{}]",
-                        compositions.get(0).getLoggingTag(), compositions.get(1).getActionName(),
+                        compositions.get(1).getLoggingTag(), compositions.get(1).getActionName(),
                         smartCompare.stringDifferences(compositions.get(0), compositions.get(1)));
             });
         }
@@ -408,7 +408,7 @@ public class MutableComposition {
             compositionBuilder.setNonSplicedActiveNotation(nextBestNonSplicedActiveNotation);
         }
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Remove method: %s", notationForRemoval.getNameIncludingNumberOfBells()));
     }
 
     public DryRun dryRunExchangeNotation(Notation originalNotation, Notation replacementNotation) {
@@ -449,7 +449,7 @@ public class MutableComposition {
                 compositionBuilder.setNonSplicedActiveNotation(Optional.of(replacementNotation));
             }
         }
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Update method: %s", originalNotation.getNameIncludingNumberOfBells()));
     }
 
     public void setNonSplicedActiveNotation(Notation nonSplicedActiveNotation) {
@@ -538,7 +538,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(cells, EmptyCell::new));
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Add Definition: %s", shorthand));
     }
 
     public void removeDefinition(String shorthand) {
@@ -566,7 +566,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setCells(DEFINITION_TABLE, new TableBackedImmutableArrayTable<>(mutatedCells, EmptyCell::new));
 
-        compositionStream.onNext(compositionBuilder.build());
+        compositionStream.onNext(compositionBuilder.build("Remove definition: %s", shorthand));
     }
 
     public void setStartChange(Row startChange) {
@@ -581,7 +581,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setStartChange(startChange);
 
-        compositionStream.onNext(compositionBuilder.build("Set Start Change : " + startChange.getDisplayString(true)));
+        compositionStream.onNext(compositionBuilder.build("Set Start Change: " + startChange.getDisplayString(true)));
     }
 
 

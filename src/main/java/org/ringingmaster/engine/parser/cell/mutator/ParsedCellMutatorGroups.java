@@ -1,12 +1,12 @@
 package org.ringingmaster.engine.parser.cell.mutator;
 
+import com.google.common.collect.ImmutableList;
 import org.pcollections.HashTreePSet;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.grouping.GroupingFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,9 +19,14 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  *
  * @author Steve Lake
  */
-public class ParsedCellMutatorInvalidateGroups implements Function<ParsedCellMutatorSectionsAndGroups, ParsedCellMutatorSectionsAndGroups> {
+public class ParsedCellMutatorGroups implements Function<ParsedCellMutatorSectionsAndGroups, ParsedCellMutatorSectionsAndGroups> {
 
+    private boolean invalidating;
     private final Map<Integer, String> invalidGroupIndexCandidates = new HashMap<>();
+
+    public ParsedCellMutatorGroups(boolean invalidating) {
+        this.invalidating = invalidating;
+    }
 
     public void invalidateGroup(int sourceGroupElementIndex, String message) {
         checkArgument(sourceGroupElementIndex >= 0);
@@ -43,17 +48,19 @@ public class ParsedCellMutatorInvalidateGroups implements Function<ParsedCellMut
                         e -> getGroupForIndex(source.getGroups(), e.getKey()),
                         Map.Entry::getValue));
 
-        final Set<Group> groups = source.getGroups().stream().map((originalGroup -> {
+        final Set<Group> groups = source.getGroups().stream().map(originalGroup -> {
             if (invalidGroupCandidates.containsKey(originalGroup)) {
-                final String message = originalGroup.getMessage()
-                        .map((originalMessage) -> originalMessage + ", " + invalidGroupCandidates.get(originalGroup))
-                        .orElse(invalidGroupCandidates.get(originalGroup));
+                ImmutableList.Builder<String> builder = ImmutableList.builder();
+                builder.addAll(originalGroup.getMessages());
+                builder.add(invalidGroupCandidates.get(originalGroup));
+
+                boolean valid = invalidating ? false : originalGroup.isValid();
 
                 return GroupingFactory.buildGroup(originalGroup.getStartIndex(), originalGroup.getLength(),
-                        false, Optional.of(message), originalGroup.getSections());
+                        valid, builder.build(), originalGroup.getSections());
             }
             return originalGroup;
-        })).collect(Collectors.toSet());
+        }).collect(Collectors.toSet());
 
         return new ParsedCellMutatorSectionsAndGroups(source.getSections(), HashTreePSet.from(groups));
     }

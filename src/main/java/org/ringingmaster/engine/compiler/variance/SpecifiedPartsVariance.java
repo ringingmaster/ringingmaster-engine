@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -35,6 +36,17 @@ class SpecifiedPartsVariance implements Variance {
         } else {
             return !parts.contains(part);
         }
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        return varianceLogicType.getHumanReadable() +
+                " parts " +
+                parts.stream()
+                        .sorted()
+                        .map(i -> i+1)
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", "));
     }
 
     @Override

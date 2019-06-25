@@ -2,7 +2,7 @@ package org.ringingmaster.engine.parser.brace;
 
 import com.google.common.collect.HashBasedTable;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
-import org.ringingmaster.engine.compiler.variance.VarianceFactory;
+import org.ringingmaster.engine.compiler.variance.Variance;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.ringingmaster.engine.parser.cell.mutator.ParsedCellMutator;
@@ -11,12 +11,10 @@ import org.ringingmaster.engine.parser.parse.ParseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_PARTS_MAX;
+import static org.ringingmaster.engine.compiler.variance.VarianceFactory.parseVariance;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_DETAIL;
 import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE_OPEN;
 
@@ -25,26 +23,26 @@ import static org.ringingmaster.engine.parser.assignparsetype.ParseType.VARIANCE
  *
  * @author Steve Lake
  */
-public class ValidateVariancePartNumbersWithinRange implements Function<Parse, Parse> {
+public class SetVarianceMessage implements Function<Parse, Parse> {
 
-    private final Logger log = LoggerFactory.getLogger(ValidateVariancePartNumbersWithinRange.class);
+    private final Logger log = LoggerFactory.getLogger(SetVarianceMessage.class);
 
     @Override
     public Parse apply(Parse input) {
 
-        log.debug("[{}] > validate variance part number within range", input.getComposition().getLoggingTag());
+        log.debug("[{}] > set variance message", input.getComposition().getLoggingTag());
 
 
         HashBasedTable<Integer, Integer, ParsedCell> compositionCells =
                 HashBasedTable.create(input.allCompositionCells().getBackingTable());
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : input.allCompositionCells()) {
-            doInvalidation(compositionCells, locationAndCell);
+            doSetMessage(compositionCells, locationAndCell);
         }
 
         HashBasedTable<Integer, Integer, ParsedCell> definitionCells =
                 HashBasedTable.create(input.allDefinitionCells().getBackingTable());
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : input.allDefinitionCells()) {
-            doInvalidation(definitionCells, locationAndCell);
+            doSetMessage(definitionCells, locationAndCell);
         }
 
         Parse result = new ParseBuilder()
@@ -53,12 +51,12 @@ public class ValidateVariancePartNumbersWithinRange implements Function<Parse, P
                 .setDefinitionTableCells(definitionCells)
                 .build();
 
-        log.debug("[{}] < validate variance part number within range", input.getComposition().getLoggingTag());
+        log.debug("[{}] < set variance message", input.getComposition().getLoggingTag());
 
         return result;
     }
 
-    private void doInvalidation(HashBasedTable<Integer, Integer, ParsedCell> cells, BackingTableLocationAndValue<ParsedCell> locationAndCell) {
+    private void doSetMessage(HashBasedTable<Integer, Integer, ParsedCell> cells, BackingTableLocationAndValue<ParsedCell> locationAndCell) {
 
         final ParsedCell cell = locationAndCell.getValue();
 
@@ -74,15 +72,9 @@ public class ValidateVariancePartNumbersWithinRange implements Function<Parse, P
                 checkState(group.getSections().get(1).getParseType() == VARIANCE_DETAIL);
 
                 String characters = cell.getCharacters(group.getSections().get(1)).toLowerCase();
+                Variance variance = parseVariance(characters);
 
-                Set<Integer> invalidParts = VarianceFactory.parseJustPartsForValidation(characters).stream()
-                        .filter(part -> part < 0 || part >= TERMINATION_MAX_PARTS_MAX) // The part value will already have 1 subtracted to make 0 based rather than 1 based.
-                        .collect(Collectors.toSet());
-
-                if (invalidParts.size() > 0) {
-
-                    builder.invalidateGroup(group.getStartIndex(), "All variance part numbers must be between 1 and " + TERMINATION_MAX_PARTS_MAX );
-                }
+                builder.setGroupMessage(group.getStartIndex(), variance.toHumanReadableString());
             }
         }
 

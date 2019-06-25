@@ -74,11 +74,11 @@ public class ValidateSingleCallingPositionPerCell implements Function<Parse, Par
                     seenValidCallingPosition = true;
                 }
                 else {
-                    builder.invalidateGroup(section.getStartIndex(), "Only one Calling Position allowed in this cell");
+                    builder.invalidateGroup(section.getStartIndex(), "Only one calling position allowed per cell");
                 }
             }
             else {
-                builder.invalidateGroup(section.getStartIndex(), "Only Calling Positions are allowed in this cell");
+                builder.invalidateGroup(section.getStartIndex(), "Only calling positions are allowed in this cell");
             }
         }
 

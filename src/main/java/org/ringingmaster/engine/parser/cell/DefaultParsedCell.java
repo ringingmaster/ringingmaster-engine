@@ -9,6 +9,7 @@ import org.ringingmaster.engine.parser.cell.grouping.Section;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -107,8 +108,8 @@ class DefaultParsedCell implements ParsedCell {
             Group group = allGroups.get(groupIndex);
             groupRow.append("[").append(groupIndex).append("]").append(group.getStartIndex());
             groupRow.append(group.isValid()?"-✓":"-X");
-            if (group.getMessage().isPresent()){
-                messages.put(groupIndex, group.getMessage().get());
+            if (!group.getMessages().isEmpty()){
+                messages.put(groupIndex, group.getMessages().stream().collect(Collectors.joining(",", "[", "]")));
             }
 
             for (Section section : group.getSections()) {

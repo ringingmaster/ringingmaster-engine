@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -25,13 +24,13 @@ class DefaultGroup implements Group {
 
     private final ElementRange elementRangeDelegate;
     private final boolean valid;
-    private final Optional<String> message;
+    private final ImmutableList<String> message;
     private final ImmutableList<Section> sections;
 
     /**
      * @param startIndex inclusive
      */
-    DefaultGroup(int startIndex, int length, boolean valid, Optional<String> message, Collection<Section> sections) {
+    DefaultGroup(int startIndex, int length, boolean valid, ImmutableList<String> message, Collection<Section> sections) {
         elementRangeDelegate = new DefaultElementRange(startIndex, length);;
         this.valid = valid;
         this.message = checkNotNull(message);
@@ -64,7 +63,7 @@ class DefaultGroup implements Group {
     }
 
     @Override
-    public Optional<String> getMessage() {
+    public ImmutableList<String> getMessages() {
         return message;
     }
 

@@ -1,6 +1,7 @@
 package org.ringingmaster.engine.compiler.variance;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import org.ringingmaster.engine.arraytable.BackingTableLocationAndValue;
 import org.ringingmaster.engine.compiler.common.CompilerPipelineData;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
@@ -8,6 +9,7 @@ import org.ringingmaster.engine.parser.cell.grouping.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -31,7 +33,7 @@ public class BuildVarianceLookupByName<T extends CompilerPipelineData<T>> implem
 
         log.debug("{} > creating variance lookup", input.getLogPreamble());
 
-        ImmutableMap.Builder<String, Variance> builder = ImmutableMap.builder();
+        Map<String, Variance> builder = Maps.newHashMap();
 
         for (BackingTableLocationAndValue<ParsedCell> cellAndLocation : input.getParse().mainBodyCells()) {
             ParsedCell cell = cellAndLocation.getValue();
@@ -55,11 +57,11 @@ public class BuildVarianceLookupByName<T extends CompilerPipelineData<T>> implem
 
         log.debug("{} < creating variance lookup", input.getLogPreamble());
 
-        ImmutableMap<String, Variance> varianceLookupByName = builder.build();
-        if (varianceLookupByName.size() == 0) {
+        if (builder.size() == 0) {
             return input;
         } else {
-            return input.setVarianceLookupByName(builder.build());
+            ImmutableMap<String, Variance> varianceLookupByName = ImmutableMap.copyOf(builder);
+            return input.setVarianceLookupByName(varianceLookupByName);
         }
     }
 

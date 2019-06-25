@@ -13,4 +13,6 @@ public interface Variance {
      * Call to see if a specified part should be included.
      */
     boolean includePart(int part);
+
+    String toHumanReadableString();
 }

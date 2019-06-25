@@ -2,6 +2,7 @@ package org.ringingmaster.engine.parser;
 
 import org.ringingmaster.engine.composition.Composition;
 import org.ringingmaster.engine.parser.assignparsetype.AssignParseType;
+import org.ringingmaster.engine.parser.brace.SetVarianceMessage;
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupAndVarianceDontOverlap;
 import org.ringingmaster.engine.parser.brace.ValidateMultiplierGroupMatchingBrace;
 import org.ringingmaster.engine.parser.brace.ValidateVarianceMatchingBraceLogic;
@@ -46,7 +47,6 @@ public class Parser implements Function<Composition, Parse> {
     private static Function<Composition, Parse> pipeline =
             // set the parse types
             new AssignParseType()
-                    //TODO think very care fully about what parts of each parser needs applying to definitions,
 
             // validate
             .andThen(new ValidateSingleCallingPositionPerCell())
@@ -66,6 +66,10 @@ public class Parser implements Function<Composition, Parse> {
             .andThen(new ValidateDefinitionShorthandNotDuplicated())
             .andThen(new ValidateDefaultCallMultiplierFullyDefined())
 
+            // add additional info
+            .andThen(new SetVarianceMessage())
+
+            // observability
             .andThen(new PrettyPrintCells())
             .andThen(new SetEndTime());
 

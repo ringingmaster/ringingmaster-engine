@@ -1,10 +1,11 @@
 package org.ringingmaster.engine.parser.assignparsetype;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import org.ringingmaster.engine.composition.cell.Cell;
 import org.ringingmaster.engine.parser.cell.ParsedCell;
 import org.ringingmaster.engine.parser.cell.grouping.ElementRange;
 import org.ringingmaster.engine.parser.cell.grouping.Group;
-import org.ringingmaster.engine.composition.cell.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,7 +108,7 @@ class CellLexer {
                     groupStart += groupLength;
                 }
             }
-            groups.add(buildGroup(matchStart, matchLength, true, Optional.empty(), sections));
+            groups.add(buildGroup(matchStart, matchLength, true, ImmutableList.of(), sections));
         }
         else  {
             log.debug("[{}]     not adding group", logPreamble);

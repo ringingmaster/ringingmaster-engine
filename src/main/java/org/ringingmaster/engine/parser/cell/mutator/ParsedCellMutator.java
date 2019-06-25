@@ -10,13 +10,15 @@ public class ParsedCellMutator {
     private ParsedCell prototype;
 
     private final ParsedCellMutatorGetSectionsAndGroups getSectionsAndGroups = new ParsedCellMutatorGetSectionsAndGroups();
-    private final ParsedCellMutatorInvalidateGroups invalidateGroups = new ParsedCellMutatorInvalidateGroups();
+    private final ParsedCellMutatorGroups invalidateGroups = new ParsedCellMutatorGroups(true);
+    private final ParsedCellMutatorGroups setMessageForGroups = new ParsedCellMutatorGroups(false);
 
     public ParsedCell build() {
 
         ParsedCellMutatorSectionsAndGroups sectionsAndGroups =
                 getSectionsAndGroups
                 .andThen(invalidateGroups)
+                .andThen(setMessageForGroups)
                 .apply(prototype);
 
         // rebuild parsed cell
@@ -30,6 +32,11 @@ public class ParsedCellMutator {
 
     public ParsedCellMutator invalidateGroup(int sourceGroupElementIndex, String message) {
         invalidateGroups.invalidateGroup(sourceGroupElementIndex, message);
+        return this;
+    }
+
+    public ParsedCellMutator setGroupMessage(int sourceGroupElementIndex, String message) {
+        setMessageForGroups.invalidateGroup(sourceGroupElementIndex, message);
         return this;
     }
 

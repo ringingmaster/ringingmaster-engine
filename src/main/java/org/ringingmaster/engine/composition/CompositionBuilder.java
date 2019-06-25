@@ -241,11 +241,6 @@ class CompositionBuilder {
         );
     }
 
-    @Deprecated
-    Composition build() {
-        return build("TODO");
-    }
-
     @Override
     public String toString() {
         return "CompositionBuilder{" +

@@ -5,6 +5,18 @@ package org.ringingmaster.engine.compiler.variance;
  * User: Stephen
  */
 enum VarianceLogicType {
-    OMIT,
-    INCLUDE
+    OMIT("Omit from"),
+    INCLUDE("Include in")
+    ;
+
+    private final String humanReadable;
+
+    VarianceLogicType(String humanReadable) {
+        this.humanReadable = humanReadable;
+    }
+
+    public String getHumanReadable() {
+        return humanReadable;
+    }
+
 }

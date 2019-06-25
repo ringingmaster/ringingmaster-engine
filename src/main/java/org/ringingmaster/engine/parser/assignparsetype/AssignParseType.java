@@ -86,7 +86,8 @@ public class AssignParseType implements Function<Composition, Parse> {
         final Set<String> mainBodyDefinitions = parseMainBodyArea(composition, parsedCompositionCells);
         final Set<String> spliceAreaDefinitions = parseSpliceArea(composition, parsedCompositionCells);
 
-        final HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells = HashBasedTable.create();
+        final HashBasedTable<Integer, Integer, ParsedCell> parsedDefinitionCells = HashBasedTable.create(); //TODO think very care fully about what parts of each parser needs applying to definitions,
+
         parseDefinitionShorthandArea(composition, parsedDefinitionCells);
         parseDefinitionDefinitionArea(composition, parsedDefinitionCells, mainBodyDefinitions, spliceAreaDefinitions);
 

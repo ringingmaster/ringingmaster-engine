@@ -16,8 +16,18 @@ import static org.ringingmaster.engine.compiler.variance.VarianceLogicType.INCLU
 class OddEvenVariance implements Variance {
 
     enum OddEvenVarianceType {
-        ODD,
-        EVEN
+        ODD ("odd"),
+        EVEN ("even");
+
+        private final String humanReadable;
+
+        OddEvenVarianceType(String humanReadable) {
+            this.humanReadable = humanReadable;
+        }
+
+        public String getHumanReadable() {
+            return humanReadable;
+        }
     }
 
     private final OddEvenVarianceType oddEvenVarianceType;
@@ -42,6 +52,12 @@ class OddEvenVariance implements Variance {
         boolean evenPart = ((part % 2) == 0);
         return (evenPart && oddEvenVarianceType.equals(EVEN)) ||
                 (!evenPart && oddEvenVarianceType.equals(ODD));
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        return varianceLogicType.getHumanReadable() +
+                " " + oddEvenVarianceType.getHumanReadable() + " parts";
     }
 
     @Override

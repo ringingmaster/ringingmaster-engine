@@ -89,6 +89,18 @@ public class ValidateVariancePartNumbersWithinRangeTest {
     }
 
     @Test
+    public void varianceInMainTableWithPartOf0WheneNotStStartOfCellInvalid() {
+        MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
+        composition.addCharacters(COMPOSITION_TABLE, 0,0,"s[-0s]");
+
+        Parse result = new AssignParseType()
+                .andThen(new ValidateVariancePartNumbersWithinRange())
+                .apply(composition.get());
+
+        assertParse(result.allCompositionCells().get(0,0), valid(CALL), invalid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), valid(CALL), valid(VARIANCE_CLOSE));
+    }
+
+    @Test
     public void varianceInMainTableWithPartOf10001Invalid() {
         MutableComposition composition = buildSingleCellComposition(buildPlainBobMinor());
         composition.addCharacters(COMPOSITION_TABLE, 0,0,"[-10001s]");

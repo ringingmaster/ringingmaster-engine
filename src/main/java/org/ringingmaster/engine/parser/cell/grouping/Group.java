@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import org.ringingmaster.engine.parser.assignparsetype.ParseType;
 
-import java.util.Optional;
-
 /**
  * A Group spans multiple sections, where each section holds a ParseType.
  * A Group must be filled, and Sections must not overlap.
@@ -21,7 +19,7 @@ public interface Group extends ElementRange {
 
     boolean isValid();
 
-    Optional<String> getMessage();
+    ImmutableList<String> getMessages();
 
     // Helper methods
 

@@ -33,14 +33,14 @@ public abstract class SkeletalMatchingBraceLogic implements Function<Parse, Pars
     private final ParseType openingBrace;
     private final ParseType closingBrace;
     private final String braceTypeName;
-    private final int nestingDepth;
+    private final int maxNestingDepth;
 
-    public SkeletalMatchingBraceLogic(ParseType openingBrace, ParseType closingBrace, String braceTypeName, int nestingDepth) {
+    public SkeletalMatchingBraceLogic(ParseType openingBrace, ParseType closingBrace, String braceTypeName, int maxNestingDepth) {
         this.openingBrace = checkNotNull(openingBrace);
         this.closingBrace = checkNotNull(closingBrace);
         this.braceTypeName = checkNotNull(braceTypeName);
-        this.nestingDepth = nestingDepth;
-        checkArgument(nestingDepth > 0);
+        this.maxNestingDepth = maxNestingDepth;
+        checkArgument(maxNestingDepth > 0);
     }
 
     public Parse apply(Parse input) {
@@ -83,8 +83,11 @@ public abstract class SkeletalMatchingBraceLogic implements Function<Parse, Pars
         for (BackingTableLocationAndValue<ParsedCell> locationAndCell : originalCells) {
             for (Section section : locationAndCell.getValue().allSections()) {
                 if (openingBrace.equals(section.getParseType())) {
-                    if (openBraces.size() >= nestingDepth) {
-                        invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), "Nesting depth greater than the " + nestingDepth + " allowed for " + braceTypeName );
+                    if (openBraces.size() >= maxNestingDepth) {
+                        String message = (maxNestingDepth ==1) ?
+                                braceTypeName + "'s cannot be nested":
+                                "Nesting depth greater than the " + maxNestingDepth + " allowed for " + braceTypeName;
+                        invalidSections.put(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section), message);
                     }
                     else {
                         openBraces.addFirst(new CoordinateAndSection(locationAndCell.getRow(), locationAndCell.getCol(), section));

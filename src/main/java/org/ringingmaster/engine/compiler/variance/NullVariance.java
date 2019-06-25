@@ -20,6 +20,11 @@ enum NullVariance implements Variance {
         return true;
     }
 
+    @Override
+    public String toHumanReadableString() {
+        return "";
+    }
+
 
     @Override
     public String toString() {
