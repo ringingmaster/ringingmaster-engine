@@ -56,7 +56,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     private final int terminationMaxRows;
     private final Optional<Integer> terminationMaxLeads;
     private final Optional<Integer> terminationMaxParts;
-    private final int terminationMaxCircularity;
+    private final int terminationMaxPartCircularity;
     private final Optional<Row> terminationChange;
 
     private final CompositionTableAccess<Cell> compositionTableAccessDelegate;
@@ -78,7 +78,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
                        int terminationMaxRows,
                        Optional<Integer> terminationMaxLeads,
                        Optional<Integer> terminationMaxParts,
-                       int terminationMaxCircularity,
+                       int terminationMaxPartCircularity,
                        Optional<Row> terminationChange,
                        ImmutableArrayTable<Cell> cells) {
 
@@ -105,7 +105,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         this.terminationMaxRows = terminationMaxRows;
         this.terminationMaxLeads = terminationMaxLeads;
         this.terminationMaxParts = terminationMaxParts;
-        this.terminationMaxCircularity = terminationMaxCircularity;
+        this.terminationMaxPartCircularity = terminationMaxPartCircularity;
         this.terminationChange = terminationChange;
 
         this.compositionTableAccessDelegate = new DefaultCompositionTableAccess<>(cells, compositionType, isSpliced());
@@ -234,8 +234,8 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         return terminationMaxParts;
     }
 
-    public int getTerminationMaxCircularity() {
-        return terminationMaxCircularity;
+    public int getTerminationMaxPartCircularity() {
+        return terminationMaxPartCircularity;
     }
 
     public Optional<Row> getTerminationChange() {
@@ -274,7 +274,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         Composition that = (Composition) o;
         return  getStartAtRow() == that.getStartAtRow() &&
                 getTerminationMaxRows() == that.getTerminationMaxRows() &&
-                getTerminationMaxCircularity() == that.getTerminationMaxCircularity() &&
+                getTerminationMaxPartCircularity() == that.getTerminationMaxPartCircularity() &&
                 Objects.equals(getTitle(), that.getTitle()) &&
                 Objects.equals(getAuthor(), that.getAuthor()) &&
                 getNumberOfBells() == that.getNumberOfBells() &&
@@ -295,7 +295,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSequenceNumber(), getActionName(), getTitle(), getAuthor(), getNumberOfBells(), getCompositionType(), getCallFromBell(), getAllNotations(), getNonSplicedActiveNotation(), getPlainLeadToken(), definitionTableCellsDelegate, getStartChange(), getStartAtRow(), getStartStroke(), getStartNotation(), getTerminationMaxRows(), getTerminationMaxLeads(), getTerminationMaxParts(), getTerminationMaxCircularity(), getTerminationChange(), compositionTableAccessDelegate);
+        return Objects.hash(getSequenceNumber(), getActionName(), getTitle(), getAuthor(), getNumberOfBells(), getCompositionType(), getCallFromBell(), getAllNotations(), getNonSplicedActiveNotation(), getPlainLeadToken(), definitionTableCellsDelegate, getStartChange(), getStartAtRow(), getStartStroke(), getStartNotation(), getTerminationMaxRows(), getTerminationMaxLeads(), getTerminationMaxParts(), getTerminationMaxPartCircularity(), getTerminationChange(), compositionTableAccessDelegate);
     }
 
     @Override
@@ -319,7 +319,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
                 ", terminationMaxRows=" + terminationMaxRows +
                 ", terminationMaxLeads=" + terminationMaxLeads +
                 ", terminationMaxParts=" + terminationMaxParts +
-                ", terminationMaxCircularity=" + terminationMaxCircularity +
+                ", terminationMaxPartCircularity=" + terminationMaxPartCircularity +
                 ", terminationChange=" + terminationChange +
                 ", cells=" + compositionTableAccessDelegate.allCompositionCells() +
                 '}';

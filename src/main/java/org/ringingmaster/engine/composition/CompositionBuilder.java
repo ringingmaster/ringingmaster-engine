@@ -16,7 +16,7 @@ import org.ringingmaster.engine.composition.compositiontype.CompositionType;
 
 import java.util.Optional;
 
-import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE;
+import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_PART_CIRCULARITY_INITIAL_VALUE;
 import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_ROWS_INITIAL_VALUE;
 import static org.ringingmaster.engine.composition.TableType.DEFINITION_TABLE;
 import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
@@ -57,7 +57,7 @@ class CompositionBuilder {
     private Optional<Integer> terminationMaxRows = Optional.empty();
     private Optional<Optional<Integer>> terminationMaxLeads = Optional.empty();
     private Optional<Optional<Integer>> terminationMaxParts = Optional.empty();
-    private Optional<Integer> terminationMaxCircularity = Optional.empty();
+    private Optional<Integer> terminationMaxPartCircularity = Optional.empty();
     private Optional<Optional<Row>> terminationChange = Optional.empty();
 
     private Optional<ImmutableArrayTable<Cell>> compositionCells = Optional.empty();
@@ -95,7 +95,7 @@ class CompositionBuilder {
         setTerminationMaxRows(TERMINATION_MAX_ROWS_INITIAL_VALUE);
         setTerminationMaxLeads(Optional.empty());
         setTerminationMaxParts(Optional.empty());
-        setTerminationMaxCircularity(TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE);
+        setTerminationMaxPartCircularity(TERMINATION_MAX_PART_CIRCULARITY_INITIAL_VALUE);
         setTerminationChange(Optional.empty());
 
         setCells(COMPOSITION_TABLE, new TableBackedImmutableArrayTable<>(EmptyCell::new));
@@ -183,8 +183,8 @@ class CompositionBuilder {
         return this;
     }
 
-    CompositionBuilder setTerminationMaxCircularity(int terminationMaxCircularity) {
-        this.terminationMaxCircularity = Optional.of(terminationMaxCircularity);
+    CompositionBuilder setTerminationMaxPartCircularity(int terminationMaxPartCircularity) {
+        this.terminationMaxPartCircularity = Optional.of(terminationMaxPartCircularity);
         return this;
     }
 
@@ -234,7 +234,7 @@ class CompositionBuilder {
                 terminationMaxRows.orElseGet(()->prototype.getTerminationMaxRows()),
                 terminationMaxLeads.orElseGet(()->prototype.getTerminationMaxLeads()),
                 terminationMaxParts.orElseGet(()->prototype.getTerminationMaxParts()),
-                terminationMaxCircularity.orElseGet(()->prototype.getTerminationMaxCircularity()),
+                terminationMaxPartCircularity.orElseGet(()->prototype.getTerminationMaxPartCircularity()),
                 terminationChange.orElseGet(()->prototype.getTerminationChange()),
 
                 compositionCells.orElseGet(()->prototype.allCompositionCells())
@@ -263,7 +263,7 @@ class CompositionBuilder {
                 ", terminationMaxRows=" + terminationMaxRows +
                 ", terminationMaxLeads=" + terminationMaxLeads +
                 ", terminationMaxParts=" + terminationMaxParts +
-                ", terminationMaxCircularity=" + terminationMaxCircularity +
+                ", terminationMaxPartCircularity=" + terminationMaxPartCircularity +
                 ", terminationChange=" + terminationChange +
                 ", compositionCells=" + compositionCells +
                 '}';

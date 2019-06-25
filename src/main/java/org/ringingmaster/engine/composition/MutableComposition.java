@@ -69,8 +69,8 @@ public class MutableComposition {
     public static final int TERMINATION_MAX_ROWS_MAX = 10_000_000;
     public static final int TERMINATION_MAX_LEADS_MAX = 100_000;
     public static final int TERMINATION_MAX_PARTS_MAX = 10_000;
-    public static final int TERMINATION_MAX_CIRCULARITY_INITIAL_VALUE = 2;
-    public static final int TERMINATION_MAX_CIRCULARITY_MAX = 10_000;
+    public static final int TERMINATION_MAX_PART_CIRCULARITY_INITIAL_VALUE = 2;
+    public static final int TERMINATION_MAX_PART_CIRCULARITY_MAX = 10_000;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -762,10 +762,10 @@ public class MutableComposition {
         compositionStream.onNext(compositionBuilder.build("Remove Part Limit"));
     }
 
-    public DryRun dryRunSetTerminationMaxCircularity(int terminationMaxCircularity) {
-        int result = max(1, min(TERMINATION_MAX_ROWS_MAX, terminationMaxCircularity));
+    public DryRun dryRunSetTerminationMaxPartCircularity(int terminationMaxPartCircularity) {
+        int result = max(1, min(TERMINATION_MAX_PART_CIRCULARITY_MAX, terminationMaxPartCircularity));
 
-        if (terminationMaxCircularity != result) {
+        if (terminationMaxPartCircularity != result) {
             return new DryRun(result);
         }
         else {
@@ -773,20 +773,20 @@ public class MutableComposition {
         }
     }
 
-    public void setTerminationMaxCircularity(int terminationMaxCircularity) {
-        checkArgument(terminationMaxCircularity > 0, "Termination circular composition must be greater than 0");
-        checkArgument(terminationMaxCircularity <= TERMINATION_MAX_CIRCULARITY_MAX, "Termination circular composition must be less than or equal to %s", TERMINATION_MAX_CIRCULARITY_MAX);
+    public void setTerminationMaxPartCircularity(int terminationMaxPartCircularity) {
+        checkArgument(terminationMaxPartCircularity > 0, "Termination circular composition must be greater than 0");
+        checkArgument(terminationMaxPartCircularity <= TERMINATION_MAX_PART_CIRCULARITY_MAX, "Termination circular composition must be less than or equal to %s", TERMINATION_MAX_PART_CIRCULARITY_MAX);
 
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue());
 
-        if (Objects.equals(compositionStream.getValue().getTerminationMaxCircularity(), terminationMaxCircularity)) {
+        if (Objects.equals(compositionStream.getValue().getTerminationMaxPartCircularity(), terminationMaxPartCircularity)) {
             renotify();
             return;
         }
 
-        compositionBuilder.setTerminationMaxCircularity(terminationMaxCircularity);
+        compositionBuilder.setTerminationMaxPartCircularity(terminationMaxPartCircularity);
 
-        compositionStream.onNext(compositionBuilder.build("Set Circular Composition Limit: %d", terminationMaxCircularity));
+        compositionStream.onNext(compositionBuilder.build("Set Circular Composition Limit: %d", terminationMaxPartCircularity));
     }
 
     public void setTerminationChange(Row terminationChange) {
