@@ -81,7 +81,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
                 .andThen(new ValidateVarianceMatchingBraceLogic())
                 .apply(composition.get());
 
-        assertParse(result.allCompositionCells().get(0,0), invalid( VARIANCE_CLOSE, "No matching opening variance brace"), invalid("No matching closing variance brace", section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)));
+        assertParse(result.allCompositionCells().get(0,0), invalid( VARIANCE_CLOSE, "[No matching opening variance brace]"), invalid("[No matching closing variance brace]", section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
                 .apply(composition.get());
 
         assertParse(result.allCompositionCells().get(0,0), invalid( VARIANCE_CLOSE));
-        assertParse(result.allCompositionCells().get(1,0), invalid("No matching closing variance brace", section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)));
+        assertParse(result.allCompositionCells().get(1,0), invalid("[No matching closing variance brace]", section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class ValidateVarianceMatchingBraceLogicTest {
 
         assertParse(result.allCompositionCells().get(0,0),
                 valid(section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)),
-                    invalid("Nesting depth greater than the 1 allowed for variance", section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)),
+                    invalid("[variance's cannot be nested]", section(1, VARIANCE_OPEN), section(2, VARIANCE_DETAIL)),
                         valid( CALL),
                     valid( VARIANCE_CLOSE),
                 invalid( VARIANCE_CLOSE)

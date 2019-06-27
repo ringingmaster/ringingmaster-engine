@@ -123,7 +123,7 @@ public class ValidateMultiplierGroupAndVarianceDontOverlapTest {
                 .apply(composition.get());
 
         assertParse(result.allCompositionCells().get(0,0),
-                valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), invalid( MULTIPLIER_GROUP_OPEN), invalid( VARIANCE_CLOSE), invalid("Variances and Groups can't overlap", section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), invalid( MULTIPLIER_GROUP_CLOSE), valid( VARIANCE_CLOSE));
+                valid(section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), invalid( MULTIPLIER_GROUP_OPEN), invalid( VARIANCE_CLOSE), invalid("[Variances and Groups can't overlap]", section(VARIANCE_OPEN), section(2, VARIANCE_DETAIL)), invalid( MULTIPLIER_GROUP_CLOSE), valid( VARIANCE_CLOSE));
     }
 
     @Test

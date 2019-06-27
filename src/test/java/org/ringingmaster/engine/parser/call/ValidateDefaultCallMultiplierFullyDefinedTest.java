@@ -45,7 +45,7 @@ public class ValidateDefaultCallMultiplierFullyDefinedTest {
                 .andThen(new ValidateDefaultCallMultiplierFullyDefined())
                 .apply(composition.get());
 
-        assertParse(parse.allCompositionCells().get(0,0), invalid( DEFAULT_CALL_MULTIPLIER, "No default call defined"));
+        assertParse(parse.allCompositionCells().get(0,0), invalid( DEFAULT_CALL_MULTIPLIER, "[No default call defined]"));
     }
 
 

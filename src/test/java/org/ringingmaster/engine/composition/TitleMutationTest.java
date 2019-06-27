@@ -2,7 +2,7 @@ package org.ringingmaster.engine.composition;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * TODO Comments
@@ -16,7 +16,7 @@ public class TitleMutationTest {
 
         MutableComposition composition = new MutableComposition();
 
-        assertEquals(CompositionBuilder.DEFAULT_TITLE, composition.get().getLoggingTag());
+        assertTrue(composition.get().getLoggingTag().startsWith(CompositionBuilder.DEFAULT_TITLE));
     }
 
     @Test
@@ -25,6 +25,6 @@ public class TitleMutationTest {
         MutableComposition composition = new MutableComposition();
         composition.setTitle("TEST");
 
-        assertEquals("TEST", composition.get().getLoggingTag());
+        assertTrue(composition.get().getLoggingTag().startsWith("TEST"));
     }
 }

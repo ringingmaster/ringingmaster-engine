@@ -51,7 +51,7 @@ public class AssertParse {
                 assertEquals("Group validity", groupExpected.validGroup, parsedCell.getGroupAtElementIndex(elementIndex).get().isValid());
 
                 if (groupExpected.groupMessage.isPresent()) {
-                    assertEquals("Group message", groupExpected.groupMessage, parsedCell.getGroupAtElementIndex(elementIndex).get().getMessage());
+                    assertEquals("Group message", groupExpected.groupMessage.get(), parsedCell.getGroupAtElementIndex(elementIndex).get().getMessages().toString());
                 }
                 int sectionIndexInGroup = 0;
                 for (SectionExpected sectionExpected : groupExpected.sectionExpecteds) {
@@ -112,7 +112,7 @@ public class AssertParse {
     private static class GroupExpected implements Expected {
 
         final boolean validGroup;
-        final Optional<String> groupMessage;
+        final Optional< String> groupMessage;
         final SectionExpected[] sectionExpecteds;
 
         GroupExpected(boolean validGroup, Optional<String> groupMessage, SectionExpected... sectionExpecteds) {

@@ -49,7 +49,7 @@ public class ParsedCellMutatorTest {
                 .build();
 
         assertParse(builtCell, invalid(2, CALL), valid(CALL_MULTIPLIER), valid(3, PLAIN_LEAD));
-        assertEquals("MESSAGE", builtCell.getGroupAtElementIndex(0).get().getMessage().get());
+        assertEquals("[MESSAGE]", builtCell.getGroupAtElementIndex(0).get().getMessages().toString());
     }
 
     @Test
@@ -67,12 +67,12 @@ public class ParsedCellMutatorTest {
                 .invalidateGroup(0, "ADDITIONAL")
                 .build();
 
-        assertParse(builtCell1, invalid(2, CALL, "MESSAGE"), valid(CALL_MULTIPLIER), valid(3, PLAIN_LEAD));
-        assertParse(builtCell2, invalid(2, CALL, "MESSAGE, ADDITIONAL"), valid(CALL_MULTIPLIER), valid(3, PLAIN_LEAD));
+        assertParse(builtCell1, invalid(2, CALL, "[MESSAGE]"), valid(CALL_MULTIPLIER), valid(3, PLAIN_LEAD));
+        assertParse(builtCell2, invalid(2, CALL, "[MESSAGE, ADDITIONAL]"), valid(CALL_MULTIPLIER), valid(3, PLAIN_LEAD));
     }
 
     @Test
-    public void settingMutipleGroupsInvalidCorrectlyRebuildsGroups() {
+    public void settingMultipleGroupsInvalidCorrectlyRebuildsGroups() {
 
         ParsedCell parsedCell = buildParsedCell();
 
@@ -84,9 +84,9 @@ public class ParsedCellMutatorTest {
                 .build();
 
         assertParse(builtCell,
-                invalid(2, CALL, "MESSAGE1"),
-                invalid(1, CALL_MULTIPLIER, "MESSAGE2"),
-                invalid(3, PLAIN_LEAD, "MESSAGE3"));
+                invalid(2, CALL, "[MESSAGE1]"),
+                invalid(1, CALL_MULTIPLIER, "[MESSAGE2]"),
+                invalid(3, PLAIN_LEAD, "[MESSAGE3]"));
     }
 
     //TODO clean up after removing functionality
