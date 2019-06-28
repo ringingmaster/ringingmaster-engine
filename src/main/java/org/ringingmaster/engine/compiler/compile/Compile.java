@@ -192,7 +192,7 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
 
 //TODO		addLeadSeparator(currentNotation, rows, leadSeparatorPositions);
 
-        final Lead lead = MethodBuilder.buildLead(state.composition.getNumberOfBells(), rows, leadSeparatorPositions);
+        final Lead lead = MethodBuilder.buildLead(state.composition.getNumberOfBells(), state.partIndex, rows, leadSeparatorPositions);
         return lead;
     }
 

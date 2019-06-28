@@ -17,8 +17,8 @@ public class MethodBuilder {
         return new DefaultMethod(numberOfBells, leads);
     }
 
-    public static Lead buildLead(NumberOfBells numberOfBells, List<Row> rows, List<Integer> leadSeperatorPositions) {
-        return new DefaultLead(numberOfBells, rows, leadSeperatorPositions);
+    public static Lead buildLead(NumberOfBells numberOfBells, int partIndex, List<Row> rows, List<Integer> leadSeperatorPositions) {
+        return new DefaultLead(numberOfBells, partIndex, rows, leadSeperatorPositions);
     }
 
     /**
@@ -75,7 +75,6 @@ public class MethodBuilder {
             for (int i = 0; i < original.getNumberOfBells().toInt(); i++) {
                 bells[i] = original.getBellInPlace(i);
             }
-            ;
             for (int i = original.getNumberOfBells().toInt(); i < newNumberOfBells.toInt(); i++) {
                 bells[i] = Bell.valueOf(i);
             }
@@ -90,7 +89,6 @@ public class MethodBuilder {
                     bellsPlaceIndex++;
                 }
             }
-            ;
             return new DefaultRow(newNumberOfBells, bells, original.getRowIndex(), original.getStroke(), original.getRowCourseType());
         } else {
             return original;

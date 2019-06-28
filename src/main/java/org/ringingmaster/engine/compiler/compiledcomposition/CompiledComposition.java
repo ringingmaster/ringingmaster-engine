@@ -14,7 +14,7 @@ import java.util.Optional;
  * @author Steve Lake
  */
 @Immutable
-public interface CompiledComposition {
+public interface    CompiledComposition {
 
     Composition getComposition();
 
