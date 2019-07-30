@@ -60,7 +60,7 @@ class DefaultRow implements Row {
     }
 
     @Override
-    public Integer getPlaceOfBell(final Bell bellToFindPlaceFor) {
+    public int getPlaceOfBell(final Bell bellToFindPlaceFor) {
         checkNotNull(bellToFindPlaceFor, "bellToFindPlaceFor must not be null");
 
         int place = 0;
@@ -70,7 +70,7 @@ class DefaultRow implements Row {
             }
             place++;
         }
-        return null;
+        return -1;
     }
 
     @Override

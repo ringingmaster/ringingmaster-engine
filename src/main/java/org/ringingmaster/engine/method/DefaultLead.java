@@ -70,7 +70,7 @@ class DefaultLead implements Lead {
             final ImmutableList.Builder<Integer> sequencesBuilder = ImmutableList.builder();
 
             for (final Row row : rows) {
-                final Integer place = row.getPlaceOfBell(bell);
+                final int place = row.getPlaceOfBell(bell);
                 sequencesBuilder.add(place);
             }
             placeSequencesBuilder.put(bell, sequencesBuilder.build());
@@ -110,7 +110,7 @@ class DefaultLead implements Lead {
 
     @Override
     public Iterator<Row> iterator() {
-        return new Iterator<Row>() {
+        return new Iterator<>() {
 
             int rowIndex = 0;
 
@@ -152,7 +152,7 @@ class DefaultLead implements Lead {
         //find the first row
         if (rows.length > 0) {
             final Row firstRow = rows[0];
-            final Integer place = firstRow.getPlaceOfBell(bell);
+            final int place = firstRow.getPlaceOfBell(bell);
             startPlace = Place.valueOf(place);
         }
         return startPlace;

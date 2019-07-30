@@ -43,6 +43,8 @@ public enum Bell {
     BELL_29("U"),
     BELL_30("V");
 
+    public static final Bell MAX = BELL_30;
+
 
     private static final Map<String, Bell> mnemonicLookup = new ConcurrentHashMap<>();
 

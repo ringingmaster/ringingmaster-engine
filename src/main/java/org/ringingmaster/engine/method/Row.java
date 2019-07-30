@@ -48,7 +48,7 @@ public interface Row extends Iterable<Bell>, Comparable<Row> {
      * @param bell bell to test the place for. not null
      * @return Integer if valid, otherwise null.
      */
-    Integer getPlaceOfBell(Bell bell);
+    int getPlaceOfBell(Bell bell);
 
     /**
      * Get the row index with respect to the whole method,
