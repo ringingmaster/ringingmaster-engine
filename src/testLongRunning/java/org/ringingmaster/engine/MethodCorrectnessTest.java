@@ -6,7 +6,7 @@ import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.LeadHeadCalculator;
 import org.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
-import org.ringingmaster.persist.DocumentPersist;
+import org.ringingmaster.persist.NotationLibraryPersist;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class MethodCorrectnessTest {
 	@Test
 	public void checkCalculatesLastRowInLeadCorrectlyAgainstCCLibrary() throws IOException {
 
-		long problemNotationCount = new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
+		long problemNotationCount = new NotationLibraryPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
 					Notation notation = PersistableNotationTransformer
@@ -61,7 +61,7 @@ public class MethodCorrectnessTest {
 
 		List<String> problemNotations = Files.readAllLines(KNOWN_PROBLEM_NOTATION_PATH);
 
-		long problemNotationCount = new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
+		long problemNotationCount = new NotationLibraryPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
 					Notation notation = PersistableNotationTransformer
@@ -98,7 +98,7 @@ public class MethodCorrectnessTest {
 	@Test
 	public void checkCalculatesMethodLengthAgainstCCLibrary() throws IOException {
 
-		long problemNotationCount = new DocumentPersist().readNotationLibrary(LIBRARY_PATH)
+		long problemNotationCount = new NotationLibraryPersist().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
 					Notation notation = PersistableNotationTransformer
