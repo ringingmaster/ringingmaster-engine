@@ -8,8 +8,9 @@
 
 	<Loggers>
 
-		<logger name="org.ringingmaster.engine.parser" level="debug"/>
-		<logger name="org.ringingmaster.engine.compiler" level="debug"/>
+		<!--		<logger name="org.ringingmaster.engine.parser" level="debug"/>-->
+		<!--		<logger name="org.ringingmaster.engine.compiler" level="debug"/>-->
+<!--				<logger name="org.ringingmaster.engine.MethodCorrectnessTest" level="info"/>-->
 
 		<Root level="info">
 			<AppenderRef ref="CONSOLE"/>
