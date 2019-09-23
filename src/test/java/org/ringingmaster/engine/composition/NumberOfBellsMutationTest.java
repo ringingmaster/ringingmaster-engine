@@ -1,5 +1,6 @@
 package org.ringingmaster.engine.composition;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ringingmaster.engine.NumberOfBells;
 import org.ringingmaster.engine.method.MethodBuilder;
@@ -48,6 +49,7 @@ public class NumberOfBellsMutationTest {
         assertEquals(NumberOfBells.BELLS_20, composition.get().getStartChange().getNumberOfBells());
     }
 
+    @Ignore
     @Test
     public void whenActiveNotationIsNoLongerValidBestAlternativeIsSelected() throws Exception {
 

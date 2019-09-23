@@ -6,7 +6,7 @@ import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.notation.Notation;
 import org.ringingmaster.engine.notation.LeadHeadCalculator;
 import org.ringingmaster.engine.notation.persist.PersistableNotationTransformer;
-import org.ringingmaster.persist.NotationLibraryPersist;
+import org.ringingmaster.persist.NotationLibraryPersister;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -29,23 +29,29 @@ public class MethodCorrectnessTest {
 
 	@Test
 	public void checkCalculatesLastRowInLeadCorrectlyAgainstCCLibrary() throws IOException {
+		//TODO NOTE: This fails for a number of CC notations that come round before the plain course. Need an additional termination
+		// mechanism that looks only for rounds at the end of the lead,
 
-		long problemNotationCount = new NotationLibraryPersist().readNotationLibrary(LIBRARY_PATH)
+		long problemNotationCount = new NotationLibraryPersister().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
 					Notation notation = PersistableNotationTransformer
 							.populateBuilderFromPersistableNotation(persistableNotation)
 							.build();
+                    log.info("LeadHead CHANGE correctness test for [{}]", notation.getNameIncludingNumberOfBells());
 
-					final String leadHead = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
+					final String ccLeadHeadChange = LeadHeadCalculator.lookupRowFromCode(persistableNotation.getLeadHead(), NumberOfBells.valueOf(persistableNotation.getNumberOfWorkingBells()));
 
-					CompiledComposition compiledComposition = PlainCourseHelper.buildPlainCourse(notation, "");
-					Lead lead = compiledComposition.getMethod().get().getLead(0);
+					CompiledComposition calculatedPlainCourse = PlainCourseHelper.buildPlainCourse(notation, "");
+					Lead calcLead = calculatedPlainCourse.getMethod().get().getLead(0);
+                    String calcLeadHeadChange = calcLead.getLastRow().getDisplayString(false);
 
-					if (!Objects.equals(leadHead, lead.getLastRow().getDisplayString(false))) {
-						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notation.getNumberOfWorkingBells().toInt(), notation.getNameIncludingNumberOfBells(),
-								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notation.toString());
+                    if (!Objects.equals(ccLeadHeadChange, calcLeadHeadChange)) {
+						log.warn("[{}] {}  expected[{}] actual[{}]",
+								notation.getNumberOfWorkingBells().toInt(),
+                                notation.getNameIncludingNumberOfBells(),
+                                ccLeadHeadChange,
+                                calcLeadHeadChange);
 						return true;
 					}
 					return false;
@@ -58,26 +64,33 @@ public class MethodCorrectnessTest {
 
 	@Test
 	public void checkLeadHeadCodeGenerationAgainstCCLibrary() throws IOException {
+		//TODO NOTE: This fails for a number of CC notations that come round before the plain course. Need an additional termination
+		// mechanism that looks only for rounds at the end of the lead,
 
 		List<String> problemNotations = Files.readAllLines(KNOWN_PROBLEM_NOTATION_PATH);
 
-		long problemNotationCount = new NotationLibraryPersist().readNotationLibrary(LIBRARY_PATH)
+		long problemNotationCount = new NotationLibraryPersister().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
 					Notation notation = PersistableNotationTransformer
 							.populateBuilderFromPersistableNotation(persistableNotation)
 							.build();
-					String ccLeadHead = persistableNotation.getLeadHead();
-					String calculatedLeadHead = notation.getLeadHeadCode();
-					if (!Objects.equals(ccLeadHead, calculatedLeadHead)) {
-						String msg = String.format("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notation.getNumberOfWorkingBells().toInt(), notation.getNameIncludingNumberOfBells(),
-								ccLeadHead, calculatedLeadHead, notation.toString());
+
+                    log.info("LeadHead CODE correctness test for [{}]", notation.getNameIncludingNumberOfBells());
+
+                    String ccLeadHeadCode = persistableNotation.getLeadHead();
+					String calcLeadHeadCode = notation.getLeadHeadCode();
+
+					if (!Objects.equals(ccLeadHeadCode, calcLeadHeadCode)) {
 						if (problemNotations.contains(notation.getNameIncludingNumberOfBells())) {
-							log.info("Ignoring known issue for: [{}]", msg);
+							log.info("Ignoring known issue for: [{}]", notation.getNameIncludingNumberOfBells());
 						}
 						else {
-							log.error(msg);
+                            log.warn("[{}] {}  expected[{}] actual[{}]",
+                                    notation.getNumberOfWorkingBells().toInt(),
+                                    notation.getNameIncludingNumberOfBells(),
+                                    ccLeadHeadCode,
+                                    calcLeadHeadCode);
 							return true;
 						}
 					}
@@ -97,8 +110,10 @@ public class MethodCorrectnessTest {
 
 	@Test
 	public void checkCalculatesMethodLengthAgainstCCLibrary() throws IOException {
+		//TODO NOTE: This fails for a number of CC notations that come round before the plain course. Need an additional termination
+		// mechanism that looks only for rounds at the end of the lead,
 
-		long problemNotationCount = new NotationLibraryPersist().readNotationLibrary(LIBRARY_PATH)
+		long problemNotationCount = new NotationLibraryPersister().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
 					Notation notation = PersistableNotationTransformer
@@ -109,9 +124,11 @@ public class MethodCorrectnessTest {
 					Lead lead = compiledComposition.getMethod().get().getLead(0);
 
 					if (persistableNotation.getLeadLength() != lead.getRowCount() - 1) {
-						log.warn("[%d] %s[%s](library) vs [%s](calculated) NOT OK: %s",
-								notation.getNumberOfWorkingBells().toInt(), notation.getNameIncludingNumberOfBells(),
-								persistableNotation.getLeadLength(), (lead.getRowCount() - 1), notation.toString());
+                        log.warn("[{}] {}  expected[{}] actual[{}]",
+                                notation.getNumberOfWorkingBells().toInt(),
+                                notation.getNameIncludingNumberOfBells(),
+                                persistableNotation.getLeadLength(),
+                                lead.getRowCount() - 1);
 						return true;
 					}
 					return false;
