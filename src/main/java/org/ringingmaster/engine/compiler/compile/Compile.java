@@ -6,6 +6,7 @@ import org.ringingmaster.engine.compiler.CompileTerminationReason;
 import org.ringingmaster.engine.compiler.denormaliser.DenormalisedCall;
 import org.ringingmaster.engine.compiler.TerminateEarlyException;
 import org.ringingmaster.engine.composition.Composition;
+import org.ringingmaster.engine.composition.TerminationChange;
 import org.ringingmaster.engine.method.Lead;
 import org.ringingmaster.engine.method.Method;
 import org.ringingmaster.engine.method.MethodBuilder;
@@ -23,6 +24,8 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static org.ringingmaster.engine.composition.TerminationChange.Location.ANYWHERE;
+import static org.ringingmaster.engine.composition.TerminationChange.Location.LEAD_END;
 
 /**
  * TODO comments???
@@ -57,7 +60,7 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
         private int partIndex;
         private T nextDenormalisedCall;
         private Row currentRow;
-        private MaskedNotation maskedNotation;
+        private CallOverlayNotation callOverlayNotation;
         private final List<Lead> leads = new ArrayList<>();
 
         //outputs
@@ -95,8 +98,8 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
             return nextDenormalisedCall;
         }
 
-        public MaskedNotation getMaskedNotation() {
-            return maskedNotation;
+        public CallOverlayNotation getCallOverlayNotation() {
+            return callOverlayNotation;
         }
 
         public String getLogPreamble() {
@@ -137,10 +140,10 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
         }
 
         state.currentRow = createStartChange(state);
-        state.maskedNotation = new MaskedNotation(state.composition.getNonSplicedActiveNotation().get());
+        state.callOverlayNotation = new CallOverlayNotation(state.composition.getNonSplicedActiveNotation().get());
 
-        if (state.maskedNotation.size() == 0) {
-            terminate(CompileTerminationReason.INVALID_COMPOSITION, "Notation [" + state.maskedNotation.getNameIncludingNumberOfBells() + "] has no rows.", state);
+        if (state.callOverlayNotation.size() == 0) {
+            terminate(CompileTerminationReason.INVALID_COMPOSITION, "Notation [" + state.callOverlayNotation.getNameIncludingNumberOfBells() + "] has no rows.", state);
         }
         while (!isTerminated(state)) {
             log.debug("{}   - lead [{}]", state.logPreamble, state.leads.size());
@@ -177,11 +180,12 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
 
         rows.add(state.currentRow);
 
-        for (PlaceSet placeSet : state.maskedNotation) {
+        for (PlaceSet placeSet : state.callOverlayNotation) {
 
             buildNextRow(placeSet, state);
             rows.add(state.currentRow);
 
+            //TODO What happens to terminate change "at lead end" if the call changes the length of the lead?
             checkTerminationChange(state);
             checkTerminationMaxRows(state);
             if (isTerminated(state)) {
@@ -208,7 +212,7 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
     }
 
     private void tryToMakeACall(State state) {
-        if (state.nextDenormalisedCall != null && state.maskedNotation.isAtCallPoint()) {
+        if (state.nextDenormalisedCall != null && state.callOverlayNotation.isAtCallInitiationRow()) {
 
             boolean callConsumed = applyNextCall(state);
             if (callConsumed) {
@@ -259,9 +263,19 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
     }
 
     private void checkTerminationChange(State state) {
-        if (state.composition.getTerminationChange().isPresent() &&
-                state.composition.getTerminationChange().get().equals(state.currentRow)) {
-            terminate(CompileTerminationReason.SPECIFIED_ROW, state.composition.getTerminationChange().get().toString(), state);
+        if (state.composition.getTerminationChange().isEmpty()) {
+            return;
+        }
+
+        TerminationChange terminationChange = state.composition.getTerminationChange().get();
+
+        if (terminationChange.getLocation() == LEAD_END &&
+                state.callOverlayNotation.size() != state.callOverlayNotation.getIteratorIndex()) {
+            return;
+        }
+
+        if (terminationChange.getChange().equals(state.currentRow)) {
+            terminate(CompileTerminationReason.SPECIFIED_CHANGE, terminationChange.toString(), state);
         }
     }
 
@@ -272,6 +286,7 @@ public abstract class Compile<T extends DenormalisedCall, PASS_THROUGH> {
             state.terminateNotes = Optional.of(terminateNotes);
         }
         else  {
+            //TODO What happens when we legitimately terminate because of two reasons? Change, and row count?? Should probably return a collection.
             log.warn("Requesting second terminate [{}]{}", terminationReason, terminateNotes);
         }
     }

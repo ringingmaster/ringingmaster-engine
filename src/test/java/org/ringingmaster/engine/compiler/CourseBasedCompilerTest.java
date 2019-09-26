@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
 import static org.ringingmaster.engine.composition.TableType.COMPOSITION_TABLE;
+import static org.ringingmaster.engine.composition.TerminationChange.Location.ANYWHERE;
 
 
 /**
@@ -41,7 +42,7 @@ public class CourseBasedCompilerTest {
         composition.addCharacters(COMPOSITION_TABLE, 0, 0, "W");
         composition.addCharacters(COMPOSITION_TABLE, 1, 0, "-");
         proveAndCheckComposition(15
-                , "/PlainBobMinor W - FromTenor.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
+                , "/PlainBobMinor W - FromTenor.txt", true, CompileTerminationReason.SPECIFIED_CHANGE, composition.get());
     }
 
     @Test
@@ -51,7 +52,7 @@ public class CourseBasedCompilerTest {
         composition.addCharacters(COMPOSITION_TABLE, 0, 0, "W");
         composition.addCharacters(COMPOSITION_TABLE, 1, 0, "-");
         proveAndCheckComposition(15
-				, "/PlainBobMinor W - From5.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
+				, "/PlainBobMinor W - From5.txt", true, CompileTerminationReason.SPECIFIED_CHANGE, composition.get());
     }
 
     private MutableComposition buildPlainBobMinorCompositionShell() {
@@ -60,7 +61,7 @@ public class CourseBasedCompilerTest {
         composition.setTitle("Test Composition");
         composition.addNotation(buildPlainBobMinor());
         composition.setCompositionType(CompositionType.COURSE_BASED);
-        composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+        composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6), ANYWHERE);
         return composition;
     }
 

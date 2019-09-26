@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>
  * User: Steve Lake
  */
-public class MaskedNotation implements Notation { //TODO completely lacking any testing
+public class CallOverlayNotation implements Notation { //TODO completely lacking any testing
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -32,7 +32,7 @@ public class MaskedNotation implements Notation { //TODO completely lacking any 
     private Optional<Call> call = Optional.empty();
     private int callIndex;
 
-    public MaskedNotation(Notation activeNotation) {
+    public CallOverlayNotation(Notation activeNotation) {
         setCurrentNotation(activeNotation);
     }
 
@@ -48,12 +48,14 @@ public class MaskedNotation implements Notation { //TODO completely lacking any 
         this.callIndex = 0;
     }
 
-    public boolean isAtCallPoint() {
+    public boolean isAtCallInitiationRow() {
         return currentNotation.getCallInitiationRows().contains(iteratorIndex);
     }
 
     @Override
     public PlaceSet get(int index) {
+        // Separating callIndex from  iteratorIndex allows multi row calls to roll over into the next lead.
+        // When this happens, the length of the lead is unaffected.
         if (call.isPresent()) {
             if (callIndex < call.get().size()) {
                 return call.get().get(callIndex++);
@@ -95,7 +97,7 @@ public class MaskedNotation implements Notation { //TODO completely lacking any 
 
         iteratorIndex = 0;
 
-        return new Iterator<PlaceSet>() {
+        return new Iterator<>() {
 
 
             @Override

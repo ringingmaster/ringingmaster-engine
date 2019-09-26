@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.ringingmaster.engine.composition.TerminationChange.Location.ANYWHERE;
 
 /**
  * TODO Comments
@@ -29,8 +30,8 @@ public class TerminationChangeMutationTest {
 
         MutableComposition composition = new MutableComposition();
 
-        composition.setTerminationChange(MethodBuilder.parse(NumberOfBells.BELLS_6, "654123"));
-        assertEquals("654123", composition.get().getTerminationChange().get().getDisplayString(false));
+        composition.setTerminationChange(MethodBuilder.parse(NumberOfBells.BELLS_6, "654123"), ANYWHERE);
+        assertEquals("654123", composition.get().getTerminationChange().get().getChange().getDisplayString(false));
 
         composition.removeTerminationChange();
         assertFalse(composition.get().getTerminationChange().isPresent());

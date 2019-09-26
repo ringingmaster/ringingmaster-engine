@@ -17,6 +17,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkState;
 import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_LEADS_MAX;
 import static org.ringingmaster.engine.composition.MutableComposition.TERMINATION_MAX_ROWS_MAX;
+import static org.ringingmaster.engine.composition.TerminationChange.Location.LEAD_END;
 
 /**
  * TODO comments???
@@ -33,10 +34,10 @@ public class PlainCourseHelper {
         Method createdMethod = compiledComposition.getMethod().get();
 
         checkState(createdMethod.getRowCount() > 0, "Plain course has no rows.");
-        checkState(CompileTerminationReason.SPECIFIED_ROW == compiledComposition.getTerminationReason(),
-                "Plain course must terminate with row [%s]" +
+        checkState(CompileTerminationReason.SPECIFIED_CHANGE == compiledComposition.getTerminationReason(),
+                "Plain course must terminate with change [%s]" +
                         " but actually terminated with [%s]",
-                compiledComposition.getComposition().getTerminationChange().get().getDisplayString(true),
+                compiledComposition.getComposition().getTerminationChange().get().getDisplayString(),
                 compiledComposition.getTerminateReasonDisplayString());
         return compiledComposition;
     }
@@ -53,7 +54,7 @@ public class PlainCourseHelper {
         composition.setNumberOfBells(notation.getNumberOfWorkingBells());
         composition.addNotation(notation);
         composition.setCompositionType(CompositionType.LEAD_BASED);
-        composition.setTerminationChange(MethodBuilder.buildRoundsRow(notation.getNumberOfWorkingBells()));
+        composition.setTerminationChange(MethodBuilder.buildRoundsRow(notation.getNumberOfWorkingBells()), LEAD_END);
         composition.setTerminationMaxLeads(TERMINATION_MAX_LEADS_MAX);
         composition.setTerminationMaxRows(TERMINATION_MAX_ROWS_MAX);
 

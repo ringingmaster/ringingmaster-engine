@@ -57,7 +57,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
     private final Optional<Integer> terminationMaxLeads;
     private final Optional<Integer> terminationMaxParts;
     private final int terminationMaxPartCircularity;
-    private final Optional<Row> terminationChange;
+    private final Optional<TerminationChange> terminationChange;
 
     private final CompositionTableAccess<Cell> compositionTableAccessDelegate;
 
@@ -79,7 +79,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
                        Optional<Integer> terminationMaxLeads,
                        Optional<Integer> terminationMaxParts,
                        int terminationMaxPartCircularity,
-                       Optional<Row> terminationChange,
+                       Optional<TerminationChange> terminationChange,
                        ImmutableArrayTable<Cell> cells) {
 
         this.sequenceNumber = sequenceNumber;
@@ -238,7 +238,7 @@ public class Composition implements CompositionTableAccess<Cell>, DefinitionTabl
         return terminationMaxPartCircularity;
     }
 
-    public Optional<Row> getTerminationChange() {
+    public Optional<TerminationChange> getTerminationChange() {
         return terminationChange;
     }
 

@@ -58,7 +58,7 @@ class CompositionBuilder {
     private Optional<Optional<Integer>> terminationMaxLeads = Optional.empty();
     private Optional<Optional<Integer>> terminationMaxParts = Optional.empty();
     private Optional<Integer> terminationMaxPartCircularity = Optional.empty();
-    private Optional<Optional<Row>> terminationChange = Optional.empty();
+    private Optional<Optional<TerminationChange>> terminationChange = Optional.empty();
 
     private Optional<ImmutableArrayTable<Cell>> compositionCells = Optional.empty();
 
@@ -188,7 +188,7 @@ class CompositionBuilder {
         return this;
     }
 
-    CompositionBuilder setTerminationChange(Optional<Row> terminationChange) {
+    CompositionBuilder setTerminationChange(Optional<TerminationChange> terminationChange) {
         this.terminationChange = Optional.of(terminationChange);
         return this;
     }

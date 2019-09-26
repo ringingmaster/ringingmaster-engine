@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.ringingmaster.engine.compiler.CompileTerminationReason.EMPTY_PARTS;
+import static org.ringingmaster.engine.composition.TerminationChange.Location.ANYWHERE;
 
 /**
  * User: Stephen
@@ -178,7 +179,7 @@ public class LeadBasedCompilerTest {
 		composition.setCompositionType(CompositionType.LEAD_BASED);
 		composition.addNotation(notation);
 		final Row roundsRow = MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6);
-		composition.setTerminationChange(roundsRow);
+		composition.setTerminationChange(roundsRow, ANYWHERE);
 
 		CompiledComposition compiledComposition = parser
 				.andThen(compiler)
@@ -269,7 +270,7 @@ public class LeadBasedCompilerTest {
 	public void compileOmitParts() throws IOException {
 		MutableComposition composition = buildPlainBobMinorCompositionShell();
 		composition.addCharacters(TableType.COMPOSITION_TABLE, 0, 0, "-[-2s]");
-		proveAndCheckCompositionn(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_ROW, composition.get());
+		proveAndCheckCompositionn(6, "/PlainBobMinor -[s] omit2.txt", true, CompileTerminationReason.SPECIFIED_CHANGE, composition.get());
 	}
 
 	@Test
@@ -287,21 +288,21 @@ public class LeadBasedCompilerTest {
 		composition.addCharacters(TableType.COMPOSITION_TABLE, 0, 0, "-def-");
 		composition.addDefinition("def", "2(sBob)");
 
-		proveAndCheckCompositionn(6, "/PlainBobMinor -def-.txt", false, CompileTerminationReason.SPECIFIED_ROW, composition.get());
+		proveAndCheckCompositionn(6, "/PlainBobMinor -def-.txt", false, CompileTerminationReason.SPECIFIED_CHANGE, composition.get());
 	}
 
 	Proof checkSimple1CellPlainBobComposition(String compositionString, int expectedLeadCount, String fileName, boolean trueComposition) throws IOException {
 		MutableComposition composition = buildPlainBobMinorCompositionShell();
 		composition.addCharacters(TableType.COMPOSITION_TABLE, 0, 0, compositionString);
 
-		return proveAndCheckCompositionn(expectedLeadCount, fileName, trueComposition, CompileTerminationReason.SPECIFIED_ROW, composition.get());
+		return proveAndCheckCompositionn(expectedLeadCount, fileName, trueComposition, CompileTerminationReason.SPECIFIED_CHANGE, composition.get());
 	}
 
 	private MutableComposition buildPlainBobMinorCompositionShell() {
 		MutableComposition composition = new MutableComposition();
 		composition.addNotation(buildPlainBobMinor());
 		composition.setCompositionType(CompositionType.LEAD_BASED);
-		composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6));
+		composition.setTerminationChange(MethodBuilder.buildRoundsRow(NumberOfBells.BELLS_6), ANYWHERE);
 		composition.setPlainLeadToken("p");
 		return composition;
 	}

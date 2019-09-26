@@ -35,12 +35,12 @@ class CourseBasedCompile implements Function<CourseBasedCompilerPipelineData, Co
             CourseBasedDenormalisedCall nextCall = state.getNextDenormalisedCall();
             String callingPositionName = nextCall.getCallingPositionName();
 
-            CallingPosition methodCallingPosition = state.getMaskedNotation().findMethodBasedCallingPositionByName(callingPositionName);
+            CallingPosition methodCallingPosition = state.getCallOverlayNotation().findMethodBasedCallingPositionByName(callingPositionName);
             checkState(methodCallingPosition != null, "Can't find calling position [" + callingPositionName + "] " +
-                    "in notation [" + state.getMaskedNotation().getName() + "]");
+                    "in notation [" + state.getCallOverlayNotation().getName() + "]");
 
             // check we are at the correct call initiation row
-            if (methodCallingPosition.getCallInitiationRow() != state.getMaskedNotation().getIteratorIndex()) {
+            if (methodCallingPosition.getCallInitiationRow() != state.getCallOverlayNotation().getIteratorIndex()) {
                 return false;
             }
 
@@ -55,7 +55,7 @@ class CourseBasedCompile implements Function<CourseBasedCompilerPipelineData, Co
             // find and make the call
             Call call = state.getCallLookupByName().get(nextCall.getCallName());
             checkNotNull(call);
-            state.getMaskedNotation().applyCall(call, state.getLogPreamble());
+            state.getCallOverlayNotation().applyCall(call, state.getLogPreamble());
             return true;
         }
 

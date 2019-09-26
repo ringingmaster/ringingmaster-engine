@@ -9,7 +9,7 @@ public enum CompileTerminationReason {
     INVALID_COMPOSITION,
     ROW_COUNT,
     LEAD_COUNT,
-    SPECIFIED_ROW,
+    SPECIFIED_CHANGE,
     EMPTY_PARTS,
 
 

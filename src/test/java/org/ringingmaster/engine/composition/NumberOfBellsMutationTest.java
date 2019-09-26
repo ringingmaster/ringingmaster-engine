@@ -10,6 +10,7 @@ import org.ringingmaster.engine.notation.NotationBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+import static org.ringingmaster.engine.composition.TerminationChange.Location.ANYWHERE;
 
 /**
  * TODO Comments
@@ -64,11 +65,11 @@ public class NumberOfBellsMutationTest {
         composition.setSpliced(false);
         composition.setNumberOfBells(NumberOfBells.BELLS_8);
 
-        composition.setTerminationChange(MethodBuilder.parse(NumberOfBells.BELLS_8, "87654321"));
-        assertEquals("87654321", composition.get().getTerminationChange().get().getDisplayString(false));
+        composition.setTerminationChange(MethodBuilder.parse(NumberOfBells.BELLS_8, "87654321"), ANYWHERE);
+        assertEquals("87654321", composition.get().getTerminationChange().get().getChange().getDisplayString(false));
 
         composition.setNumberOfBells(NumberOfBells.BELLS_6);
-        assertEquals("654321", composition.get().getTerminationChange().get().getDisplayString(false));
+        assertEquals("654321", composition.get().getTerminationChange().get().getChange().getDisplayString(false));
     }
 
     @Test

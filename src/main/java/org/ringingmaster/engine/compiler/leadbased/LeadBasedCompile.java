@@ -33,12 +33,12 @@ class LeadBasedCompile implements Function<LeadBasedCompilerPipelineData, LeadBa
             else if (state.getNextDenormalisedCall().isDefaultCall()) {
                 Call call = state.getComposition().getNonSplicedActiveNotation().get().getDefaultCall();
                 log.debug("{}    apply default call [{}]", state.getLogPreamble(), call);
-                state.getMaskedNotation().applyCall(call, state.getLogPreamble());
+                state.getCallOverlayNotation().applyCall(call, state.getLogPreamble());
             }
             else {
                 Call call = state.getCallLookupByName().get(state.getNextDenormalisedCall().getCallName());
                 log.debug("{}    apply call [{}]", state.getLogPreamble(), call);
-                state.getMaskedNotation().applyCall(call, state.getLogPreamble());
+                state.getCallOverlayNotation().applyCall(call, state.getLogPreamble());
             }
             // We consumed the call
             return true;

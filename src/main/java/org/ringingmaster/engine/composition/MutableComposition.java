@@ -162,15 +162,15 @@ public class MutableComposition {
                 newInitialRow.getDisplayString(false) +
                 "'.");
 
-        //Termination Row
+        //Termination Change
         if (get().getTerminationChange().isPresent()) {
-            final Row existingTerminationRow = get().getTerminationChange().get();
-            final Row newTerminationRow = MethodBuilder.transformToNewNumberOfBells(existingTerminationRow, numberOfBells);
+            final TerminationChange existingTerminationChange = get().getTerminationChange().get();
+            final Row newTerminationChange = MethodBuilder.transformToNewNumberOfBells(existingTerminationChange.getChange(), numberOfBells);
 
-            messages.add(pointNumber++ + ") Termination row will change from '" +
-                    existingTerminationRow.getDisplayString(false) +
+            messages.add(pointNumber++ + ") Termination change will change from '" +
+                    existingTerminationChange.getChange().getDisplayString(false) +
                     "' to '" +
-                    newTerminationRow.getDisplayString(false) +
+                    newTerminationChange.getDisplayString(false) +
                     "'.");
         }
 
@@ -235,9 +235,9 @@ public class MutableComposition {
         compositionBuilder.setStartChange(newStartChange);
 
         if (compositionStream.getValue().getTerminationChange().isPresent()) {
-            final Row existingTerminationRow = compositionStream.getValue().getTerminationChange().get();
-            final Row newTerminationRow = MethodBuilder.transformToNewNumberOfBells(existingTerminationRow, numberOfBells);
-            compositionBuilder.setTerminationChange(Optional.of(newTerminationRow));
+            final TerminationChange existingTerminationChange = compositionStream.getValue().getTerminationChange().get();
+            final Row newTerminationChange = MethodBuilder.transformToNewNumberOfBells(existingTerminationChange.getChange(), numberOfBells);
+            compositionBuilder.setTerminationChange(Optional.of(new TerminationChange(newTerminationChange, existingTerminationChange.getLocation())));
         }
 
         if (!compositionStream.getValue().isSpliced() &&
@@ -789,9 +789,12 @@ public class MutableComposition {
         compositionStream.onNext(compositionBuilder.build("Set Circular Composition Limit: %d", terminationMaxPartCircularity));
     }
 
-    public void setTerminationChange(Row terminationChange) {
-        checkNotNull(terminationChange, "terminationChange cant be null");
-        checkArgument(terminationChange.getNumberOfBells().equals(compositionStream.getValue().getNumberOfBells()));
+    public void setTerminationChange(Row terminationChangeRow, TerminationChange.Location terminationChangeLocation) {
+        checkNotNull(terminationChangeRow, "terminationChangeRow cant be null");
+        checkNotNull(terminationChangeLocation, "terminationChangeLocation cant be null");
+        checkArgument(terminationChangeRow.getNumberOfBells().equals(compositionStream.getValue().getNumberOfBells()));
+
+        TerminationChange terminationChange = new TerminationChange(terminationChangeRow, terminationChangeLocation);
 
         if (compositionStream.getValue().getTerminationChange().isPresent() &&
                 compositionStream.getValue().getTerminationChange().get().equals(terminationChange)) {
@@ -802,7 +805,7 @@ public class MutableComposition {
         CompositionBuilder compositionBuilder = new CompositionBuilder().prototypeOf(compositionStream.getValue())
                 .setTerminationChange(Optional.of(terminationChange));
 
-        compositionStream.onNext(compositionBuilder.build("Set Termination Change: " +  terminationChange.getDisplayString(true)));
+        compositionStream.onNext(compositionBuilder.build("Set Termination Change: " +  terminationChange.getDisplayString()));
     }
 
     public void removeTerminationChange() {

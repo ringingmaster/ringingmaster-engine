@@ -62,7 +62,7 @@ class DefaultCompiledComposition implements CompiledComposition {
                 return "Row limit (" + getMethod().get().getRowCount() + ")";
             case LEAD_COUNT:
                 return "Lead limit (" + getMethod().get().getLeadCount() + ")";
-            case SPECIFIED_ROW:
+            case SPECIFIED_CHANGE:
                 return getMethod().get().getLastRow()
                         .map((input) -> "Change (" + input.getDisplayString(true) + ")")
                         .orElse("Change");
