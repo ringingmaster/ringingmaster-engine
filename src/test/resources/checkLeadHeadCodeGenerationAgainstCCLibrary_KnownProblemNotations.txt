@@ -1,8 +1,12 @@
+Dusty Bob Minimus
+Geraint Thomas Place Minimus
+Shelford Slow Course Doubles
 Chipstead Slow Course Doubles
 Poyle Slow Course Doubles
 Oakley Slow Course Doubles
 Itchingfield Slow Course Doubles
 Yeoveney Slow Course Doubles
+Bilborough Slow Course Doubles
 Ockham Slow Course Doubles
 Colne Slow Course Doubles
 Colnbrook Slow Course Doubles
@@ -10,6 +14,7 @@ Broughton Slow Course Doubles
 Chesham Slow Course Doubles
 Crane Slow Course Doubles
 Cranford Slow Course Doubles
+Norwell Slow Course Doubles
 Hascombe Slow Course Doubles
 Runemede Slow Course Doubles
 Raveningham Slow Course Doubles
@@ -17,8 +22,14 @@ Thornborough Slow Course Doubles
 Longford Slow Course Doubles
 Harmondsworth Slow Course Doubles
 Heathrow Slow Course Doubles
+Yorkshire Slow Course Doubles
+Westmorland Slow Course Doubles
 Cambridgeshire Slow Course Doubles
+Surrey Slow Course Doubles
+Somerset Slow Course Doubles
 Scarletts Slow Course Doubles
+Brecon Slow Course Doubles
+Caunton Slow Course Doubles
 Eton Slow Course Doubles
 Merton Slow Course Doubles
 Candlesby Slow Course Doubles
@@ -27,10 +38,16 @@ Slapton Slow Course Doubles
 Bedfont Slow Course Doubles
 Rugby Slow Course Doubles
 St Edmund Slow Course Doubles
+St Ursula the Fat Slow Course Doubles
+Pembrokeshire Slow Course Doubles
+Oxfordshire Slow Course Doubles
 Glamorgan Slow Course Doubles
+Northamptonshire Slow Course Doubles
 Cornwall Slow Course Doubles
 Denbighshire Slow Course Doubles
+Leicestershire Slow Course Doubles
 Cardiganshire Slow Course Doubles
+Huntingdonshire Slow Course Doubles
 Pinchbeck Slow Course Doubles
 Kempton Little Slow Course Doubles
 Spital Little Slow Course Doubles
@@ -46,9 +63,11 @@ Double Wollaton Place Doubles
 Prince George Alexander Louis Slow Course Doubles
 Princess Charlotte Elizabeth Diana Slow Course Doubles
 Hereford D G Bob Doubles
+Lenton Slow Course Doubles
 Solihull Bob Doubles
 Cottesmore Slow Course Minor
 Black Swan Slow Course Minor
+Julie McDonnell Slow Course Minor
 Baker Street Slow Course Minor
 Plastic Swan Slow Course Minor
 Black Cygnet Slow Course Minor
@@ -87,14 +106,37 @@ Croxley Slow Course Minor
 Neasden Slow Course Minor
 Maplin Slow Course Minor
 Woodton Slow Course Minor
+Sarnia Slow Course Minor
 Clewer Slow Course Minor
 Lyddington Slow Course Minor
 Ken and Dorothy Nicholas' 50th Wedding Anniversary Slow Course Minor
 Carey Slow Course Minor
 Ballingham Slow Course Minor
 Welshpool Slow Course Minor
+Square Leg Slow Course Minor
+Mid Wicket Slow Course Minor
+Mid On Slow Course Minor
+Cow Corner Slow Course Minor
+Leg Slip Slow Course Minor
+Long Off Slow Course Minor
+Point Slow Course Minor
+Third Man Slow Course Minor
 The Bridge Slow Course Minor
+Cover Slow Course Minor
+Deep Extra Slow Course Minor
+Slip Slow Course Minor
+Johnners Slow Course Minor
+Bearded Wonder Slow Course Minor
 Tarrington Slow Course Minor
+Boycott Bingo Slow Course Minor
+CMJ Slow Course Minor
+TMS Slow Course Minor
+The Alderman Slow Course Minor
+Leg Over Slow Course Minor
+Shipping Forecast Slow Course Minor
+Shilpa Slow Course Minor
+The Primary Club Slow Course Minor
+John Arlott Slow Course Minor
 Yearsett Slow Course Minor
 Edwyn Ralph Slow Course Minor
 Munderfield Slow Course Minor
@@ -124,34 +166,71 @@ Mansell Lacy Slow Course Minor
 Credenhill Slow Course Minor
 Yarsop Slow Course Minor
 Eaton Hill Slow Course Minor
+Wordsley Slow Course Minor
 Shucknall Slow Course Minor
+Wollaton Slow Course Minor
+Wragby Slow Course Minor
+Salcombe Slow Course Minor
 Around 50 Slow Course Minor
+All Saints Nottingham Slow Course Minor
 Adzor Slow Course Minor
 Sutton Slow Course Minor
+St Mary Staines Slow Course Minor
+Coolydoody Slow Course Minor
 Ruth's on the Treble Slow Course Minor
+WACA Slow Course Minor
 Llanveynoe Slow Course Minor
 Walterstone Slow Course Minor
+Sabina Park Slow Course Minor
+Holywell Slow Course Minor
 Wormbridge Slow Course Minor
+Premadasa Slow Course Minor
 Craswall Slow Course Minor
+Bermondsey Slow Course Minor
+Eden Gardens Slow Course Minor
+Eden Park Slow Course Minor
 Funnelweb Slow Bob Minor
 Redback Slow Bob Minor
 Garden Orb Slow Bob Minor
 Whitetail Slow Bob Minor
+Frequently Slow Bob Minor
+Offen Slow Bob Minor
+Occasionally Slow Bob Minor
+A Little Bit Slow Bob Minor
 Poyle Slow Course Triples
+Candlesby Slow Course Triples
+Brillig Bob Triples
+Glastonbury Bob Triples
+Winford Bob Triples
 Haselbech Slow Course Major
+Black Cygnet Slow Course Major
 Maplin Slow Course Major
 Clewer Slow Course Major
 Lyddington Slow Course Major
 Candlesby Slow Course Caters
 Parkway Little Bob Maximus
+Weary Friarning Surprise Minor
+Julie McDonnell Delight Minor
+Kārearea Ring Delight Minor
+Walkinstown Short Course Treble Bob Minor
+Demi-Bristol Alliance Minimus
 Taplow Alliance Doubles
 Thorpe Alliance Doubles
 Hinksey Alliance Doubles
 Lockinge Alliance Doubles
 Moulton Slow Course Alliance Maximus
-Wyvern Treble Place Doubles
+Llangadog Treble Place Minimus
+Tadgel Short Course Treble Place Doubles
 Hobgoblin Treble Place Doubles
 Magor Treble Place Doubles
+Karen's Dad's Birthday Treble Place Doubles
+Margarets's Dad's Birthday Treble Place Doubles
+Wyvern Treble Place Doubles
+Chilham Treble Place Doubles
+Cantium Treble Place Doubles
+Oxnaforda Treble Place Doubles
+Plain Short Course Treble Place Minor
+Tadgel Short Course Treble Place Triples
 Parsley Hybrid Minimus
 Rosemary Hybrid Minimus
 Sage Hybrid Minimus
@@ -185,11 +264,13 @@ Roade Hybrid Minor
 F1 Hybrid Minor
 Glaston Hybrid Minor
 Seavington St Mary Hybrid Minor
+Huntsham Hybrid Major
+Briswich Hybrid Major
 Woolly Jumper Hybrid Major
 Welford Hybrid Major
 Wicken Hybrid Major
 Crick Hybrid Major
 Heywood Hybrid Major
 Whilton Hybrid Major
-Briswich Hybrid Major
+Bovey Tracey Hybrid Major
 Syon Gipsy Hybrid Royal
