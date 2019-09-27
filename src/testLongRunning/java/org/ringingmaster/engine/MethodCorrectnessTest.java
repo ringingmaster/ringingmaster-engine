@@ -29,9 +29,6 @@ public class MethodCorrectnessTest {
 
 	@Test
 	public void checkCalculatesLastRowInLeadCorrectlyAgainstCCLibrary() throws IOException {
-		//TODO NOTE: This fails for a number of CC notations that come round before the plain course. Need an additional termination
-		// mechanism that looks only for rounds at the end of the lead,
-
 		long problemNotationCount = new NotationLibraryPersister().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
@@ -64,9 +61,6 @@ public class MethodCorrectnessTest {
 
 	@Test
 	public void checkLeadHeadCodeGenerationAgainstCCLibrary() throws IOException {
-		//TODO NOTE: This fails for a number of CC notations that come round before the plain course. Need an additional termination
-		// mechanism that looks only for rounds at the end of the lead,
-
 		List<String> problemNotations = Files.readAllLines(KNOWN_PROBLEM_NOTATION_PATH);
 
 		long problemNotationCount = new NotationLibraryPersister().readNotationLibrary(LIBRARY_PATH)
@@ -110,9 +104,6 @@ public class MethodCorrectnessTest {
 
 	@Test
 	public void checkCalculatesMethodLengthAgainstCCLibrary() throws IOException {
-		//TODO NOTE: This fails for a number of CC notations that come round before the plain course. Need an additional termination
-		// mechanism that looks only for rounds at the end of the lead,
-
 		long problemNotationCount = new NotationLibraryPersister().readNotationLibrary(LIBRARY_PATH)
 				.getNotation().stream()
 				.filter(persistableNotation ->  {
