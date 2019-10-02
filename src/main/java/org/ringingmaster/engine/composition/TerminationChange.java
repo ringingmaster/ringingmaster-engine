@@ -10,8 +10,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class TerminationChange {
 
     public enum Location {
-        ANYWHERE,
-        LEAD_END;
+        ANYWHERE ("Anywhere"),
+        LEAD_END ("Lead End Only");
+
+        private final String displayString;
+
+        Location(String displayString) {
+            this.displayString = displayString;
+        }
+
+        public String getDisplayString() {
+            return displayString;
+        }
     }
 
     TerminationChange(Row change, Location location) {
