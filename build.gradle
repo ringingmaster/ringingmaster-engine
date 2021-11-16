@@ -27,21 +27,24 @@ configurations {
 }
 
 dependencies {
-    compile 'org.ringingmaster:ringingmaster-util:1.0.0'
-    compile 'org.ringingmaster:ringingmaster-persist:1.0.0'
+    implementation 'org.ringingmaster:ringingmaster-util:1.0.0'
+    implementation 'org.ringingmaster:ringingmaster-persist:1.0.0'
 
     // General
-    compile 'io.reactivex.rxjava2:rxjava:2.2.8'
-    compile 'org.pcollections:pcollections:2.1.2'
+    implementation 'com.google.guava:guava:27.1-jre'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
+    implementation 'org.pcollections:pcollections:2.1.2'
 
+    // Logging
+    implementation 'org.slf4j:slf4j-api:1.7.25'
 
     // TEST: General
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.25.0'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.25.0'
 
     // TEST: Logging
-    testRuntime 'org.apache.logging.log4j:log4j-core:2.8.2'
-    testRuntime 'org.apache.logging.log4j:log4j-slf4j-impl:2.8.2'
+    testRuntimeOnly 'org.apache.logging.log4j:log4j-core:2.8.2'
+    testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.8.2'
 }
 
 task testLongRunning(type: Test, dependsOn: jar) {
